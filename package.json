@@ -1,0 +1,24 @@
+{
+  "name": "neo-js-blockchain",
+  "version": "0.0.1",
+  "description": "A package for running a full or light node on the neo blockchain.",
+  "main": "dist/neo.blockchain.core.js",
+  "scripts": {
+    "test": "neo('light','testnet')"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CityOfZion/neo-js-blockchain.git"
+  },
+  "keywords": [
+    "neo",
+    "blockchain",
+    "cityofzion"
+  ],
+  "author": "lllwvlvwlll",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/CityOfZion/neo-js-blockchain/issues"
+  },
+  "homepage": "https://github.com/CityOfZion/neo-js-blockchain#readme"
+}
