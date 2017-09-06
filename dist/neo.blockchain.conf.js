@@ -78,6 +78,7 @@ module.exports = function(network) {
         })
           .then(function (response) {
             node.age = Date.now();
+            if (response.data.error) return reject(response.data.error);
             node.latency = node.age - t0;
             node.active = true;
             resolve(response.data);

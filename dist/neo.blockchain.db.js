@@ -24,7 +24,7 @@ module.exports = function(network){
     previousblockhash: String,
     merkleroot: String,
     time: Number,
-    index: Number,
+    index: {type: 'Number', unique : true, required : true, dropDups: true},
     nonce: String,
     nextconsensus: String,
     script:

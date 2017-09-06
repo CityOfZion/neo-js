@@ -21,7 +21,7 @@ function neo(mode, network){
 
   this.mode = mode;
   this.network = network;
-
+  this.blockWritePointer = -1;
   var blockchain = this;
 
 
@@ -56,6 +56,11 @@ function neo(mode, network){
           .then(function(){
             ret++;
             if (ret == updateCount) {
+
+              if(blockchain.sync.runLock &&
+                (blockchain.blockWritePointer < blockchain.highestNode().blockHeight)){
+                blockchain.sync.enqueueBlock(blockchain.blockWritePointer + 1, true);
+              }
               resolve();
             }
           })
@@ -85,7 +90,7 @@ function neo(mode, network){
 
   this.nodeWithBlock = function(index){
     var nodes = _.filter(blockchain.nodes, function(node){
-      return (node.active) && (index < node.blockHeight);
+      return (node.active) && (index <= node.blockHeight);
     });
     return _.minBy(nodes, 'latency');
   }
