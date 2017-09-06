@@ -15,7 +15,8 @@ module.exports = function(blockchain){
         (blockchain.blockWritePointer < blockchain.highestNode().blockHeight)){
           module.enqueueBlock(blockchain.blockWritePointer + 1);
         }
-        if ((task.attrs.index - this.startblock) % 1000 == 0){
+        if (((task.attrs.index - this.startblock) % 10000 == 0) ||
+        (blockchain.blockWritePointer == blockchain.highestNode().blockHeight)){
           console.log(task.attrs);
         }
         callback();
