@@ -20,5 +20,11 @@
   "bugs": {
     "url": "https://github.com/CityOfZion/neo-js-blockchain/issues"
   },
-  "homepage": "https://github.com/CityOfZion/neo-js-blockchain#readme"
+  "homepage": "https://github.com/CityOfZion/neo-js-blockchain#readme",
+  "dependencies": {
+    "axios": "^0.16.2",
+    "lodash": "~4.17.4",
+    "mongoose": "~4.11.3",
+    "async": "~2.5.0"
+  }
 }

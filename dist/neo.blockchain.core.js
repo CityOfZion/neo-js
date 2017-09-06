@@ -2,7 +2,6 @@
  * @ngdoc controller
  * @name neo.blockchain.core
  * @requires lodash
- * @requires neo.blockchain.conf
  * @description
  * A controller which defines the neo blockchain prototype.
  * @param {String} mode Sets whether the library should run in full or light mode.
