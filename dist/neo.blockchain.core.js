@@ -5,9 +5,11 @@
  * @description
  * A controller which defines the neo blockchain prototype.
  * @param {String} mode Sets whether the library should run in full or light mode.
- * Options: 'full' , 'light'
  * @param {String} network Indicates which network to operate the instance on.
- * Options: 'testnet', 'mainnet'
+ * @example
+ * var neoBlockchain = neo('full', 'testnet') //Creates a new full node instance on testnet.
+ * @example
+ * var neoBlockchain = neo('light', 'mainnet') //Creates a new light node instances on mainnet.
  */
 
 function neo(mode, network){
@@ -23,7 +25,6 @@ function neo(mode, network){
   this.network = network;
   this.blockWritePointer = -1;
   var blockchain = this;
-
 
   /**
    * @ngdoc method
@@ -41,24 +42,31 @@ function neo(mode, network){
 
       var ret = 0;
       var updateCount = 10;
-
       var used = [];
       var selection = 0;
+
+      //update nodes while the updateCount hasn't be met.
       while (used.length < updateCount) {
+
+        //identify a random unupdated node
         selection = Math.floor(Math.random() * (blockchain.nodes.length));
         if (used.indexOf(selection) != -1) {
           continue;
         }
         used.push(selection);
+
+        //Get the blockcount for the selected node (the rpc call updates the height)
         blockchain.rpc.getBlockCount(blockchain.nodes[selection])
           .catch(function (err) {
           })
           .then(function(){
             ret++;
+            //If the sync is over, we're a full node, and the block is above the write pointer,
+            //enqueue the block for download.
             if (ret == updateCount) {
-
               if(blockchain.sync.runLock &&
-                (blockchain.blockWritePointer < blockchain.highestNode().blockHeight)){
+                (blockchain.blockWritePointer < blockchain.highestNode().blockHeight) &&
+                (blockchain.mode == 'full')){
                 blockchain.sync.enqueueBlock(blockchain.blockWritePointer + 1, true);
               }
               resolve();
@@ -67,7 +75,7 @@ function neo(mode, network){
       }
     });
   };
-  setInterval(this.updateBlockCount, 10000);
+  setInterval(this.updateBlockCount, 10000); //Update the block height metadata of each seed
 
   /**
    * @ngdoc method
@@ -83,18 +91,35 @@ function neo(mode, network){
     return _.minBy(activeNodes, 'latency');
   };
 
+  /**
+   * @ngdoc method
+   * @name highestNode
+   * @methodOf neo.blockchain.core
+   * @description
+   * Identifies and returns the node with the highest blockheight.
+   *
+   * @returns {node}
+   */
   this.highestNode = function(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
     return _.maxBy(activeNodes, 'blockHeight');
   };
 
+  /**
+   * @ngdoc method
+   * @name nodesWithNode
+   * @methodOf neo.blockchain.core
+   * @description
+   * Identifies and returns the fastest node that has a specific block.
+   *
+   * @returns {node}
+   */
   this.nodeWithBlock = function(index){
     var nodes = _.filter(blockchain.nodes, function(node){
       return (node.active) && (index <= node.blockHeight);
     });
     return _.minBy(nodes, 'latency');
   }
-
 
 }
 

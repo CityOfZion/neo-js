@@ -1,6 +1,7 @@
 /**
  * @ngdoc controller
  * @name neo.blockchain.conf
+ * @requires axios
  * @description
  * A controller which defines the neo blockchain connection settings.
  * @param {String} network the network to connect to.
@@ -12,18 +13,19 @@ module.exports = function(network) {
   };
 
   var axios = require('axios');
-  var port = 20332;
+
+  //identify which network to configure for.
+  var neoPort = 20332;
   var cozPort = 8880;
   var cozNetwork = 'test';
   var nodes = [];
-
-  //identify which network to configure for.
   if (network == 'mainnet') {
-    port = 10332;
+    neoPort = 10332;
     cozPort = 8080;
     cozNetwork = 'seed';
   }
 
+  //Neo Council Seeds
   var neoSeeds = [
     'http://seed1.neo.org',
     'http://seed2.neo.org',
@@ -38,7 +40,7 @@ module.exports = function(network) {
     module.nodes.push(new node(
       {
         domain: domain,
-        port: port
+        port: neoPort
       }
     ))
   });
@@ -54,7 +56,16 @@ module.exports = function(network) {
     ))
   });
 
-
+ /**
+  * @ngdoc prototype
+  * @name node
+  * @methodOf neo.blockchain.conf
+  * @description
+  * prototype class defining a node on the neo blockchain.
+  *@param {Object} conf Configuration parameters for the node.
+  *@example
+  * node({'domain': 'http://seed1.neo.org', 'port': 10332})
+  */
   function node(conf) {
     this.domain = conf.domain;
     this.port = conf.port;
@@ -64,6 +75,7 @@ module.exports = function(network) {
     this.blockHeight = 0;
     this.connections = 0;
 
+    //make an rpc call to the node
     this.call = function (payload) {
       var node = this;
 
