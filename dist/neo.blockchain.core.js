@@ -80,8 +80,6 @@ function neo(mode, network) {
       }
     });
   };
-  //setInterval(this.updateBlockCount, 10000); //Update the block height metadata of each seed
-
 
   /**
    * @ngdoc method

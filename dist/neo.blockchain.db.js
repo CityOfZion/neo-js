@@ -148,7 +148,7 @@ module.exports = function(network){
       })
 
     }
-    //setInterval(function(){console.log(node.unlinkedBlocks.length)},5000);
+
     this.getBlockCount();
   }
 

@@ -360,7 +360,6 @@ module.exports = function(network) {
       });
     }
 
-
     this.deferredUpdateLoop = function(){
       var base = 5000;
       if (!node.active){
