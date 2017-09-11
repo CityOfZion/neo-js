@@ -60,6 +60,12 @@ To pause:
 ```js
 neoBlockchain.sync.stop();
 ```
-When running, synchronization will continue to maintain blocks as they are generated on the blockchain.
+When running, synchronization will continue to maintain blocks as they are generated on the blockchain.  An event will also periodically run to verify all of the blocks in the chain.
+
+Calls to the local database will be extended in v0.0.4.  Currently, running rpc calls using a helper function will automatically select the best candidate for the request against both the local and remote nodes:
+```js
+neoBlockchain.nodeWithBlock(index, 'latency').getBalance('XXX');
+```
+will return the balance of account 'XXX' from the fastest node with the requested block, including the local chain.
 
 
