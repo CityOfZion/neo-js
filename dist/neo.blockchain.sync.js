@@ -8,14 +8,15 @@
  */
 module.exports = function(blockchain){
   var module = {};
-
   var async = require('async');
   module.runLock = false;
+  var blockWritePointer = -1;
 
-  var defaultWorkerCount = 10; //The number of blocks to grab in parallel.
+  var defaultWorkerCount = 20; //The number of blocks to grab in parallel.
   var maxQueueLength = 10000; //maximum supported working queue length. Helps with memory usage during large syncs.
   var logPeriod = 10000; //log sync status every n blocks.
-
+  var stats = {};
+  var t0 = Date.now();
   /**
    * @description
    * Maintains the synchronization queue for the blockchain.
@@ -26,20 +27,22 @@ module.exports = function(blockchain){
    *
    * @returns {Lyfe}
    */
-  var queue = async.queue(function(task, callback) {
-
+  var queue = async.priorityQueue(function(task, callback) {
     task.method(task.attrs)
       .then(function() {
         //after a sync even is run, enqueue any other
         // outstanding blocks up to the max queue length.
+
         while((queue.length() < maxQueueLength) &&
-        (blockchain.blockWritePointer < blockchain.highestNode().blockHeight)){
-          module.enqueueBlock(blockchain.blockWritePointer + 1);
+        (blockWritePointer < blockchain.highestNode().index)){
+          module.enqueueBlock(blockWritePointer + 1);
         }
         //Consider logging a status update...communication is important
         if ((task.attrs.index % logPeriod == 0) ||
-        (blockchain.blockWritePointer == blockchain.highestNode().blockHeight)){
-          console.log(task.attrs);
+        (task.attrs.index == blockchain.highestNode().index)){
+          console.log(task.attrs, logPeriod/((Date.now() - t0) / 1000)  );
+          if ((task.attrs.index == blockchain.highestNode().index)){ console.log(stats)};
+          t0 = Date.now();
         }
         callback();
       })
@@ -47,10 +50,10 @@ module.exports = function(blockchain){
       .catch(function(err){
         //If the blcok request fails, throw it to the back to the queue to try again.
         //timout prevents inf looping on connections issues etc..
-        setTimeout(function() {
-            module.enqueueBlock(task.attrs.index);
-          }, 3000)
         console.log(task.attrs, 'fail')
+        setTimeout(function() {
+            module.enqueueBlock(task.attrs.index, 0);
+          }, 2000)
         callback();
       });
   }, defaultWorkerCount);
@@ -65,22 +68,35 @@ module.exports = function(blockchain){
    * Starts the synchronization activity.
    */
   module.start = function(){
-    if (module.runLock) return false; //prevent the overlapping runs
+   if (module.runLock) return false; //prevent the overlapping runs
     module.runLock = true;
 
-    getBlockWritePointer()
-      .then(function (res) {
-        //If  the are new blocks on the chain and the queue is empty
-        //add the next block.
-        if ((res < blockchain.highestNode().blockHeight) &&
-        (queue.length() == 0)) {
-          module.enqueueBlock(res + 1, true);
+
+    module.clock = setInterval(function(){
+      if (module.runLock){
+        if ((blockchain.localNode.index < blockchain.highestNode().index) &&
+          (queue.length() == 0)) {
+          blockWritePointer = blockchain.localNode.index;
+          module.enqueueBlock(blockWritePointer + 1, true);
         }
-          queue.resume();
-        })
-      .catch(function () {
-        console.log("Could not get local block height.")
-      })
+      }
+      else clearInterval(module.clock);
+    }, 2000)
+
+
+    module.clock2 = setInterval(function(){
+      if (module.runLock){
+        blockchain.localNode.verifyBlocks()
+          .then(function(res){
+            res.forEach(function(r){
+              module.enqueueBlock(r, 0);
+            })
+          });
+      }
+      else clearInterval(module.clock);
+    }, 60000)
+
+    queue.resume();
   };
 
   /**
@@ -119,17 +135,25 @@ module.exports = function(blockchain){
   module.storeBlock = function(attrs){
     return new Promise(function(resolve, reject) {
       //get the block using the rpc controller
-      blockchain.rpc.getBlock(attrs.index)
+      var node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
+
+      if (!stats[node.domain]) stats[node.domain] = {'s': 0, 'f1': 0, 'f2': 0};
+        node.getBlock(attrs.index)
         .then(function (res) {
           //inject the block into the database and save.
-          var block = blockchain.db.blocks(res);
-          block.save(function (err) {
-            if (err) return reject(err);
-            resolve();
-          })
+          blockchain.localNode.saveBlock(res)
+            .then(function(){
+              stats[node.domain]['s']++;
+              resolve();
+            })
+            .catch(function(err){
+              stats[node.domain]['f2']++;
+              resolve();
+            })
         })
         .catch(function(err){
-          reject(err);
+          stats[node.domain]['f1']++;
+          return reject(err);
         })
     });
   };
@@ -143,45 +167,24 @@ module.exports = function(blockchain){
   * @param {Number} index The index of the block to synchronize.
   * @param {Boolean} [safe] Insert if the queue is not empty?
   */
-  module.enqueueBlock = function(index, safe = false){
+  module.enqueueBlock = function(index, priority=5, safe = false){
     if (safe && (queue.length() > 0)) return;
-
     //if the blockheight is above the current height,
     //increment the write pointer.
-    if (index > blockchain.blockWritePointer) {
-      blockchain.blockWritePointer = index;
+    if (index > blockWritePointer) {
+      blockWritePointer = index;
     }
     //enqueue the block.
     queue.push({
       method: module.storeBlock,
       attrs: {
         index: index,
-        max: blockchain.highestNode().blockHeight,
-        percent: (index) / blockchain.highestNode().blockHeight * 100
+        max: blockchain.highestNode().index,
+        percent: (index) / blockchain.highestNode().index * 100
       }
-    })
+    }, 5)
   }
 
-  /**
-   * @private
-   * @ngdoc method
-   * @name getBlockWritePointer
-   * @methodOf neo.blockchain.sync
-   * @description
-   * Pulls the block write pointer out of the local database.
-   */
-  var getBlockWritePointer = function(){
-    return new Promise(function(resolve, reject){
-      blockchain.db.blocks.findOne({}, 'index')
-        .sort('-index')
-        .exec(function (err, res) {
-          if (err) return reject(err);
-          if (!res) res = {'index': -1};
-          blockchain.blockWritePointer = res.index;
-          resolve(res.index);
-        })
-    })
-  }
 
   return module
 };

@@ -12,19 +12,24 @@
  * var neoBlockchain = neo('light', 'mainnet') //Creates a new light node instances on mainnet.
  */
 
-function neo(mode, network){
+function neo(mode, network) {
   var blockchain = this;
   var _ = require('lodash');
 
-  this.nodes = require('./neo.blockchain.conf')(network).nodes;
-  this.rpc = require('./neo.blockchain.rpc')(this);
-  this.db = require('./neo.blockchain.db')(network);
+  this.node = require('./neo.blockchain.node')(network)
   this.sync = require('./neo.blockchain.sync')(this);
 
   this.mode = mode;
   this.network = network;
+
+  this.nodes = this.node.nodes;
+  if (this.mode == 'full') {
+    this.db = require('./neo.blockchain.db')(network);
+    this.localNode = new this.db.node(); //Initialize the local node.
+    this.nodes.push(this.localNode); //Add the local node to the pool of options for general queries.
+  }
+
   this.blockWritePointer = -1;
-  var blockchain = this;
 
   /**
    * @ngdoc method
@@ -56,26 +61,27 @@ function neo(mode, network){
         used.push(selection);
 
         //Get the blockcount for the selected node (the rpc call updates the height)
-        blockchain.rpc.getBlockCount(blockchain.nodes[selection])
-          .catch(function (err) {
-          })
-          .then(function(){
-            ret++;
-            //If the sync is over, we're a full node, and the block is above the write pointer,
-            //enqueue the block for download.
-            if (ret == updateCount) {
-              if(blockchain.sync.runLock &&
-                (blockchain.blockWritePointer < blockchain.highestNode().blockHeight) &&
-                (blockchain.mode == 'full')){
-                blockchain.sync.enqueueBlock(blockchain.blockWritePointer + 1, true);
-              }
-              resolve();
+        blockchain.nodes[selection].getBlockCount()
+        .catch(function (err) {
+        })
+        .then(function(){
+          ret++;
+          //If the sync is over, we're a full node, and the block is above the write pointer,
+          //enqueue the block for download.
+          if (ret == updateCount) {
+            if(blockchain.sync.runLock &&
+              (blockchain.blockWritePointer < (blockchain.highestNode().index)) &&
+              (blockchain.mode == 'full')){
+              blockchain.sync.enqueueBlock(blockchain.blockWritePointer + 1, true);
             }
-          })
+            resolve();
+          }
+        })
       }
     });
   };
-  setInterval(this.updateBlockCount, 10000); //Update the block height metadata of each seed
+  //setInterval(this.updateBlockCount, 10000); //Update the block height metadata of each seed
+
 
   /**
    * @ngdoc method
@@ -114,11 +120,15 @@ function neo(mode, network){
    *
    * @returns {node}
    */
-  this.nodeWithBlock = function(index){
+  this.nodeWithBlock = function(index, sort = 'latency', allowLocal = true){
     var nodes = _.filter(blockchain.nodes, function(node){
-      return (node.active) && (index <= node.blockHeight);
+      if (allowLocal && (node.domain == 'localhost')){
+        return (node.active) && (index <= node.index);
+      }
+      if (node.domain == 'localhost') return false;
+      return (node.active) && (index <= node.index);
     });
-    return _.minBy(nodes, 'latency');
+    return _.minBy(nodes, sort);
   }
 
 }
