@@ -75,7 +75,10 @@ module.exports = function(network){
     this.unlinkedBlocks = [];
     var node = this;
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     this.getAssetBalance = function(address,asset) {
       return new Promise(function (resolve, reject) {
 
@@ -170,7 +173,10 @@ module.exports = function(network){
       })
     }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> origin/master
     this.getTX = function(txid){
       return new Promise(function(resolve, reject){
         if (txid.length > 64){

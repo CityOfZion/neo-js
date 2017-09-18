@@ -39,6 +39,11 @@ function neo(mode, network) {
    * Polls registered nodes to update their status including whether they are active
    * and what their current block height is.  A fraction of the nodes are randomly selected for update
    * as a way to reduce polling traffic.
+<<<<<<< HEAD
+=======
+   *
+   * @returns {Promise}
+>>>>>>> origin/master
    */
   this.updateBlockCount = function() {
     return new Promise(function (resolve) {
@@ -85,6 +90,11 @@ function neo(mode, network) {
    * @methodOf neo.blockchain.core
    * @description
    * Identifies and returns the fastest node based on the latency of the last transaction.
+<<<<<<< HEAD
+=======
+   *
+   * @returns {node}
+>>>>>>> origin/master
    */
   this.fastestNode = function(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
@@ -97,6 +107,11 @@ function neo(mode, network) {
    * @methodOf neo.blockchain.core
    * @description
    * Identifies and returns the node with the highest blockheight.
+<<<<<<< HEAD
+=======
+   *
+   * @returns {node}
+>>>>>>> origin/master
    */
   this.highestNode = function(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
@@ -109,6 +124,11 @@ function neo(mode, network) {
    * @methodOf neo.blockchain.core
    * @description
    * Identifies and returns the fastest node that has a specific block.
+<<<<<<< HEAD
+=======
+   *
+   * @returns {node}
+>>>>>>> origin/master
    */
   this.nodeWithBlock = function(index, sort = 'latency', allowLocal = true){
     var nodes = _.filter(blockchain.nodes, function(node){
