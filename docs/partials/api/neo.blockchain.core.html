@@ -1,0 +1,76 @@
+<h1><code ng:non-bindable="">core</code>
+<div><span class="hint">service in module <code ng:non-bindable="">neo.blockchain</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="neo-blockchain-core-page"><p>A controller which defines the neo blockchain prototype.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="api/lodash">lodash</a></code>
+</li>
+</ul>
+<h2 id="usage">Usage</h2>
+<div class="usage"><pre class="prettyprint linenums">core(mode, network);</pre>
+<h4 id="usage_parameters">Parameters</h4><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>mode</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="neo-blockchain-core-page"><p>Sets whether the library should run in full or light mode.</p>
+</div></td></tr><tr><td>network</td><td><a href="" class="label type-hint type-hint-string">String</a></td><td><div class="neo-blockchain-core-page"><p>Indicates which network to operate the instance on.</p>
+</div></td></tr></tbody></table></div>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_fastestnode">fastestNode()</h3>
+<div class="fastestnode"><div class="fastestnode-page"><p>Identifies and returns the fastest node based on the latency of the last transaction.</p>
+</div></div>
+</li>
+<li><h3 id="methods_getblock">getBlock(index, [node])</h3>
+<div class="getblock"><div class="getblock-page"><p>Invokes the getblock rpc request to return a block.  This method
+accepts and optional node to request the block from.  If a node is not selected,
+the fastest node will be used with failover in an attempt to guarantee a response.</p>
+</div><h5 id="methods_getblock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>index</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="getblock-page"><p>The index of the block being requested.</p>
+</div></td></tr><tr><td>[node]</td><td><a href="" class="label type-hint type-hint-node">node</a></td><td><div class="getblock-page"><p>The node to request the block from.</p>
+</div></td></tr></tbody></table><h5 id="methods_getblock_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getblock-page"><p>A promise returning the hex contents of the block</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getblockcount">getBlockCount([node])</h3>
+<div class="getblockcount"><div class="getblockcount-page"><p>Invokes the getblockcount rpc request to return the block height.  This
+method will request the block height from the fastest active node with failover if a
+node is not provided.  This method will update the blockHeight attribute
+on the node it is run on.</p>
+</div><h5 id="methods_getblockcount_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>[node]</td><td><a href="" class="label type-hint type-hint-node">node</a></td><td><div class="getblockcount-page"><p>The node that will be polled for its block height.</p>
+</div></td></tr></tbody></table><h5 id="methods_getblockcount_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getblockcount-page"><p>A promise returning the block count.</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getblockhash">getBlockHash(index, [node])</h3>
+<div class="getblockhash"><div class="getblockhash-page"><p>Invokes the getblockhash rpc request to return a block&#39;s hash.  This method
+accepts and optional node to request the block from.  If a node is not selected,
+the fastest node will be used with failover in an attempt to guarantee a response.</p>
+</div><h5 id="methods_getblockhash_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>index</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="getblockhash-page"><p>The index of the block hash being requested.</p>
+</div></td></tr><tr><td>[node]</td><td><a href="" class="label type-hint type-hint-node">node</a></td><td><div class="getblockhash-page"><p>The node to request the block from.</p>
+</div></td></tr></tbody></table><h5 id="methods_getblockhash_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getblockhash-page"><p>A promise returning the hash of the block</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_getconnectioncount">getConnectionCount(node)</h3>
+<div class="getconnectioncount"><div class="getconnectioncount-page"><p>Invokes the getconnectioncount rpc request to return the number of connections to
+the selected node.</p>
+</div><h5 id="methods_getconnectioncount_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>node</td><td><a href="" class="label type-hint type-hint-node">node</a></td><td><div class="getconnectioncount-page"><p>The node to request the connections of.</p>
+</div></td></tr></tbody></table><h5 id="methods_getconnectioncount_returns">Returns</h5><table class="variables-matrix"><tr><td><a href="" class="label type-hint type-hint-promise">Promise</a></td><td><div class="getconnectioncount-page"><p>A promise returning the number of connections to the node.</p>
+</div></td></tr></table></div>
+</li>
+<li><h3 id="methods_highestnode">highestNode()</h3>
+<div class="highestnode"><div class="highestnode-page"><p>Identifies and returns the node with the highest blockheight.</p>
+</div></div>
+</li>
+<li><h3 id="methods_nodeswithnode">nodesWithNode()</h3>
+<div class="nodeswithnode"><div class="nodeswithnode-page"><p>Identifies and returns the fastest node that has a specific block.</p>
+</div></div>
+</li>
+<li><h3 id="methods_updateblockcount">updateBlockCount()</h3>
+<div class="updateblockcount"><div class="updateblockcount-page"><p>Polls registered nodes to update their status including whether they are active
+and what their current block height is.  A fraction of the nodes are randomly selected for update
+as a way to reduce polling traffic.</p>
+</div></div>
+</li>
+</ul>
+</div>
+<h2 id="example">Example</h2>
+<div class="example"><div class="neo-blockchain-core-page"><p>var neoBlockchain = neo(&#39;light&#39;, &#39;mainnet&#39;) //Creates a new light node instances on mainnet.</p>
+</div></div>
+</div>

@@ -1,0 +1,42 @@
+<h1><code ng:non-bindable="">sync</code>
+<div><span class="hint">service in module <code ng:non-bindable="">neo.blockchain</code>
+</span>
+</div>
+</h1>
+<div><h2 id="description">Description</h2>
+<div class="description"><div class="neo-blockchain-sync-page"><p>The sync controller is responsible for synchronizing the blockchain when running
+in full node mode.</p>
+</div></div>
+<h2 id="dependencies">Dependencies</h2>
+<ul class="dependencies"><li><code ng:non-bindable=""><a href="api/async">async</a></code>
+</li>
+</ul>
+<div class="member method"><h2 id="methods">Methods</h2>
+<ul class="methods"><li><h3 id="methods_enqueueblock">enqueueBlock(index, [safe])</h3>
+<div class="enqueueblock"><div class="enqueueblock-page"><p>Adds a block request to the sync queue.</p>
+</div><h5 id="methods_enqueueblock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>index</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="enqueueblock-page"><p>The index of the block to synchronize.</p>
+</div></td></tr><tr><td>[safe]</td><td><a href="" class="label type-hint type-hint-boolean">Boolean</a></td><td><div class="enqueueblock-page"><p>Insert if the queue is not empty?</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_setworkers">setWorkers(count)</h3>
+<div class="setworkers"><div class="setworkers-page"><p>Update the number of workers in the sync activity.</p>
+</div><h5 id="methods_setworkers_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>count</td><td><a href="" class="label type-hint type-hint-number">Number</a></td><td><div class="setworkers-page"><p>The number of workers to use.</p>
+</div></td></tr></tbody></table></div>
+</li>
+<li><h3 id="methods_start">start()</h3>
+<div class="start"><div class="start-page"><p>Starts the synchronization activity.</p>
+</div></div>
+</li>
+<li><h3 id="methods_stop">stop()</h3>
+<div class="stop"><div class="stop-page"><p>Stops the synchronization activity.</p>
+</div></div>
+</li>
+<li><h3 id="methods_storeblock">storeBlock(attrs)</h3>
+<div class="storeblock"><div class="storeblock-page"><p>Uses the RPC controller to get a the requested block
+and inserts it into the local database.</p>
+</div><h5 id="methods_storeblock_parameters">Parameters</h5><table class="variables-matrix table table-bordered table-striped"><thead><tr><th>Param</th><th>Type</th><th>Details</th></tr></thead><tbody><tr><td>attrs</td><td><a href="" class="label type-hint type-hint-object">Object</a></td><td><div class="storeblock-page"><p>The block attributes</p>
+</div></td></tr></tbody></table></div>
+</li>
+</ul>
+</div>
+</div>
