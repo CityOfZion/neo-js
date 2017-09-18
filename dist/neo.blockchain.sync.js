@@ -46,7 +46,6 @@ module.exports = function(blockchain){
         }
         callback();
       })
-
       .catch(function(err){
         //If the blcok request fails, throw it to the back to the queue to try again.
         //timout prevents inf looping on connections issues etc..
@@ -71,12 +70,13 @@ module.exports = function(blockchain){
    if (module.runLock) return false; //prevent the overlapping runs
     module.runLock = true;
 
-
+    console.log('Synchronizing');
     module.clock = setInterval(function(){
       if (module.runLock){
         if ((blockchain.localNode.index < blockchain.highestNode().index) &&
           (queue.length() == 0)) {
           blockWritePointer = blockchain.localNode.index;
+          console.log(blockWritePointer);
           module.enqueueBlock(blockWritePointer + 1, true);
         }
       }
@@ -136,8 +136,8 @@ module.exports = function(blockchain){
     return new Promise(function(resolve, reject) {
       //get the block using the rpc controller
       var node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
-
       if (!stats[node.domain]) stats[node.domain] = {'s': 0, 'f1': 0, 'f2': 0};
+
         node.getBlock(attrs.index)
         .then(function (res) {
           //inject the block into the database and save.
@@ -147,6 +147,7 @@ module.exports = function(blockchain){
               resolve();
             })
             .catch(function(err){
+              console.log(err);
               stats[node.domain]['f2']++;
               resolve();
             })
