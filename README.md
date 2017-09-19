@@ -26,6 +26,13 @@ In light mode, the package will interface with other full nodes using the seed r
 
 <b>Click [here](http://cityofzion.io/neo-js-blockchain/index.html) for full documentation.</b>
 
+This module uses 'lazy caching' to improve performance in full-node mode.  Blocks are initially downloaded and stored in two collections (one for the raw blockchain and another for the raw transactions) as a result of the sync process.  Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as described <b>[here](https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md)</b> and updated in the collection.  The next time the block is requested, the expanded transaction will already be available in the collection.
+
+This mechanic is also used for address balances.  Upon requesting an update for an asset balance, the transaction collection is analyzed and the asset balance is stored in an account collection along with the max blockheight during the calculation.  Upon future requests for the asset balance, the asset collection is first queried for previous balance.  The asset balance is then updated using only the new blocks since the previous calculation event.
+
+This mechanic will also be expanded to NEP5 tokens in the future.
+
+
 ## Installation
 Install the package using:
 
@@ -71,7 +78,7 @@ neoBlockchain.nodeWithBlock(index, 'latency').getBalance('XXX');
 ```
 will return the balance of account 'XXX' from the fastest node with the requested block, including the local chain.
 
-In full-node mode:
+**In full-node mode:**
 ```js
 blockchainNeo.localNode.getAssetBalance(Address, 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
     .then(function (res) {
@@ -80,4 +87,6 @@ blockchainNeo.localNode.getAssetBalance(Address, 'c56f33fc6ecfcd0c225c4ab356fee5
       //  balance: 1111 }
  })
  ```
+ will respond with the balance of an asset owned by the requested address. 
  
+
