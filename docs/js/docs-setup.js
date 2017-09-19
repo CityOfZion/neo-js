@@ -51,11 +51,12 @@ NG_DOCS={
       "js/angular-animate.min.js",
       "js/marked.js",
       "js/public/lib/angular/angular.min.js",
-      "js/public/lib/angular-animate/angular-animate.min.js"
+      "js/public/lib/angular-animate/angular-animate.min.js",
+      "js/node_modules/neo-js-blockchain/*/*.js"
     ],
     "styles": [],
     "title": "My Awesome Docs",
-    "html5Mode": true,
+    "html5Mode": false,
     "editExample": true,
     "navTemplate": false,
     "navContent": "",
@@ -69,7 +70,7 @@ NG_DOCS={
       "marked": true
     }
   },
-  "html5Mode": true,
+  "html5Mode": false,
   "editExample": true,
   "startPage": "/api",
   "scripts": [
@@ -77,6 +78,7 @@ NG_DOCS={
     "js/angular-animate.min.js",
     "js/marked.js",
     "js/public/lib/angular/angular.min.js",
-    "js/public/lib/angular-animate/angular-animate.min.js"
+    "js/public/lib/angular-animate/angular-animate.min.js",
+    "js/node_modules/neo-js-blockchain/*/*.js"
   ]
 };
