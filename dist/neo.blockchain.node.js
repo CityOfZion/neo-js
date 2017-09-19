@@ -1,12 +1,4 @@
-/**
- * @ngdoc controller
- * @name neo.blockchain.conf
- * @requires axios
- * @description
- * A controller which defines the neo blockchain connection settings.
- * @param {String} network the network to connect to.
- * Options: 'testnet', 'mainnet'
- */
+
 module.exports = function(network) {
   var module = {
     nodes: []
@@ -59,7 +51,6 @@ module.exports = function(network) {
  /**
   * @ngdoc prototype
   * @name node
-  * @methodOf neo.blockchain.conf
   * @description
   * prototype class defining a node on the neo blockchain.
   *@param {Object} conf Configuration parameters for the node.
