@@ -3,6 +3,9 @@
  *  An instance of the neo blockchain
  * @class
  * @requires lodash
+ * @requires neo.blockchain.node
+ * @requires neo.blockchain.sync
+ * @requires neo.blockchain.db
  * @param {String} mode Sets whether the library should run in full or light mode.
  * @param {String} network Indicates which network to operate the instance on.
  * @example
@@ -13,66 +16,26 @@
 function neo(mode, network) {
   var blockchain = this;
   var _ = require('lodash');
-
   this.node = require('./neo.blockchain.node')(network)
   this.sync = require('./neo.blockchain.sync')(this);
 
+  /** @member {String} The operating mode of the instance ('full', 'light').*/
   this.mode = mode;
+
+  /** @member {String} The network for the instance to attach to ('testnet', 'mainnet').*/
   this.network = network;
 
+  /** @member {node} The array of nodes that the instance current has access to */
   this.nodes = this.node.nodes;
+
   if (this.mode == 'full') {
     this.db = require('./neo.blockchain.db')(network);
+
+    /** @member {node} A direct reference to the local node when running in 'full' mode.*/
     this.localNode = new this.db.node(); //Initialize the local node.
     this.nodes.push(this.localNode); //Add the local node to the pool of options for general queries.
   }
 
-  this.blockWritePointer = -1;
-
-  /**
-   * {degraded} Polls registered nodes to update their status including whether they are active
-   * and what their current block height is.  A fraction of the nodes are randomly selected for update
-   * as a way to reduce polling traffic.
-   *
-   */
-  this.updateBlockCount = function () {
-    return new Promise(function (resolve) {
-
-      var ret = 0;
-      var updateCount = 10;
-      var used = [];
-      var selection = 0;
-
-      //update nodes while the updateCount hasn't be met.
-      while (used.length < updateCount) {
-
-        //identify a random unupdated node
-        selection = Math.floor(Math.random() * (blockchain.nodes.length));
-        if (used.indexOf(selection) != -1) {
-          continue;
-        }
-        used.push(selection);
-
-        //Get the blockcount for the selected node (the rpc call updates the height)
-        blockchain.nodes[selection].getBlockCount()
-          .catch(function (err) {
-          })
-          .then(function () {
-            ret++;
-            //If the sync is over, we're a full node, and the block is above the write pointer,
-            //enqueue the block for download.
-            if (ret == updateCount) {
-              if (blockchain.sync.runLock &&
-                (blockchain.blockWritePointer < (blockchain.highestNode().index)) &&
-                (blockchain.mode == 'full')) {
-                blockchain.sync.enqueueBlock(blockchain.blockWritePointer + 1, true);
-              }
-              resolve();
-            }
-          })
-      }
-    });
-  };
 
   /**
    * Identifies and returns a promise containing the fastest node based on the latency of the last transaction.
