@@ -32,13 +32,11 @@ function neo(mode, network) {
   this.blockWritePointer = -1;
 
   /**
-   * @ngdoc method
-   * @name updateBlockCount
-   * @methodOf neo.blockchain.core
-   * @description
    * Polls registered nodes to update their status including whether they are active
    * and what their current block height is.  A fraction of the nodes are randomly selected for update
    * as a way to reduce polling traffic.
+   *
+   * @returns {Promise}
    */
   this.updateBlockCount = function() {
     return new Promise(function (resolve) {
