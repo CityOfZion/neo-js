@@ -1,6 +1,6 @@
 NG_DOCS={
   "sections": {
-    "api": "API Documentation"
+    "api": "My Awesome Docs"
   },
   "pages": [
     {
@@ -49,15 +49,20 @@ NG_DOCS={
     "scripts": [
       "js/angular.min.js",
       "js/angular-animate.min.js",
-      "js/marked.js"
+      "js/marked.js",
+      "js/public/lib/angular/angular.min.js",
+      "js/public/lib/angular-animate/angular-animate.min.js"
     ],
     "styles": [],
-    "title": "API Documentation",
+    "title": "My Awesome Docs",
     "html5Mode": true,
     "editExample": true,
     "navTemplate": false,
     "navContent": "",
     "navTemplateData": {},
+    "image": "img/image.png",
+    "imageLink": "http://my-domain.com",
+    "titleLink": "/api",
     "loadDefaults": {
       "angular": true,
       "angularAnimate": true,
@@ -70,6 +75,8 @@ NG_DOCS={
   "scripts": [
     "js/angular.min.js",
     "js/angular-animate.min.js",
-    "js/marked.js"
+    "js/marked.js",
+    "js/public/lib/angular/angular.min.js",
+    "js/public/lib/angular-animate/angular-animate.min.js"
   ]
 };
