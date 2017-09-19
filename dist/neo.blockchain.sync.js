@@ -147,7 +147,6 @@ module.exports = function(blockchain){
               resolve();
             })
             .catch(function(err){
-              console.log(err);
               stats[node.domain]['f2']++;
               resolve();
             })

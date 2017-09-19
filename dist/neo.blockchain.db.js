@@ -75,6 +75,7 @@ module.exports = function(network){
     this.unlinkedBlocks = [];
     var node = this;
 
+
     this.getAssetBalance = function(address,asset) {
       return new Promise(function (resolve, reject) {
 
@@ -168,6 +169,7 @@ module.exports = function(network){
           })
       })
     }
+
 
     this.getTX = function(txid){
       return new Promise(function(resolve, reject){
