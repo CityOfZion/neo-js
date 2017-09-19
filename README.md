@@ -16,13 +16,15 @@ The neo-js-blockchain package is designed to interface with the **neo** blockcha
 
 ### full ###
 
-In full mode, the package will sync the blockchain to a local mongo instance.  In this mode, requests will be returned from the local database if the database has been fully synchronized.
+In full mode, the package will sync the blockchain and derivative collections to a local mongo instance.  In this mode, requests will be returned from the local database if the database is able to resolve the request.
 
 ### light ###
 
 In light mode, the package will interface with other full nodes using the seed rpc calls to acquire data.
 
 **note:** All blockchain events (Invocation and Deploy) use the rpc calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
+
+<b>Click [here](http://cityofzion.io/neo-js-blockchain/index.html) for full documentation.</b>
 
 ## Installation
 Install the package using:
@@ -35,10 +37,7 @@ $ npm install neo-js-blockchain --save
 Installation instructions can be found [here](https://docs.mongodb.com/manual/installation/).
 
 
-## Using neo-js-blockchain
-
-[###Read the Docs##](http://cityofzion.io/neo-js-blockchain/index.html)
-
+## Quickstart
 
 ```js
 var neo = require('neo-js-blockchain');
@@ -50,7 +49,7 @@ var neoBlockchain = neo('full', 'testnet');
 ```
 This will create a new testnet instance and configure it to run as a full node.
 
-Additionally, to create a light node on mainnet:
+Additionally, to create a light node instance on mainnet:
 ```js
 var neoBlockchain = neo('light', 'mainnet');
 ```
@@ -63,6 +62,7 @@ To pause:
 ```js
 neoBlockchain.sync.stop();
 ```
+
 When running, synchronization will continue to maintain blocks as they are generated on the blockchain.  An event will also periodically run to verify all of the blocks in the chain.
 
 Calls to the local database will be extended in v0.0.4.  Currently, running rpc calls using a helper function will automatically select the best candidate for the request against both the local and remote nodes:
@@ -71,4 +71,13 @@ neoBlockchain.nodeWithBlock(index, 'latency').getBalance('XXX');
 ```
 will return the balance of account 'XXX' from the fastest node with the requested block, including the local chain.
 
-
+In full-node mode:
+```js
+blockchainNeo.localNode.getAssetBalance(Address, 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
+    .then(function (res) {
+      console.log(res);
+      //{ asset: 'c56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+      //  balance: 1111 }
+ })
+ ```
+ 
