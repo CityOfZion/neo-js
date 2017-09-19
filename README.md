@@ -37,6 +37,9 @@ Installation instructions can be found [here](https://docs.mongodb.com/manual/in
 
 ## Using neo-js-blockchain
 
+[###Read the Docs##](http://cityofzion.io/neo-js-blockchain/index.html)
+
+
 ```js
 var neo = require('neo-js-blockchain');
 ```
