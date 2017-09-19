@@ -32,11 +32,10 @@ function neo(mode, network) {
   this.blockWritePointer = -1;
 
   /**
-   * Polls registered nodes to update their status including whether they are active
+   * {degraded} Polls registered nodes to update their status including whether they are active
    * and what their current block height is.  A fraction of the nodes are randomly selected for update
    * as a way to reduce polling traffic.
    *
-   * @returns {Promise}
    */
   this.updateBlockCount = function() {
     return new Promise(function (resolve) {
@@ -78,11 +77,8 @@ function neo(mode, network) {
   };
 
   /**
-   * @ngdoc method
-   * @name fastestNode
-   * @methodOf neo.blockchain.core
-   * @description
-   * Identifies and returns the fastest node based on the latency of the last transaction.
+   * @lends neo.blockchain.core
+   * Identifies and returns a promise containing the fastest node based on the latency of the last transaction.
    */
   this.fastestNode = function(){
     var activeNodes = _.filter(blockchain.nodes, 'active');
