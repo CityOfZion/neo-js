@@ -1,9 +1,6 @@
 /**
- * @ngdoc controller
- * @name neo
+ *  An instance of the neo blockchain
  * @requires lodash
- * @description
- * A controller which defines the neo blockchain prototype.
  * @param {String} mode Sets whether the library should run in full or light mode.
  * @param {String} network Indicates which network to operate the instance on.
  * @example
@@ -11,7 +8,6 @@
  * @example
  * var neoBlockchain = neo('light', 'mainnet') //Creates a new light node instances on mainnet.
  */
-
 function neo(mode, network) {
   /** @lends neo */
   {
