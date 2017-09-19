@@ -9,7 +9,6 @@
   <link href='assets/github.css' type='text/css' rel='stylesheet' />
   <link href='assets/split.css' type='text/css' rel='stylesheet' />
 </head>
-	
 <body class='documentation m0'>
     <div class='flex'>
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
@@ -50,31 +49,23 @@
                         #fastestNode
                       </a></li>
                       
+                      <li><a
+                        href='#neohighestnode'
+                        class='regular pre-open'>
+                        #highestNode
+                      </a></li>
+                      
+                      <li><a
+                        href='#neonodewithblock'
+                        class='regular pre-open'>
+                        #nodeWithBlock
+                      </a></li>
+                      
                     </ul>
                   
                   
                   
                 </div>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#highestnode'
-                  class="">
-                  highestNode
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#nodeswithnode'
-                  class="">
-                  nodesWithNode
-                  
-                </a>
                 
                 </li>
               
@@ -91,50 +82,46 @@
                 
                 <li><a
                   href='#node'
-                  class="">
+                  class=" toggle-sibling">
                   node
-                  
+                  <span class='icon'>▸</span>
                 </a>
                 
-                </li>
-              
-                
-                <li><a
-                  href='#getblock'
-                  class="">
-                  getBlock
+                <div class='toggle-target display-none'>
                   
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getblockcount'
-                  class="">
-                  getBlockCount
                   
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getblockhash'
-                  class="">
-                  getBlockHash
+                    <ul class='list-reset py1-ul pl1'>
+                      <li class='h5'><span>Instance members</span></li>
+                      
+                      <li><a
+                        href='#nodegetblock'
+                        class='regular pre-open'>
+                        #getBlock
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegetblockcount'
+                        class='regular pre-open'>
+                        #getBlockCount
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegetblockhash'
+                        class='regular pre-open'>
+                        #getBlockHash
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegetconnectioncount'
+                        class='regular pre-open'>
+                        #getConnectionCount
+                      </a></li>
+                      
+                    </ul>
                   
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#getconnectioncount'
-                  class="">
-                  getConnectionCount
                   
-                </a>
+                  
+                </div>
                 
                 </li>
               
@@ -234,7 +221,7 @@
   <p>An instance of the neo blockchain</p>
 
 
-  <div class='pre p1 fill-light mt0'>neo(mode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, network: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</div>
+  <div class='pre p1 fill-light mt0'>new neo(mode: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, network: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</div>
   
   
 
@@ -387,33 +374,22 @@ as a way to reduce polling traffic.</p>
       </div>
     </div>
   
-</div>
+    <div class='border-bottom' id='neohighestnode'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>highestNode()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
 
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='highestnode'>
-      highestNode
-    </h3>
-    
-    
-  </div>
   
 
   <p>Identifies and returns the node with the highest blockheight.</p>
 
 
-  <div class='pre p1 fill-light mt0'>highestNode</div>
+  <div class='pre p1 fill-light mt0'>highestNode()</div>
   
   
 
@@ -441,26 +417,25 @@ as a way to reduce polling traffic.</p>
   
 </section>
 
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
+      </div>
+    </div>
   
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='nodeswithnode'>
-      nodesWithNode
-    </h3>
-    
-    
-  </div>
+    <div class='border-bottom' id='neonodewithblock'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>nodeWithBlock(index, sort, allowLocal)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
   
 
   <p>Identifies and returns the fastest node that has a specific block.</p>
 
 
-  <div class='pre p1 fill-light mt0'>nodesWithNode</div>
+  <div class='pre p1 fill-light mt0'>nodeWithBlock(index: any, sort: any, allowLocal: any)</div>
   
   
 
@@ -472,7 +447,36 @@ as a way to reduce polling traffic.</p>
   
 
   
-
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>index</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>sort</span> <code class='quiet'>(any
+            = <code>&#39;latency&#39;</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>allowLocal</span> <code class='quiet'>(any
+            = <code>true</code>)</code>
+	    
+          </div>
+          
+        </div>
+      
+    </div>
   
 
   
@@ -482,6 +486,18 @@ as a way to reduce polling traffic.</p>
   
 
   
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 
@@ -554,7 +570,7 @@ as a way to reduce polling traffic.</p>
   <p>prototype class defining a node on the neo blockchain.</p>
 
 
-  <div class='pre p1 fill-light mt0'>node</div>
+  <div class='pre p1 fill-light mt0'>new node(conf: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
   
   
 
@@ -598,24 +614,19 @@ as a way to reduce polling traffic.</p>
   
 
   
-
+    <div class='py1 quiet mt1 prose-big'>Instance Members</div>
+    <div class="clearfix">
   
-</section>
+    <div class='border-bottom' id='nodegetblock'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getBlock(index, node?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
 
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getblock'>
-      getBlock
-    </h3>
-    
-    
-  </div>
   
 
   <p>Invokes the getblock rpc request to return a block.  This method
@@ -623,7 +634,7 @@ accepts and optional node to request the block from.  If a node is not selected,
 the fastest node will be used with failover in an attempt to guarantee a response.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlock</div>
+  <div class='pre p1 fill-light mt0'>getBlock(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -682,20 +693,19 @@ the fastest node will be used with failover in an attempt to guarantee a respons
   
 </section>
 
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
+      </div>
+    </div>
   
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getblockcount'>
-      getBlockCount
-    </h3>
-    
-    
-  </div>
+    <div class='border-bottom' id='nodegetblockcount'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getBlockCount(node?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
   
 
   <p>Invokes the getblockcount rpc request to return the block height.  This
@@ -704,7 +714,7 @@ node is not provided.  This method will update the blockHeight attribute
 on the node it is run on.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlockCount</div>
+  <div class='pre p1 fill-light mt0'>getBlockCount(node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -754,20 +764,19 @@ on the node it is run on.</p>
   
 </section>
 
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
+      </div>
+    </div>
   
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getblockhash'>
-      getBlockHash
-    </h3>
-    
-    
-  </div>
+    <div class='border-bottom' id='nodegetblockhash'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getBlockHash(index, node?)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
   
 
   <p>Invokes the getblockhash rpc request to return a block's hash.  This method
@@ -775,7 +784,7 @@ accepts and optional node to request the block from.  If a node is not selected,
 the fastest node will be used with failover in an attempt to guarantee a response.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlockHash</div>
+  <div class='pre p1 fill-light mt0'>getBlockHash(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -834,27 +843,26 @@ the fastest node will be used with failover in an attempt to guarantee a respons
   
 </section>
 
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
+      </div>
+    </div>
   
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='getconnectioncount'>
-      getConnectionCount
-    </h3>
-    
-    
-  </div>
+    <div class='border-bottom' id='nodegetconnectioncount'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getConnectionCount(node)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
   
 
   <p>Invokes the getconnectioncount rpc request to return the number of connections to
 the selected node.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getConnectionCount</div>
+  <div class='pre p1 fill-light mt0'>getConnectionCount(node: <a href="#node">node</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
   
   
 
@@ -898,6 +906,16 @@ the selected node.</p>
   
 
   
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+</div>
 
   
 

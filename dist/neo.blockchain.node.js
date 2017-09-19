@@ -49,12 +49,12 @@ module.exports = function(network) {
   });
 
  /**
-  * @ngdoc prototype
+  * @class
   * @name node
   * @description
   * prototype class defining a node on the neo blockchain.
-  *@param {Object} conf Configuration parameters for the node.
-  *@example
+  * @param {Object} conf Configuration parameters for the node.
+  * @example
   * node({'domain': 'http://seed1.neo.org', 'port': 10332})
   */
   function node(conf) {
@@ -105,9 +105,6 @@ module.exports = function(network) {
    };
 
     /**
-    * @ngdoc method
-    * @name getBlock
-    * @methodOf neo.blockchain.core
     * @description
     * Invokes the getblock rpc request to return a block.  This method
     * accepts and optional node to request the block from.  If a node is not selected,
@@ -133,9 +130,6 @@ module.exports = function(network) {
    };
 
     /**
-    * @ngdoc method
-    * @name getBlockCount
-    * @methodOf neo.blockchain.core
     * @description
     * Invokes the getblockcount rpc request to return the block height.  This
     * method will request the block height from the fastest active node with failover if a
@@ -165,9 +159,6 @@ module.exports = function(network) {
     };
 
     /**
-    * @ngdoc method
-    * @name getBlockHash
-    * @methodOf neo.blockchain.core
     * @description
     * Invokes the getblockhash rpc request to return a block's hash.  This method
     * accepts and optional node to request the block from.  If a node is not selected,
@@ -194,9 +185,6 @@ module.exports = function(network) {
     };
 
     /**
-    * @ngdoc method
-    * @name getConnectionCount
-    * @methodOf neo.blockchain.core
     * @description
     * Invokes the getconnectioncount rpc request to return the number of connections to
     * the selected node.
