@@ -49,8 +49,7 @@ module.exports = function(network) {
   });
 
  /**
-  * @class
-  * @name node
+  * @class node(1)
   * @description
   * A class defining a remote node on the neo blockchain.
   * @param {Object} conf Configuration parameters for the node.

@@ -65,8 +65,7 @@ module.exports = function(network){
 
 
   /**
-   * @class
-   * @name node
+   * @class node(2)
    * @description
    * A class defining a local node on the neo blockchain.
    */
