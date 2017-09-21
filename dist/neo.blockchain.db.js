@@ -64,6 +64,12 @@ module.exports = function(network){
   module.transactions = mongoose.model(collection.transactions, transactionSchema);
 
 
+  /**
+   * @class
+   * @name node
+   * @description
+   * A class defining a local node on the neo blockchain.
+   */
   module.node = function node(){
     this.domain = 'localhost';
     this.active = true;
@@ -74,7 +80,6 @@ module.exports = function(network){
     this.pendingRequests = 0;
     this.unlinkedBlocks = [];
     var node = this;
-
 
     this.getAssetBalance = function(address,asset) {
       return new Promise(function (resolve, reject) {
@@ -169,7 +174,6 @@ module.exports = function(network){
           })
       })
     }
-
 
     this.getTX = function(txid){
       return new Promise(function(resolve, reject){
@@ -271,6 +275,7 @@ module.exports = function(network){
 
       })
     }
+
     function delintBlock(block){
       block.hash = hexFix(block.hash);
       block.previousblockhash = hexFix(block.previousblockhash)

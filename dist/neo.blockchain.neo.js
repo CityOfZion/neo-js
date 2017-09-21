@@ -25,7 +25,7 @@ function neo(mode, network) {
   /** @member {String} The network for the instance to attach to ('testnet', 'mainnet').*/
   this.network = network;
 
-  /** @member {node} The array of nodes that the instance current has access to */
+  /** @member {Array} The array of nodes that the instance currently has access to. */
   this.nodes = this.node.nodes;
 
   if (this.mode == 'full') {
@@ -36,9 +36,9 @@ function neo(mode, network) {
     this.nodes.push(this.localNode); //Add the local node to the pool of options for general queries.
   }
 
-
   /**
-   * Identifies and returns a promise containing the fastest node based on the latency of the last transaction.
+   * Identifies and returns the fastest node based on the latency of the last transaction.
+   * @returns {node} The lowest latency node instance.
    */
   this.fastestNode = function () {
     var activeNodes = _.filter(blockchain.nodes, 'active');
@@ -47,6 +47,7 @@ function neo(mode, network) {
 
   /**
    * Identifies and returns the node with the highest blockheight.
+   * @returns {node} The node instance with the greatest blockHeight.
    */
   this.highestNode = function () {
     var activeNodes = _.filter(blockchain.nodes, 'active');
@@ -54,7 +55,13 @@ function neo(mode, network) {
   };
 
   /**
-   * Identifies and returns the fastest node that has a specific block.
+   * Identifies and returns the best node that has a specific block based on an input
+   * criteria.
+   * @param {Number} index The index of the requested block.
+   * @param {String} [sort = 'latency'] The attribute to rank nodes by.
+   * @param {Boolean} [allowLocal = true] A flag to indicate whether the local node (in 'full' mode) is
+   * allowed
+   * @returns {node} The best node that has the requested block index.
    */
   this.nodeWithBlock = function (index, sort = 'latency', allowLocal = true) {
     var nodes = _.filter(blockchain.nodes, function (node) {

@@ -1,26 +1,37 @@
 /**
- * @ngdoc controller
- * @name neo.blockchain.sync
+ *
+ * The synchronization functionality for the neo blockchain.
+ * This code is only executed when running a neo instance in 'full' mode.
+ * @extends neo
+ * @requires lodash
  * @requires async
- * @description
- * The sync controller is responsible for synchronizing the blockchain when running
- * in full node mode.
+ * @param {neo} blockchain A reference to the parent blockchain instance.
+ * @example
+ * var neoBlockchain = neo('full', 'testnet')
+ * neoBlockchain.sync.start();
  */
 module.exports = function(blockchain){
   var module = {};
   var async = require('async');
+  /** @member {Boolean} runLock An attribute used to garantee only a single synchronization activity. */
   module.runLock = false;
+  /** @member {Number} blockWritePointer The sync horizon representing the heighest block index
+   * which has either been commited to the database or is queue for commit.
+   */
   var blockWritePointer = -1;
+  /** @member {Number} defaultWorkerCount The default number of workers to synchronize the blockchain with. */
+  var defaultWorkerCount = 20;
+  /* @member {Number} maxQueueLength The number of blocks to keep in queue. Exists to reduce memory use. */
+  var maxQueueLength = 10000;
+  /* @member {Number} logPeriod Prints a status update every 'n' blocks. */
+  var logPeriod = 10000;
 
-  var defaultWorkerCount = 20; //The number of blocks to grab in parallel.
-  var maxQueueLength = 10000; //maximum supported working queue length. Helps with memory usage during large syncs.
-  var logPeriod = 10000; //log sync status every n blocks.
   var stats = {};
   var t0 = Date.now();
+
   /**
-   * @description
    * Maintains the synchronization queue for the blockchain.
-   *
+   * @private
    * @param {object} task the task to be executed in the queue.
    * @param {function} callback
    * @example {'method': function, 'attrs': object}
@@ -60,10 +71,6 @@ module.exports = function(blockchain){
   queue.pause(); //Initialize the controller with synchronization paused (so we dont sync in light mode)
 
   /**
-   * @ngdoc method
-   * @name start
-   * @methodOf neo.blockchain.sync
-   * @description
    * Starts the synchronization activity.
    */
   module.start = function(){
@@ -100,10 +107,6 @@ module.exports = function(blockchain){
   };
 
   /**
-  * @ngdoc method
-  * @name stop
-  * @methodOf neo.blockchain.sync
-  * @description
   * Stops the synchronization activity.
   */
   module.stop = function(){
@@ -112,10 +115,6 @@ module.exports = function(blockchain){
   };
 
   /**
-   * @ngdoc method
-   * @name setWorkers
-   * @methodOf neo.blockchain.sync
-   * @description
    * Update the number of workers in the sync activity.
    * @param {Number} count The number of workers to use.
    */
@@ -124,11 +123,7 @@ module.exports = function(blockchain){
   };
 
   /**
-   * @ngdoc method
-   * @name storeBlock
-   * @methodOf neo.blockchain.sync
-   * @description
-   * Uses the RPC controller to get a the requested block
+   * Makes an RPC call to get the requested block
    * and inserts it into the local database.
    * @param {Object} attrs The block attributes
    */
@@ -159,13 +154,10 @@ module.exports = function(blockchain){
   };
 
  /**
-  * @ngdoc method
-  * @name enqueueBlock
-  * @methodOf neo.blockchain.sync
-  * @description
   * Adds a block request to the sync queue.
   * @param {Number} index The index of the block to synchronize.
-  * @param {Boolean} [safe] Insert if the queue is not empty?
+  * @param {Number} [priority=5] The priority of the block download request.
+  * @param {Boolean} [safe = false] Insert if the queue is not empty?
   */
   module.enqueueBlock = function(index, priority=5, safe = false){
     if (safe && (queue.length() > 0)) return;

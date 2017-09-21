@@ -1,6 +1,6 @@
 {
   "name": "neo-js-blockchain",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "A package for running a full or light node on the neo blockchain.",
   "main": "dist/neo.blockchain.neo.js",
   "scripts": {

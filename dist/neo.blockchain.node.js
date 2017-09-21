@@ -52,26 +52,38 @@ module.exports = function(network) {
   * @class
   * @name node
   * @description
-  * prototype class defining a node on the neo blockchain.
+  * A class defining a remote node on the neo blockchain.
   * @param {Object} conf Configuration parameters for the node.
+  * Ex: {'domain': 'http://seed1.neo.org', 'port': 10332}
   * @example
-  * node({'domain': 'http://seed1.neo.org', 'port': 10332})
+  * var n = node({'domain': 'http://seed1.neo.org', 'port': 10332});
   */
   function node(conf) {
+    /** @member {String} The domain of the node*/
     this.domain = conf.domain;
+    /** @member {Number} The port that the node is operating on. */
     this.port = conf.port;
+    /** @member {Number} The last query date represented as seconds since the epoch. */
     this.age = 0;
+    /** @member {Boolean} Indicates where the node is active. */
     this.active = true;
+    /** @member {Number} The nodes latency(in seconds) as reported by the last transaction. */
     this.latency = 0;
+    /** @member {Number} The block height of the node. */
     this.blockHeight = 0;
+    /** @member {Number} The block index of the node calculated as this.blockHeight - 1 */
     this.index = -1;
     this.connections = 0;
     this.pendingRequests = 0;
     var node = this;
 
+   /**
+    * Gets the NEO and GAS balance of an address.
+    * @param {String} asset_id The address to get the balance of.
+    * @returns {Promise.<object>} A promise containing the address balances.
+    */
     this.getBalance = function(asset_id){
      return new Promise(function(resolve, reject){
-       var failOver = false;
 
        node.call({
          method: "getbalance",
@@ -87,6 +99,10 @@ module.exports = function(network) {
      })
    };
 
+    /**
+    * Gets the best block hash on the node
+    * @returns {Promise.<object>}
+    */
     this.getBestBlockHash = function(){
      return new Promise(function(resolve, reject){
 
@@ -105,14 +121,12 @@ module.exports = function(network) {
    };
 
     /**
-    * @description
     * Invokes the getblock rpc request to return a block.  This method
     * accepts and optional node to request the block from.  If a node is not selected,
     * the fastest node will be used with failover in an attempt to guarantee a response.
     *
     * @param {Number} index The index of the block being requested.
-    * @param {node} [node] The node to request the block from.
-    * @returns {Promise} A promise returning the hex contents of the block
+    * @returns {Promise.<string>} A promise returning the hex contents of the block
     */
     this.getBlock = function(index){
      return new Promise(function(resolve, reject){
@@ -130,14 +144,12 @@ module.exports = function(network) {
    };
 
     /**
-    * @description
     * Invokes the getblockcount rpc request to return the block height.  This
     * method will request the block height from the fastest active node with failover if a
     * node is not provided.  This method will update the blockHeight attribute
     * on the node it is run on.
     *
-    * @param {node} [node] The node that will be polled for its block height.
-    * @returns {Promise} A promise returning the block count.
+    * @returns {Promise.<number>} A promise returning the block count.
     */
     this.getBlockCount = function(){
 
@@ -159,14 +171,12 @@ module.exports = function(network) {
     };
 
     /**
-    * @description
     * Invokes the getblockhash rpc request to return a block's hash.  This method
     * accepts and optional node to request the block from.  If a node is not selected,
     * the fastest node will be used with failover in an attempt to guarantee a response.
     *
     * @param {Number} index The index of the block hash being requested.
-    * @param {node} [node] The node to request the block from.
-    * @returns {Promise} A promise returning the hash of the block
+    * @returns {Promise.<string>} A promise returning the hash of the block
     */
     this.getBlockHash = function(index){
 
@@ -185,12 +195,10 @@ module.exports = function(network) {
     };
 
     /**
-    * @description
     * Invokes the getconnectioncount rpc request to return the number of connections to
     * the selected node.
     *
-    * @param {node} node The node to request the connections of.
-    * @returns {Promise} A promise returning the number of connections to the node.
+    * @returns {Promise.<number>} A promise returning the number of connections to the node.
     */
     this.getConnectionCount = function(){
 
@@ -226,6 +234,11 @@ module.exports = function(network) {
       })
     };
 
+    /**
+    * Polls the node for the raw transaction data associated with an input txid.
+    * @param {String} txid The requested transaction ID.
+    * @returns {Promise.<object>} An object containing the transaction information.
+    */
     this.getRawTransaction = function(txid){
 
       return new Promise(function(resolve, reject){
@@ -243,6 +256,11 @@ module.exports = function(network) {
       })
     };
 
+    /**
+    * Polls the node for the raw transaction response associated with an input txid.
+    * @param {String} txid The requested transaction ID.
+    * @returns {Promise.<object>} An object containing the transaction response.
+    */
     this.getTXOut = function(txid){
 
       return new Promise(function(resolve, reject){
@@ -260,6 +278,11 @@ module.exports = function(network) {
       })
     };
 
+    /**
+    * Submits a raw transaction event to the blockchain.
+    * @param {String} hex The hex string representing the raw transaction.
+    * @returns {Promise.<object>} The transaction response.
+    */
     this.sendRawTransaction = function(hex){
 
       return new Promise(function(resolve, reject){
@@ -311,7 +334,14 @@ module.exports = function(network) {
      })
    };
 
-   //make an rpc call to the node
+    /**
+    * Makes an RPC call to the node.*
+    * @param {object} An object defining the request.
+    * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
+    * @returns {Promise.<object>} A promise returning the data field of the response.
+    * @example
+    * node.call({'method': 'getblock', 'params': [666,1], 'id': 0})
+    */
     this.call = function (payload) {
       return new Promise(function (resolve, reject) {
         var t0 = Date.now();
@@ -339,6 +369,10 @@ module.exports = function(network) {
       });
     }
 
+   /**
+    * Runs a deferred update loop to periodically poll (with jitter)
+    * the node for its block height.
+    */
     this.deferredUpdateLoop = function(){
       var base = 5000;
       if (!node.active){
