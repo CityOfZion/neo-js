@@ -16,13 +16,21 @@ The neo-js package is designed to interface with the **neo** blockchain in two m
 
 ### full ###
 
-In full mode, the package will sync the blockchain to a local mongo instance.  In this mode, requests will be returned from the local database if the database has been fully synchronized.
+In full mode, the package will sync the blockchain and derivative collections to a local mongo instance.  In this mode, requests will be returned from the local database if the database is able to resolve the request.
 
 ### light ###
 
 In light mode, the package will interface with other full nodes using the seed rpc calls to acquire data.
 
 **note:** All blockchain events (Invocation and Deploy) use the rpc calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
+
+<b>Click [here](http://cityofzion.io/neo-js-blockchain/index.html) for full documentation.</b>
+
+This module uses 'lazy caching' to improve performance in full-node mode.  Blocks are initially downloaded and stored in two collections (one for the raw blockchain and another for the raw transactions) as a result of the sync process.  Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as described <b>[here](https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md)</b> and updated in the collection.  The next time the block is requested, the expanded transaction will already be available in the collection.
+
+This mechanic is also used for address balances.  Upon requesting an update for an asset balance, the transaction collection is analyzed and the asset balance is stored in an account collection along with the max blockheight during the calculation.  Upon future requests for the asset balance, the asset collection is first queried for previous balance.  The asset balance is then updated using only the new blocks since the previous calculation event.
+
+This mechanic will also be expanded to NEP5 tokens in the future.
 
 ## Installation
 Install the package using:
