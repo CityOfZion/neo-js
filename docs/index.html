@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset='utf-8' />
-  <title>neo-js-blockchain 0.0.3 | Documentation</title>
+  <title>neo-js-blockchain 0.0.4 | Documentation</title>
   <meta name='viewport' content='width=device-width,initial-scale=1'>
   <link href='assets/bass.css' type='text/css' rel='stylesheet' />
   <link href='assets/style.css' type='text/css' rel='stylesheet' />
@@ -14,7 +14,7 @@
       <div id='split-left' class='overflow-auto fs0 height-viewport-100'>
         <div class='py1 px2'>
           <h3 class='mb0 no-anchor'>neo-js-blockchain</h3>
-          <div class='mb1'><code>0.0.3</code></div>
+          <div class='mb1'><code>0.0.4</code></div>
           <input
             placeholder='Filter'
             id='filter-input'
@@ -28,6 +28,76 @@
                   href='#neoblockchaindb'
                   class="">
                   neo.blockchain.db
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#node'
+                  class="">
+                  node
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#runlock'
+                  class="">
+                  runLock
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#start'
+                  class="">
+                  start
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#stop'
+                  class="">
+                  stop
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#setworkers'
+                  class="">
+                  setWorkers
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#storeblock'
+                  class="">
+                  storeBlock
+                  
+                </a>
+                
+                </li>
+              
+                
+                <li><a
+                  href='#enqueueblock'
+                  class="">
+                  enqueueBlock
                   
                 </a>
                 
@@ -112,6 +182,60 @@
                       <li class='h5'><span>Instance members</span></li>
                       
                       <li><a
+                        href='#nodedomain'
+                        class='regular pre-open'>
+                        #domain
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodeport'
+                        class='regular pre-open'>
+                        #port
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodeage'
+                        class='regular pre-open'>
+                        #age
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodeactive'
+                        class='regular pre-open'>
+                        #active
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodelatency'
+                        class='regular pre-open'>
+                        #latency
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodeblockheight'
+                        class='regular pre-open'>
+                        #blockHeight
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodeindex'
+                        class='regular pre-open'>
+                        #index
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegetbalance'
+                        class='regular pre-open'>
+                        #getBalance
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegetbestblockhash'
+                        class='regular pre-open'>
+                        #getBestBlockHash
+                      </a></li>
+                      
+                      <li><a
                         href='#nodegetblock'
                         class='regular pre-open'>
                         #getBlock
@@ -135,6 +259,36 @@
                         #getConnectionCount
                       </a></li>
                       
+                      <li><a
+                        href='#nodegetrawtransaction'
+                        class='regular pre-open'>
+                        #getRawTransaction
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodegettxout'
+                        class='regular pre-open'>
+                        #getTXOut
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodesendrawtransaction'
+                        class='regular pre-open'>
+                        #sendRawTransaction
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodecall'
+                        class='regular pre-open'>
+                        #call
+                      </a></li>
+                      
+                      <li><a
+                        href='#nodedeferredupdateloop'
+                        class='regular pre-open'>
+                        #deferredUpdateLoop
+                      </a></li>
+                      
                     </ul>
                   
                   
@@ -155,9 +309,9 @@
               
                 
                 <li><a
-                  href='#queue'
+                  href='#blockwritepointer'
                   class="">
-                  queue
+                  blockWritePointer
                   
                 </a>
                 
@@ -165,49 +319,9 @@
               
                 
                 <li><a
-                  href='#start'
+                  href='#defaultworkercount'
                   class="">
-                  start
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#stop'
-                  class="">
-                  stop
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#setworkers'
-                  class="">
-                  setWorkers
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#storeblock'
-                  class="">
-                  storeBlock
-                  
-                </a>
-                
-                </li>
-              
-                
-                <li><a
-                  href='#enqueueblock'
-                  class="">
-                  enqueueBlock
+                  defaultWorkerCount
                   
                 </a>
                 
@@ -250,6 +364,397 @@
   
   
 
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='node'>
+      node
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>A class defining a local node on the neo blockchain.</p>
+
+
+  <div class='pre p1 fill-light mt0'>node()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='runlock'>
+      runLock
+    </h3>
+    
+    
+  </div>
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>runLock</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='start'>
+      start
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Starts the synchronization activity.</p>
+
+
+  <div class='pre p1 fill-light mt0'>start()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='stop'>
+      stop
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Stops the synchronization activity.</p>
+
+
+  <div class='pre p1 fill-light mt0'>stop()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='setworkers'>
+      setWorkers
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Update the number of workers in the sync activity.</p>
+
+
+  <div class='pre p1 fill-light mt0'>setWorkers(count: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The number of workers to use.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='storeblock'>
+      storeBlock
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Makes an RPC call to get the requested block
+and inserts it into the local database.</p>
+
+
+  <div class='pre p1 fill-light mt0'>storeBlock(attrs: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>attrs</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
+	    The block attributes
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+          
+        
+          
+            <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+  <div class='clearfix'>
+    
+    <h3 class='fl m0' id='enqueueblock'>
+      enqueueBlock
+    </h3>
+    
+    
+  </div>
+  
+
+  <p>Adds a block request to the sync queue.</p>
+
+
+  <div class='pre p1 fill-light mt0'>enqueueBlock(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, priority: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, safe: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>)</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>index</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The index of the block to synchronize.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>priority</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>
+            = <code>5</code>)</code>
+	    The priority of the block download request.
+
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>safe</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>
+            = <code>false</code>)</code>
+	    Insert if the queue is not empty?
+
+          </div>
+          
+        </div>
+      
+    </div>
   
 
   
@@ -537,24 +1042,32 @@
 
   
 
-  <p>Identifies and returns a promise containing the fastest node based on the latency of the last transaction.</p>
+  <p>Identifies and returns the fastest node based on the latency of the last transaction.</p>
 
 
-  <div class='pre p1 fill-light mt0'>fastestNode()</div>
-  
-  
-
-  
-  
-  
-  
+  <div class='pre p1 fill-light mt0'>fastestNode(): <a href="#node">node</a></div>
   
   
 
   
+  
+  
+  
+  
+  
 
   
 
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#node">node</a></code>:
+        The lowest latency node instance.
+
+      
+    
   
 
   
@@ -586,7 +1099,7 @@
   <p>Identifies and returns the node with the highest blockheight.</p>
 
 
-  <div class='pre p1 fill-light mt0'>highestNode()</div>
+  <div class='pre p1 fill-light mt0'>highestNode(): <a href="#node">node</a></div>
   
   
 
@@ -601,6 +1114,14 @@
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#node">node</a></code>:
+        The node instance with the greatest blockHeight.
+
+      
+    
   
 
   
@@ -629,10 +1150,11 @@
 
   
 
-  <p>Identifies and returns the fastest node that has a specific block.</p>
+  <p>Identifies and returns the best node that has a specific block based on an input
+criteria.</p>
 
 
-  <div class='pre p1 fill-light mt0'>nodeWithBlock(index: any, sort: any, allowLocal: any)</div>
+  <div class='pre p1 fill-light mt0'>nodeWithBlock(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, sort: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>, allowLocal: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>): <a href="#node">node</a></div>
   
   
 
@@ -649,26 +1171,30 @@
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>index</span> <code class='quiet'>(any)</code>
-	    
+            <span class='code bold'>index</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
+	    The index of the requested block.
+
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>sort</span> <code class='quiet'>(any
+            <span class='code bold'>sort</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>
             = <code>&#39;latency&#39;</code>)</code>
-	    
+	    The attribute to rank nodes by.
+
           </div>
           
         </div>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>allowLocal</span> <code class='quiet'>(any
+            <span class='code bold'>allowLocal</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>
             = <code>true</code>)</code>
-	    
+	    A flag to indicate whether the local node (in 'full' mode) is
+allowed
+
           </div>
           
         </div>
@@ -678,6 +1204,14 @@
 
   
 
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="#node">node</a></code>:
+        The best node that has the requested block index.
+
+      
+    
   
 
   
@@ -717,10 +1251,10 @@
   </div>
   
 
-  <p>prototype class defining a node on the neo blockchain.</p>
+  <p>A class defining a remote node on the neo blockchain.</p>
 
 
-  <div class='pre p1 fill-light mt0'>new node(conf: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
+  <div class='pre p1 fill-light mt0'>node(conf: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</div>
   
   
 
@@ -739,6 +1273,9 @@
           <div>
             <span class='code bold'>conf</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
 	    Configuration parameters for the node.
+Ex: {'domain': '
+<a href="http://seed1.neo.org&#x27;">http://seed1.neo.org'</a>
+, 'port': 10332}
 
           </div>
           
@@ -757,7 +1294,7 @@
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>node({<span class="hljs-string">'domain'</span>: <span class="hljs-string">'http://seed1.neo.org'</span>, <span class="hljs-string">'port'</span>: <span class="hljs-number">10332</span>})</pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> n = node({<span class="hljs-string">'domain'</span>: <span class="hljs-string">'http://seed1.neo.org'</span>, <span class="hljs-string">'port'</span>: <span class="hljs-number">10332</span>});</pre>
     
   
 
@@ -767,11 +1304,448 @@
     <div class='py1 quiet mt1 prose-big'>Instance Members</div>
     <div class="clearfix">
   
+    <div class='border-bottom' id='nodedomain'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>domain</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>domain</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodeport'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>port</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>port</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodeage'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>age</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>age</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodeactive'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>active</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>active</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodelatency'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>latency</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>latency</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodeblockheight'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>blockHeight</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>blockHeight</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodeindex'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>index</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  
+
+  <div class='pre p1 fill-light mt0'>index</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodegetbalance'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getBalance(asset_id)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets the NEO and GAS balance of an address.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getBalance(asset_id: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>asset_id</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The address to get the balance of.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        A promise containing the address balances.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodegetbestblockhash'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getBestBlockHash()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Gets the best block hash on the node</p>
+
+
+  <div class='pre p1 fill-light mt0'>getBestBlockHash(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
     <div class='border-bottom' id='nodegetblock'>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getBlock(index, node?)</span>
+            <span class='code strong strong truncate'>getBlock(index)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -784,7 +1758,7 @@ accepts and optional node to request the block from.  If a node is not selected,
 the fastest node will be used with failover in an attempt to guarantee a response.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlock(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>getBlock(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -808,15 +1782,6 @@ the fastest node will be used with failover in an attempt to guarantee a respons
           
         </div>
       
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>node</span> <code class='quiet'>(<a href="#node">node</a>?)</code>
-	    The node to request the block from.
-
-          </div>
-          
-        </div>
-      
     </div>
   
 
@@ -825,7 +1790,7 @@ the fastest node will be used with failover in an attempt to guarantee a respons
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         A promise returning the hex contents of the block
 
       
@@ -850,7 +1815,7 @@ the fastest node will be used with failover in an attempt to guarantee a respons
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getBlockCount(node?)</span>
+            <span class='code strong strong truncate'>getBlockCount()</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -864,7 +1829,7 @@ node is not provided.  This method will update the blockHeight attribute
 on the node it is run on.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlockCount(node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>getBlockCount(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
   
   
 
@@ -875,20 +1840,6 @@ on the node it is run on.</p>
   
   
 
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>node</span> <code class='quiet'>(<a href="#node">node</a>?)</code>
-	    The node that will be polled for its block height.
-
-          </div>
-          
-        </div>
-      
-    </div>
   
 
   
@@ -896,7 +1847,7 @@ on the node it is run on.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
         A promise returning the block count.
 
       
@@ -921,7 +1872,7 @@ on the node it is run on.</p>
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getBlockHash(index, node?)</span>
+            <span class='code strong strong truncate'>getBlockHash(index)</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -934,7 +1885,7 @@ accepts and optional node to request the block from.  If a node is not selected,
 the fastest node will be used with failover in an attempt to guarantee a response.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getBlockHash(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>, node: <a href="#node">node</a>?): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>getBlockHash(index: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></div>
   
   
 
@@ -958,15 +1909,6 @@ the fastest node will be used with failover in an attempt to guarantee a respons
           
         </div>
       
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>node</span> <code class='quiet'>(<a href="#node">node</a>?)</code>
-	    The node to request the block from.
-
-          </div>
-          
-        </div>
-      
     </div>
   
 
@@ -975,7 +1917,7 @@ the fastest node will be used with failover in an attempt to guarantee a respons
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a>></code>:
         A promise returning the hash of the block
 
       
@@ -1000,7 +1942,7 @@ the fastest node will be used with failover in an attempt to guarantee a respons
       <div class="clearfix small pointer toggle-sibling">
         <div class="py1 contain">
             <a class='icon pin-right py1 dark-link caret-right'>▸</a>
-            <span class='code strong strong truncate'>getConnectionCount(node)</span>
+            <span class='code strong strong truncate'>getConnectionCount()</span>
         </div>
       </div>
       <div class="clearfix display-none toggle-target">
@@ -1012,7 +1954,61 @@ the fastest node will be used with failover in an attempt to guarantee a respons
 the selected node.</p>
 
 
-  <div class='pre p1 fill-light mt0'>getConnectionCount(node: <a href="#node">node</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></div>
+  <div class='pre p1 fill-light mt0'>getConnectionCount(): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">number</a>></code>:
+        A promise returning the number of connections to the node.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodegetrawtransaction'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getRawTransaction(txid)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Polls the node for the raw transaction data associated with an input txid.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getRawTransaction(txid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
   
   
 
@@ -1029,8 +2025,8 @@ the selected node.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>node</span> <code class='quiet'>(<a href="#node">node</a>)</code>
-	    The node to request the connections of.
+            <span class='code bold'>txid</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The requested transaction ID.
 
           </div>
           
@@ -1044,11 +2040,281 @@ the selected node.</p>
   
     
       <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a></code>:
-        A promise returning the number of connections to the node.
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        An object containing the transaction information.
 
       
     
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodegettxout'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>getTXOut(txid)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Polls the node for the raw transaction response associated with an input txid.</p>
+
+
+  <div class='pre p1 fill-light mt0'>getTXOut(txid: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>txid</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The requested transaction ID.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        An object containing the transaction response.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodesendrawtransaction'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>sendRawTransaction(hex)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Submits a raw transaction event to the blockchain.</p>
+
+
+  <div class='pre p1 fill-light mt0'>sendRawTransaction(hex: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>hex</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">String</a>)</code>
+	    The hex string representing the raw transaction.
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        The transaction response.
+
+      
+    
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodecall'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>call(payload, An)</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Makes an RPC call to the node.*</p>
+
+
+  <div class='pre p1 fill-light mt0'>call(payload: any, An: <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>): <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Parameters</div>
+    <div class='prose'>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>payload</span> <code class='quiet'>(any)</code>
+	    
+          </div>
+          
+        </div>
+      
+        <div class='space-bottom0'>
+          <div>
+            <span class='code bold'>An</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
+	    object defining the request.
+EX: {'method': 'getblock', 'params': 
+[
+666,1
+]
+, 'id': 0}
+
+          </div>
+          
+        </div>
+      
+    </div>
+  
+
+  
+
+  
+    
+      <div class='py1 quiet mt1 prose-big'>Returns</div>
+      <code><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Promise">Promise</a>&#x3C;<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>></code>:
+        A promise returning the data field of the response.
+
+      
+    
+  
+
+  
+
+  
+    <div class='py1 quiet mt1 prose-big'>Example</div>
+    
+      
+      <pre class='p1 overflow-auto round fill-light'>node.call({<span class="hljs-string">'method'</span>: <span class="hljs-string">'getblock'</span>, <span class="hljs-string">'params'</span>: [<span class="hljs-number">666</span>,<span class="hljs-number">1</span>], <span class="hljs-string">'id'</span>: <span class="hljs-number">0</span>})</pre>
+    
+  
+
+  
+
+  
+
+  
+</section>
+
+      </div>
+    </div>
+  
+    <div class='border-bottom' id='nodedeferredupdateloop'>
+      <div class="clearfix small pointer toggle-sibling">
+        <div class="py1 contain">
+            <a class='icon pin-right py1 dark-link caret-right'>▸</a>
+            <span class='code strong strong truncate'>deferredUpdateLoop()</span>
+        </div>
+      </div>
+      <div class="clearfix display-none toggle-target">
+        <section class='p2 mb2 clearfix bg-white minishadow'>
+
+  
+
+  <p>Runs a deferred update loop to periodically poll (with jitter)
+the node for its block height.</p>
+
+
+  <div class='pre p1 fill-light mt0'>deferredUpdateLoop()</div>
+  
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+
+  
+
   
 
   
@@ -1088,59 +2354,19 @@ the selected node.</p>
   </div>
   
 
-  <p>The sync controller is responsible for synchronizing the blockchain when running
-in full node mode.</p>
+  <p>The synchronization functionality for the neo blockchain.
+This code is only executed when running a neo instance in 'full' mode.</p>
 
 
-  <div class='pre p1 fill-light mt0'>neo.blockchain.sync</div>
+  <div class='pre p1 fill-light mt0'>neo.blockchain.sync(blockchain: <a href="#neo">neo</a>)</div>
   
   
-
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='queue'>
-      queue
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Maintains the synchronization queue for the blockchain.</p>
-
-
-  <div class='pre p1 fill-light mt0'>queue</div>
-  
+    <p>
+      Extends
+      
+        <a href="#neo">neo</a>
+      
+    </p>
   
 
   
@@ -1156,17 +2382,9 @@ in full node mode.</p>
       
         <div class='space-bottom0'>
           <div>
-            <span class='code bold'>task</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a>)</code>
-	    the task to be executed in the queue.
+            <span class='code bold'>blockchain</span> <code class='quiet'>(<a href="#neo">neo</a>)</code>
+	    A reference to the parent blockchain instance.
 
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>callback</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/function">function</a>)</code>
-	    
           </div>
           
         </div>
@@ -1176,14 +2394,6 @@ in full node mode.</p>
 
   
 
-  
-    
-      <div class='py1 quiet mt1 prose-big'>Returns</div>
-      <code>Lyfe</code>:
-        
-
-      
-    
   
 
   
@@ -1192,7 +2402,8 @@ in full node mode.</p>
     <div class='py1 quiet mt1 prose-big'>Example</div>
     
       
-      <pre class='p1 overflow-auto round fill-light'>{<span class="hljs-string">'method'</span>: <span class="hljs-function"><span class="hljs-keyword">function</span>, '<span class="hljs-title">attrs</span>': <span class="hljs-title">object</span>}</span></pre>
+      <pre class='p1 overflow-auto round fill-light'><span class="hljs-keyword">var</span> neoBlockchain = neo(<span class="hljs-string">'full'</span>, <span class="hljs-string">'testnet'</span>)
+neoBlockchain.sync.start();</pre>
     
   
 
@@ -1211,65 +2422,17 @@ in full node mode.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='start'>
-      start
+    <h3 class='fl m0' id='blockwritepointer'>
+      blockWritePointer
     </h3>
     
     
   </div>
   
 
-  <p>Starts the synchronization activity.</p>
-
-
-  <div class='pre p1 fill-light mt0'>start</div>
-  
   
 
-  
-  
-  
-  
-  
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='stop'>
-      stop
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Stops the synchronization activity.</p>
-
-
-  <div class='pre p1 fill-light mt0'>stop</div>
+  <div class='pre p1 fill-light mt0'>blockWritePointer</div>
   
   
 
@@ -1305,80 +2468,17 @@ in full node mode.</p>
   
   <div class='clearfix'>
     
-    <h3 class='fl m0' id='setworkers'>
-      setWorkers
+    <h3 class='fl m0' id='defaultworkercount'>
+      defaultWorkerCount
     </h3>
     
     
   </div>
   
 
-  <p>Update the number of workers in the sync activity.</p>
-
-
-  <div class='pre p1 fill-light mt0'>setWorkers</div>
-  
   
 
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>count</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    The number of workers to use.
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='storeblock'>
-      storeBlock
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Uses the RPC controller to get a the requested block
-and inserts it into the local database.</p>
-
-
-  <div class='pre p1 fill-light mt0'>storeBlock</div>
+  <div class='pre p1 fill-light mt0'>defaultWorkerCount</div>
   
   
 
@@ -1389,90 +2489,6 @@ and inserts it into the local database.</p>
   
   
 
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>attrs</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">Object</a>)</code>
-	    The block attributes
-
-          </div>
-          
-        </div>
-      
-    </div>
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-</section>
-
-          
-        
-          
-            <section class='p2 mb2 clearfix bg-white minishadow'>
-
-  
-  <div class='clearfix'>
-    
-    <h3 class='fl m0' id='enqueueblock'>
-      enqueueBlock
-    </h3>
-    
-    
-  </div>
-  
-
-  <p>Adds a block request to the sync queue.</p>
-
-
-  <div class='pre p1 fill-light mt0'>enqueueBlock</div>
-  
-  
-
-  
-  
-  
-  
-  
-  
-
-  
-    <div class='py1 quiet mt1 prose-big'>Parameters</div>
-    <div class='prose'>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>index</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number">Number</a>)</code>
-	    The index of the block to synchronize.
-
-          </div>
-          
-        </div>
-      
-        <div class='space-bottom0'>
-          <div>
-            <span class='code bold'>safe</span> <code class='quiet'>(<a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">Boolean</a>?)</code>
-	    Insert if the queue is not empty?
-
-          </div>
-          
-        </div>
-      
-    </div>
   
 
   
