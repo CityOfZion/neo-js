@@ -7,8 +7,8 @@ const neoNode = neoBlockchain.fastestNode();
 
 // Use Cases
 
-const getBalance = function () {
-  console.log('getBalance:');
+const getBalanceDemo = function () {
+  console.log('getBalanceDemo:');
   const assetId = Profiles.Assets.NEO;
   return new Promise((resolve) => {
     neoNode.getBalance(assetId)
@@ -25,13 +25,12 @@ const getBalance = function () {
   });
 };
 
-const getBlockCount = function () {
-  console.log('getBlockCount:');
+const getBestBlockHashDemo = function () {
+  console.log('getBestBlockHashDemo:');
   return new Promise((resolve) => {
-    neoNode.getBlockCount()
+    neoNode.getBestBlockHash()
       .then(function (res) {
         console.log(res);
-        // console.log(res.data.result);
         resolve();
       })
       .catch(function (err) {
@@ -42,8 +41,8 @@ const getBlockCount = function () {
   });
 };
 
-const getBlock = function () {
-  console.log('getBlock:');
+const getBlockDemo = function () {
+  console.log('getBlockDemo:');
   const blockNumber = 10000;
   return new Promise((resolve) => {
     neoNode.getBlock(10000)
@@ -61,13 +60,65 @@ const getBlock = function () {
   });
 };
 
+const getBlockCountDemo = function () {
+  console.log('getBlockCountDemo:');
+  return new Promise((resolve) => {
+    neoNode.getBlockCount()
+      .then(function (res) {
+        console.log(res);
+        // console.log(res.data.result);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
+const getBlockHashDemo = function () {
+  console.log('getBlockHashDemo:');
+  return new Promise((resolve) => {
+    neoNode.getBlockHash(10000)
+      .then(function (res) {
+        console.log(res);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
+const getConnectionCountDemo = function () {
+  console.log('getConnectionCountDemo:');
+  return new Promise((resolve) => {
+    neoNode.getConnectionCount()
+      .then(function (res) {
+        console.log(res);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
 // Chain of command
 
 async function actionAsync() {
   console.log('== Block Demo ==');
-  // await getBalance(); // Not working. Assume local blockchain is required.
-  await getBlockCount();
-  await getBlock();
+  // await getBalanceDemo(); // Not working. Pressume local blockchain is required.
+  await getBestBlockHashDemo();
+  await getBlockDemo();
+  await getBlockCountDemo();
+  await getBlockHashDemo();
+  await getConnectionCountDemo();
   console.log();
 
   process.exit();
