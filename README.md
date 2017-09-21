@@ -24,7 +24,7 @@ In light mode, the package will interface with other full nodes using the seed r
 
 **note:** All blockchain events (Invocation and Deploy) use the rpc calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
 
-<b>Click [here](http://cityofzion.io/neo-js-blockchain/index.html) for full documentation.</b>
+<b>Click [here](http://cityofzion.io/neo-js) for full documentation.</b>
 
 This module uses 'lazy caching' to improve performance in full-node mode.  Blocks are initially downloaded and stored in two collections (one for the raw blockchain and another for the raw transactions) as a result of the sync process.  Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as described <b>[here](https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md)</b> and updated in the collection.  The next time the block is requested, the expanded transaction will already be available in the collection.
 
