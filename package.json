@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/CityOfZion/neo-js-blockchain.git"
+    "url": "git+https://github.com/CityOfZion/neo-js.git"
   },
   "keywords": [
     "neo",
@@ -18,9 +18,9 @@
   "author": "lllwvlvwlll",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/CityOfZion/neo-js-blockchain/issues"
+    "url": "https://github.com/CityOfZion/neo-js/issues"
   },
-  "homepage": "https://github.com/CityOfZion/neo-js-blockchain#readme",
+  "homepage": "https://github.com/CityOfZion/neo-js#readme",
   "dependencies": {
     "axios": "^0.16.2",
     "lodash": "~4.17.4",
