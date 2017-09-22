@@ -2,7 +2,8 @@
  *
  * The synchronization functionality for the neo blockchain.
  * This code is only executed when running a neo instance in 'full' mode.
- * @extends neo
+ * @class
+ * @name sync
  * @requires lodash
  * @requires async
  * @param {neo} blockchain A reference to the parent blockchain instance.
@@ -13,17 +14,17 @@
 module.exports = function(blockchain){
   var module = {};
   var async = require('async');
-  /** @member {Boolean} runLock An attribute used to garantee only a single synchronization activity. */
+  /** {boolean} runLock An attribute used to garantee only a single synchronization activity. */
   module.runLock = false;
-  /** @member {Number} blockWritePointer The sync horizon representing the heighest block index
+  /** {number} blockWritePointer The sync horizon representing the heighest block index
    * which has either been commited to the database or is queue for commit.
    */
   var blockWritePointer = -1;
-  /** @member {Number} defaultWorkerCount The default number of workers to synchronize the blockchain with. */
+  /** {number} defaultWorkerCount The default number of workers to synchronize the blockchain with. */
   var defaultWorkerCount = 20;
-  /* @member {Number} maxQueueLength The number of blocks to keep in queue. Exists to reduce memory use. */
+  /* {number} maxQueueLength The number of blocks to keep in queue. Exists to reduce memory use. */
   var maxQueueLength = 10000;
-  /* @member {Number} logPeriod Prints a status update every 'n' blocks. */
+  /* {number} logPeriod Prints a status update every 'n' blocks. */
   var logPeriod = 10000;
 
   var stats = {};
@@ -32,10 +33,9 @@ module.exports = function(blockchain){
   /**
    * Maintains the synchronization queue for the blockchain.
    * @private
-   * @param {object} task the task to be executed in the queue.
+   * @param {Object} task the task to be executed in the queue.
    * @param {function} callback
    * @example {'method': function, 'attrs': object}
-   *
    * @returns {Lyfe}
    */
   var queue = async.priorityQueue(function(task, callback) {
@@ -70,9 +70,7 @@ module.exports = function(blockchain){
 
   queue.pause(); //Initialize the controller with synchronization paused (so we dont sync in light mode)
 
-  /**
-   * Starts the synchronization activity.
-   */
+  /** Starts the synchronization activity. */
   module.start = function(){
    if (module.runLock) return false; //prevent the overlapping runs
     module.runLock = true;
@@ -106,9 +104,7 @@ module.exports = function(blockchain){
     queue.resume();
   };
 
-  /**
-  * Stops the synchronization activity.
-  */
+  /** Stops the synchronization activity. */
   module.stop = function(){
     module.runLock = false;
     queue.pause();
@@ -116,7 +112,7 @@ module.exports = function(blockchain){
 
   /**
    * Update the number of workers in the sync activity.
-   * @param {Number} count The number of workers to use.
+   * @param {number} count The number of workers to use.
    */
   module.setWorkers = function(count){
     queue.concurrency = count;
@@ -155,8 +151,8 @@ module.exports = function(blockchain){
 
  /**
   * Adds a block request to the sync queue.
-  * @param {Number} index The index of the block to synchronize.
-  * @param {Number} [priority=5] The priority of the block download request.
+  * @param {number} index The index of the block to synchronize.
+  * @param {number} [priority=5] The priority of the block download request.
   * @param {Boolean} [safe = false] Insert if the queue is not empty?
   */
   module.enqueueBlock = function(index, priority=5, safe = false){

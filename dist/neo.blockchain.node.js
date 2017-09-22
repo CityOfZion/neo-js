@@ -49,7 +49,8 @@ module.exports = function(network) {
   });
 
  /**
-  * @class node(1)
+  * @class node
+  * @variation 1
   * @description
   * A class defining a remote node on the neo blockchain.
   * @param {Object} conf Configuration parameters for the node.
@@ -58,19 +59,19 @@ module.exports = function(network) {
   * var n = node({'domain': 'http://seed1.neo.org', 'port': 10332});
   */
   function node(conf) {
-    /** @member {String} The domain of the node*/
+    /** {string} The domain of the node */
     this.domain = conf.domain;
-    /** @member {Number} The port that the node is operating on. */
+    /** {number} The port that the node is operating on. */
     this.port = conf.port;
-    /** @member {Number} The last query date represented as seconds since the epoch. */
+    /** {number} The last query date represented as seconds since the epoch. */
     this.age = 0;
-    /** @member {Boolean} Indicates where the node is active. */
+    /** {boolean} Indicates where the node is active. */
     this.active = true;
-    /** @member {Number} The nodes latency(in seconds) as reported by the last transaction. */
+    /** {number} The nodes latency(in seconds) as reported by the last transaction. */
     this.latency = 0;
-    /** @member {Number} The block height of the node. */
+    /** {number} The block height of the node. */
     this.blockHeight = 0;
-    /** @member {Number} The block index of the node calculated as this.blockHeight - 1 */
+    /** {number} The block index of the node calculated as this.blockHeight - 1 */
     this.index = -1;
     this.connections = 0;
     this.pendingRequests = 0;
@@ -78,8 +79,8 @@ module.exports = function(network) {
 
    /**
     * Gets the NEO and GAS balance of an address.
-    * @param {String} asset_id The address to get the balance of.
-    * @returns {Promise.<object>} A promise containing the address balances.
+    * @param {string} asset_id The address to get the balance of.
+    * @returns {Promise.<Object>} A promise containing the address balances.
     */
     this.getBalance = function(asset_id){
      return new Promise(function(resolve, reject){
@@ -100,7 +101,7 @@ module.exports = function(network) {
 
     /**
     * Gets the best block hash on the node
-    * @returns {Promise.<object>}
+    * @returns {Promise.<Object>}
     */
     this.getBestBlockHash = function(){
      return new Promise(function(resolve, reject){
@@ -124,7 +125,7 @@ module.exports = function(network) {
     * accepts and optional node to request the block from.  If a node is not selected,
     * the fastest node will be used with failover in an attempt to guarantee a response.
     *
-    * @param {Number} index The index of the block being requested.
+    * @param {number} index The index of the block being requested.
     * @returns {Promise.<string>} A promise returning the hex contents of the block
     */
     this.getBlock = function(index){
@@ -174,7 +175,7 @@ module.exports = function(network) {
     * accepts and optional node to request the block from.  If a node is not selected,
     * the fastest node will be used with failover in an attempt to guarantee a response.
     *
-    * @param {Number} index The index of the block hash being requested.
+    * @param {number} index The index of the block hash being requested.
     * @returns {Promise.<string>} A promise returning the hash of the block
     */
     this.getBlockHash = function(index){
@@ -235,8 +236,8 @@ module.exports = function(network) {
 
     /**
     * Polls the node for the raw transaction data associated with an input txid.
-    * @param {String} txid The requested transaction ID.
-    * @returns {Promise.<object>} An object containing the transaction information.
+    * @param {string} txid The requested transaction ID.
+    * @returns {Promise.<Object>} An object containing the transaction information.
     */
     this.getRawTransaction = function(txid){
 
@@ -257,8 +258,8 @@ module.exports = function(network) {
 
     /**
     * Polls the node for the raw transaction response associated with an input txid.
-    * @param {String} txid The requested transaction ID.
-    * @returns {Promise.<object>} An object containing the transaction response.
+    * @param {string} txid The requested transaction ID.
+    * @returns {Promise.<Object>} An object containing the transaction response.
     */
     this.getTXOut = function(txid){
 
@@ -279,8 +280,8 @@ module.exports = function(network) {
 
     /**
     * Submits a raw transaction event to the blockchain.
-    * @param {String} hex The hex string representing the raw transaction.
-    * @returns {Promise.<object>} The transaction response.
+    * @param {string} hex The hex string representing the raw transaction.
+    * @returns {Promise.<Object>} The transaction response.
     */
     this.sendRawTransaction = function(hex){
 
@@ -335,9 +336,9 @@ module.exports = function(network) {
 
     /**
     * Makes an RPC call to the node.*
-    * @param {object} An object defining the request.
+    * @param {Object} payload An object defining the request.
     * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
-    * @returns {Promise.<object>} A promise returning the data field of the response.
+    * @returns {Promise.<Object>} A promise returning the data field of the response.
     * @example
     * node.call({'method': 'getblock', 'params': [666,1], 'id': 0})
     */

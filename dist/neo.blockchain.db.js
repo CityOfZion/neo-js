@@ -1,11 +1,3 @@
-/**
- * @ngdoc controller
- * @name neo.blockchain.db
- * @requires mongoose
- * @requires lodash
- * @description
- * The db controller defines the module model for full nodes.
- */
 module.exports = function(network){
   var module = {};
 
@@ -65,7 +57,8 @@ module.exports = function(network){
 
 
   /**
-   * @class node(2)
+   * @class node
+   * @variation 2
    * @description
    * A class defining a local node on the neo blockchain.
    */
