@@ -16,8 +16,9 @@
 function neo(mode, network) {
   var blockchain = this;
   var _ = require('lodash');
+  var sync = require('./neo.blockchain.sync')
   this.node = require('./neo.blockchain.node')(network)
-  this.sync = require('./neo.blockchain.sync')(this);
+  this.sync = new sync.sync(this);
 
   /** {string} The operating mode of the instance ('full', 'light').*/
   this.mode = mode;

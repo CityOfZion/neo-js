@@ -11,11 +11,11 @@
  * var neoBlockchain = neo('full', 'testnet')
  * neoBlockchain.sync.start();
  */
-module.exports = function(blockchain){
-  var module = {};
+function sync(blockchain) {
+  var sync = this;
   var async = require('async');
   /** {boolean} runLock An attribute used to garantee only a single synchronization activity. */
-  module.runLock = false;
+  sync.runLock = false;
   /** {number} blockWritePointer The sync horizon representing the heighest block index
    * which has either been commited to the database or is queue for commit.
    */
@@ -38,32 +38,35 @@ module.exports = function(blockchain){
    * @example {'method': function, 'attrs': object}
    * @returns {Lyfe}
    */
-  var queue = async.priorityQueue(function(task, callback) {
+  var queue = async.priorityQueue(function (task, callback) {
     task.method(task.attrs)
-      .then(function() {
+      .then(function () {
         //after a sync even is run, enqueue any other
         // outstanding blocks up to the max queue length.
 
-        while((queue.length() < maxQueueLength) &&
-        (blockWritePointer < blockchain.highestNode().index)){
-          module.enqueueBlock(blockWritePointer + 1);
+        while ((queue.length() < maxQueueLength) &&
+        (blockWritePointer < blockchain.highestNode().index)) {
+          sync.enqueueBlock(blockWritePointer + 1);
         }
         //Consider logging a status update...communication is important
         if ((task.attrs.index % logPeriod == 0) ||
-        (task.attrs.index == blockchain.highestNode().index)){
-          console.log(task.attrs, logPeriod/((Date.now() - t0) / 1000)  );
-          if ((task.attrs.index == blockchain.highestNode().index)){ console.log(stats)};
+          (task.attrs.index == blockchain.highestNode().index)) {
+          console.log(task.attrs, logPeriod / ((Date.now() - t0) / 1000));
+          if ((task.attrs.index == blockchain.highestNode().index)) {
+            console.log(stats)
+          }
+          ;
           t0 = Date.now();
         }
         callback();
       })
-      .catch(function(err){
+      .catch(function (err) {
         //If the blcok request fails, throw it to the back to the queue to try again.
         //timout prevents inf looping on connections issues etc..
         console.log(task.attrs, 'fail')
-        setTimeout(function() {
-            module.enqueueBlock(task.attrs.index, 0);
-          }, 2000)
+        setTimeout(function () {
+          sync.enqueueBlock(task.attrs.index, 0);
+        }, 2000)
         callback();
       });
   }, defaultWorkerCount);
@@ -71,42 +74,42 @@ module.exports = function(blockchain){
   queue.pause(); //Initialize the controller with synchronization paused (so we dont sync in light mode)
 
   /** Starts the synchronization activity. */
-  module.start = function(){
-   if (module.runLock) return false; //prevent the overlapping runs
-    module.runLock = true;
+  sync.start = function () {
+    if (sync.runLock) return false; //prevent the overlapping runs
+    sync.runLock = true;
 
     console.log('Synchronizing');
-    module.clock = setInterval(function(){
-      if (module.runLock){
+    sync.clock = setInterval(function () {
+      if (sync.runLock) {
         if ((blockchain.localNode.index < blockchain.highestNode().index) &&
           (queue.length() == 0)) {
           blockWritePointer = blockchain.localNode.index;
           console.log(blockWritePointer);
-          module.enqueueBlock(blockWritePointer + 1, true);
+          sync.enqueueBlock(blockWritePointer + 1, true);
         }
       }
-      else clearInterval(module.clock);
+      else clearInterval(sync.clock);
     }, 2000)
 
 
-    module.clock2 = setInterval(function(){
-      if (module.runLock){
+    sync.clock2 = setInterval(function () {
+      if (sync.runLock) {
         blockchain.localNode.verifyBlocks()
-          .then(function(res){
-            res.forEach(function(r){
-              module.enqueueBlock(r, 0);
+          .then(function (res) {
+            res.forEach(function (r) {
+              sync.enqueueBlock(r, 0);
             })
           });
       }
-      else clearInterval(module.clock);
+      else clearInterval(sync.clock);
     }, 60000)
 
     queue.resume();
   };
 
   /** Stops the synchronization activity. */
-  module.stop = function(){
-    module.runLock = false;
+  sync.stop = function () {
+    sync.runLock = false;
     queue.pause();
   };
 
@@ -114,7 +117,7 @@ module.exports = function(blockchain){
    * Update the number of workers in the sync activity.
    * @param {number} count The number of workers to use.
    */
-  module.setWorkers = function(count){
+  sync.setWorkers = function (count) {
     queue.concurrency = count;
   };
 
@@ -123,39 +126,39 @@ module.exports = function(blockchain){
    * and inserts it into the local database.
    * @param {Object} attrs The block attributes
    */
-  module.storeBlock = function(attrs){
-    return new Promise(function(resolve, reject) {
+  sync.storeBlock = function (attrs) {
+    return new Promise(function (resolve, reject) {
       //get the block using the rpc controller
       var node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
       if (!stats[node.domain]) stats[node.domain] = {'s': 0, 'f1': 0, 'f2': 0};
 
-        node.getBlock(attrs.index)
+      node.getBlock(attrs.index)
         .then(function (res) {
           //inject the block into the database and save.
           blockchain.localNode.saveBlock(res)
-            .then(function(){
+            .then(function () {
               stats[node.domain]['s']++;
               resolve();
             })
-            .catch(function(err){
+            .catch(function (err) {
               stats[node.domain]['f2']++;
               resolve();
             })
         })
-        .catch(function(err){
+        .catch(function (err) {
           stats[node.domain]['f1']++;
           return reject(err);
         })
     });
   };
 
- /**
-  * Adds a block request to the sync queue.
-  * @param {number} index The index of the block to synchronize.
-  * @param {number} [priority=5] The priority of the block download request.
-  * @param {Boolean} [safe = false] Insert if the queue is not empty?
-  */
-  module.enqueueBlock = function(index, priority=5, safe = false){
+  /**
+   * Adds a block request to the sync queue.
+   * @param {number} index The index of the block to synchronize.
+   * @param {number} [priority=5] The priority of the block download request.
+   * @param {Boolean} [safe = false] Insert if the queue is not empty?
+   */
+  sync.enqueueBlock = function (index, priority=5, safe = false) {
     if (safe && (queue.length() > 0)) return;
     //if the blockheight is above the current height,
     //increment the write pointer.
@@ -164,7 +167,7 @@ module.exports = function(blockchain){
     }
     //enqueue the block.
     queue.push({
-      method: module.storeBlock,
+      method: sync.storeBlock,
       attrs: {
         index: index,
         max: blockchain.highestNode().index,
@@ -172,7 +175,6 @@ module.exports = function(blockchain){
       }
     }, 5)
   }
-
-
-  return module
 };
+
+exports.sync = sync;
