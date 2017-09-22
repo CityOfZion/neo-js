@@ -105,7 +105,7 @@ module.exports = function(network) {
     this.getBestBlockHash = function(){
      return new Promise(function(resolve, reject){
 
-       this.call({
+       node.call({
          method: "getbestblockhash",
          params: [],
          id: 0
