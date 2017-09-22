@@ -2,7 +2,7 @@
 
 const Profiles  = require('./profiles');
 const neo = require('../dist/neo.blockchain.neo').neo;
-const neoBlockchain = new neo('light', 'mainnet');
+const neoBlockchain = new neo('light', 'testnet');
 const neoNode = neoBlockchain.fastestNode();
 // const newNode = neoBlockchain.nodeWithBlock(1, 'latency', false);
 
