@@ -144,6 +144,25 @@ module.exports = function(network) {
    };
 
     /**
+    * TBA
+    */
+    this.getBlockByHash = function(hash){
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getblock",
+          params: [hash, 1],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err);
+        });
+      });
+    };
+
+    /**
     * Invokes the getblockcount rpc request to return the block height.  This
     * method will request the block height from the fastest active node with failover if a
     * node is not provided.  This method will update the blockHeight attribute
@@ -192,6 +211,25 @@ module.exports = function(network) {
             reject(err)
           });
       })
+    };
+
+    /**
+    * TBA
+    */
+    this.getBlockSystemFee = function(height){
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getblocksysfee",
+          params: [height],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err);
+        });
+      });
     };
 
     /**
@@ -342,6 +380,63 @@ module.exports = function(network) {
         node.call({
           method: "getaccountstate",
           params: [address],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * TBA
+    */
+    this.getAssetState = function (assetId) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getassetstate",
+          params: [assetId],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * TBA
+    */
+    this.validateAddress = function (address) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "validateaddress",
+          params: [address],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * TBA
+    */
+    this.getPeers = function () {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getpeers",
+          params: [],
           id: 0
         })
         .then(function(data){
