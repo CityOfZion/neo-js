@@ -3,7 +3,6 @@
  * The synchronization functionality for the neo blockchain.
  * This code is only executed when running a neo instance in 'full' mode.
  * @class
- * @name sync
  * @requires lodash
  * @requires async
  * @param {neo} blockchain A reference to the parent blockchain instance.
@@ -74,7 +73,7 @@ function sync(blockchain) {
   queue.pause(); //Initialize the controller with synchronization paused (so we dont sync in light mode)
 
   /** Starts the synchronization activity. */
-  sync.start = function () {
+  this.start = function () {
     if (sync.runLock) return false; //prevent the overlapping runs
     sync.runLock = true;
 
@@ -108,7 +107,7 @@ function sync(blockchain) {
   };
 
   /** Stops the synchronization activity. */
-  sync.stop = function () {
+  this.stop = function () {
     sync.runLock = false;
     queue.pause();
   };
@@ -117,7 +116,7 @@ function sync(blockchain) {
    * Update the number of workers in the sync activity.
    * @param {number} count The number of workers to use.
    */
-  sync.setWorkers = function (count) {
+  this.setWorkers = function (count) {
     queue.concurrency = count;
   };
 
@@ -126,7 +125,7 @@ function sync(blockchain) {
    * and inserts it into the local database.
    * @param {Object} attrs The block attributes
    */
-  sync.storeBlock = function (attrs) {
+  this.storeBlock = function (attrs) {
     return new Promise(function (resolve, reject) {
       //get the block using the rpc controller
       var node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
@@ -158,7 +157,7 @@ function sync(blockchain) {
    * @param {number} [priority=5] The priority of the block download request.
    * @param {Boolean} [safe = false] Insert if the queue is not empty?
    */
-  sync.enqueueBlock = function (index, priority=5, safe = false) {
+  this.enqueueBlock = function (index, priority=5, safe = false) {
     if (safe && (queue.length() > 0)) return;
     //if the blockheight is above the current height,
     //increment the write pointer.
