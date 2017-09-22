@@ -4,6 +4,7 @@ const Profiles  = require('./profiles');
 const neo = require('../dist/neo.blockchain.neo').neo;
 const neoBlockchain = new neo('light', 'mainnet');
 const neoNode = neoBlockchain.fastestNode();
+// const newNode = neoBlockchain.nodeWithBlock(1, 'latency', false);
 
 // Use Cases
 
@@ -45,9 +46,9 @@ const getBlockDemo = function () {
   console.log('getBlockDemo:');
   const blockNumber = 10000;
   return new Promise((resolve) => {
-    neoNode.getBlock(10000)
+    neoNode.getBlock(blockNumber)
       .then(function (res) {
-        // console.log(res);
+        console.log(res);
         var hash = res.hash;
         console.log('hash:', hash);
         resolve();
@@ -109,18 +110,75 @@ const getConnectionCountDemo = function () {
   });
 };
 
+const getRawMemPoolDemo = function () {
+  console.log('getRawMemPoolDemo:');
+  return new Promise((resolve) => {
+    neoNode.getRawMemPool()
+      .then(function (res) {
+        console.log(res);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
+const getRawTransactionDemo = function () {
+  console.log('getRawTransactionDemo:');
+  const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
+  return new Promise((resolve) => {
+    neoNode.getRawTransaction(txId)
+      .then(function (res) {
+        console.log(res);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
+const getTXOutDemo = function () {
+  console.log('getTXOutDemo:');
+  const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
+  return new Promise((resolve) => {
+    neoNode.getTXOut(txId)
+      .then(function (res) {
+        console.log(res);
+        resolve();
+      })
+      .catch(function (err) {
+        console.log('error:');
+        console.log(err);
+        resolve();
+      });
+  });
+};
+
 // Chain of command
 
 async function actionAsync() {
-  console.log('== Block Demo ==');
+  console.log(`Connected node: ${neoNode.domain}:${neoNode.port}`);
+  console.log();  
+
   // await getBalanceDemo(); // Not working. Pressume local blockchain is required.
   await getBestBlockHashDemo();
   await getBlockDemo();
   await getBlockCountDemo();
   await getBlockHashDemo();
   await getConnectionCountDemo();
-  console.log();
-
+  await getRawMemPoolDemo();
+  await getRawTransactionDemo();
+  // await getTXOutDemo(); // Not working. Error response with 'Index was out of range'.
+  //TODO: sendRawTransaction
+  //TODO: sendToAddress
+  //TODO: submitBlock
+  
   process.exit();
 };
 
