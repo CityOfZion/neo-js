@@ -335,6 +335,25 @@ module.exports = function(network) {
    };
 
     /**
+    * TBA
+    */
+    this.getAccountState = function (address) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getaccountstate",
+          params: [address],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
     * Makes an RPC call to the node.*
     * @param {Object} payload An object defining the request.
     * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
