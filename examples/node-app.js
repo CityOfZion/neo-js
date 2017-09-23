@@ -83,7 +83,7 @@ const getRawMemPoolDemo = async function () {
 
 const getRawTransactionDemo = async function () {
   console.log('getRawTransactionDemo:');
-  const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
+  const txId = '0dc75410be486f9a971b058dd8fa2e7d31d0f2a9b9b64e89ff10a2d9890d39bf'; // TX for block #314,257
   try {
     const res = await neoNode.getRawTransaction(txId);
     console.log(res);
@@ -94,7 +94,7 @@ const getRawTransactionDemo = async function () {
 
 const getTXOutDemo = async function () {
   console.log('getTXOutDemo:');
-  const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
+  const txId = '0xde3bb3b33ebb13a715efd69dffc0f4e954c5e788be463183ba4723472efea387'; // TX for block #10,000
   try {
     const res = await neoNode.getTXOut(txId);
     console.log(res);
