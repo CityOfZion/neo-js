@@ -8,7 +8,7 @@ const neoNode = neoBlockchain.fastestNode();
 
 // Use Cases
 
-const getBalanceDemo = async function () {
+async function getBalanceDemo() {
   console.log('getBalanceDemo:');
   try {
     const res = await neoNode.getBalance(Profiles.Assets.NEO);
@@ -16,9 +16,9 @@ const getBalanceDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getBestBlockHashDemo = async function () {
+async function getBestBlockHashDemo() {
   console.log('getBestBlockHashDemo:');
   try {
     const res = await neoNode.getBestBlockHash();
@@ -26,9 +26,9 @@ const getBestBlockHashDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getBlockDemo = async function () {
+async function getBlockDemo() {
   console.log('getBlockDemo:');
   const blockNumber = 10000;  
   try {
@@ -39,9 +39,9 @@ const getBlockDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getBlockCountDemo = async function () {
+async function getBlockCountDemo() {
   console.log('getBlockCountDemo:');
   try {
     const res = await neoNode.getBlockCount();
@@ -49,9 +49,9 @@ const getBlockCountDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getBlockHashDemo = async function () {
+async function getBlockHashDemo() {
   console.log('getBlockHashDemo:');
   try {
     const res = await neoNode.getBlockHash(10000);
@@ -59,9 +59,9 @@ const getBlockHashDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getConnectionCountDemo = async function () {
+async function getConnectionCountDemo() {
   console.log('getConnectionCountDemo:');
   try {
     const res = await neoNode.getConnectionCount();
@@ -69,9 +69,9 @@ const getConnectionCountDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getRawMemPoolDemo = async function () {
+async function getRawMemPoolDemo() {
   console.log('getRawMemPoolDemo:');
   try {
     const res = await neoNode.getRawMemPool();
@@ -79,9 +79,9 @@ const getRawMemPoolDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getRawTransactionDemo = async function () {
+async function getRawTransactionDemo() {
   console.log('getRawTransactionDemo:');
   const txId = '0dc75410be486f9a971b058dd8fa2e7d31d0f2a9b9b64e89ff10a2d9890d39bf'; // TX for block #314,257
   try {
@@ -90,9 +90,9 @@ const getRawTransactionDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
-const getTXOutDemo = async function () {
+async function getTXOutDemo() {
   console.log('getTXOutDemo:');
   const txId = '0xde3bb3b33ebb13a715efd69dffc0f4e954c5e788be463183ba4723472efea387'; // TX for block #10,000
   try {
@@ -101,7 +101,7 @@ const getTXOutDemo = async function () {
   } catch (err) {
     console.log('error:', err);
   }
-};
+}
 
 // Chain of command
 
