@@ -8,156 +8,99 @@ const neoNode = neoBlockchain.fastestNode();
 
 // Use Cases
 
-const getBalanceDemo = function () {
+const getBalanceDemo = async function () {
   console.log('getBalanceDemo:');
-  const assetId = Profiles.Assets.NEO;
-  return new Promise((resolve) => {
-    neoNode.getBalance(assetId)
-      .then(function (res) {
-        console.log('resolved:');
-        console.log(res.data);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getBalance(Profiles.Assets.NEO);
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getBestBlockHashDemo = function () {
+const getBestBlockHashDemo = async function () {
   console.log('getBestBlockHashDemo:');
-  return new Promise((resolve) => {
-    neoNode.getBestBlockHash()
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getBestBlockHash();
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getBlockDemo = function () {
+const getBlockDemo = async function () {
   console.log('getBlockDemo:');
-  const blockNumber = 10000;
-  return new Promise((resolve) => {
-    neoNode.getBlock(blockNumber)
-      .then(function (res) {
-        console.log(res);
-        var hash = res.hash;
-        console.log('hash:', hash);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  const blockNumber = 10000;  
+  try {
+    const res = await neoNode.getBlock();
+    // console.log(res);
+    var hash = res.hash;
+    console.log('hash:', hash);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getBlockCountDemo = function () {
+const getBlockCountDemo = async function () {
   console.log('getBlockCountDemo:');
-  return new Promise((resolve) => {
-    neoNode.getBlockCount()
-      .then(function (res) {
-        console.log(res);
-        // console.log(res.data.result);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getBlockCount();
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getBlockHashDemo = function () {
+const getBlockHashDemo = async function () {
   console.log('getBlockHashDemo:');
-  return new Promise((resolve) => {
-    neoNode.getBlockHash(10000)
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getBlockHash(10000);
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getConnectionCountDemo = function () {
+const getConnectionCountDemo = async function () {
   console.log('getConnectionCountDemo:');
-  return new Promise((resolve) => {
-    neoNode.getConnectionCount()
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getConnectionCount();
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getRawMemPoolDemo = function () {
+const getRawMemPoolDemo = async function () {
   console.log('getRawMemPoolDemo:');
-  return new Promise((resolve) => {
-    neoNode.getRawMemPool()
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getRawMemPool();
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getRawTransactionDemo = function () {
+const getRawTransactionDemo = async function () {
   console.log('getRawTransactionDemo:');
   const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
-  return new Promise((resolve) => {
-    neoNode.getRawTransaction(txId)
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getRawTransaction(txId);
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
-const getTXOutDemo = function () {
+const getTXOutDemo = async function () {
   console.log('getTXOutDemo:');
   const txId = '0x9c909e1e3ba03290553a68d862e002c7a21ba302e043fc492fe069bf6a134d29'; // TX for block #10000
-  return new Promise((resolve) => {
-    neoNode.getTXOut(txId)
-      .then(function (res) {
-        console.log(res);
-        resolve();
-      })
-      .catch(function (err) {
-        console.log('error:');
-        console.log(err);
-        resolve();
-      });
-  });
+  try {
+    const res = await neoNode.getTXOut(txId);
+    console.log(res);
+  } catch (err) {
+    console.log('error:', err);
+  }
 };
 
 // Chain of command
