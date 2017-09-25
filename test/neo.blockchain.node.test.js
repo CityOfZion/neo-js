@@ -1,17 +1,11 @@
-const chai = require('chai');
-// const assert = chai.assert;
-const expect = chai.expect;
-// const should = chai.should();
-const Profiles  = require('../examples/profiles');
+const expect = require('chai').expect;
 const neo = require('../dist/neo.blockchain.neo').neo;
-
-// console.log(assert);
 
 // Setup node
 const neoBlockchain = new neo('light', 'testnet');
 const neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false);
 
-describe('node.getBlockCount()', () => {
+describe(`[light mode on ${neoNode.domain}] getBlockCount()`, () => {
 
     it('should have number as its response data type.', (resolve) => {
         neoNode.getBlockCount()
