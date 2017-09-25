@@ -1,12 +1,15 @@
 const expect = require('chai').expect;
 const neo = require('../dist/neo.blockchain.neo').neo;
 
-// Setup node
-const neoBlockchain = new neo('light', 'testnet');
+// Bootstrapping
+
+const mode = 'light';
+const neoBlockchain = new neo(mode, 'testnet');
 const neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false);
 
-describe(`[light mode on ${neoNode.domain}] getBlockCount()`, () => {
+// Test cases
 
+describe(`[${mode} mode on ${neoNode.domain}] getBlockCount()`, () => {
     it('should have number as its response data type.', (resolve) => {
         neoNode.getBlockCount()
             .then((res) => {
@@ -24,5 +27,24 @@ describe(`[light mode on ${neoNode.domain}] getBlockCount()`, () => {
                 resolve();
             });
     });
+});
 
+describe(`[${mode} mode on ${neoNode.domain}] getBestBlockHash()`, () => {
+    it('should have string as its response data type.', (resolve) => {
+        neoNode.getBestBlockHash()
+            .then((res) => {
+                const hash = res;
+                expect(typeof(hash)).to.equal('string');
+                resolve();
+            });
+    });
+
+    it("should be '0x' follow by 64 hex characters in lower-case.", (resolve) => {
+        neoNode.getBestBlockHash()
+            .then((res) => {
+                const hash = res;
+                expect(hash).to.match(/^(0x)[a-z0-9]{64}$/);
+                resolve();
+            });
+    });
 });
