@@ -2,9 +2,25 @@
 
 const Profiles  = require('./profiles');
 const neo = require('../dist/neo.blockchain.neo').neo;
-const neoBlockchain = new neo('light', 'testnet');
-const neoNode = neoBlockchain.fastestNode();
-// const newNode = neoBlockchain.nodeWithBlock(1, 'latency', false);
+let neoNode = undefined;
+
+// Bootstrap
+
+function setNeoNode() {
+  /**
+   * Initialise a blockchain instance of specified mode and network type.
+   */
+  const mode = 'light'; // Options: light, full
+  const network = 'testnet'; // Options: testnet, mainnet
+  const neoBlockchain = new neo(mode, network);
+
+  /**
+   * A working node can be fetched via various of methods as per examples.
+   */
+  // neoNode = neoBlockchain.fastestNode(); // Pick the available node with lowest latency
+  // neoNode = neoBlockchain.highestNode(); // Pick the available node with highest block height.
+  neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false); // Pick a non-local node contains the specified height, in specified sorting order.
+}
 
 // Use Cases
 
@@ -107,8 +123,9 @@ async function getTXOutDemo() {
 
 async function actionAsync() {
   console.log(`Connected node: ${neoNode.domain}:${neoNode.port}`);
-  console.log();  
+  console.log();
 
+  // Examples
   // await getBalanceDemo(); // Not working. Pressume local blockchain is required.
   await getBestBlockHashDemo();
   await getBlockDemo();
@@ -126,5 +143,5 @@ async function actionAsync() {
 };
 
 // Execute
-
+setNeoNode();
 actionAsync();
