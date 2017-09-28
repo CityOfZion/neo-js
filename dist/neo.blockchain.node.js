@@ -144,6 +144,30 @@ module.exports = function(network) {
    };
 
     /**
+    * Invokes the getblock rpc request to return a block.  This method
+    * accepts and optional node to request the block from.  If a node is not selected,
+    * the fastest node will be used with failover in an attempt to guarantee a response.
+    *
+    * @param {string} hash The hash of the block being requested.
+    * @returns {Promise.<Object>} A promise returning information of the block
+    */
+    this.getBlockByHash = function(hash){
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getblock",
+          params: [hash, 1],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err);
+        });
+      });
+    };
+
+    /**
     * Invokes the getblockcount rpc request to return the block height.  This
     * method will request the block height from the fastest active node with failover if a
     * node is not provided.  This method will update the blockHeight attribute
@@ -192,6 +216,28 @@ module.exports = function(network) {
             reject(err)
           });
       })
+    };
+
+    /**
+    * Invokes the getblocksysfee rpc request to return system fee.
+    *
+    * @param {number} index The index of the block hash being requested.
+    * @returns {Promise.<number>} The system fee.
+    */
+    this.getBlockSystemFee = function(height){
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getblocksysfee",
+          params: [height],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err);
+        });
+      });
     };
 
     /**
@@ -333,6 +379,91 @@ module.exports = function(network) {
        })
      })
    };
+
+    /**
+    * Invokes the getaccountstate rpc request to return information of requested account.
+    *
+    * @param {string} address The address of the wallet being requested.
+    * @returns {Promise.<Object>} An object containing the account information.
+    */
+    this.getAccountState = function (address) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getaccountstate",
+          params: [address],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * Invokes the getassetstate rpc request to return information of requested asset.
+    *
+    * @param {string} address The address of the asset being requested.
+    * @returns {Promise.<Object>} An object containing the asset information.
+    */
+    this.getAssetState = function (assetId) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getassetstate",
+          params: [assetId],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * Invokes the validateaddress rpc request to verify a requested address.
+    *
+    * @param {string} address The address of the wallet being requested.
+    * @returns {Promise.<Object>} An object containing the validation information of the requested account.
+    */
+    this.validateAddress = function (address) {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "validateaddress",
+          params: [address],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
+
+    /**
+    * TBA
+    */
+    this.getPeers = function () {
+      return new Promise(function(resolve, reject){
+        node.call({
+          method: "getpeers",
+          params: [],
+          id: 0
+        })
+        .then(function(data){
+          resolve(data.result);
+        })
+        .catch(function(err){
+          reject(err)
+        });
+      });
+    };
 
     /**
     * Makes an RPC call to the node.*
