@@ -3,6 +3,11 @@ const neo = require('../dist/neo.blockchain.neo').neo;
 const axios = require('axios');
 const MockAdapter = require('axios-mock-adapter');
 
+// Bootstrapping
+
+const neoBlockchain = new neo('light', 'testnet');
+const neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false);
+
 // Mock Adapter
 
 const mockHttpClient = new MockAdapter(axios, { delayResponse: 50 });
@@ -25,6 +30,7 @@ const mockResponseData = {
 
 mockHttpClient.onPost().reply((config) => {
     const dataObj = JSON.parse(config.data);
+
     if (dataObj.method === 'getblockcount') {
         return [200, mockResponseData.getBlockCount.Success];
     } else if (dataObj.method === 'getbestblockhash') {
@@ -35,21 +41,18 @@ mockHttpClient.onPost().reply((config) => {
     return [400, {}];
 });
 
-// Bootstrapping
-
-const neoBlockchain = new neo('light', 'testnet');
-const neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false);
-
 // Test cases
 
 describe('Unit test getBlockCount()', () => {
     it('should have number as its response data type.', (resolve) => {
         neoNode.getBlockCount()
             .then((res) => {
-                console.log('getBlockCount. res:', res);
                 const blockCount = res;
                 expect(typeof(blockCount)).to.equal('number');
                 resolve();
+            })
+            .catch((err) => {
+                resolve(err);
             });
     });
 
@@ -59,6 +62,9 @@ describe('Unit test getBlockCount()', () => {
                 const blockCount = res;
                 expect(blockCount).to.be.at.least(1);
                 resolve();
+            })
+            .catch((err) => {
+                resolve(err);
             });
     });
 });
@@ -70,6 +76,9 @@ describe('Unit test getBestBlockHash()', () => {
                 const hash = res;
                 expect(typeof(hash)).to.equal('string');
                 resolve();
+            })
+            .catch((err) => {
+                resolve(err);
             });
     });
 
@@ -77,8 +86,11 @@ describe('Unit test getBestBlockHash()', () => {
         neoNode.getBestBlockHash()
             .then((res) => {
                 const hash = res;
-                expect(hash).to.match(/^(0x)[a-z0-9]{64}$/);
+                expect(hash).to.match(/^(0x)[a-f0-9]{64}$/);
                 resolve();
+            })
+            .catch((err) => {
+                resolve(err);
             });
     });
 });
