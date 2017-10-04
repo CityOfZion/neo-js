@@ -44,11 +44,12 @@ mockHttpClient.onPost().reply((config) => {
 // Test cases
 
 describe('Unit test getBlockCount()', () => {
-  it('should have number as its response data type.', (resolve) => {
+  it('should have integer as its response data type.', (resolve) => {
     neoNode.getBlockCount()
       .then((res) => {
         const blockCount = res;
-        expect(typeof(blockCount)).to.equal('number');
+        expect(blockCount).to.be.a('number');
+        expect(blockCount % 1).to.be.equal(0);
         resolve();
       })
       .catch((err) => {
@@ -74,7 +75,7 @@ describe('Unit test getBestBlockHash()', () => {
     neoNode.getBestBlockHash()
       .then((res) => {
         const hash = res;
-        expect(typeof(hash)).to.equal('string');
+        expect(hash).to.be.a('string');
         resolve();
       })
       .catch((err) => {
