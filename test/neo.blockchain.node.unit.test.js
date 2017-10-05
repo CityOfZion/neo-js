@@ -119,6 +119,16 @@ const mockResponseData = {
         'frozen': false
       }
     }
+  },
+  validateAddress: {
+    Success: {
+      jsonrpc: '2.0',
+      id: 1,
+      result: {
+        address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G',
+        isvalid: true
+      }
+    }
   }
 }
 
@@ -142,6 +152,10 @@ mockHttpClient.onPost().reply((config) => {
     return [200, mockResponseData.getBlockCount.Success]
   } else if (dataObj.method === 'getaccountstate') {
     return [200, mockResponseData.getAccountState.Success]
+  } else if (dataObj.method === 'getassetstate') {
+    return [200, mockResponseData.getAssetState.Success]
+  } else if (dataObj.method === 'validateaddress') {
+    return [200, mockResponseData.validateAddress.Success]
   }
 
   console.log('YOU SHOULDNT BE HERE!')
@@ -303,6 +317,52 @@ describe('Unit test getAccountState()', () => {
   })
 })
 
-// TODO: getAssetState
-// TODO: validateAddress
+describe('Unit test getAssetState()', () => {
+  it("should have 'object' as its response data type.", (resolve) => {
+    neoNode.getAssetState(Profiles.Assets.Neo)
+      .then((res) => {
+        expect(res).to.be.a('object')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+
+  it("should contain 'id' property with an expected value of '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b'.", (resolve) => {
+    neoNode.getAssetState(Profiles.Assets.Neo)
+      .then((res) => {
+        expect(res.id).to.be.equal('0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+})
+
+describe('Unit test validateAddress()', () => {
+  it("should have 'object' as its response data type.", (resolve) => {
+    neoNode.validateAddress(Profiles.Wallets.WalletN.Address)
+      .then((res) => {
+        expect(res).to.be.a('object')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+
+  it("should contain 'isvalid' property with an expected value of true.", (resolve) => {
+    neoNode.validateAddress(Profiles.Assets.Neo)
+      .then((res) => {
+        expect(res.isvalid).to.be.equal(true)
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+})
+
 // TODO: getPeers
