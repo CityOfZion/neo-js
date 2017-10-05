@@ -7,9 +7,14 @@ const Neo = require('../dist/neo.blockchain.neo').neo
 const axios = require('axios')
 const MockAdapter = require('axios-mock-adapter')
 const Profiles = {
+  Wallets: {
+    WalletN: {
+      Address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G'
+    }
+  },
   Assets: {
     Neo: '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
-    Gas: '602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
+    Gas: '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
   }
 }
 
@@ -68,6 +73,53 @@ const mockResponseData = {
   getBlockCount: {
     Success: { jsonrpc: '2.0', id: 0, result: 100000 }
   },
+  getAccountState: {
+    Success: {
+      'jsonrpc': '2.0',
+      'id': 1,
+      'result': {
+        'version': 0,
+        'script_hash': '0x869575db91de0265118002f26e00fe1d4a89b9f0',
+        'frozen': false,
+        'votes': [],
+        'balances': [{
+          'asset': '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+          'value': '1488.1'
+        },
+        {
+          'asset': '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+          'value': '186'
+        }
+        ]
+      }
+    }
+  },
+  getAssetState: {
+    Success: {
+      'jsonrpc': '2.0',
+      'id': 1,
+      'result': {
+        'version': 0,
+        'id': '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+        'type': 'GoverningToken',
+        'name': [{
+          'lang': 'zh-CN',
+          'name': '\u5C0F\u8681\u80A1'
+        }, {
+          'lang': 'en',
+          'name': 'AntShare'
+        }],
+        'amount': '100000000',
+        'available': '100000000',
+        'precision': 0,
+        'owner': '00',
+        'admin': 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
+        'issuer': 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
+        'expiration': 4000000,
+        'frozen': false
+      }
+    }
+  }
 }
 
 // Experimental (and non functional)
@@ -84,20 +136,33 @@ mockHttpClient.onPost().reply((config) => {
     // placeholder
   } else if (dataObj.method === 'getbestblockhash') {
     return [200, mockResponseData.getBestBlockHash.Success]
-  } else if (dataObj.method === 'getblock') {
+  } else if (dataObj.method === 'getblock') { // shared by getBlock() and getBlockByHash() methods
     return [200, mockResponseData.getBlock.Success]
   } else if (dataObj.method === 'getblockcount') {
     return [200, mockResponseData.getBlockCount.Success]
+  } else if (dataObj.method === 'getaccountstate') {
+    return [200, mockResponseData.getAccountState.Success]
   }
 
   console.log('YOU SHOULDNT BE HERE!')
   return [400, {}]
 })
 
+// Axios Interceptors
+
+const ENABLE_INTERCEPTORS = false
+if (ENABLE_INTERCEPTORS) {
+  axios.interceptors.request.use((request) => {
+    console.log('== Starting request:')
+    console.log(request)
+    console.log('====')
+    return request
+  })
+}
+
 // Test cases
 
-// describe('Unit test getBalance()', () => {
-// })
+// TODO: getBalance
 
 describe('Unit test getBestBlockHash()', () => {
   it('should have string as its response data type.', (resolve) => {
@@ -151,6 +216,32 @@ describe('Unit test getBlock()', () => {
   })
 })
 
+describe('Unit test getBlockByHash()', () => {
+  it("should have 'object' as its response data type.", (resolve) => {
+    neoNode.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
+      .then((res) => {
+        expect(res).to.be.a('object')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+
+  it("should contains 'confirmations' property with a whole number.", (resolve) => {
+    neoNode.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
+      .then((res) => {
+        expect(res.confirmations).to.be.a('number')
+        expect(res.confirmations % 1).to.be.equal(0)
+        expect(res.confirmations).to.be.at.least(1)
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+})
+
 describe('Unit test getBlockCount()', () => {
   it('should have integer as its response data type.', (resolve) => {
     neoNode.getBlockCount()
@@ -177,3 +268,41 @@ describe('Unit test getBlockCount()', () => {
       })
   })
 })
+
+// TODO: getBlockHash
+// TODO: getBlockSystemFee
+// TOOD: getConnectionCount
+// TODO: getRawMemPool
+// TODO: getRawTransaction
+// TODO: getTXOut
+// TOOD: sendRawTransaction
+// TODO: sendToAddress
+// TODO: submitBlock
+
+describe('Unit test getAccountState()', () => {
+  it("should have 'object' as its response data type.", (resolve) => {
+    neoNode.getAccountState(Profiles.Wallets.WalletN.Address)
+      .then((res) => {
+        expect(res).to.be.a('object')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+
+  it("should contain 'script_hash' property with an expected value of '0x869575db91de0265118002f26e00fe1d4a89b9f0'.", (resolve) => {
+    neoNode.getAccountState(Profiles.Wallets.WalletN.Address)
+      .then((res) => {
+        expect(res.script_hash).to.be.equal('0x869575db91de0265118002f26e00fe1d4a89b9f0')
+        resolve()
+      })
+      .catch((err) => {
+        resolve(err)
+      })
+  })
+})
+
+// TODO: getAssetState
+// TODO: validateAddress
+// TODO: getPeers
