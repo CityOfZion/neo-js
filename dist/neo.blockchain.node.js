@@ -307,12 +307,12 @@ module.exports = function(network) {
     * @param {string} txid The requested transaction ID.
     * @returns {Promise.<Object>} An object containing the transaction response.
     */
-    this.getTXOut = function(txid){
+    this.getTXOut = function(txid, index){
 
       return new Promise(function(resolve, reject){
         node.call({
           method: "gettxout",
-          params: [txid],
+          params: [txid, index],
           id: 0
         })
         .then(function (data) {
