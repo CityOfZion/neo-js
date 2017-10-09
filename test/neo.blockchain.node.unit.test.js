@@ -18,8 +18,8 @@ const neoNode = neoBlockchain.nodeWithBlock(-1, 'latency', false)
 
 const mockHttpClient = new MockAdapter(axios, { delayResponse: 50 })
 mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getbestblockhash', params: [], id: 0 }).reply(200, MockResponses.getBestBlockHash.Success)
-mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [100000,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
-mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: ['0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122',1], id: 0 }).reply(200, MockResponses.getBlock.Success)
+mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Number,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
+mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Hash,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
 mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblockcount', params: [], id: 0 }).reply(200, MockResponses.getBlockCount.Success)
 mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getaccountstate', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.getAccountState.Success)
 mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getassetstate', params: [Profiles.Assets.Neo], id: 0 }).reply(200, MockResponses.getAssetState.Success)
@@ -72,7 +72,7 @@ describe('Unit test getBestBlockHash()', () => {
 
 describe('Unit test getBlock()', () => {
   it("should have 'object' as its response data type.", (resolve) => {
-    neoNode.getBlock(100000)
+    neoNode.getBlock(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res).to.be.a('object')
         resolve()
@@ -83,7 +83,7 @@ describe('Unit test getBlock()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (resolve) => {
-    neoNode.getBlock(100000)
+    neoNode.getBlock(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -98,7 +98,7 @@ describe('Unit test getBlock()', () => {
 
 describe('Unit test getBlockByHash()', () => {
   it("should have 'object' as its response data type.", (resolve) => {
-    neoNode.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
+    neoNode.getBlockByHash(Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         resolve()
@@ -109,7 +109,7 @@ describe('Unit test getBlockByHash()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (resolve) => {
-    neoNode.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
+    neoNode.getBlockByHash(Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -171,10 +171,10 @@ describe('Unit test getAccountState()', () => {
       })
   })
 
-  it("should contain 'script_hash' property with an expected value of '0x869575db91de0265118002f26e00fe1d4a89b9f0'.", (resolve) => {
+  it("should contain 'script_hash' property with an expected value.", (resolve) => {
     neoNode.getAccountState(Profiles.Wallets.WalletN.Address)
       .then((res) => {
-        expect(res.script_hash).to.be.equal('0x869575db91de0265118002f26e00fe1d4a89b9f0')
+        expect(res.script_hash).to.be.equal(Profiles.Wallets.WalletN.Hash)
         resolve()
       })
       .catch((err) => {
@@ -195,10 +195,10 @@ describe('Unit test getAssetState()', () => {
       })
   })
 
-  it("should contain 'id' property with an expected value of '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b'.", (resolve) => {
+  it("should contain 'id' property with an expected value.", (resolve) => {
     neoNode.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
-        expect(res.id).to.be.equal('0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
+        expect(res.id).to.be.equal(Profiles.Assets.Neo)
         resolve()
       })
       .catch((err) => {
