@@ -12,7 +12,15 @@ module.exports = {
   Blocks: {
     Block_100000: {
       Number: 100000,
-      Hash: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'
+      Hash: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122',
+      Transactions: [
+        {
+          Hash: '0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042',
+          Size: 10,
+          Type: 'MinerTransaction',
+          Nounce: 1584347482
+        }
+      ]
     }
   }
 }

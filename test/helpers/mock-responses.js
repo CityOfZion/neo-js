@@ -45,6 +45,10 @@ module.exports = {
   getBlockCount: {
     Success: { jsonrpc: '2.0', id: 0, result: 100000 }
   },
+  getTXOut: {
+    IndexOutOfRange: {'code': -2146233086, 'message': 'Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index'},
+    InvalidFormat: {'code': -2146233033, 'message': 'One of the identified items was in an invalid format.'}
+  },
   getAccountState: {
     Success: {
       'jsonrpc': '2.0',
