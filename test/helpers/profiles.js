@@ -2,7 +2,7 @@ module.exports = {
   Wallets: {
     WalletN: {
       Address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G',
-      Hash: '0x869575db91de0265118002f26e00fe1d4a89b9f0',
+      Hash: '0x869575db91de0265118002f26e00fe1d4a89b9f0'
     }
   },
   Assets: {
@@ -12,7 +12,7 @@ module.exports = {
   Blocks: {
     Block_100000: {
       Number: 100000,
-      Hash: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122',
+      Hash: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'
     }
   }
 }

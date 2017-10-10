@@ -1,0 +1,37 @@
+const axios = require('axios')
+const MockAdapter = require('axios-mock-adapter')
+const Neo = require('../../dist/neo.blockchain.neo').neo
+const Profiles = require('./profiles')
+const MockResponses = require('./mock-responses')
+
+module.exports = {
+  getNeoNode: function () {
+    const neoBlockchain = new Neo('light', 'testnet')
+    return neoBlockchain.nodeWithBlock(-1, 'latency', false)
+  },
+
+  setMockHttpClient: function () {
+    const mockHttpClient = new MockAdapter(axios, { delayResponse: 50 })
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getbestblockhash', params: [], id: 0 }).reply(200, MockResponses.getBestBlockHash.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Number,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Hash,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblockcount', params: [], id: 0 }).reply(200, MockResponses.getBlockCount.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getaccountstate', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.getAccountState.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getassetstate', params: [Profiles.Assets.Neo], id: 0 }).reply(200, MockResponses.getAssetState.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'validateaddress', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.validateAddress.Success)
+    mockHttpClient.onAny().passThrough()
+  },
+
+  setHttpInterceptors: function (enable) {
+    if (enable) {
+      axios.interceptors.request.use((request) => {
+        console.log('== Starting request on:', new Date())
+        console.log('request:', request.method, request.url)
+        console.log('request data:', request.data)
+        console.log('adapter name:', request.adapter.name)
+        console.log()
+        return request
+      })
+    }
+  }
+}
