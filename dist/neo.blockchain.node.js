@@ -395,7 +395,7 @@ module.exports = function(network) {
       return new Promise(function(resolve, reject){
         node.call({
           method: "getrawtransaction",
-          params: [txid],
+          params: [txid,1],
           id: 0
         })
         .then(function (data) {
