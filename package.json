@@ -5,7 +5,8 @@
   "main": "dist/neo.blockchain.neo.js",
   "scripts": {
     "integration": "node_modules/mocha/bin/mocha -b test/integration/*.js",
-    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js"
+    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js",
+    "coverage": "node_modules/nyc/bin/nyc.js npm test"
   },
   "repository": {
     "type": "git",
