@@ -351,6 +351,29 @@ module.exports = function(network) {
       })
     };
 
+   /**
+    * Executes a 'test invoke' of a smart contract on the blockchain.
+    * *Note: This transcation will NOT be published to the blockchain.
+    * @param scriptHash  The hash of the script to invoke.
+    * @param params The params used to invoke the contract.
+    * @returns {Promise.<Object>) The invoke response.
+    */
+    this.invoke = function(scriptHash, params){
+      return new Promise(function(resolve,reject){
+        node.call({
+          method: "invoke",
+          params[scriptHash, params],
+          id: 0
+        })
+          .then(function (data) {
+            resolve(data.result);
+          })
+          .catch(function (err) {
+            reject({"message": "Unable to contact the requested node."})
+          })
+      })
+    }
+
     this.getRawMemPool = function(){
       return new Promise(function(resolve, reject){
         node.call({
