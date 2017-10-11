@@ -64,3 +64,30 @@ describe('Unit test getBlockCount()', () => {
       })
   })
 })
+
+describe('Unit test getConnectionCount()', () => {
+  it('should have integer as its response data type.', (done) => {
+    neoNode.getConnectionCount()
+      .then((res) => {
+        const count = res
+        expect(count).to.be.a('number')
+        expect(count % 1).to.be.equal(0)
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+
+  it('should have at least 1 connection.', (done) => {
+    neoNode.getBlockCount()
+      .then((res) => {
+        const count = res
+        expect(count).to.be.at.least(1)
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+})

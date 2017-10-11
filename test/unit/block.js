@@ -63,3 +63,43 @@ describe('Unit test getBlockByHash()', () => {
       })
   })
 })
+
+describe('Unit test getBlockHash()', () => {
+  it('should have string as its response data type.', (done) => {
+    neoNode.getBlockHash(Profiles.Blocks.Block_100000.Number)
+      .then((res) => {
+        const hash = res
+        expect(hash).to.be.a('string')
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+
+  it("should be '0x' follow by 64 hex characters in lower-case.", (done) => {
+    neoNode.getBlockHash(Profiles.Blocks.Block_100000.Number)
+      .then((res) => {
+        const hash = res
+        expect(hash).to.match(/^(0x)[a-f0-9]{64}$/)
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+})
+
+describe('Unit test getBlockSystemFee()', () => {
+  it('should have string as its response data type.', (done) => {
+    neoNode.getBlockSystemFee(Profiles.Blocks.Block_100000.Number)
+      .then((res) => {
+        const fee = res
+        expect(fee).to.be.a('string')
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+})

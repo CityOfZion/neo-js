@@ -42,8 +42,18 @@ module.exports = {
       }
     }
   },
+
   getBlockCount: {
     Success: { jsonrpc: '2.0', id: 0, result: 100000 }
+  },
+  getBlockHash: {
+    Success: { jsonrpc: '2.0', id: 0, result: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122' }
+  },
+  getBlockSystemFee: {
+    Success: { jsonrpc: '2.0', id: 0, result: '905' }
+  },
+  getConnectionCount: {
+    Success: { jsonrpc: '2.0', id: 0, result: 15 }
   },
   getTXOut: {
     IndexOutOfRange: {'code': -2146233086, 'message': 'Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index'},
