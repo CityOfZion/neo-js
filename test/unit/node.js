@@ -91,3 +91,29 @@ describe('Unit test getConnectionCount()', () => {
       })
   })
 })
+
+describe('Unit test getRawMemPool()', () => {
+  it('should have array as its response data type.', (done) => {
+    neoNode.getRawMemPool()
+      .then((res) => {
+        expect(res).to.be.an('array')
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+})
+
+describe('Unit test getPeers()', () => {
+  it('should have object as its response data type.', (done) => {
+    neoNode.getPeers()
+      .then((res) => {
+        expect(res).to.be.an('object')
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
+  })
+})

@@ -21,6 +21,23 @@ module.exports = {
           Nounce: 1584347482
         }
       ]
+    },
+    Block_608999: {
+      Number: 608999,
+      Hash: '0x0c3340cfdb226d6da46afe26de14b2cb2c8913a3814bec23e5e40a598d5c4078',
+      Transactions: [
+        {
+          Hash: '0x5f3220532e3811ed49831eb2209b2fac49bbeaa61d2a29abb191fb3628348c5b',
+          Size: 10,
+          Type: 'MinerTransaction',
+          Nounce: 3774638267,
+        },
+        {
+          Hash: '0xc8fbc56acdbfa03f9eacb06e28c29dfd30af61255bd0f51f88851900bcd75937',
+          Size: 262,
+          Type: 'ContractTransaction'
+        }
+      ]
     }
   }
 }

@@ -42,7 +42,6 @@ module.exports = {
       }
     }
   },
-
   getBlockCount: {
     Success: { jsonrpc: '2.0', id: 0, result: 100000 }
   },
@@ -55,7 +54,42 @@ module.exports = {
   getConnectionCount: {
     Success: { jsonrpc: '2.0', id: 0, result: 15 }
   },
+  getRawMemPool: {
+    Success: { jsonrpc: '2.0', id: 0, result: [] }
+  },
+  getRawTransaction: {
+    Success: {
+      jsonrpc: '2.0',
+      id: 0,
+      result: {
+        txid: '0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042',
+        size: 10,
+        type: 'MinerTransaction',
+        version: 0,
+        attributes: [],
+        vin: [],
+        vout: [],
+        sys_fee: '0',
+        net_fee: '0',
+        scripts: [],
+        nonce: 1584347482,
+        blockhash: '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122',
+        confirmations: 537944,
+        blocktime: 1496454840
+      }
+    }
+  },
   getTXOut: {
+    Success: {
+      jsonrpc: '2.0',
+      id: 0,
+      result: {
+        n: 0,
+        asset: '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+        value: '5',
+        address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G'
+      }
+    },
     IndexOutOfRange: {'code': -2146233086, 'message': 'Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index'},
     InvalidFormat: {'code': -2146233033, 'message': 'One of the identified items was in an invalid format.'}
   },
@@ -115,5 +149,18 @@ module.exports = {
         isvalid: true
       }
     }
-  }
+  },
+  getPeers: {
+    Success: {
+      jsonrpc: '2.0',
+      id: 1,
+      result: {
+        unconnected: [],
+        bad: [],
+        connected: [
+          { address: '::ffff:101.132.67.230', port: 20333 }
+        ]
+      }
+    }
+  },
 }
