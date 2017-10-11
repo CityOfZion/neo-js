@@ -362,7 +362,7 @@ module.exports = function(network) {
       return new Promise(function(resolve,reject){
         node.call({
           method: "invoke",
-          params[scriptHash, params],
+          params: [scriptHash, params],
           id: 0
         })
           .then(function (data) {
