@@ -362,7 +362,7 @@ module.exports = function(network) {
       return new Promise(function(resolve,reject){
         node.call({
           method: "invoke",
-          params[scriptHash, params],
+          params: [scriptHash, params],
           id: 0
         })
           .then(function (data) {
@@ -386,7 +386,7 @@ module.exports = function(network) {
      return new Promise(function(resolve,reject){
        node.call({
          method: "invokefunction",
-         params[scriptHash, operation, params],
+         params: [scriptHash, operation, params],
          id: 0
        })
          .then(function (data) {
@@ -409,7 +409,7 @@ module.exports = function(network) {
      return new Promise(function(resolve,reject){
        node.call({
          method: "invokescript",
-         params[script],
+         params: [script],
          id: 0
        })
          .then(function (data) {
