@@ -7,30 +7,31 @@ const Profiles = require('../helpers/profiles')
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
+const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getAssetState()', () => {
-  it("should have 'object' as its response data type.", (resolve) => {
+describe(`${describeBadge} getAssetState()`, () => {
+  it("should have 'object' as its response data type.", (done) => {
     neoNode.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
-        resolve()
+        done()
       })
       .catch((err) => {
-        resolve(err)
+        done(err)
       })
   })
 
-  it("should contain 'id' property with an expected value.", (resolve) => {
+  it("should contain 'id' property with an expected value.", (done) => {
     neoNode.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
         expect(res.id).to.be.equal(Profiles.Assets.Neo)
-        resolve()
+        done()
       })
       .catch((err) => {
-        resolve(err)
+        done(err)
       })
   })
 })

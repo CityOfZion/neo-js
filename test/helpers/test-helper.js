@@ -16,9 +16,16 @@ module.exports = {
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Number,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblock', params: [Profiles.Blocks.Block_100000.Hash,1], id: 0 }).reply(200, MockResponses.getBlock.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblockcount', params: [], id: 0 }).reply(200, MockResponses.getBlockCount.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblockhash', params: [Profiles.Blocks.Block_100000.Number], id: 0 }).reply(200, MockResponses.getBlockHash.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getblocksysfee', params: [Profiles.Blocks.Block_100000.Number], id: 0 }).reply(200, MockResponses.getBlockSystemFee.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getconnectioncount', params: [], id: 0 }).reply(200, MockResponses.getConnectionCount.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getrawmempool', params: [], id: 0 }).reply(200, MockResponses.getRawMemPool.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getrawtransaction', params: [Profiles.Blocks.Block_100000.Transactions[0].Hash,1], id: 0 }).reply(200, MockResponses.getRawTransaction.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'gettxout', params: [Profiles.Blocks.Block_608999.Transactions[1].Hash,0], id: 0 }).reply(200, MockResponses.getTXOut.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getaccountstate', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.getAccountState.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getassetstate', params: [Profiles.Assets.Neo], id: 0 }).reply(200, MockResponses.getAssetState.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'validateaddress', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.validateAddress.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getpeers', params: [], id: 0 }).reply(200, MockResponses.getPeers.Success)
     mockHttpClient.onAny().passThrough()
   },
 

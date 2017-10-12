@@ -7,14 +7,14 @@ const Profiles = require('../helpers/profiles')
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getAssetState()', () => {
+describe(`${describeBadge} getRawTransaction()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getAssetState(Profiles.Assets.Neo)
+    neoNode.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -23,11 +23,13 @@ describe('Unit test getAssetState()', () => {
         done(err)
       })
   })
+})
 
-  it("should contain 'id' property with an expected value.", (done) => {
-    neoNode.getAssetState(Profiles.Assets.Neo)
+describe(`${describeBadge} getTXOut()`, () => {
+  it("should have 'object' as its response data type.", (done) => {
+    neoNode.getTXOut(Profiles.Blocks.Block_100000.Transactions[0].Hash, 0)
       .then((res) => {
-        expect(res.id).to.be.equal(Profiles.Assets.Neo)
+        expect(res).to.be.null
         done()
       })
       .catch((err) => {
