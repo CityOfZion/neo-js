@@ -5,7 +5,9 @@
   "main": "dist/neo.blockchain.neo.js",
   "scripts": {
     "integration": "node_modules/mocha/bin/mocha -b test/integration/*.js",
-    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js"
+    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js",
+    "rebuild": "rm -rf node_modules && rm package-lock.json && npm install",
+    "prepublish": "echo \"Not Implemented: unit test, JS lint and documentations to be performed here.\" && exit 0"
   },
   "repository": {
     "type": "git",
