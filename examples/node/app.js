@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
-const Profiles  = require('./profiles');
-const neo = require('../dist/neo.blockchain.neo').neo;
+const Profiles  = require('../helpers/profiles');
+const neo = require('../../dist/neo.blockchain.neo').neo;
 let neoNode = undefined;
 
 // Bootstrap
