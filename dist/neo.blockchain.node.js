@@ -403,7 +403,7 @@ module.exports = function (network) {
         id: 0
       }).then(({ result }) => {
         resolve(result)
-      }).catch(reject())
+      }).catch(reject)
     })
 
     /**
