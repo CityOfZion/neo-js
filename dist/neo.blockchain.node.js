@@ -294,8 +294,8 @@ module.exports = function (network) {
     * @param {number} index The index of the block hash being requested.
     * @example
     * node.getBlockSystemFee(100000)
-    * return '905'
-    * @returns {Promise.<string>} The system fee.
+    * return 905
+    * @returns {Promise.<number>} The system fee.
     */
     this.getBlockSystemFee = function (height) {
       return new Promise(function (resolve, reject) {
@@ -303,10 +303,11 @@ module.exports = function (network) {
           method: 'getblocksysfee',
           params: [height],
           id: 0
-        }).then(function (data) {
-          resolve(data.result)
-        }).catch(function (err) {
-          reject(err)
+        }).then(function(data){
+          resolve(parseInt(data.result));
+        })
+        .catch(function(err){
+          reject(err);
         })
       })
     }
