@@ -4,6 +4,7 @@
   "description": "A package for running a full or light node on the neo blockchain.",
   "main": "dist/neo.blockchain.neo.js",
   "scripts": {
+    "lint": "node_modules/standard/bin/cmd.js **/*.js || exit 0",
     "integration": "node_modules/mocha/bin/mocha -b test/integration/*.js",
     "test": "node_modules/mocha/bin/mocha -b test/unit/*.js",
     "coverage": "node_modules/nyc/bin/nyc.js npm test"
@@ -34,5 +35,6 @@
     "chai": "^4.1.2",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1"
+    "standard": "^10.0.3"
   }
 }

@@ -91,11 +91,12 @@ describe(`${describeBadge} getBlockHash()`, () => {
 })
 
 describe(`${describeBadge} getBlockSystemFee()`, () => {
-  it('should have string as its response data type.', (done) => {
+  it('should be a whole number as its response.', (done) => {
     neoNode.getBlockSystemFee(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const fee = res
-        expect(fee).to.be.a('string')
+        expect(fee).to.be.a('number')
+        expect(fee % 1).to.be.equal(0)
         done()
       })
       .catch((err) => {
