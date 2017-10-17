@@ -74,7 +74,7 @@ function neo (mode, network) {
           true
     ),
     sort
-  )
+  ))
 }
 
 exports.neo = neo
