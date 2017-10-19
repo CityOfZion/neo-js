@@ -1,3 +1,4 @@
+/* eslint handle-callback-err: "off" */
 module.exports = function (network) {
   const module = {
     nodes: []
@@ -294,7 +295,7 @@ module.exports = function (network) {
         node.connections = result
         resolve(result)
       }).catch((err) => {
-        reject({ message: 'Unable to contact the requested node.' })
+        reject(new Error('Unable to contact the requested node.'))
       })
     })
 
@@ -313,7 +314,7 @@ module.exports = function (network) {
       }).then(({ result }) => {
         resolve(result)
       }).catch((_err) => {
-        reject({ message: 'Unable to contact the requested node.' })
+        reject(new Error('Unable to contact the requested node.'))
       })
     })
 
@@ -333,7 +334,7 @@ module.exports = function (network) {
       }).then(({ result }) => {
         resolve(result)
       }).catch((_err) => {
-        reject({ message: 'Unable to contact the requested node.' })
+        reject(new Error('Unable to contact the requested node.'))
       })
     })
 
@@ -351,7 +352,7 @@ module.exports = function (network) {
       }).then(({ result }) => {
         resolve(result)
       }).catch((_err) => {
-        reject({ message: 'Unable to contact the requested node.' })
+        reject(new Error('Unable to contact the requested node.'))
       })
     })
 
@@ -366,7 +367,7 @@ module.exports = function (network) {
       }).then(({ result }) => {
         resolve(result)
       }).catch((_err) => {
-        reject({ message: 'Unable to contact the requested node.' })
+        reject(new Error('Unable to contact the requested node.'))
       })
     })
 
