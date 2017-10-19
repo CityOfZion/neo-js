@@ -1,4 +1,5 @@
 /* eslint handle-callback-err: "off" */
+/* eslint new-cap: "off" */
 module.exports = function (network) {
   const module = {
     nodes: []
@@ -28,7 +29,7 @@ module.exports = function (network) {
 
   // build the list of neo-maintained nodes
   neoSeeds.forEach(function (domain) {
-    module.nodes.push(new Node({
+    module.nodes.push(new node({
       domain,
       port: neoPort
     }))
@@ -37,7 +38,7 @@ module.exports = function (network) {
   // build the list of CoZ maintained nodes
   const cozNodes = [1, 2, 3, 4, 5]
   cozNodes.forEach((i) => {
-    module.nodes.push(new Node({
+    module.nodes.push(new node({
       domain: `http://${cozNetwork}${i}.cityofzion.io`,
       port: cozPort
     }))
@@ -53,7 +54,7 @@ module.exports = function (network) {
    * @example
    * var n = node({'domain': 'http://seed1.neo.org', 'port': 10332})
    */
-  function Node (conf) {
+  function node (conf) {
     /** {string} The domain of the node */
     /** {number} The port that the node is operating on. */
     /** {number} The last query date represented as seconds since the epoch. */
