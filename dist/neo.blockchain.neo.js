@@ -72,9 +72,9 @@ function neo (mode, network) {
         domain == 'localhost' ?
           allowLocal :
           true
-    ),
+    )),
     sort
-  ))
+  )
 }
 
 exports.neo = neo
