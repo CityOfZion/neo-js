@@ -14,7 +14,7 @@ module.exports = function(network){
   };
   if (network == 'mainnet'){
     collection.blockchain = 'b_neo_m_blocks';
-    collections.transactions = 'b_neo_m_transactions';
+    collection.transactions = 'b_neo_m_transactions';
     collection.accounts = 'b_neo_m_accounts';
     collection.contracts = 'b_neo_m_contracts';
   }
