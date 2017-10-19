@@ -1,6 +1,6 @@
+/* eslint new-cap: "off" */
 /**
- *
- *  An instance of the neo blockchain
+ * An instance of the neo blockchain
  * @class
  * @requires lodash
  * @requires neo.blockchain.node
@@ -9,33 +9,33 @@
  * @param {string} mode Sets whether the library should run in full or light mode.
  * @param {string} network Indicates which network to operate the instance on.
  * @example
- * var neoBlockchain = neo('full', 'testnet') //Creates a new full node instance on testnet.
+ * var neoBlockchain = neo('full', 'testnet') // Creates a new full node instance on testnet.
  * @example
- * var neoBlockchain = neo('light', 'mainnet') //Creates a new light node instances on mainnet.
+ * var neoBlockchain = neo('light', 'mainnet') // Creates a new light node instances on mainnet.
  */
 function neo (mode, network) {
   const _ = require('lodash')
   const sync = require('./neo.blockchain.sync')
 
-  /** {string} The operating mode of the instance ('full', 'light').*/
-  /** {string} The network for the instance to attach to ('testnet', 'mainnet').*/
+  /** {string} The operating mode of the instance ('full', 'light'). */
+  /** {string} The network for the instance to attach to ('testnet', 'mainnet'). */
   /** {Array} The array of nodes that the instance currently has access to. */
   Object.assign(this, {
     mode,
     network,
     sync: new sync.sync(this),
-    node: require('./neo.blockchain.node')(network),
+    node: require('./neo.blockchain.node')(network)
   })
   this.nodes = this.node.nodes
 
-  if (this.mode == 'full') {
+  if (this.mode === 'full') {
     Object.assign(this, {
       db: require('./neo.blockchain.db')(network)
-    });
-    this.localNode = new this.db.node() //Initialize the local node.
+    })
+    this.localNode = new this.db.node() // Initialize the local node.
 
-    /** {node} A direct reference to the local node when running in 'full' mode.*/
-    this.nodes.push(this.localNode) //Add the local node to the pool of options for general queries.
+    /** {node} A direct reference to the local node when running in 'full' mode. */
+    this.nodes.push(this.localNode) // Add the local node to the pool of options for general queries.
   }
 
   /**
@@ -69,9 +69,9 @@ function neo (mode, network) {
     _.filter(
       this.nodes,
       ({ index: nIndex, domain, active }) => active && (index <= nIndex) && (
-        domain == 'localhost' ?
-          allowLocal :
-          true
+        domain === 'localhost'
+          ? allowLocal
+          : true
     )),
     sort
   )
