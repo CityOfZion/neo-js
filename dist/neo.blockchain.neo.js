@@ -30,9 +30,9 @@ function neo (mode, network) {
 
   if (this.mode == 'full') {
     Object.assign(this, {
-      db: require('./neo.blockchain.db')(network),
-      localNode: new this.db.node() //Initialize the local node.
+      db: require('./neo.blockchain.db')(network)
     });
+    this.localNode = new this.db.node() //Initialize the local node.
 
     /** {node} A direct reference to the local node when running in 'full' mode.*/
     this.nodes.push(this.localNode) //Add the local node to the pool of options for general queries.
@@ -72,9 +72,9 @@ function neo (mode, network) {
         domain == 'localhost' ?
           allowLocal :
           true
-    ),
+    )),
     sort
-  ))
+  )
 }
 
 exports.neo = neo
