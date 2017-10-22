@@ -12,7 +12,7 @@ module.exports = function(network){
   };
   if (network == 'mainnet'){
     collection.blockchain = 'b_neo_m_blocks';
-    collections.transactions = 'b_neo_m_transactions';
+    collection.transactions = 'b_neo_m_transactions';
     collection.addresses = 'b_neo_m_addresses';
   }
 
