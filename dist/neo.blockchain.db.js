@@ -196,77 +196,73 @@ module.exports = function(network){
         })
     })
 
-    this.getExpandedTX = function(txid){
-      return new Promise(function(resolve, reject){
-        node.getTX(txid)
-          .then(function(tx) {
-            if (!tx) return reject("Could not find the transaction");
+    this.getExpandedTX = (txid) =>
+    new Promise( (resolve, reject) => {
+      node.getTX(txid)
+        .then( (tx) => {
+          if (!tx) return reject("Could not find the transaction");
 
-            //If the tx has already been expanded, return it
-            if (tx.vin.some(function(entry){ return _.has(entry, 'asset')})){
+          //If the tx has already been expanded, return it
+          if (tx.vin.some( (entry) => _.has(entry, 'asset'))) {
+            resolve(tx);
+          }
+
+          newVin = []
+          Promise.all( _.map(tx.vin, 'txid').map(node.getTX) )
+            .then( (res) => {
+              tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout]);
+              module.transactions.update({'txid': tx.txid}, tx, (err) => {
+                if (err) console.log(err);
+              });
               resolve(tx);
-              return;
-            }
+            })
+            .catch(function(err){
+              console.log(err);
+            })
+        })
+        .catch(function(err){
+          console.log(err);
+        })
+    })
 
-            newVin = []
-            Promise.all(_.map(tx.vin, 'txid').map(node.getTX))
-              .then(function(res){
-                tx.vin = _.map(res, function(r, i){ return r.vout[tx.vin[i].vout] });
-                module.transactions.update({'txid': tx.txid}, tx, function(err){
-                  if (err) console.log(err);
-                });
-                resolve(tx);
-              })
-              .catch(function(err){
-                console.log(err);
-              })
-          })
-          .catch(function(err){
-            console.log(err);
-          })
-      })
-    }
-
-    this.getTX = function(txid){
-      return new Promise(function(resolve, reject){
-        if (txid.length > 64){
-          txid = txid.slice(2);
-        };
-        module.transactions.findOne({ $or:[ {'txid': txid}, {'txid': '0x' + txid}] })
-          .exec(function(err, res){
-            if (err) return reject(err);
-            if (!res) return reject('transaction not found');
-            resolve(res)
-          })
-      })
-    };
+    this.getTX = (txid) =>
+    new Promise(function(resolve, reject){
+      if (txid.length > 64){
+        txid = txid.slice(2);
+      };
+      module.transactions.findOne({ $or:[ {'txid': txid}, {'txid': '0x' + txid}] })
+        .exec( (err, res) => {
+          if (err) return reject(err);
+          if (!res) return reject('transaction not found');
+          resolve(res)
+        })
+    })
 
     this.getBestBlockHash = function(){};
 
-    this.getBlock = function(index){
-      return new Promise(function(resolve, reject){
-        module.blocks.findOne({'index': index})
-          .exec(function(err, res){
-            if (err) return reject(err);
-            if (!res) return reject('Block not found');
-            resolve(res);
-          })
+    this.getBlock = (index) =>
+    new Promise(function(resolve, reject){
+      module.blocks.findOne({'index': index})
+        .exec( (err, res) => {
+          if (err) return reject(err);
+          if (!res) return reject('Block not found');
+          resolve(res);
+        })
       })
-    };
 
-    this.getBlockCount = function(){
-      return new Promise(function(resolve, reject){
-        module.blocks.findOne({}, 'index')
-          .sort('-index')
-          .exec(function (err, res) {
-            if (err) return reject(err);
-            if (!res) res = {'index': -1};
-            node.index = res.index;
-            node.blockHeight = res.index + 1;
-            resolve(node.blockHeight);
-          })
-      })
-    };
+    this.getBlockCount = () =>
+    new Promise(function(resolve, reject){
+      module.blocks.findOne({}, 'index')
+        .sort('-index')
+        .exec(function (err, res) {
+          if (err) return reject(err);
+          if (!res) res = {'index': -1};
+          node.index = res.index;
+          node.blockHeight = res.index + 1;
+          resolve(node.blockHeight);
+        })
+    })
+
 
     this.getBlockHash = function(index){};
 
@@ -283,51 +279,49 @@ module.exports = function(network){
 
     this.submitBlock = function(){};
 
-    this.saveBlock = function(newBlock) {
-      return new Promise(function (resolve, reject) {
+    this.saveBlock = (newBlock) =>
+    new Promise( (resolve, reject) => {
+      //Store the raw block
+      newBlock = delintBlock(newBlock);
+      module.blocks(newBlock).save( (err) => {
+        if (err) return reject(err);
 
-        //Store the raw block
-        newBlock = delintBlock(newBlock);
-        module.blocks(newBlock).save(function (err) {
-          if (err) return reject(err);
-
-          //Store the raw transaction
-          newBlock.tx.forEach(function(tx){
-            tx.blockIndex = newBlock.index;
-            tx.vout.forEach(function(d) {
-              if (node.assetsFlat.indexOf(d.asset) == -1) {
-                module.addresses({'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}).save();
-              }
-            })
-
-            module.transactions(tx).save(function(err){
-              if (err) console.log(err);
-            });
+        //Store the raw transaction
+        newBlock.tx.forEach( (tx) => {
+          tx.blockIndex = newBlock.index;
+          tx.vout.forEach( (d) => {
+            if (node.assetsFlat.indexOf(d.asset) == -1) {
+              module.addresses({'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}).save();
+            }
           })
 
-          //Because we asynchronously sync the blockchain,
-          //we need to keep track of the blocks that have been stored
-          //(higher indices could arrive before the lower ones)
-          //This code maintains the local blockheight by tracking
-          //'linked' and 'unlinked'(but stored) blocks
-          if (newBlock.index > node.index) {
-            node.unlinkedBlocks.push(newBlock.index);
-            var linkIndex = -1;
-            while (true){
-              linkIndex = node.unlinkedBlocks.indexOf(node.index + 1);
-              if (linkIndex != -1){
-                node.unlinkedBlocks.splice(linkIndex,1);
-                node.index++;
-                node.blockHeight++;
-              }
-              else break;
-            }
-          }
-          resolve();
+          module.transactions(tx).save( (err) => {
+            if (err) console.log(err);
+          });
         })
 
+        //Because we asynchronously sync the blockchain,
+        //we need to keep track of the blocks that have been stored
+        //(higher indices could arrive before the lower ones)
+        //This code maintains the local blockheight by tracking
+        //'linked' and 'unlinked'(but stored) blocks
+        if (newBlock.index > node.index) {
+          node.unlinkedBlocks.push(newBlock.index);
+          var linkIndex = -1;
+          while (true){
+            linkIndex = node.unlinkedBlocks.indexOf(node.index + 1);
+            if (linkIndex != -1){
+              node.unlinkedBlocks.splice(linkIndex,1);
+              node.index++;
+              node.blockHeight++;
+            }
+            else break;
+          }
+        }
+        resolve();
       })
-    }
+    })
+
 
     function delintBlock(block){
       block.hash = hexFix(block.hash);
@@ -353,35 +347,32 @@ module.exports = function(network){
       return hex
     }
 
-    this.verifyBlocks = function(start = 0, end = node.index){
-      console.log('Blockchain Verification: Starting');
-      return new Promise(function(resolve, revoke){
-        var missing = [];
-        var pointer = -1;
-        module.blocks.find({}, 'index').sort('index')
-          .exec(function(err,res){
-            console.log('Blockchain Verification: Scanning');
-            res.forEach(function(d){
-              while (true){
-                pointer ++;
-                if (d.index == pointer) break
-                else{
-                  missing.push(pointer);
-                }
+    this.verifyBlocks = (start = 0, end = node.index) =>
+    new Promise( (resolve, revoke) => {
+      var missing = [];
+      var pointer = -1;
+      module.blocks.find({}, 'index').sort('index')
+        .exec( (err,res) => {
+          console.log('Blockchain Verification: Scanning');
+          res.forEach( (d) => {
+            while (true){
+              pointer ++;
+              if (d.index == pointer) break
+              else{
+                missing.push(pointer);
               }
-            })
-            console.log('Blockchain Verification: Found ' + missing.length + ' missing');
-            resolve(missing)
+            }
           })
-      })
-
-    }
+          console.log('Blockchain Verification: Found ' + missing.length + ' missing');
+          resolve(missing)
+        })
+    })
 
     this.getBlockCount();
 
-    var updateAssetList = function() {
+    var updateAssetList = () => {
       module.addresses.find({'type': 'a'}, 'asset')
-        .exec(function (err, res) {
+        .exec( (err, res) => {
           node.assets = res;
           node.assetsFlat = _.map(res, 'asset')
         })
