@@ -1,24 +1,26 @@
-module.exports = function(network){
-  var module = {};
+/* eslint handle-callback-err: "off" */
+/* eslint new-cap: "off" */
+module.exports = function (network) {
+  var module = {}
 
-  var mongoose = require('mongoose');
-  var _ = require('lodash');
+  var mongoose = require('mongoose')
+  var _ = require('lodash')
 
-  //Outlines the collections to use for testnet (default)
+  // Outlines the collections to use for testnet (default)
   var collection = {
-    'blockchain': 'b_neo_t_blocks', //The blockchain collection
-    'transactions': 'b_neo_t_transactions', //the transactions on the blockchains
-    'addresses': 'b_neo_t_addresses', //A collection maintaining accounts and their balances
-  };
-  if (network == 'mainnet'){
-    collection.blockchain = 'b_neo_m_blocks';
-    collection.transactions = 'b_neo_m_transactions';
-    collection.addresses = 'b_neo_m_addresses';
+    'blockchain': 'b_neo_t_blocks', // The blockchain collection
+    'transactions': 'b_neo_t_transactions', // The transactions on the blockchains
+    'addresses': 'b_neo_t_addresses' // A collection maintaining accounts and their balances
+  }
+  if (network === 'mainnet') {
+    collection.blockchain = 'b_neo_m_blocks'
+    collection.transactions = 'b_neo_m_transactions'
+    collection.addresses = 'b_neo_m_addresses'
   }
 
-  var bSchema = mongoose.Schema;
+  var bSchema = mongoose.Schema
 
-  //Schema defining a destructed block
+  // Schema defining a destructed block
   var blockSchema = new bSchema({
     hash: String,
     size: Number,
@@ -26,20 +28,21 @@ module.exports = function(network){
     previousblockhash: String,
     merkleroot: String,
     time: Number,
-    index: {type: 'Number', unique : true, required : true, dropDups: true},
+    index: {type: 'Number', unique: true, required: true, dropDups: true},
     nonce: String,
     nextconsensus: String,
-    script:
-      { invocation: String,
-        verification: String },
-    tx:[],
+    script: {
+      invocation: String,
+      verification: String
+    },
+    tx: [],
     confirmations: Number,
     nextblockhash: String
-  });
-  module.blocks = mongoose.model(collection.blockchain, blockSchema);
+  })
+  module.blocks = mongoose.model(collection.blockchain, blockSchema)
 
   var transactionSchema = new bSchema({
-    txid: {type: 'String', unique : true, required : true, dropDups: true, index: true},
+    txid: {type: 'String', unique: true, required: true, dropDups: true, index: true},
     size: Number,
     type: {type: 'String', index: true},
     version: Number,
@@ -50,16 +53,16 @@ module.exports = function(network){
     net_fee: Number,
     blockIndex: {type: 'Number', index: true},
     scripts: [] })
-  module.transactions = mongoose.model(collection.transactions, transactionSchema);
+  module.transactions = mongoose.model(collection.transactions, transactionSchema)
 
   var addressSchema = new bSchema({
-    address: {type: 'String', unique : true, required : true, dropDups: true},
+    address: {type: 'String', unique: true, required: true, dropDups: true},
     asset: 'String',
     type: 'String',
     assets: [],
     history: []
   })
-  module.addresses = mongoose.model(collection.addresses, addressSchema);
+  module.addresses = mongoose.model(collection.addresses, addressSchema)
 
   /**
    * @class node
@@ -67,17 +70,17 @@ module.exports = function(network){
    * @description
    * A class defining a local node on the neo blockchain.
    */
-  module.node = function node(){
-    this.domain = 'localhost';
-    this.active = true;
-    this.latency = 0;
-    this.blockHeight = 0;
-    this.index = -1;
-    this.connections = 0;
-    this.pendingRequests = 0;
-    this.unlinkedBlocks = [];
-    this.assets = [];
-    var node = this;
+  module.node = function node () {
+    this.domain = 'localhost'
+    this.active = true
+    this.latency = 0
+    this.blockHeight = 0
+    this.index = -1
+    this.connections = 0
+    this.pendingRequests = 0
+    this.unlinkedBlocks = []
+    this.assets = []
+    var node = this
 
     /**
      * Gets the balance of all assets and tokens for an address.  This method will return the
@@ -92,51 +95,50 @@ module.exports = function(network){
      * of balance discretization.
      * @returns Promise.<Array> An array containing the balances of an address.
      */
-    this.getBalance = ( { address, assets = node.assets, blockAge = 1} ) =>
-    new Promise( (resolve, reject) => {
-        module.addresses.findOne({'address': address})
-          .exec( (err, res) => {
-            if (err) reject(err)
+    this.getBalance = ({ address, assets = node.assets, blockAge = 1 }) =>
+    new Promise((resolve, reject) => {
+      module.addresses.findOne({'address': address})
+        .exec((err, res) => {
+          if (err) reject(err)
 
-            //If the address is not found in the database, its new...So add it and retry.
-            if (!res) {
-              module.addresses({'address': address, 'type': 'c', 'assets': []})
-                .save( (res) => {
-                  node.getBalance(address)
-                  .then((res) => {
-                    resolve(res);
+          // If the address is not found in the database, its new...So add it and retry.
+          if (!res) {
+            module.addresses({'address': address, 'type': 'c', 'assets': []})
+              .save((res) => {
+                node.getBalance(address)
+                .then((res) => {
+                  resolve(res)
+                })
+              })
+          } else {
+            // Sort the assets into 'current' and 'needs update'
+            var parts = _.partition(res.assets, (asset) =>
+              (node.index - asset.index) >= blockAge
+            )
+            // If there is an asset list discripancy, scan for missing assets to update.
+            // This mechanic is used to automatically add new asset support as
+            // an asset it appears in a transaction.
+            if (res.assets.length !== node.assets.length) {
+              var included = _.map(res.assets, 'asset')
+              node.assets.forEach((asset) => {
+                if (included.indexOf(asset.asset) === -1) {
+                  parts[0].push({
+                    'asset': asset.asset
                   })
-                })
+                }
+              })
             }
-            else {
-              //Sort the assets into 'current' and 'needs update'
-              var parts = _.partition(res.assets, (asset) =>
-                (node.index - asset.index) >= blockAge
-              );
-              //If there is an asset list discripancy, scan for missing assets to update.
-              //This mechanic is used to automatically add new asset support as
-              //an asset it appears in a transaction.
-              if (res.assets.length != node.assets.length){
-                var included = _.map(res.assets, 'asset');
-                node.assets.forEach( (asset) => {
-                  if (included.indexOf(asset.asset) === -1) {
-                    parts[0].push({
-                      'asset': asset.asset,
-                    })
-                  }
-                })
-              }
 
-              //Update stale balances and resolve
-              Promise.all(parts[0].map( (asset) =>
-                node.getAssetBalance({address, asset: asset.asset, startBlock: asset.index + 1, balance: asset.balance})
-              ))
-              .then( (res) =>
-                resolve(parts[1].concat(res))
-              );
-            }
-          })
-      })
+            // Update stale balances and resolve
+            Promise.all(parts[0].map((asset) =>
+              node.getAssetBalance({address, asset: asset.asset, startBlock: asset.index + 1, balance: asset.balance})
+            ))
+            .then((res) =>
+              resolve(parts[1].concat(res))
+            )
+          }
+        })
+    })
 
     /**
      * Gets the balance of an asset belonging to a specific address
@@ -148,9 +150,9 @@ module.exports = function(network){
      * @param {Number} [balance = 0] the balance at the startBlock.
      * @returns Promise.<object> An object containing the asset balance.
      */
-    this.getAssetBalance = ( {address, asset, startBlock = 0, balance = 0} ) =>
-    new Promise( (resolve, reject) => {
-      //find all transactions involving the requested asset and address
+    this.getAssetBalance = ({address, asset, startBlock = 0, balance = 0}) =>
+    new Promise((resolve, reject) => {
+      // Find all transactions involving the requested asset and address
       module.transactions.find({
         'vout.address': address,
         $or: [{'type': 'ContractTransaction'},
@@ -159,228 +161,224 @@ module.exports = function(network){
         'vout.asset': asset,
         'blockIndex': {'$gte': startBlock}
       }, 'txid').sort('blockIndex')
-        .exec( (err, res) => {
-          if (err) return reject(err);
-          Promise.all( _.map(res, 'txid').map(node.getExpandedTX) )
-            .then( (res)  => {
-              res.forEach( (r) => {
+        .exec((err, res) => {
+          if (err) return reject(err)
+          Promise.all(_.map(res, 'txid').map(node.getExpandedTX))
+            .then((res) => {
+              res.forEach((r) => {
                 r.vout.forEach((output) => {
                   if ((output.address === address) &&
                     (output.asset === asset)) {
-                    balance += output.value;
+                    balance += output.value
                   }
                 })
                 r.vin.forEach((input) => {
                   if ((input.address === address) &&
                     (input.asset === asset)) {
-                    balance -= input.value;
+                    balance -= input.value
                   }
                 })
               })
-              //update the address balances in the collection
-              var result = {'asset': asset, 'balance': balance, 'index': node.index, 'type': 'a'};
+              // Update the address balances in the collection
+              var result = {'asset': asset, 'balance': balance, 'index': node.index, 'type': 'a'}
               module.addresses.update({'address': address, 'assets.asset': asset}, {
                 'assets.$.balance': balance,
                 'assets.$.index': node.index
               }).exec((err, res) => {
-                //if no asset was updated, the asset must be new, append it
-                if (res.n == 0) {
+                // If no asset was updated, the asset must be new, append it
+                if (res.n === 0) {
                   module.addresses.update({'address': address}, {'$push': {'assets': result}})
                     .exec((err, res) => {
                       resolve(result)
                     })
-                } else resolve(result);
+                } else resolve(result)
               })
-
-            }).catch( (err) => reject(err) )
+            }).catch((err) => reject(err))
         })
     })
 
     this.getExpandedTX = (txid) =>
-    new Promise( (resolve, reject) => {
+    new Promise((resolve, reject) => {
       node.getTX(txid)
-        .then( (tx) => {
-          if (!tx) return reject("Could not find the transaction");
+        .then((tx) => {
+          if (!tx) return reject(new Error('Could not find the transaction'))
 
-          //If the tx has already been expanded, return it
-          if (tx.vin.some( (entry) => _.has(entry, 'asset'))) {
-            resolve(tx);
+          // If the tx has already been expanded, return it
+          if (tx.vin.some((entry) => _.has(entry, 'asset'))) {
+            resolve(tx)
           }
 
-          newVin = []
-          Promise.all( _.map(tx.vin, 'txid').map(node.getTX) )
-            .then( (res) => {
-              tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout]);
+          Promise.all(_.map(tx.vin, 'txid').map(node.getTX))
+            .then((res) => {
+              tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout])
               module.transactions.update({'txid': tx.txid}, tx, (err) => {
-                if (err) console.log(err);
-              });
-              resolve(tx);
+                if (err) console.log(err)
+              })
+              resolve(tx)
             })
-            .catch(function(err){
-              console.log(err);
+            .catch(function (err) {
+              console.log(err)
             })
         })
-        .catch(function(err){
-          console.log(err);
+        .catch(function (err) {
+          console.log(err)
         })
     })
 
     this.getTX = (txid) =>
-    new Promise(function(resolve, reject){
-      if (txid.length > 64){
-        txid = txid.slice(2);
-      };
-      module.transactions.findOne({ $or:[ {'txid': txid}, {'txid': '0x' + txid}] })
-        .exec( (err, res) => {
-          if (err) return reject(err);
-          if (!res) return reject('transaction not found');
+    new Promise(function (resolve, reject) {
+      if (txid.length > 64) {
+        txid = txid.slice(2)
+      }
+      module.transactions.findOne({ $or: [{'txid': txid}, {'txid': '0x' + txid}] })
+        .exec((err, res) => {
+          if (err) return reject(err)
+          if (!res) return reject(new Error('transaction not found'))
           resolve(res)
         })
     })
 
-    this.getBestBlockHash = function(){};
+    this.getBestBlockHash = function () {}
 
     this.getBlock = (index) =>
-    new Promise(function(resolve, reject){
+    new Promise(function (resolve, reject) {
       module.blocks.findOne({'index': index})
-        .exec( (err, res) => {
-          if (err) return reject(err);
-          if (!res) return reject('Block not found');
-          resolve(res);
+        .exec((err, res) => {
+          if (err) return reject(err)
+          if (!res) return reject(new Error('Block not found'))
+          resolve(res)
         })
-      })
+    })
 
     this.getBlockCount = () =>
-    new Promise(function(resolve, reject){
+    new Promise(function (resolve, reject) {
       module.blocks.findOne({}, 'index')
         .sort('-index')
         .exec(function (err, res) {
-          if (err) return reject(err);
-          if (!res) res = {'index': -1};
-          node.index = res.index;
-          node.blockHeight = res.index + 1;
-          resolve(node.blockHeight);
+          if (err) return reject(err)
+          if (!res) res = {'index': -1}
+          node.index = res.index
+          node.blockHeight = res.index + 1
+          resolve(node.blockHeight)
         })
     })
 
+    this.getBlockHash = function (index) {}
 
-    this.getBlockHash = function(index){};
+    this.getConnectionCount = function () {}
 
-    this.getConnectionCount = function(){};
+    this.getRawMemPool = function () {}
 
-    this.getRawMemPool = function(){};
+    this.getTXOut = function (txid) {}
 
-    this.getTXOut = function(txid){
-    };
+    this.sendRawTransaction = function () {}
 
-    this.sendRawTransaction = function(){};
+    this.sendToAddress = function (assetId, address, value) {}
 
-    this.sendToAddress = function(asset_id, address, value){};
-
-    this.submitBlock = function(){};
+    this.submitBlock = function () {}
 
     this.saveBlock = (newBlock) =>
-    new Promise( (resolve, reject) => {
-      //Store the raw block
-      newBlock = delintBlock(newBlock);
-      module.blocks(newBlock).save( (err) => {
-        if (err) return reject(err);
+    new Promise((resolve, reject) => {
+      // Store the raw block
+      newBlock = delintBlock(newBlock)
+      module.blocks(newBlock).save((err) => {
+        if (err) return reject(err)
 
-        //Store the raw transaction
-        newBlock.tx.forEach( (tx) => {
-          tx.blockIndex = newBlock.index;
-          tx.vout.forEach( (d) => {
-            if (node.assetsFlat.indexOf(d.asset) == -1) {
-              module.addresses({'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}).save();
+        // Store the raw transaction
+        newBlock.tx.forEach((tx) => {
+          tx.blockIndex = newBlock.index
+          tx.vout.forEach((d) => {
+            if (node.assetsFlat.indexOf(d.asset) === -1) {
+              module.addresses({'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}).save()
             }
           })
 
-          module.transactions(tx).save( (err) => {
-            if (err) console.log(err);
-          });
+          module.transactions(tx).save((err) => {
+            if (err) console.log(err)
+          })
         })
 
-        //Because we asynchronously sync the blockchain,
-        //we need to keep track of the blocks that have been stored
-        //(higher indices could arrive before the lower ones)
-        //This code maintains the local blockheight by tracking
-        //'linked' and 'unlinked'(but stored) blocks
+        // Because we asynchronously sync the blockchain,
+        // we need to keep track of the blocks that have been stored
+        // (higher indices could arrive before the lower ones)
+        // This code maintains the local blockheight by tracking
+        // 'linked' and 'unlinked'(but stored) blocks
         if (newBlock.index > node.index) {
-          node.unlinkedBlocks.push(newBlock.index);
-          var linkIndex = -1;
-          while (true){
-            linkIndex = node.unlinkedBlocks.indexOf(node.index + 1);
-            if (linkIndex != -1){
-              node.unlinkedBlocks.splice(linkIndex,1);
-              node.index++;
-              node.blockHeight++;
+          node.unlinkedBlocks.push(newBlock.index)
+          var linkIndex = -1
+          while (true) {
+            linkIndex = node.unlinkedBlocks.indexOf(node.index + 1)
+            if (linkIndex !== -1) {
+              node.unlinkedBlocks.splice(linkIndex, 1)
+              node.index++
+              node.blockHeight++
+            } else {
+              break
             }
-            else break;
           }
         }
-        resolve();
+        resolve()
       })
     })
 
-
-    function delintBlock(block){
-      block.hash = hexFix(block.hash);
+    function delintBlock (block) {
+      block.hash = hexFix(block.hash)
       block.previousblockhash = hexFix(block.previousblockhash)
       block.merkleroot = hexFix(block.merkleroot)
-      block.tx.forEach(function(tx){
-        tx.txid = hexFix(tx.txid);
-        tx.sys_fee = parseFloat(tx.sys_fee);
-        tx.net_fee = parseFloat(tx.net_fee);
+      block.tx.forEach(function (tx) {
+        tx.txid = hexFix(tx.txid)
+        tx.sys_fee = parseFloat(tx.sys_fee)
+        tx.net_fee = parseFloat(tx.net_fee)
 
-        tx.vout.forEach(function(vout){
+        tx.vout.forEach(function (vout) {
           vout.asset = hexFix(vout.asset)
-          vout.value = parseFloat(vout.value);
+          vout.value = parseFloat(vout.value)
         })
       })
       return block
     }
 
-    function hexFix(hex){
-      if (hex.length == 64){
+    function hexFix (hex) {
+      if (hex.length === 64) {
         hex = '0x' + hex
       }
       return hex
     }
 
     this.verifyBlocks = (start = 0, end = node.index) =>
-    new Promise( (resolve, revoke) => {
-      var missing = [];
-      var pointer = -1;
+    new Promise((resolve, reject) => {
+      var missing = []
+      var pointer = -1
       module.blocks.find({}, 'index').sort('index')
-        .exec( (err,res) => {
-          console.log('Blockchain Verification: Scanning');
-          res.forEach( (d) => {
-            while (true){
-              pointer ++;
-              if (d.index == pointer) break
-              else{
-                missing.push(pointer);
+        .exec((err, res) => {
+          console.log('Blockchain Verification: Scanning')
+          res.forEach((d) => {
+            while (true) {
+              pointer++
+              if (d.index === pointer) {
+                break
+              } else {
+                missing.push(pointer)
               }
             }
           })
-          console.log('Blockchain Verification: Found ' + missing.length + ' missing');
+          console.log('Blockchain Verification: Found ' + missing.length + ' missing')
           resolve(missing)
         })
     })
 
-    this.getBlockCount();
+    this.getBlockCount()
 
     var updateAssetList = () => {
       module.addresses.find({'type': 'a'}, 'asset')
-        .exec( (err, res) => {
-          node.assets = res;
+        .exec((err, res) => {
+          node.assets = res
           node.assetsFlat = _.map(res, 'asset')
         })
     }
-    updateAssetList();
-    setInterval(updateAssetList, 10000);
-
+    updateAssetList()
+    setInterval(updateAssetList, 10000)
   }
 
   return module
-};
+}
