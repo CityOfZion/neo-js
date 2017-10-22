@@ -5,9 +5,11 @@
   "main": "dist/neo.blockchain.neo.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./**/*.js || exit 0",
-    "integration": "node_modules/mocha/bin/mocha -b test/integration/*.js",
-    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js",
-    "coverage": "node_modules/nyc/bin/nyc.js npm test"
+    "integration": "./node_modules/.bin/mocha -b ./test/integration/*.js",
+    "test": "./node_modules/.bin/mocha -b ./test/unit/*.js",
+    "coverage": "./node_modules/.bin/nyc npm test",
+    "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
+    "prepublish": "echo \"Not Implemented: unit test, JS lint and documentations to be performed here.\" && exit 0"
   },
   "repository": {
     "type": "git",
