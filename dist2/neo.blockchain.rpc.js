@@ -1,6 +1,6 @@
 /**
  * 
- * @param {String} network can be either 'mainnet' or 'testnet'
+ * @param {String} nodeUrl
  * @param {Object} options 
  */
 const Rpc = function (nodeUrl, options = {}) {
