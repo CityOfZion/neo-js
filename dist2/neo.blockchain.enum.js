@@ -1,5 +1,5 @@
 module.exports = {
-  seeds: {
+  nodes: {
     mainnet: [
       { url: 'http://seed1.neo.org', port: 10332 },
       { url: 'http://seed2.neo.org', port: 10332 },

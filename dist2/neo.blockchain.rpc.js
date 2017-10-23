@@ -12,20 +12,20 @@ const Rpc = function (network, options = {}) {
   this.node = undefined
 
   // Bootstrap
-  this.setDefaultSeed()
+  this.setDefaultNode()
 }
 
 Rpc.prototype = {
-  setDefaultSeed: function () {
-    this.seed = this.enum.seeds[this.network][0]
+  setDefaultNode: function () {
+    this.node = this.enum.nodes[this.network][0]
   },
 
-  getCurrentSeed: function () {
-    return this.seed
+  getCurrentNode: function () {
+    return this.node
   },
 
-  getCurrentSeedUrl: function () {
-    return this.seed.url + ':' + this.seed.port
+  getCurrentNodeUrl: function () {
+    return this.node.url + ':' + this.node.port
   },
 
   getBestBlockHash: function () {
@@ -40,7 +40,7 @@ Rpc.prototype = {
     return new Promise((resolve, reject) => {
       this.axios({
         method: 'post',
-        url: this.getCurrentSeedUrl(),
+        url: this.getCurrentNodeUrl(),
         data: {
           jsonrpc: '2.0',
           method: payload.method,

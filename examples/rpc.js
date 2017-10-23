@@ -5,14 +5,14 @@ const neoRpc = require('../dist2/neo.blockchain.rpc')
 // -- Bootstrap
 
 let client = new neoRpc('testnet')
-console.log('client:', client)
+// console.log('client:', client)
 
 //-- Use Cases
 
-async function lorem () {
-  console.log('lorem:')
-  console.log('currentSeed:', client.getCurrentSeed())
-  console.log('currentSeedUrl:', client.getCurrentSeedUrl())
+async function basic () {
+  console.log('basic:')
+  console.log('getCurrentNode:', client.getCurrentNode())
+  console.log('getCurrentNodeUrl:', client.getCurrentNodeUrl())
   console.log('bestBlockHash:', await client.getBestBlockHash())
 }
 
@@ -20,7 +20,7 @@ async function lorem () {
 
 async function actionAsync () {
   // Examples
-  await lorem()
+  await basic()
   process.exit()
 }
 
