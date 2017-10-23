@@ -1,5 +1,5 @@
 /* global describe it */
-
+/* eslint no-unused-expressions: "off" */
 const expect = require('chai').expect
 const TestHelper = require('../helpers/test-helper')
 const Profiles = require('../helpers/profiles')
