@@ -5,6 +5,9 @@ module.exports = function (network) {
 
   const mongoose = require('mongoose')
   const _ = require('lodash')
+  
+  // Explicit connect to localhost DB
+  mongoose.connect('mongodb://localhost/ipsum')
 
   // Outlines the collections to use for testnet (default)
   let collection = {
