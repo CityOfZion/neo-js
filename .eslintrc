@@ -9,6 +9,7 @@
   "rules": {
     "arrow-parens": 2,
     "prefer-arrow-callback": 2,
-    "no-var": 2
+    "no-var": 2,
+    "quote-props": [2, "as-needed"]
   }
 }
