@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-const neoRpc = require('../dist/neo.blockchain.rpc')
+const neoRpc = require('../dist2/neo.blockchain.rpc')
 
 // -- Bootstrap
 
