@@ -1,3 +1,5 @@
+const Rpc = require('./neo.blockchain.rpc')
+
 /**
  * 
  * @param {String} network can be either 'mainnet' or 'testnet'
@@ -9,7 +11,10 @@ const Neo = function (network, options = {}) {
   this.mode = options.mode || 'light'
   this._ = options._ || require('lodash')
   this.enum = options.enum || require('./neo.blockchain.enum')
-  this.node = undefined;
+  // this.rpc = require('./neo.blockchain.rpc')
+  this.nodes = this._.cloneDeep(this.enum.nodes[this.network])
+  this.currentNode = undefined
+  this.rpc = undefined
 
   // Bootstrap
   this.setDefaultNode()
@@ -17,15 +22,37 @@ const Neo = function (network, options = {}) {
 
 Neo.prototype = {
   setDefaultNode: function () {
-    this.node = this.enum.nodes[this.network][0]
+    this.currentNode = this.nodes[0]
+    this.rpc = new Rpc(this.getCurrentNodeUrl())
+  },
+
+  setFastestNode: function () {
+    this.currentNode = this._.minBy(this._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
+    this.rpc = new Rpc(this.getCurrentNodeUrl())
+  },
+
+  setHighestNode: function () {
+    this.currentNode = this._.maxBy(this._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
+    this.rpc = new Rpc(this.getCurrentNodeUrl())
   },
 
   getCurrentNode: function () {
-    return this.node
+    return this.currentNode
   },
 
   getCurrentNodeUrl: function () {
-    return this.node.url + ':' + this.node.port
+    return this.currentNode.url + ':' + this.currentNode.port
+  },
+
+  /**
+   * This is experimental method, serves no real purpose.
+   */
+  findCurrentNode: function () {
+    this.nodes.forEach((needleNode) => {
+      if(needleNode == this.currentNode) {
+        console.log('FOUND! needleNode:', needleNode)
+      }
+    })
   },
 }
 
