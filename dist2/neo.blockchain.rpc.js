@@ -6,7 +6,8 @@
 const Rpc = function (nodeUrl, options = {}) {
   // Properties and default values
   this.nodeUrl = nodeUrl
-  this.axios = options.axios || require('axios')
+  this.axios = options.axios || require('axios') // TODO: perhaps rename the HTTP client to a general name, like 'httpClient'
+  this.eventEmitter = options.eventEmitter || null // Unlike the other options, the default of this is null when unprovided  
 }
 
 Rpc.prototype = {
@@ -58,9 +59,15 @@ Rpc.prototype = {
         timeout: 20000 // TODO: refactor magic number
       })
         .then((res) => {
+          // console.log('this.nodeUrl:', this.nodeUrl)
+          if(this.eventEmitter) {
+            //TODO: calculate request resolve time
+            this.eventEmitter.emit(`rpc:${payload.method}`, { params: payload.params, result: res.data.result })
+          }
           resolve(res.data.result)
         })
         .catch((err) => {
+          //TODO: emit stuff?
           reject(err)
         })
     })

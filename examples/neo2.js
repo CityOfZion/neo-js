@@ -20,7 +20,7 @@ async function actionAsync() {
 
   console.log('== RPC within Neo ==')
   console.log('getBlockCount:', await neoBlockchain.rpc.getBlockCount())
-
+  console.log('getCurrentNode:', neoBlockchain.getCurrentNode())
   process.exit()
 }
 
