@@ -27,6 +27,7 @@ const Neo = function (network, options = {}) {
   this.eventEmitter.on('rpc:getblockcount', (e) => {
     console.log('rpc:getblockcount triggered. e:', e)
     this.currentNode.blockHeight = e.result
+    this.currentNode.latency = e.latency
   })
   
   // TODO: how to set 'active' state per node?

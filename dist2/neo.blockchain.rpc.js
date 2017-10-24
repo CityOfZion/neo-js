@@ -46,6 +46,7 @@ Rpc.prototype = {
   },
 
   _call: function (payload) {
+    const startTime = new Date()
     return new Promise((resolve, reject) => {
       this.axios({
         method: 'post',
@@ -60,9 +61,10 @@ Rpc.prototype = {
       })
         .then((res) => {
           // console.log('this.nodeUrl:', this.nodeUrl)
+          const latency = (new Date()) - startTime // In milliseconds
           if(this.eventEmitter) {
             //TODO: calculate request resolve time
-            this.eventEmitter.emit(`rpc:${payload.method}`, { params: payload.params, result: res.data.result })
+            this.eventEmitter.emit(`rpc:${payload.method}`, { params: payload.params, result: res.data.result, latency })
           }
           resolve(res.data.result)
         })
