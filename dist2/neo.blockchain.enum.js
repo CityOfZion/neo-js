@@ -1,3 +1,6 @@
+/**
+ * Choose JavaScript object instead of JSON to open possibility of logic operations or methods here.
+ */
 module.exports = {
   nodes: {
     mainnet: [
