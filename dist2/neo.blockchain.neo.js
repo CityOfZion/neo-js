@@ -24,8 +24,8 @@ const Neo = function (network, options = {}) {
 
   // Event bindings
   // TODO: pink elephant: is this heavy?
-  this.eventEmitter.on('rpc:getblockcount', (e) => {
-    console.log('rpc:getblockcount triggered. e:', e)
+  this.eventEmitter.on('rpc:getblockcount:response', (e) => {
+    console.log('rpc:getblockcount:response triggered. e:', e)
     this.currentNode.blockHeight = e.result
     this.currentNode.latency = e.latency
   })

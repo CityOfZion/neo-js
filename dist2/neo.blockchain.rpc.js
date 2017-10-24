@@ -64,7 +64,7 @@ Rpc.prototype = {
           const latency = (new Date()) - startTime // In milliseconds
           if(this.eventEmitter) {
             //TODO: calculate request resolve time
-            this.eventEmitter.emit(`rpc:${payload.method}`, { params: payload.params, result: res.data.result, latency })
+            this.eventEmitter.emit(`rpc:${payload.method}:response`, { params: payload.params, result: res.data.result, latency })
           }
           resolve(res.data.result)
         })
