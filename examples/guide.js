@@ -43,6 +43,23 @@ async function neoDemo1 () {
   console.log('')
 }
 
+
+async function neoDemo2 () {
+  console.log('== Advanced Neo client initialisation ==')
+
+  /**
+   * Want to see more log messages for debugging purpose? Provide an verbose level.
+   */
+  const neoBlockchain = new Neo('testnet', { verboseLevel: 3 })
+
+  /**
+   * Now make a getBlockCount request where its event handler will log out debugging information.
+   */
+  console.log('getBlockCount:', await neoBlockchain.rpc.getBlockCount())
+
+  console.log('')
+}
+
 // -- Chain of command
 
 async function main () {
@@ -55,6 +72,7 @@ async function main () {
    * Basic Neo client usages
    */
   await neoDemo1()
+  await neoDemo2()
 
   process.exit()
 }

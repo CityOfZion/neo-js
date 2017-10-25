@@ -10,6 +10,7 @@ const Neo = function (network, options = {}) {
   // Properties and default values
   this.network = network
   this.mode = options.mode || 'light' // Default to 'light' wallet mode if not specified.
+  this.verboseLevel = options.verboseLevel || 2 // 0: off, 1: error, 2: warn, 3: log
   this._ = options._ || require('lodash') // User has the choice of BYO utility library
   this.enum = options.enum || require('./neo.blockchain.enum') // User has the choice to BYO own enum definitions
   this.eventEmitter = new EventEmitter()
@@ -17,19 +18,21 @@ const Neo = function (network, options = {}) {
   this.currentNode = undefined
   this.rpc = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
-  // TODO: verbose setting
+  // TODO: cache mechanism, in-memory, vs mongodb?
 
   // Bootstrap
   this.setDefaultNode()
 
   // Event bindings
-  // TODO: pink elephant: is this heavy?
+  // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
   this.eventEmitter.on('rpc:getblockcount:response', (e) => {
-    console.log('rpc:getblockcount:response triggered. e:', e)
+    if(this.verboseLevel >= 3) {
+      console.log('rpc:getblockcount:response triggered. e:', e)
+    }
     this.currentNode.blockHeight = e.result
     this.currentNode.latency = e.latency
   })
-  
+
   // TODO: how to set 'active' state per node?
 }
 
