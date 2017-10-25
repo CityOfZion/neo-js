@@ -37,7 +37,9 @@ async function neoDemo1 () {
    * As result, it'll pick a default node.
    */
   neoBlockchain.setHighestNode()
-  console.log('getCurrentNode:', neoBlockchain.getCurrentNode())
+  console.log('getCurrentNodeUrl:', neoBlockchain.getCurrentNodeUrl())
+  console.log('getBlockCount:', await neoBlockchain.rpc.getBlockCount())
+
   console.log('')
 }
 

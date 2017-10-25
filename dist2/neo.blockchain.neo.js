@@ -16,7 +16,6 @@ const Neo = function (network, options = {}) {
   this.nodes = this._.cloneDeep(this.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   this.rpc = undefined
-  // TODO: it may be beneficial to keep a breadcrumb of node switchings
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: verbose setting
 
@@ -36,27 +35,18 @@ const Neo = function (network, options = {}) {
 
 Neo.prototype = {
   setDefaultNode: function () {
-    this.currentNode = this.nodes[0] // Always pick the first node in the list as default choice
-    this.setRpc()
+    const node = this.nodes[0] // Always pick the first node in the list as default choice
+    this._setCurrentNode(node)
   },
 
   setFastestNode: function () {
-    this.currentNode = this._.minBy(this._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
-    this.setRpc()
+    const node = this._.minBy(this._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
+    this._setCurrentNode(node)
   },
 
   setHighestNode: function () {
-    this.currentNode = this._.maxBy(this._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
-    this.setRpc()
-  },
-
-  setRpc: function () {
-    /**
-     * TODO:
-     * It would be nice if there's a mechanic to determine if there's a need to reinstantiate RPC client.
-     * Or perhaps have multiple instances of RPC client along with lazy load. 
-     */
-    this.rpc = new Rpc(this.getCurrentNodeUrl(), { eventEmitter: this.eventEmitter }) // (Re)initiates RPC client instance    
+    const node = this._.maxBy(this._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
+    this._setCurrentNode(node)
   },
 
   getCurrentNode: function () {
@@ -77,6 +67,17 @@ Neo.prototype = {
       }
     })
   },
+
+  // -- Private methods
+
+  _setCurrentNode: function(node) {
+    this.currentNode = node
+    if(!this.currentNode.rpc) { // Lazy load if hasn't been instantiated yet
+      this.currentNode.rpc = new Rpc(this.getCurrentNodeUrl(), { eventEmitter: this.eventEmitter })
+    }
+    this.rpc = this.currentNode.rpc // Set alias
+  },
+
 }
 
 module.exports = Neo
