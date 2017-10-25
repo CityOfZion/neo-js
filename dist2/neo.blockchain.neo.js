@@ -9,19 +9,24 @@ const EventEmitter = require('events')
 const Neo = function (network, options = {}) {
   // Properties and default values
   this.network = network
-  this.mode = options.mode || 'light' // Default to 'light' wallet mode if not specified.
+  this.mode = options.mode || 'light' // Default to 'light' wallet mode if not specified. If it's a full node, it will connect to db instance via 'neo.blockchain.db'.
   this.verboseLevel = options.verboseLevel || 2 // 0: off, 1: error, 2: warn, 3: log
   this._ = options._ || require('lodash') // User has the choice of BYO utility library
   this.enum = options.enum || require('./neo.blockchain.enum') // User has the choice to BYO own enum definitions
+  this.pingNodes = (options.pingNodes !== undefined) ? options.pingNodes : false
+
   this.eventEmitter = new EventEmitter()
   this.nodes = this._.cloneDeep(this.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   this.rpc = undefined
+  this.pingActive = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
 
   // Bootstrap
   this.setDefaultNode()
+  this.startPingNodes()
+  this.setBackgroundProcess()
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
@@ -29,6 +34,7 @@ const Neo = function (network, options = {}) {
     if(this.verboseLevel >= 3) {
       console.log('rpc:getblockcount:response triggered. e:', e)
     }
+    // TODO: this won't work for diagnostic prupose and it won't be using 'currentNode'
     this.currentNode.blockHeight = e.result
     this.currentNode.latency = e.latency
   })
@@ -43,13 +49,19 @@ Neo.prototype = {
   },
 
   setFastestNode: function () {
-    const node = this._.minBy(this._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
-    this._setCurrentNode(node)
+    this._setCurrentNode(this.getFastestNode())
   },
 
   setHighestNode: function () {
-    const node = this._.maxBy(this._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
-    this._setCurrentNode(node)
+    this._setCurrentNode(this.getHighestNode())
+  },
+
+  getFastestNode: function () {
+    return this._.minBy(this.nodes, 'latency') || this.nodes[0]
+  },
+
+  getHighestNode: function () {
+    return this._.maxBy(this.nodes, 'blockHeight') || this.nodes[0]
   },
 
   getCurrentNode: function () {
@@ -57,8 +69,44 @@ Neo.prototype = {
   },
 
   getCurrentNodeUrl: function () {
-    return this.currentNode.url + ':' + this.currentNode.port
+    return this.getNodeUrl(this.currentNode)
   },
+
+  getNodeUrl: function (node) {
+    return node.url + ':' + node.port
+  },
+
+  startPingNodes: function () {
+    this.pingActive = true
+  },
+
+  stopPingNodes: function () {
+    this.pingActive = false
+  },
+
+  setBackgroundProcess: function () {
+    console.log('setBackgroundProcess triggered.')
+    // const pingNode
+    setInterval(() => {
+      const targetIndex = Math.floor(Math.random() * this.nodes.length) // Use randomiser, later adapt a better algorithm
+      const targetNode = this.nodes[targetIndex]
+      console.log('=> #' + targetIndex, 'node:', this.getNodeUrl(targetNode))
+      if(!targetNode.rpc) {
+        targetNode.rpc = new Rpc(this.getNodeUrl(targetNode), { eventEmitter: this.eventEmitter })
+      }
+      targetNode.rpc.getBlockCount()
+    }, 2000)
+
+    setInterval(() => {
+      const fNode = this.getFastestNode()
+      console.log('!! Fastest node:', this.getNodeUrl(fNode), 'latency:', fNode.latency);
+      const hNode = this.getHighestNode()
+      console.log('!! Highest node:', this.getNodeUrl(hNode), 'blockHeight:', hNode.blockHeight);
+    }, 10000)
+
+  },
+
+  // -- Experiment
 
   /**
    * This is experimental method, serves no real purpose.

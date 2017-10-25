@@ -66,15 +66,15 @@ async function main () {
   /**
    * Basic JSON-RPC API usages
    */
-  await rpcDemo1()
+  // await rpcDemo1()
 
   /**
    * Basic Neo client usages
    */
-  await neoDemo1()
+  // await neoDemo1()
   await neoDemo2()
 
-  process.exit()
+  // process.exit()
 }
 
 // -- Execute
