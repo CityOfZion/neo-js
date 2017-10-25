@@ -18,6 +18,7 @@ const Neo = function (network, options = {}) {
   this.rpc = undefined
   // TODO: it may be beneficial to keep a breadcrumb of node switchings
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
+  // TODO: verbose setting
 
   // Bootstrap
   this.setDefaultNode()
