@@ -1,13 +1,23 @@
 /**
- * 
+ * Neo RPC client.
+ * @class
+ * @public
  * @param {String} nodeUrl
  * @param {Object} options 
  */
 const Rpc = function (nodeUrl, options = {}) {
   // Properties and default values
   this.nodeUrl = nodeUrl
-  this.axios = options.axios || require('axios') // TODO: perhaps rename the HTTP client to a general name, like 'httpClient'
-  this.eventEmitter = options.eventEmitter || null // Unlike the other options, the default of this is null when unprovided  
+  this.options = Object.assign({}, Rpc.Defaults, options)
+}
+
+/**
+ * Default options for RPC client.
+ * @public
+ */
+Rpc.Defaults = {
+  axios: require('axios'),
+  eventEmitter: null
 }
 
 Rpc.prototype = {
@@ -453,7 +463,7 @@ Rpc.prototype = {
     const TIMEOUT_MS = 20000
 
     return new Promise((resolve, reject) => {
-      this.axios({
+      this.options.axios({
         method: 'post',
         url: this.nodeUrl,
         data: {
@@ -467,14 +477,14 @@ Rpc.prototype = {
         .then((res) => {
           const latency = (new Date()) - startTime // Resolved time in milliseconds
           if(this.eventEmitter) {
-            this.eventEmitter.emit(`rpc:${payload.method}:response`, { params: payload.params, result: res.data.result, latency })
+            this.options.eventEmitter.emit(`rpc:${payload.method}:response`, { params: payload.params, result: res.data.result, latency })
           }
           resolve(res.data.result)
         })
         .catch((err) => {
           const latency = (new Date()) - startTime
           if(this.eventEmitter) {
-            this.eventEmitter.emit(`rpc:${payload.method}:error`, { params: payload.params, error: err, latency })
+            this.options.eventEmitter.emit(`rpc:${payload.method}:error`, { params: payload.params, error: err, latency })
           }
           reject(err)
         })

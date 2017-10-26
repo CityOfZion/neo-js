@@ -14,6 +14,8 @@ async function rpcDemo1 () {
    * Check out 'neo.blockchain.enum.js' to see list of available nodes for mainnet or testnet.
    */
   const client = new Rpc('http://seed1.neo.org:20332')
+  // console.log('defaults:', Rpc.Defaults)
+  // console.log('options:', client.options)
   console.log('getBlockCount:', await client.getBlockCount())
   console.log('bestBlockHash:', await client.getBestBlockHash())
   console.log('')
@@ -75,14 +77,14 @@ async function main () {
   /**
    * Basic JSON-RPC API usages
    */
-  // await rpcDemo1()
+  await rpcDemo1()
 
   /**
    * Basic Neo client usages
    */
   // await neoDemo1()
   // await neoDemo2()
-  await neoDemo3()
+  // await neoDemo3()
 
   // process.exit()
 }
