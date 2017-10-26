@@ -91,7 +91,9 @@ Neo.prototype = {
   },
 
   _diagnoseRandomNode: function () {
-    const targetIndex = Math.floor(Math.random() * this.nodes.length) // Use randomiser. TODO: later adapt a better algorithm
+    // TODO: instead of randomised targetIndex, adapt a better algorithm?
+    // TODO: use webworker?
+    const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
 
     if(this.verboseLevel >= 3) {
