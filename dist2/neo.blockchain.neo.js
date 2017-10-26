@@ -1,5 +1,6 @@
-const Rpc = require('./neo.blockchain.rpc')
+const _ = require('lodash')
 const EventEmitter = require('events')
+const Rpc = require('./neo.blockchain.rpc')
 
 /**
  * Neo blockchain client.
@@ -11,13 +12,11 @@ const EventEmitter = require('events')
 const Neo = function (network, options = {}) {
   // Properties and default values
   this.network = network
-  this.options = Object.assign({}, Neo.Defaults, options)
+  this.options = _.assign({}, Neo.Defaults, options)
 
-  this.eventEmitter = new EventEmitter()
-  this.nodes = this.options._.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
+  this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   this.rpc = undefined
-
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -28,7 +27,7 @@ const Neo = function (network, options = {}) {
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
-  // this.eventEmitter.on('rpc:getblockcount:response', (e) => {
+  // this.options.eventEmitter.on('rpc:getblockcount:response', (e) => {
   // })
 }
 
@@ -38,8 +37,8 @@ const Neo = function (network, options = {}) {
  */
 Neo.Defaults = {
   // mode: 'light', // DEPRECATED
+  eventEmitter: new EventEmitter(),
   verboseLevel: 2, // 0: off, 1: error, 2: warn, 3: log
-  _: require('lodash'), // User has the choice of BYO utility library
   enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
   diagnosticInterval: 0 // How often to analyse a node. 0 means disable.
 }
@@ -59,11 +58,11 @@ Neo.prototype = {
   },
 
   getFastestNode: function () {
-    return this.options._.minBy(this.options._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
+    return _.minBy(_.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
   },
 
   getHighestNode: function () {
-    return this.options._.maxBy(this.options._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
+    return _.maxBy(_.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
   },
 
   getCurrentNode: function () {
@@ -109,7 +108,7 @@ Neo.prototype = {
     }
 
     if(!targetNode.rpc) { // Lazy load RPC client of a node
-      targetNode.rpc = new Rpc(this.getNodeUrl(targetNode), { eventEmitter: this.eventEmitter })
+      targetNode.rpc = new Rpc(this.getNodeUrl(targetNode), { eventEmitter: this.options.eventEmitter })
     }
 
     const startTime = new Date() // Start timer
@@ -136,7 +135,7 @@ Neo.prototype = {
   _setCurrentNode: function(node) {
     this.currentNode = node
     if(!this.currentNode.rpc) { // Lazy load if hasn't been instantiated yet
-      this.currentNode.rpc = new Rpc(this.getCurrentNodeUrl(), { eventEmitter: this.eventEmitter })
+      this.currentNode.rpc = new Rpc(this.getCurrentNodeUrl(), { eventEmitter: this.options.eventEmitter })
     }
     this.rpc = this.currentNode.rpc // Set alias
   },

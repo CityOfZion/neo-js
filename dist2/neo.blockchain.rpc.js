@@ -1,3 +1,6 @@
+const _ = require('lodash')
+const axios = require('axios')
+
 /**
  * Neo RPC client.
  * @class
@@ -8,7 +11,7 @@
 const Rpc = function (nodeUrl, options = {}) {
   // Properties and default values
   this.nodeUrl = nodeUrl
-  this.options = Object.assign({}, Rpc.Defaults, options)
+  this.options = _.assign({}, Rpc.Defaults, options)
 }
 
 /**
@@ -16,7 +19,6 @@ const Rpc = function (nodeUrl, options = {}) {
  * @public
  */
 Rpc.Defaults = {
-  axios: require('axios'),
   eventEmitter: null
 }
 
@@ -463,7 +465,7 @@ Rpc.prototype = {
     const TIMEOUT_MS = 20000
 
     return new Promise((resolve, reject) => {
-      this.options.axios({
+      axios({
         method: 'post',
         url: this.nodeUrl,
         data: {
