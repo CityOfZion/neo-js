@@ -25,7 +25,7 @@ const Neo = function (network, options = {}) {
 
   // Bootstrap
   this.setDefaultNode()
-  this.diagnosticProcess() // Again, haven't come up with a suitable terminology yet.
+  this._diagnosticProcess() // Again, haven't come up with a suitable terminology yet.
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
@@ -70,10 +70,12 @@ Neo.prototype = {
     return node.url + ':' + node.port
   },
 
-  diagnosticProcess: function () {
+  // -- Private methods
+
+  _diagnosticProcess: function () {
     if(this.diagnosticInterval > 0) {
       setInterval(() => {
-        this.diagnoseRandomNode()
+        this._diagnoseRandomNode()
       }, this.diagnosticInterval);
 
       // -- Experiment
@@ -88,7 +90,7 @@ Neo.prototype = {
     }
   },
 
-  diagnoseRandomNode: function () {
+  _diagnoseRandomNode: function () {
     const targetIndex = Math.floor(Math.random() * this.nodes.length) // Use randomiser. TODO: later adapt a better algorithm
     const targetNode = this.nodes[targetIndex]
 
@@ -120,21 +122,6 @@ Neo.prototype = {
         }
       })
   },
-
-  // -- Experiment
-
-  /**
-   * This is experimental method, serves no real purpose.
-   */
-  findCurrentNode: function () {
-    this.nodes.forEach((needleNode) => {
-      if(needleNode == this.currentNode) {
-        console.log('FOUND! needleNode:', needleNode)
-      }
-    })
-  },
-
-  // -- Private methods
 
   _setCurrentNode: function(node) {
     this.currentNode = node
