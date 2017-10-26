@@ -449,7 +449,9 @@ Rpc.prototype = {
   },
 
   _call: function (payload) {
-    const startTime = new Date()
+    const startTime = new Date() // Start timer
+    const TIMEOUT_MS = 20000
+
     return new Promise((resolve, reject) => {
       this.axios({
         method: 'post',
@@ -460,19 +462,20 @@ Rpc.prototype = {
           params: payload.params,
           id: payload.id,
         },
-        timeout: 20000 // TODO: refactor magic number
+        timeout: TIMEOUT_MS
       })
         .then((res) => {
-          // console.log('this.nodeUrl:', this.nodeUrl)
-          const latency = (new Date()) - startTime // In milliseconds
+          const latency = (new Date()) - startTime // Resolved time in milliseconds
           if(this.eventEmitter) {
-            //TODO: calculate request resolve time
             this.eventEmitter.emit(`rpc:${payload.method}:response`, { params: payload.params, result: res.data.result, latency })
           }
           resolve(res.data.result)
         })
         .catch((err) => {
-          //TODO: emit stuff?
+          const latency = (new Date()) - startTime
+          if(this.eventEmitter) {
+            this.eventEmitter.emit(`rpc:${payload.method}:error`, { params: payload.params, error: err, latency })
+          }
           reject(err)
         })
     })

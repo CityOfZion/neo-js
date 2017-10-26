@@ -60,6 +60,15 @@ async function neoDemo2 () {
   console.log('')
 }
 
+/**
+ * Full blockchain equivalant usage
+ */
+async function neoDemo3 () {
+  console.log('== Full blockchain initialisation ==')
+  const neoBlockchain = new Neo('testnet', { diagnosticInterval: 2000, verboseLevel: 3 })
+  console.log('')
+}
+
 // -- Chain of command
 
 async function main () {
@@ -72,7 +81,8 @@ async function main () {
    * Basic Neo client usages
    */
   // await neoDemo1()
-  await neoDemo2()
+  // await neoDemo2()
+  await neoDemo3()
 
   // process.exit()
 }
