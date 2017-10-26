@@ -2,23 +2,22 @@ const Rpc = require('./neo.blockchain.rpc')
 const EventEmitter = require('events')
 
 /**
- * 
+ * Neo blockchain client.
+ * @class
+ * @public
  * @param {String} network can be either 'mainnet' or 'testnet'
  * @param {Object} options 
  */
 const Neo = function (network, options = {}) {
   // Properties and default values
   this.network = network
-  this.mode = options.mode || 'light' // Default to 'light' wallet mode if not specified. If it's a full node, it will connect to db instance via 'neo.blockchain.db'.
-  this.verboseLevel = options.verboseLevel || 2 // 0: off, 1: error, 2: warn, 3: log
-  this._ = options._ || require('lodash') // User has the choice of BYO utility library
-  this.enum = options.enum || require('./neo.blockchain.enum') // User has the choice to BYO own enum definitions
-  this.diagnosticInterval = (options.diagnosticInterval !== undefined) ? options.diagnosticInterval : 0 // How often to analyse a node. 0 means disable.
+  this.options = Object.assign({}, Neo.Defaults, options)
 
   this.eventEmitter = new EventEmitter()
-  this.nodes = this._.cloneDeep(this.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
+  this.nodes = this.options._.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   this.rpc = undefined
+
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -30,10 +29,19 @@ const Neo = function (network, options = {}) {
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
   // this.eventEmitter.on('rpc:getblockcount:response', (e) => {
-  //   if(this.verboseLevel >= 3) {
-  //     console.log('rpc:getblockcount:response triggered. e:', e)
-  //   }
   // })
+}
+
+/**
+ * Default options for Neo blockchain client.
+ * @public
+ */
+Neo.Defaults = {
+  // mode: 'light', // DEPRECATED
+  verboseLevel: 2, // 0: off, 1: error, 2: warn, 3: log
+  _: require('lodash'), // User has the choice of BYO utility library
+  enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
+  diagnosticInterval: 0 // How often to analyse a node. 0 means disable.
 }
 
 Neo.prototype = {
@@ -51,11 +59,11 @@ Neo.prototype = {
   },
 
   getFastestNode: function () {
-    return this._.minBy(this._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
+    return this.options._.minBy(this.options._.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
   },
 
   getHighestNode: function () {
-    return this._.maxBy(this._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
+    return this.options._.maxBy(this.options._.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
   },
 
   getCurrentNode: function () {
@@ -73,13 +81,13 @@ Neo.prototype = {
   // -- Private methods
 
   _diagnosticProcess: function () {
-    if(this.diagnosticInterval > 0) {
+    if(this.options.diagnosticInterval > 0) {
       setInterval(() => {
         this._diagnoseRandomNode()
-      }, this.diagnosticInterval);
+      }, this.options.diagnosticInterval);
 
       // -- Experiment
-      if(this.verboseLevel >= 3) { // Provide an update on the ladderboard
+      if(this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
         setInterval(() => {
           const fNode = this.getFastestNode()
           console.log('!! Fastest node:', this.getNodeUrl(fNode), 'latency:', fNode.latency);
@@ -96,7 +104,7 @@ Neo.prototype = {
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
 
-    if(this.verboseLevel >= 3) {
+    if(this.options.verboseLevel >= 3) {
       console.log('=> #' + targetIndex, 'node:', this.getNodeUrl(targetNode))
     }
 
@@ -112,14 +120,14 @@ Neo.prototype = {
         targetNode.blockHeight = res
         targetNode.latency = latency
 
-        if(this.verboseLevel >= 3) {
+        if(this.options.verboseLevel >= 3) {
           console.log('<= #' + targetIndex, 'node:', this.getNodeUrl(targetNode), 'block count:', res)
         }
       })
       .catch((err) => {
         targetNode.active = false
 
-        if(this.verboseLevel >= 3) {
+        if(this.options.verboseLevel >= 3) {
           console.log('<= #' + targetIndex, 'node:', this.getNodeUrl(targetNode), 'error:', err.message)
         }
       })
