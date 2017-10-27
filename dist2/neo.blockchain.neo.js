@@ -27,8 +27,10 @@ const Neo = function (network, options = {}) {
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
-  // this.options.eventEmitter.on('rpc:getblockcount:response', (e) => {
-  // })
+  this.options.eventEmitter.on('rpc:call:response', (e) => {
+    console.log('rpc:call:response triggered. e:', e)
+  })
+
 }
 
 /**
