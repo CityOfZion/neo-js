@@ -27,10 +27,15 @@ const Neo = function (network, options = {}) {
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
+  this.options.eventEmitter.on('rpc:call', (e) => {
+    console.log('rpc:call triggered. e:', e)
+  })
   this.options.eventEmitter.on('rpc:call:response', (e) => {
     console.log('rpc:call:response triggered. e:', e)
   })
-
+  this.options.eventEmitter.on('rpc:call:error', (e) => {
+    console.log('rpc:call:error triggered. e:', e)
+  })
 }
 
 /**
@@ -44,6 +49,14 @@ Neo.Defaults = {
   enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
   diagnosticInterval: 0 // How often to analyse a node. 0 means disable.
 }
+
+// -- Static methods
+
+Neo.GetNodeUrl = function (node) {
+  return `${node.scheme}://${node.host}:${node.port}`
+}
+
+// -- Class methods
 
 Neo.prototype = {
   setDefaultNode: function () {
@@ -72,11 +85,7 @@ Neo.prototype = {
   },
 
   getCurrentNodeUrl: function () {
-    return this.getNodeUrl(this.currentNode)
-  },
-
-  getNodeUrl: function (node) {
-    return node.url + ':' + node.port
+    return this.currentNode.url
   },
 
   // -- Private methods
@@ -91,10 +100,10 @@ Neo.prototype = {
       if(this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
         setInterval(() => {
           const fNode = this.getFastestNode()
-          console.log('!! Fastest node:', this.getNodeUrl(fNode), 'latency:', fNode.latency);
+          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency);
           const hNode = this.getHighestNode()
-          console.log('!! Highest node:', this.getNodeUrl(hNode), 'blockHeight:', hNode.blockHeight);
-        }, 10000)  
+          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight);
+        }, 10000)
       }
     }
   },
@@ -104,13 +113,10 @@ Neo.prototype = {
     // TODO: use webworker?
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
+    this._initNode(targetNode)
 
     if(this.options.verboseLevel >= 3) {
-      console.log('=> #' + targetIndex, 'node:', this.getNodeUrl(targetNode))
-    }
-
-    if(!targetNode.rpc) { // Lazy load RPC client of a node
-      targetNode.rpc = new Rpc(this.getNodeUrl(targetNode), { eventEmitter: this.options.eventEmitter })
+      console.log('=> #' + targetIndex, 'node:', targetNode.url)
     }
 
     const startTime = new Date() // Start timer
@@ -122,25 +128,32 @@ Neo.prototype = {
         targetNode.latency = latency
 
         if(this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', this.getNodeUrl(targetNode), 'block count:', res)
+          console.log('<= #' + targetIndex, 'node:', targetNode.url, 'block count:', res)
         }
       })
       .catch((err) => {
         targetNode.active = false
 
         if(this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', this.getNodeUrl(targetNode), 'error:', err.message)
+          console.log('<= #' + targetIndex, 'node:', targetNode.url, 'error:', err.message)
         }
       })
   },
 
-  _setCurrentNode: function(node) {
+  _setCurrentNode: function (node) {
+    this._initNode(node)
     this.currentNode = node
-    if(!this.currentNode.rpc) { // Lazy load if hasn't been instantiated yet
-      this.currentNode.rpc = new Rpc(this.getCurrentNodeUrl(), { eventEmitter: this.options.eventEmitter })
-    }
     this.rpc = this.currentNode.rpc // Set alias
   },
+
+  _initNode: function (node) {
+    if(!node.url) {
+      node.url = Neo.GetNodeUrl(node)
+    }
+    if(!node.rpc) { // Lazy load if hasn't been instantiated yet
+      node.rpc = new Rpc(node.url, { eventEmitter: this.options.eventEmitter })
+    }
+  }
 
 }
 

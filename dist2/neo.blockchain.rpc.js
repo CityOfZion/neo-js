@@ -464,7 +464,7 @@ Rpc.prototype = {
     const startTime = new Date() // Start timer
     const TIMEOUT_MS = 20000
 
-    this._emit('rpc:call', { method: payload.method, params: payload.params })
+    this._emit('rpc:call', { url: this.nodeUrl, method: payload.method, params: payload.params })
     return new Promise((resolve, reject) => {
       axios({
         method: 'post',
@@ -479,12 +479,12 @@ Rpc.prototype = {
       })
         .then((res) => {
           const latency = (new Date()) - startTime // Resolved time in milliseconds
-          this._emit('rpc:call:response', { method: payload.method, params: payload.params, result: res.data.result, latency })
+          this._emit('rpc:call:response', { url: this.nodeUrl, method: payload.method, params: payload.params, result: res.data.result, latency })
           resolve(res.data.result)
         })
         .catch((err) => {
           const latency = (new Date()) - startTime
-          this._emit('rpc:call:error', { method: payload.method, params: payload.params, error: err, latency })
+          this._emit('rpc:call:error', { url: this.nodeUrl, method: payload.method, params: payload.params, error: err, latency })
           reject(err)
         })
     })
