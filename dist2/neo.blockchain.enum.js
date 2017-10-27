@@ -31,5 +31,25 @@ module.exports = {
       { url: 'http://test4.cityofzion.io', port: 8880 },
       { url: 'http://test5.cityofzion.io', port: 8880 },
     ]
+  },
+  mongodb: {
+    mainnet: {
+      server: 'localhost',
+      databsae: 'lorem',
+      collections: {
+        blockchain: 'b_neo_t_blocks', // The blockchain collection
+        transactions: 'b_neo_t_transactions', // The transactions on the blockchains
+        addresses: 'b_neo_t_addresses' // A collection maintaining accounts and their balances    
+      }
+    },
+    testnet: {
+      server: 'localhost',
+      databsae: 'lorem',
+      collections: {
+        blockchain: 'b_neo_m_blocks', // The blockchain collection
+        transactions: 'b_neo_m_transactions', // The transactions on the blockchains
+        addresses: 'b_neo_m_addresses' // A collection maintaining accounts and their balances    
+      }
+    }
   }
 }
