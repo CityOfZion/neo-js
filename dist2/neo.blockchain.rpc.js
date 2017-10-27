@@ -95,7 +95,7 @@ Rpc.prototype = {
    * @param {number} index The index of the block being requested.
    * @returns {Promise.<string>} A promise returning the hex contents of the block
    */
-  getBlock: function(index) {
+  getBlock: function (index) {
     return this._call({
       method: 'getblock',
       params: [index, 1],
@@ -166,7 +166,7 @@ Rpc.prototype = {
    * return 1000000
    * @returns {Promise.<number>} A promise returning the block count.
    */
-  getBlockCount: function() {
+  getBlockCount: function () {
     return this._call({
       method: 'getblockcount',
       params: [],
@@ -473,7 +473,7 @@ Rpc.prototype = {
           jsonrpc: '2.0',
           method: payload.method,
           params: payload.params,
-          id: payload.id,
+          id: payload.id
         },
         timeout: TIMEOUT_MS
       })
@@ -491,10 +491,10 @@ Rpc.prototype = {
   },
 
   _emit: function (name, payload) {
-    if(this.options.eventEmitter) {
+    if (this.options.eventEmitter) {
       this.options.eventEmitter.emit(name, payload)
     }
-  },
+  }
 }
 
 module.exports = Rpc

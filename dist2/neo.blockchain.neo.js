@@ -91,18 +91,18 @@ Neo.prototype = {
   // -- Private methods
 
   _diagnosticProcess: function () {
-    if(this.options.diagnosticInterval > 0) {
+    if (this.options.diagnosticInterval > 0) {
       setInterval(() => {
         this._diagnoseRandomNode()
-      }, this.options.diagnosticInterval);
+      }, this.options.diagnosticInterval)
 
       // -- Experiment
-      if(this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
+      if (this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
         setInterval(() => {
           const fNode = this.getFastestNode()
-          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency);
+          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency)
           const hNode = this.getHighestNode()
-          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight);
+          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight)
         }, 10000)
       }
     }
@@ -115,7 +115,7 @@ Neo.prototype = {
     const targetNode = this.nodes[targetIndex]
     this._initNode(targetNode)
 
-    if(this.options.verboseLevel >= 3) {
+    if (this.options.verboseLevel >= 3) {
       console.log('=> #' + targetIndex, 'node:', targetNode.url)
     }
 
@@ -127,14 +127,14 @@ Neo.prototype = {
         targetNode.blockHeight = res
         targetNode.latency = latency
 
-        if(this.options.verboseLevel >= 3) {
+        if (this.options.verboseLevel >= 3) {
           console.log('<= #' + targetIndex, 'node:', targetNode.url, 'block count:', res)
         }
       })
       .catch((err) => {
         targetNode.active = false
 
-        if(this.options.verboseLevel >= 3) {
+        if (this.options.verboseLevel >= 3) {
           console.log('<= #' + targetIndex, 'node:', targetNode.url, 'error:', err.message)
         }
       })
@@ -147,10 +147,10 @@ Neo.prototype = {
   },
 
   _initNode: function (node) {
-    if(!node.url) {
+    if (!node.url) {
       node.url = Neo.GetNodeUrl(node)
     }
-    if(!node.rpc) { // Lazy load if hasn't been instantiated yet
+    if (!node.rpc) { // Lazy load if hasn't been instantiated yet
       node.rpc = new Rpc(node.url, { eventEmitter: this.options.eventEmitter })
     }
   }

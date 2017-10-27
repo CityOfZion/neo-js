@@ -15,7 +15,7 @@ module.exports = {
       { scheme: 'http', host: 'seed2.cityofzion.io', port: 8080 },
       { scheme: 'http', host: 'seed3.cityofzion.io', port: 8080 },
       { scheme: 'http', host: 'seed4.cityofzion.io', port: 8080 },
-      { scheme: 'http', host: 'seed5.cityofzion.io', port: 8080 },
+      { scheme: 'http', host: 'seed5.cityofzion.io', port: 8080 }
     ],
     testnet: [
       { scheme: 'http', host: 'seed1.neo.org', port: 20332 },
@@ -29,7 +29,7 @@ module.exports = {
       { scheme: 'http', host: 'test2.cityofzion.io', port: 8880 },
       { scheme: 'http', host: 'test3.cityofzion.io', port: 8880 },
       { scheme: 'http', host: 'test4.cityofzion.io', port: 8880 },
-      { scheme: 'http', host: 'test5.cityofzion.io', port: 8880 },
+      { scheme: 'http', host: 'test5.cityofzion.io', port: 8880 }
     ]
   },
   mongodb: {

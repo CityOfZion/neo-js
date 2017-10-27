@@ -10,9 +10,8 @@ const _ = require('lodash')
 const MongoDA = function (options = {}) {
   // Properties and default values
   this.options = _.assign({}, MongoDA.Defaults, options)
-  
+
   // Bootstrap
-  
 }
 
 /**
