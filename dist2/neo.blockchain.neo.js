@@ -29,12 +29,18 @@ const Neo = function (network, options = {}) {
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
   this.options.eventEmitter.on('rpc:call', (e) => {
     console.log('rpc:call triggered. e:', e)
+    const node = _.find(this.nodes, { url: e.url })
+    node.pendingRequests += 1
   })
   this.options.eventEmitter.on('rpc:call:response', (e) => {
     console.log('rpc:call:response triggered. e:', e)
+    const node = _.find(this.nodes, { url: e.url })
+    node.pendingRequests -= 1
   })
   this.options.eventEmitter.on('rpc:call:error', (e) => {
     console.log('rpc:call:error triggered. e:', e)
+    const node = _.find(this.nodes, { url: e.url })
+    node.pendingRequests -= 1
   })
 }
 
@@ -100,9 +106,9 @@ Neo.prototype = {
       if (this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
         setInterval(() => {
           const fNode = this.getFastestNode()
-          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency)
+          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency, 'pendingRequests:', fNode.pendingRequests)
           const hNode = this.getHighestNode()
-          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight)
+          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight, 'pendingRequests:', fNode.pendingRequests)
         }, 10000)
       }
     }
@@ -152,6 +158,9 @@ Neo.prototype = {
     }
     if (!node.rpc) { // Lazy load if hasn't been instantiated yet
       node.rpc = new Rpc(node.url, { eventEmitter: this.options.eventEmitter })
+    }
+    if (!node.pendingRequests) {
+      node.pendingRequests = 0
     }
   }
 
