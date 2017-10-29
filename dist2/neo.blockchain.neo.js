@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
+const Db = require('./neo.blockchain.db')
 
 /**
  * Neo blockchain client.
@@ -17,28 +18,36 @@ const Neo = function (network, options = {}) {
   this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   this.rpc = undefined
+  this.localNode = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
 
   // Bootstrap
   this.setDefaultNode()
-  this._diagnosticProcess() // Again, haven't come up with a suitable terminology yet.
+  this._initDiagnostic() // Again, haven't come up with a suitable terminology yet.
+  this._initLocalNode()
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
   this.options.eventEmitter.on('rpc:call', (e) => {
-    console.log('rpc:call triggered. e:', e)
+    if (this.verboseLevel >= 3) {
+      console.log('rpc:call triggered. e:', e)
+    }
     const node = _.find(this.nodes, { url: e.url })
     node.pendingRequests += 1
   })
   this.options.eventEmitter.on('rpc:call:response', (e) => {
-    console.log('rpc:call:response triggered. e:', e)
+    if (this.verboseLevel >= 3) {
+      console.log('rpc:call:response triggered. e:', e)
+    }
     const node = _.find(this.nodes, { url: e.url })
     node.pendingRequests -= 1
   })
   this.options.eventEmitter.on('rpc:call:error', (e) => {
-    console.log('rpc:call:error triggered. e:', e)
+    if (this.verboseLevel >= 3) {
+      console.log('rpc:call:error triggered. e:', e)
+    }
     const node = _.find(this.nodes, { url: e.url })
     node.pendingRequests -= 1
   })
@@ -53,7 +62,8 @@ Neo.Defaults = {
   eventEmitter: new EventEmitter(),
   verboseLevel: 2, // 0: off, 1: error, 2: warn, 3: log
   enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
-  diagnosticInterval: 0 // How often to analyse a node. 0 means disable.
+  diagnosticInterval: 0, // How often to analyse a node. 0 means disable.
+  localNodeEnabled: false
 }
 
 // -- Static methods
@@ -94,23 +104,43 @@ Neo.prototype = {
     return this.currentNode.url
   },
 
+  //
+
+  getBlockCount: function () {
+    // TODO: check if this instance uses local data access
+    // TODO: if so, attempt to find out if it is fully sync'ed
+    // TODO: if not, get value from RPC
+    // TODO: if yes, obtain block count
+    return this.currentNode.rpc.getBlockCount()
+  },
+
+  getBlock: function (index) {
+    // TODO: check if this instance uses local data access
+    // TODO: if so, attempt to get value from data access
+    // TODO: if not found, obtain data from RPC
+    // TODO: store data into data access
+    return this.currentNode.rpc.getBlock(index)
+  },
+
   // -- Private methods
 
-  _diagnosticProcess: function () {
-    if (this.options.diagnosticInterval > 0) {
-      setInterval(() => {
-        this._diagnoseRandomNode()
-      }, this.options.diagnosticInterval)
+  _initDiagnostic: function () {
+    if (this.options.diagnosticInterval <= 0) {
+      return;
+    }
 
-      // -- Experiment
-      if (this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
-        setInterval(() => {
-          const fNode = this.getFastestNode()
-          console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency, 'pendingRequests:', fNode.pendingRequests)
-          const hNode = this.getHighestNode()
-          console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight, 'pendingRequests:', fNode.pendingRequests)
-        }, 10000)
-      }
+    setInterval(() => {
+      this._diagnoseRandomNode()
+    }, this.options.diagnosticInterval)
+
+    // -- Experiment
+    if (this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
+      setInterval(() => {
+        const fNode = this.getFastestNode()
+        console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency, 'pendingRequests:', fNode.pendingRequests)
+        const hNode = this.getHighestNode()
+        console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight, 'pendingRequests:', fNode.pendingRequests)
+      }, 10000)
     }
   },
 
@@ -162,8 +192,22 @@ Neo.prototype = {
     if (!node.pendingRequests) {
       node.pendingRequests = 0
     }
-  }
+  },
 
+  _initLocalNode: function () {
+    if (!this.localNodeEnabled) {
+      return;
+    }
+
+    const connectionInfo = this._getMongoDbConnectionInfo()
+    const db = new Db(connectionInfo)
+    this.localNode = db.getLocalNode()
+    this.nodes.push(this.localNode)
+  },
+
+  _getMongoDbConnectionInfo: function () {
+    return this.options.enum.mongodb[this.network]
+  },
 }
 
 module.exports = Neo
