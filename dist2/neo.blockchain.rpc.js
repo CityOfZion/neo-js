@@ -28,10 +28,10 @@ Rpc.prototype = {
    * @param {string} assetId The address to get the balance of.
    * @returns {Promise.<Object>} A promise containing the address balances.
    */
-  getBalance: function () {
+  getBalance: function (assetId) {
     return this._call({
       method: 'getbalance',
-      params: [],
+      params: [assetId],
       id: 0
     })
   },
