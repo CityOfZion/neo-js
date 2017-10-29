@@ -17,7 +17,6 @@ const Neo = function (network, options = {}) {
 
   this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
-  this.rpc = undefined
   this.localNode = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
@@ -104,7 +103,30 @@ Neo.prototype = {
     return this.currentNode.url
   },
 
-  //
+  // -- RPC Delegates
+
+  getBalance: function (assetId) {
+    // TODO
+    return this.currentNode.rpc.getBalance(assetId)
+  },
+
+  getBestBlockHash: function () {
+    // TODO
+    return this.currentNode.rpc.getBestBlockHash()
+  },
+
+  getBlock: function (index) {
+    // TODO: check if this instance uses local data access
+    // TODO: if so, attempt to get value from data access
+    // TODO: if not found, obtain data from RPC
+    // TODO: store data into data access
+    return this.currentNode.rpc.getBlock(index)
+  },
+
+  getBlockByHash: function (hash) {
+    // TODO
+    return this.currentNode.rpc.getBlockByHash(hash)
+  },
 
   getBlockCount: function () {
     // TODO: check if this instance uses local data access
@@ -114,12 +136,84 @@ Neo.prototype = {
     return this.currentNode.rpc.getBlockCount()
   },
 
-  getBlock: function (index) {
-    // TODO: check if this instance uses local data access
-    // TODO: if so, attempt to get value from data access
-    // TODO: if not found, obtain data from RPC
-    // TODO: store data into data access
-    return this.currentNode.rpc.getBlock(index)
+  getBlockHash: function (index) {
+    // TODO
+    return this.currentNode.rpc.getBlockHash(index)
+  },
+
+  getBlockSystemFee: function (height) {
+    // TODO
+    return this.currentNode.rpc.getBlockSystemFee(height)
+  },
+
+  getConnectionCount: function () {
+    // TODO
+    return this.currentNode.rpc.getConnectionCount()
+  },
+
+  invoke: function (scriptHash, params) {
+    // TODO
+    return this.currentNode.rpc.invoke(scriptHash, params)
+  },
+
+  invokeFunction: function (scriptHash, operation, params) {
+    // TODO
+    return this.currentNode.rpc.invokeFunction(scriptHash, operation, params)
+  },
+
+  invokeScript: function (script) {
+    // TODO
+    return this.currentNode.rpc.invokeScript(script)
+  },
+
+  getRawMemPool: function () {
+    // TODO
+    return this.currentNode.rpc.getRawMemPool()
+  },
+
+  getRawTransaction: function (txid) {
+    // TODO
+    return this.currentNode.rpc.getRawTransaction(txid)
+  },
+
+  getTXOut: function (txid, index) {
+    // TODO
+    return this.currentNode.rpc.getTXOut(txid, index)
+  },
+
+  sendRawTransaction: function (hex) {
+    // TODO
+    return this.currentNode.rpc.sendRawTransaction(hex)
+  },
+
+  sendToAddress: function (assetId, address, value) {
+    // TODO
+    return this.currentNode.rpc.sendToAddress(assetId, address, value)
+  },
+
+  submitBlock: function (hex) {
+    // TODO
+    return this.currentNode.rpc.submitBlock(hex)
+  },
+
+  getAccountState: function (address) {
+    // TODO
+    return this.currentNode.rpc.getAccountState(address)
+  },
+
+  getAssetState: function (assetId) {
+    // TODO
+    return this.currentNode.rpc.getAssetState(assetId)
+  },
+
+  validateAddress: function (address) {
+    // TODO
+    return this.currentNode.rpc.validateAddress(address)
+  },
+
+  getPeers: function () {
+    // TODO
+    return this.currentNode.rpc.getPeers()
   },
 
   // -- Private methods
@@ -179,7 +273,6 @@ Neo.prototype = {
   _setCurrentNode: function (node) {
     this._initNode(node)
     this.currentNode = node
-    this.rpc = this.currentNode.rpc // Set alias
   },
 
   _initNode: function (node) {
