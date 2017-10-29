@@ -119,11 +119,6 @@ Neo.prototype = {
   },
 
   getBlock: function (index) {
-    // TODO: check if this instance uses local data access
-    // TODO: if so, attempt to get value from data access
-    // TODO: if not found, obtain data from RPC
-    // TODO: store data into data access
-
     if (this.db) {
       if (this.verboseLevel >= 3) {
         console.log('fetching getBlock from DB...')
@@ -147,10 +142,23 @@ Neo.prototype = {
   },
 
   getBlockCount: function () {
-    // TODO: check if this instance uses local data access
-    // TODO: if so, attempt to find out if it is fully sync'ed
-    // TODO: if not, get value from RPC
-    // TODO: if yes, obtain block count
+    if (this.db) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getBlockCount from DB...')
+      }
+
+      // TODO: if so, attempt to find out if it is fully sync'ed
+
+      try {
+        return this.db.getBlockCount()
+      } catch (err) {
+        // if there's problem with getBlockCount, then we fall back to fetching info from RPC
+        if (this.verboseLevel >= 3) {
+          console.log('problem with getBlockCount in DB, fall back to RPC instead...')
+        }
+      }
+    }
+
     return this.currentNode.rpc.getBlockCount()
   },
 

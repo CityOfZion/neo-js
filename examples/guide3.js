@@ -15,7 +15,7 @@ function sleep (ms) {
 
 async function main () {
   /**
-   * Neo client usages with benchmarking (previously known as 'full' mode)
+   * Neo client usages with benchmarking
    */
   console.log('== Neo client usages with benchmarking ==')
   const neoBlockchain = new Neo('testnet', { diagnosticInterval: 1000 }) // The blockchain instance will be disgnosing a node every 1000ms.
@@ -32,6 +32,7 @@ async function main () {
   console.log('Fastest node:', fNode2.url, 'latency:', fNode2.latency)
   const hNode2 = neoBlockchain.getHighestNode()
   console.log('Highest node:', hNode2.url, 'blockHeight:', hNode2.blockHeight)
+
   process.exit() // Since there'll be background process happening, you'll need to explicit terminate this script.
 }
 

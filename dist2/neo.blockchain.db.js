@@ -1,5 +1,6 @@
 const _ = require('lodash')
 const mongoose = require('mongoose')
+const Utils = require('./neo.blockchain.utils')
 
 const Db = function (connectionInfo, options = {}) {
   // Properties and default values
@@ -40,17 +41,41 @@ Db.prototype = {
 
   // -- Endpoints
 
+  // getBalance
+
+  // getAssetBalance
+
+  // getExpandedTX
+
+  // getTX
+
   getBlock: function (index) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
         .exec((err, res) => {
           if (err) {
-            return reject(err)
+            reject(err)
           }
           if (!res) {
-            return reject(new Error('Block not found'))
+            reject(new Error('Block not found'))
           }
           resolve(res)
+        })
+    })
+  },
+
+  getBlockCount: function () {
+    return new Promise((resolve, reject) => {
+      this.blockModel.findOne({}, 'index')
+        .sort('-index')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('Unexpected response'))
+          }
+          resolve(res.index + 1)
         })
     })
   },
