@@ -7,21 +7,23 @@ const Db = function (connectionInfo, options = {}) {
   this.transactionSchema = this._getTransactionSchema()
   this.addressSchema = this._getAddressSchema()
 
+  console.log('connectionInfo.collections.blocks:', connectionInfo.collections.blocks)
+  
+  this.blockModel = mongoose.model(connectionInfo.collections.blocks, this.blockSchema)
+  this.transactionModel = mongoose.model(connectionInfo.collections.transactions, this.transactionSchema),
+  this.addressModel = mongoose.model(connectionInfo.collections.addresses, this.addressSchema),
+  
   // Bootstrap
-  this.module = {
-    blocks: mongoose.model(connectionInfo.collections.blocks, this.blockSchema),
-    transactions: mongoose.model(connectionInfo.collections.transactions, this.transactionSchema),
-    addresses: mongoose.model(connectionInfo.collections.addresses, this.addressSchema),
-    node: undefined
-  }
-  this._initLocalNode()
+  // this.module = {
+  //   blocks: mongoose.model(connectionInfo.collections.blocks, this.blockSchema),
+  //   transactions: mongoose.model(connectionInfo.collections.transactions, this.transactionSchema),
+  //   addresses: mongoose.model(connectionInfo.collections.addresses, this.addressSchema),
+  //   node: undefined
+  // }
+  // this._initLocalNode()
 
   // Explicit connect to localhost DB
   mongoose.connect('mongodb://localhost/ipsum') // TODO: use connectionInfo
-
-  
-
-
 }
 
 /**
@@ -32,9 +34,28 @@ Db.Defaults = {
 }
 
 Db.prototype = {
-  getLocalNode: function () {
-    return new Error('Not implemented')
+  // getLocalNode: function () {
+  //   return new Error('Not implemented')
+  // },
+
+  // -- Endpoints
+
+  getBlock: function (index) {
+    return new Promise((resolve, reject) => {
+      this.blockModel.findOne({ index })
+        .exec((err, res) => {
+          if (err) {
+            return reject(err)
+          }
+          if (!res) {
+            return reject(new Error('Block not found'))
+          }
+          resolve(res)
+        })
+    })
   },
+
+  // -- Private methods
 
   _getBlockSchema: function () {
     return new mongoose.Schema({
@@ -83,23 +104,23 @@ Db.prototype = {
     })
   },
 
-  _initLocalNode: function () {
-    this.module.node = function () {
-      this.domain = 'localhost'
-      this.active = true
-      this.latency = 0
-      this.blockHeight = 0
-      this.index = -1
-      this.connections = 0
-      this.pendingRequests = 0
-      this.unlinkedBlocks = []
-      this.assets = []
-      const node = this
-    }
+  // _initLocalNode: function () {
+  //   this.module.node = function () {
+  //     this.domain = 'localhost'
+  //     this.active = true
+  //     this.latency = 0
+  //     this.blockHeight = 0
+  //     this.index = -1
+  //     this.connections = 0
+  //     this.pendingRequests = 0
+  //     this.unlinkedBlocks = []
+  //     this.assets = []
+  //     const node = this
+  //   }
 
-    this.module.node.prototype = {
-    }
-  },
+  //   this.module.node.prototype = {
+  //   }
+  // },
 }
 
 module.exports = Db

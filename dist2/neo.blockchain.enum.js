@@ -33,7 +33,7 @@ module.exports = {
     ]
   },
   mongodb: {
-    mainnet: {
+    testnet: {
       server: 'localhost',
       databsae: 'lorem',
       collections: {
@@ -42,7 +42,7 @@ module.exports = {
         addresses: 'b_neo_t_addresses' // A collection maintaining accounts and their balances    
       }
     },
-    testnet: {
+    mainnet: {
       server: 'localhost',
       databsae: 'lorem',
       collections: {

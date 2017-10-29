@@ -2,6 +2,7 @@ const _ = require('lodash')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
 const Db = require('./neo.blockchain.db')
+const mongoose = require('mongoose')
 
 /**
  * Neo blockchain client.
@@ -17,7 +18,8 @@ const Neo = function (network, options = {}) {
 
   this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
-  this.localNode = undefined
+  // this.localNode = undefined
+  this.db = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -25,7 +27,8 @@ const Neo = function (network, options = {}) {
   // Bootstrap
   this.setDefaultNode()
   this._initDiagnostic() // Again, haven't come up with a suitable terminology yet.
-  this._initLocalNode()
+  // this._initLocalNode()
+  this._initFullMode()
 
   // Event bindings
   // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
@@ -57,12 +60,12 @@ const Neo = function (network, options = {}) {
  * @public
  */
 Neo.Defaults = {
-  // mode: 'light', // DEPRECATED
+  mode: 'light', // DEPRECATING
   eventEmitter: new EventEmitter(),
   verboseLevel: 2, // 0: off, 1: error, 2: warn, 3: log
   enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
   diagnosticInterval: 0, // How often to analyse a node. 0 means disable.
-  localNodeEnabled: false
+  // localNodeEnabled: false
 }
 
 // -- Static methods
@@ -120,6 +123,21 @@ Neo.prototype = {
     // TODO: if so, attempt to get value from data access
     // TODO: if not found, obtain data from RPC
     // TODO: store data into data access
+
+    if (this.db) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getBlock from DB...')
+      }
+      const block = this.db.getBlock(index)
+      if(block) {
+        if (this.verboseLevel >= 3) {
+          console.log('getBlock result found in DB!')
+        }
+        return block
+      }
+      // TODO: fetch from RPC and store into db
+    }
+
     return this.currentNode.rpc.getBlock(index)
   },
 
@@ -287,20 +305,30 @@ Neo.prototype = {
     }
   },
 
-  _initLocalNode: function () {
-    if (!this.localNodeEnabled) {
-      return;
+  // _initLocalNode: function () {
+  //   if (!this.localNodeEnabled) {
+  //     return;
+  //   }
+
+  //   const connectionInfo = this._getMongoDbConnectionInfo()
+  //   const db = new Db(connectionInfo)
+  //   this.localNode = db.getLocalNode()
+  //   this.nodes.push(this.localNode)
+  // },
+
+  _initFullMode: function () {
+    if (this.options.mode !== 'full') {
+      return
     }
 
     const connectionInfo = this._getMongoDbConnectionInfo()
-    const db = new Db(connectionInfo)
-    this.localNode = db.getLocalNode()
-    this.nodes.push(this.localNode)
+    this.db = new Db(connectionInfo)
   },
 
   _getMongoDbConnectionInfo: function () {
     return this.options.enum.mongodb[this.network]
   },
+
 }
 
 module.exports = Neo
