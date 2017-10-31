@@ -33,12 +33,6 @@ const Neo = function (network, options = {}) {
   this.syncMaxQueueLength = 10000
   // this.syncStartTime = undefined
 
-
-
-
-
-
-
   // Bootstrap
   this.setDefaultNode()
   this._initDiagnostic() // Again, haven't come up with a suitable terminology yet.
@@ -46,28 +40,30 @@ const Neo = function (network, options = {}) {
   this._initFullMode()
 
   // Event bindings
-  // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
-  this.options.eventEmitter.on('rpc:call', (e) => {
-    if (this.verboseLevel >= 3) {
-      console.log('rpc:call triggered. e:', e)
-    }
-    const node = _.find(this.nodes, { url: e.url })
-    node.pendingRequests += 1
-  })
-  this.options.eventEmitter.on('rpc:call:response', (e) => {
-    if (this.verboseLevel >= 3) {
-      console.log('rpc:call:response triggered. e:', e)
-    }
-    const node = _.find(this.nodes, { url: e.url })
-    node.pendingRequests -= 1
-  })
-  this.options.eventEmitter.on('rpc:call:error', (e) => {
-    if (this.verboseLevel >= 3) {
-      console.log('rpc:call:error triggered. e:', e)
-    }
-    const node = _.find(this.nodes, { url: e.url })
-    node.pendingRequests -= 1
-  })
+  if (this.options.eventEmitter) {
+    // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
+    this.options.eventEmitter.on('rpc:call', (e) => {
+      if (this.verboseLevel >= 3) {
+        console.log('rpc:call triggered. e:', e)
+      }
+      const node = _.find(this.nodes, { url: e.url })
+      node.pendingRequests += 1
+    })
+    this.options.eventEmitter.on('rpc:call:response', (e) => {
+      if (this.verboseLevel >= 3) {
+        console.log('rpc:call:response triggered. e:', e)
+      }
+      const node = _.find(this.nodes, { url: e.url })
+      node.pendingRequests -= 1
+    })
+    this.options.eventEmitter.on('rpc:call:error', (e) => {
+      if (this.verboseLevel >= 3) {
+        console.log('rpc:call:error triggered. e:', e)
+      }
+      const node = _.find(this.nodes, { url: e.url })
+      node.pendingRequests -= 1
+    })
+  }
 }
 
 /**
