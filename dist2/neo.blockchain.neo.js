@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const async = require('async')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
-const Db = require('./neo.blockchain.db')
+const MongoDa = require('./neo.blockchain.data.mongodb')
 
 /**
  * Neo blockchain client.
@@ -20,7 +20,7 @@ const Neo = function (network, options = {}) {
   this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.currentNode = undefined
   // this.localNode = undefined
-  this.db = undefined
+  this.dataAccess = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -184,12 +184,12 @@ Neo.prototype = {
   },
 
   getBlock: function (index) {
-    if (this.db) {
+    if (this.dataAccess) {
       if (this.verboseLevel >= 3) {
         console.log('fetching getBlock from DB...')
       }
-      const block = this.db.getBlock(index)
-      if(block) {
+      const block = this.dataAccess.getBlock(index)
+      if(block) { // TODO: formal block validation util
         if (this.verboseLevel >= 3) {
           console.log('getBlock result found in DB!')
         }
@@ -207,7 +207,7 @@ Neo.prototype = {
   },
 
   getBlockCount: function () {
-    if (this.db) {
+    if (this.dataAccess) {
       if (this.verboseLevel >= 3) {
         console.log('fetching getBlockCount from DB...')
       }
@@ -215,7 +215,7 @@ Neo.prototype = {
       // TODO: if so, attempt to find out if it is fully sync'ed
 
       try {
-        return this.db.getBlockCount()
+        return this.dataAccess.getBlockCount()
       } catch (err) {
         // if there's problem with getBlockCount, then we fall back to fetching info from RPC
         if (this.verboseLevel >= 3) {
@@ -395,7 +395,7 @@ Neo.prototype = {
     }
 
     const connectionInfo = this._getMongoDbConnectionInfo()
-    this.db = new Db(connectionInfo)
+    this.dataAccess = new MongoDa(connectionInfo)
   },
 
   _getMongoDbConnectionInfo: function () {

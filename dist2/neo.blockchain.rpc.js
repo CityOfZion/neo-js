@@ -464,6 +464,8 @@ Rpc.prototype = {
     const startTime = new Date() // Start timer
     const TIMEOUT_MS = 20000
 
+    // TODO: consider a similar emitting methodology to web3.js
+    // TODO: also consider adopting https://github.com/primus/eventemitter3
     this._emit('rpc:call', { url: this.nodeUrl, method: payload.method, params: payload.params })
     return new Promise((resolve, reject) => {
       axios({
