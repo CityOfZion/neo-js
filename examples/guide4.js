@@ -15,7 +15,11 @@ function sleep (ms) {
 
 async function main () {
   /**
-   * Neo client full mode usage
+   * Neo client 'full' mode usage
+   * 
+   * This example requires local persistent storage, default to MongoDB (developed in MongoDB 3.4.9).
+   * 'diagnosticInterval' is not required if you not interested in Neo client picking the best node for you.
+   * By accessing to RPC delegates, Neo client will first attempt to seek for data in local storage before communicates with RPC API.
    */
   console.log('== Neo client full mode usage ==')
   const neoBlockchain = new Neo('testnet', { mode: 'full', verboseLevel: 3 })

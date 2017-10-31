@@ -2,47 +2,7 @@
 
 // -- Bootstrap
 
-const Rpc = require('../dist2/neo.blockchain.rpc')
 const Neo = require('../dist2/neo.blockchain.neo')
-
-// -- Use cases
-
-async function neoDemo1 () {
-
-}
-
-
-async function neoDemo2 () {
-  console.log('== Advanced Neo client initialisation ==')
-
-  /**
-   * Want to see more log messages for debugging purpose? Provide an verbose level.
-   */
-  const neoBlockchain = new Neo('testnet', { verboseLevel: 3 })
-
-
-  console.log('getBlockCount:', await neoBlockchain.getBlockCount())
-
-  console.log('')
-}
-
-/**
- * Full blockchain equivalant usage
- */
-async function neoDemo3 () {
-  console.log('== Full blockchain initialisation ==')
-  const neoBlockchain = new Neo('testnet', { diagnosticInterval: 2000, verboseLevel: 3 })
-  console.log('')
-}
-
-/**
- * Local node
- */
-async function neoDemo4 () {
-  console.log('== Full blockchain initialisation ==')
-  const neoBlockchain = new Neo('testnet', { localNodeEnabled: true, verboseLevel: 3 })
-  console.log('')
-}
 
 // -- Chain of command
 
@@ -52,6 +12,7 @@ async function main () {
    * 
    * Instantiate a Neo client by specific desire network either it's 'mainnet' or 'testnet'.
    * Upon its instantiation it will pick a default node. This can be changed later for purposes.
+   * You may access to RPC endpoints from Neo client which itself will choose the best RPC node for you.
    */
   console.log('== Basic Neo client usages ==')
   const neoBlockchain = new Neo('testnet') // either be 'testnet' or 'mainnet'

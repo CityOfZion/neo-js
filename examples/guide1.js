@@ -3,7 +3,6 @@
 // -- Bootstrap
 
 const Rpc = require('../dist2/neo.blockchain.rpc')
-const Neo = require('../dist2/neo.blockchain.neo')
 
 // -- Chain of command
 
