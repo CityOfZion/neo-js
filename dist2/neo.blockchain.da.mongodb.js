@@ -16,10 +16,13 @@ const MongoDA = function (connectionInfo, options = {}) {
   this.blockSchema = this._getBlockSchema()
   this.transactionSchema = this._getTransactionSchema()
   this.addressSchema = this._getAddressSchema()
-  
+
   this.blockModel = mongoose.model(connectionInfo.collections.blocks, this.blockSchema)
   this.transactionModel = mongoose.model(connectionInfo.collections.transactions, this.transactionSchema)
   this.addressModel = mongoose.model(connectionInfo.collections.addresses, this.addressSchema)
+
+  // Bootstrap
+  mongoose.Promise = global.Promise // Explicitly proide own promise library (http://mongoosejs.com/docs/promises.html)
 
   // Explicit connect to localhost DB
   if (options.connectOnInit) {
