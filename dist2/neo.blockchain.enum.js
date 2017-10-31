@@ -35,7 +35,7 @@ module.exports = {
   mongodb: {
     testnet: {
       server: 'localhost',
-      databsae: 'lorem',
+      database: 'lorem',
       collections: {
         blocks: 'b_neo_t_blocks', // The blockchain collection
         transactions: 'b_neo_t_transactions', // The transactions on the blockchains
@@ -44,7 +44,7 @@ module.exports = {
     },
     mainnet: {
       server: 'localhost',
-      databsae: 'lorem',
+      database: 'lorem',
       collections: {
         blocks: 'b_neo_m_blocks', // The blockchain collection
         transactions: 'b_neo_m_transactions', // The transactions on the blockchains
