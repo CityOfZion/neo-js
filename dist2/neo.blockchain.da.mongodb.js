@@ -28,7 +28,7 @@ const MongoDA = function (connectionInfo, options = {}) {
 }
 
 /**
- * Default options for RPC client.
+ * Default options.
  * @public
  */
 MongoDA.Defaults = {
