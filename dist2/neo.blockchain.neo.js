@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const async = require('async')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
-const MongoDa = require('./neo.blockchain.data.mongodb')
+const MongoDa = require('./neo.blockchain.da.mongodb')
 
 /**
  * Neo blockchain client.
