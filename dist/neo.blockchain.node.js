@@ -28,7 +28,7 @@ module.exports = function (network) {
   }
 
   // build the list of neo-maintained nodes
-  neoSeeds.forEach(function (domain) {
+  neoSeeds.forEach((domain) => {
     module.nodes.push(new node({
       domain,
       port: neoPort
@@ -80,7 +80,7 @@ module.exports = function (network) {
      * @param {string} assetId The address to get the balance of.
      * @returns {Promise.<Object>} A promise containing the address balances.
      */
-    this.getBalance = (assetId) => new Promise(function (resolve, reject) {
+    this.getBalance = (assetId) => new Promise((resolve, reject) => {
       node.call({
         method: 'getbalance',
         params: [],
@@ -97,7 +97,7 @@ module.exports = function (network) {
      * return 0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973
      * @returns {Promise.<Object>}
      */
-    this.getBestBlockHash = () => new Promise(function (resolve, reject) {
+    this.getBestBlockHash = () => new Promise((resolve, reject) => {
       node.call({
         method: 'getbestblockhash',
         params: [],
@@ -151,7 +151,7 @@ module.exports = function (network) {
      * @param {number} index The index of the block being requested.
      * @returns {Promise.<string>} A promise returning the hex contents of the block
      */
-    this.getBlock = (index) => new Promise(function (resolve, reject) {
+    this.getBlock = (index) => new Promise((resolve, reject) => {
       node.call({
         method: 'getblock',
         params: [index, 1],
@@ -205,7 +205,7 @@ module.exports = function (network) {
      * @param {string} hash The hash of the block being requested.
      * @returns {Promise.<Object>} A promise returning information of the block
      */
-    this.getBlockByHash = (hash) => new Promise(function (resolve, reject) {
+    this.getBlockByHash = (hash) => new Promise((resolve, reject) => {
       node.call({
         method: 'getblock',
         params: [hash, 1],
@@ -226,7 +226,7 @@ module.exports = function (network) {
      * return 1000000
      * @returns {Promise.<number>} A promise returning the block count.
      */
-    this.getBlockCount = () => new Promise(function (resolve, reject) {
+    this.getBlockCount = () => new Promise((resolve, reject) => {
       node.call({
         method: 'getblockcount',
         params: [],
@@ -249,7 +249,7 @@ module.exports = function (network) {
      * return '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'
      * @returns {Promise.<string>} A promise returning the hash of the block
      */
-    this.getBlockHash = (index) => new Promise(function (resolve, reject) {
+    this.getBlockHash = (index) => new Promise((resolve, reject) => {
       node.call({
         method: 'getblockhash',
         params: [index],
@@ -268,7 +268,7 @@ module.exports = function (network) {
      * return 905
      * @returns {Promise.<number>} The system fee.
      */
-    this.getBlockSystemFee = (height) => new Promise(function (resolve, reject) {
+    this.getBlockSystemFee = (height) => new Promise((resolve, reject) => {
       node.call({
         method: 'getblocksysfee',
         params: [height],
@@ -287,7 +287,7 @@ module.exports = function (network) {
      * return 10
      * @returns {Promise.<number>} A promise returning the number of connections to the node.
      */
-    this.getConnectionCount = () => new Promise(function (resolve, reject) {
+    this.getConnectionCount = () => new Promise((resolve, reject) => {
       node.call({
         method: 'getconnectioncount',
         params: [],
@@ -307,7 +307,7 @@ module.exports = function (network) {
      * @param params The params used to invoke the contract.
      * @returns {Promise.<Object>) The invoke response.
      */
-    this.invoke = (scriptHash, params) => new Promise(function (resolve, reject) {
+    this.invoke = (scriptHash, params) => new Promise((resolve, reject) => {
       node.call({
         method: 'invoke',
         params: [scriptHash, params],
@@ -327,7 +327,7 @@ module.exports = function (network) {
      * @param params The params used to invoke the contract.
      * @returns {Promise.<Object>) The invoke response.
      */
-    this.invokeFunction = (scriptHash, operation, params) => new Promise(function (resolve, reject) {
+    this.invokeFunction = (scriptHash, operation, params) => new Promise((resolve, reject) => {
       node.call({
         method: 'invokefunction',
         params: [scriptHash, operation, params],
@@ -345,7 +345,7 @@ module.exports = function (network) {
      * @param script raw script to invoke.
      * @returns {Promise.<Object>) The invoke response.
      */
-    this.invokeScript = (script) => new Promise(function (resolve, reject) {
+    this.invokeScript = (script) => new Promise((resolve, reject) => {
       node.call({
         method: 'invokescript',
         params: [script],
@@ -360,7 +360,7 @@ module.exports = function (network) {
     /**
      * TBA
      */
-    this.getRawMemPool = () => new Promise(function (resolve, reject) {
+    this.getRawMemPool = () => new Promise((resolve, reject) => {
       node.call({
         method: 'getrawmempool',
         params: [],
@@ -395,7 +395,7 @@ module.exports = function (network) {
      *  }
      * @returns {Promise.<Object>} An object containing the transaction information.
      */
-    this.getRawTransaction = (txid) => new Promise(function (resolve, reject) {
+    this.getRawTransaction = (txid) => new Promise((resolve, reject) => {
       node.call({
         method: 'getrawtransaction',
         params: [txid, 1],
@@ -410,7 +410,7 @@ module.exports = function (network) {
      * @param {string} txid The requested transaction ID.
      * @returns {Promise.<Object>} An object containing the transaction response.
      */
-    this.getTXOut = (txid, index) => new Promise(function (resolve, reject) {
+    this.getTXOut = (txid, index) => new Promise((resolve, reject) => {
       node.call({
         method: 'gettxout',
         params: [txid, index],
@@ -425,7 +425,7 @@ module.exports = function (network) {
      * @param {string} hex The hex string representing the raw transaction.
      * @returns {Promise.<Object>} The transaction response.
      */
-    this.sendRawTransaction = (hex) => new Promise(function (resolve, reject) {
+    this.sendRawTransaction = (hex) => new Promise((resolve, reject) => {
       node.call({
         method: 'sendrawtransaction',
         params: [hex],
@@ -438,7 +438,7 @@ module.exports = function (network) {
     /**
      * TBA
      */
-    this.sendToAddress = (assetId, address, value) => new Promise(function (resolve, reject) {
+    this.sendToAddress = (assetId, address, value) => new Promise((resolve, reject) => {
       node.call({
         method: 'sendtoaddress',
         params: [assetId, address, value],
@@ -451,7 +451,7 @@ module.exports = function (network) {
     /**
      * TBA
      */
-    this.submitBlock = (hex) => new Promise(function (resolve, reject) {
+    this.submitBlock = (hex) => new Promise((resolve, reject) => {
       node.call({
         method: 'submitblock',
         params: [hex],
@@ -484,7 +484,7 @@ module.exports = function (network) {
      *  }
      * @returns {Promise.<Object>} An object containing the account information.
      */
-    this.getAccountState = (address) => new Promise(function (resolve, reject) {
+    this.getAccountState = (address) => new Promise((resolve, reject) => {
       node.call({
         method: 'getaccountstate',
         params: [address],
@@ -522,7 +522,7 @@ module.exports = function (network) {
      *  }
      * @returns {Promise.<Object>} An object containing the asset information.
      */
-    this.getAssetState = (assetId) => new Promise(function (resolve, reject) {
+    this.getAssetState = (assetId) => new Promise((resolve, reject) => {
       node.call({
         method: 'getassetstate',
         params: [assetId],
@@ -544,7 +544,7 @@ module.exports = function (network) {
      *  }
      * @returns {Promise.<Object>} An object containing the validation information of the requested account.
      */
-    this.validateAddress = (address) => new Promise(function (resolve, reject) {
+    this.validateAddress = (address) => new Promise((resolve, reject) => {
       node.call({
         method: 'validateaddress',
         params: [address],
@@ -557,16 +557,14 @@ module.exports = function (network) {
     /**
      * TBA
      */
-    this.getPeers = () => new Promise(function (resolve, reject) {
+    this.getPeers = () => new Promise((resolve, reject) => {
       node.call({
         method: 'getpeers',
         params: [],
         id: 0
-      })
-      .then(({ result }) => {
+      }).then(({ result }) => {
         resolve(result)
-      })
-      .catch(reject)
+      }).catch(reject)
     })
 
     /**
@@ -577,7 +575,7 @@ module.exports = function (network) {
      * @example
      * node.call({'method': 'getblock', 'params': [666,1], 'id': 0})
      */
-    this.call = (payload) => new Promise(function (resolve, reject) {
+    this.call = (payload) => new Promise((resolve, reject) => {
       const t0 = Date.now()
       node.pendingRequests += 1
       axios({
