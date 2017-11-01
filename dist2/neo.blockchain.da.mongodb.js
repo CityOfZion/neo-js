@@ -112,6 +112,21 @@ MongoDA.prototype = {
     })
   },
 
+  getRawTransaction: function (txid) {
+    return new Promise((resolve, reject) => {
+      this.transactionModel.findOne({ txid })
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('Transaction not found'))
+          }
+          resolve(res)
+        })
+    })
+  },
+
   saveBlock: function (newBlock) {
     return new Promise((resolve, reject) => {
       // Store the raw block

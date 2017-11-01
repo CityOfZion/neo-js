@@ -299,7 +299,20 @@ Neo.prototype = {
   },
 
   getRawTransaction: function (txid) {
-    // TODO
+    if (this.dataAccess) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getRawTransaction from DB...')
+      }
+      const transaction = this.dataAccess.getRawTransaction(txid)
+      if (transaction) { // TODO: formal tx validation util
+        if (this.verboseLevel >= 3) {
+          console.log('getRawTransaction result found in DB!')
+        }
+        return transaction
+      }
+      // TODO: fetch from RPC and store into db
+    }
+
     return this.currentNode.rpc.getRawTransaction(txid)
   },
 
@@ -309,17 +322,14 @@ Neo.prototype = {
   },
 
   sendRawTransaction: function (hex) {
-    // TODO
     return this.currentNode.rpc.sendRawTransaction(hex)
   },
 
   sendToAddress: function (assetId, address, value) {
-    // TODO
     return this.currentNode.rpc.sendToAddress(assetId, address, value)
   },
 
   submitBlock: function (hex) {
-    // TODO
     return this.currentNode.rpc.submitBlock(hex)
   },
 
@@ -334,12 +344,10 @@ Neo.prototype = {
   },
 
   validateAddress: function (address) {
-    // TODO
     return this.currentNode.rpc.validateAddress(address)
   },
 
   getPeers: function () {
-    // TODO
     return this.currentNode.rpc.getPeers()
   },
 
