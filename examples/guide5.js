@@ -22,9 +22,11 @@ async function main () {
    */
   console.log('== Neo syncing mode ==')
   const neoBlockchain = new Neo('testnet', { mode: 'full', verboseLevel: 3 })
-  neoBlockchain.startSync()
+  // neoBlockchain.startSync()
+  neoBlockchain.sync.start()
   await sleep(10000)
-  neoBlockchain.stopSync()
+  // neoBlockchain.stopSync()
+  neoBlockchain.sync.stop()
 
   process.exit() // Since there'll be background process happening, you'll need to explicit terminate this script.
 }
