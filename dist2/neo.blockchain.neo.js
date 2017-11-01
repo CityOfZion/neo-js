@@ -175,7 +175,23 @@ Neo.prototype = {
   },
 
   getBestBlockHash: function () {
-    // TODO
+    if (this.dataAccess) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getBestBlockHash from DB...')
+      }
+
+      // TODO: if so, attempt to find out if it is fully sync'ed
+
+      try {
+        return this.dataAccess.getBestBlockHash()
+      } catch (err) {
+        // if there's problem with getBlockCount, then we fall back to fetching info from RPC
+        if (this.verboseLevel >= 3) {
+          console.log('problem with getBestBlockHash in DB, fall back to RPC instead...')
+        }
+      }
+    }
+
     return this.currentNode.rpc.getBestBlockHash()
   },
 
@@ -237,17 +253,28 @@ Neo.prototype = {
   },
 
   getBlockHash: function (index) {
-    // TODO
+    if (this.dataAccess) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getBlock from DB...')
+      }
+      const block = this.dataAccess.getBlock(index)
+      if (block) { // TODO: formal block validation util
+        if (this.verboseLevel >= 3) {
+          console.log('getBlock result found in DB!')
+        }
+        return block.hash
+      }
+      // TODO: fetch from RPC and store into db
+    }
+
     return this.currentNode.rpc.getBlockHash(index)
   },
 
   getBlockSystemFee: function (height) {
-    // TODO
     return this.currentNode.rpc.getBlockSystemFee(height)
   },
 
   getConnectionCount: function () {
-    // TODO
     return this.currentNode.rpc.getConnectionCount()
   },
 

@@ -50,6 +50,22 @@ MongoDA.prototype = {
 
   // getTX
 
+  getBestBlockHash: function () {
+    return new Promise((resolve, reject) => {
+      this.blockModel.findOne({})
+        .sort({ index: -1 })
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('Block not found'))
+          }
+          resolve(res)
+        })
+    })
+  },
+
   getBlock: function (index) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
@@ -67,7 +83,7 @@ MongoDA.prototype = {
 
   getBlockByHash: function (hash) {
     return new Promise((resolve, reject) => {
-      this.blockModel.findOne( { hash })
+      this.blockModel.findOne({ hash })
         .exec((err, res) => {
           if (err) {
             reject(err)
