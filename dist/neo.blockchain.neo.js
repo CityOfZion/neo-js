@@ -77,4 +77,4 @@ function neo (mode, network) {
   )
 }
 
-exports.neo = neo
+module.exports = neo
