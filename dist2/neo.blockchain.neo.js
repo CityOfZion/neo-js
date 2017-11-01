@@ -185,7 +185,7 @@ Neo.prototype = {
         console.log('fetching getBlock from DB...')
       }
       const block = this.dataAccess.getBlock(index)
-      if(block) { // TODO: formal block validation util
+      if (block) { // TODO: formal block validation util
         if (this.verboseLevel >= 3) {
           console.log('getBlock result found in DB!')
         }
@@ -198,7 +198,20 @@ Neo.prototype = {
   },
 
   getBlockByHash: function (hash) {
-    // TODO
+    if (this.dataAccess) {
+      if (this.verboseLevel >= 3) {
+        console.log('fetching getBlockByHash from DB...')
+      }
+      const block = this.dataAccess.getBlockByHash(hash)
+      if (block) { // TODO: formal block validation util
+        if (this.verboseLevel >= 3) {
+          console.log('getBlockByHash result found in DB!')
+        }
+        return block
+      }
+      // TODO: fetch from RPC and store into db
+    }
+
     return this.currentNode.rpc.getBlockByHash(hash)
   },
 
