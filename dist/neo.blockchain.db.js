@@ -49,7 +49,8 @@ module.exports = function(network){
     sys_fee: Number,
     net_fee: Number,
     blockIndex: {type: 'Number', index: true},
-    scripts: [] })
+    scripts: [],
+    script: String})
   module.transactions = mongoose.model(collection.transactions, transactionSchema);
 
   var addressSchema = new bSchema({
@@ -291,7 +292,10 @@ module.exports = function(network){
           tx.blockIndex = newBlock.index;
           tx.vout.forEach( (d) => {
             if (node.assetsFlat.indexOf(d.asset) == -1) {
-              module.addresses({'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}).save();
+              var newAsset = {'address': d.asset, 'asset': d.asset, 'type': 'a', 'assets': []}
+              node.assetsFlat.push(d.asset)
+              node.assets.push(newAsset)
+              module.addresses(newAsset).save();
             }
           })
 
