@@ -3,7 +3,7 @@
 module.exports = function (network) {
   let module = {}
 
-  const mongoose = require('mongoose')
+  const { schema: bSchema, model } = require('mongoose')
   const _ = require('lodash')
 
   // Outlines the collections to use for testnet (default)
@@ -18,10 +18,8 @@ module.exports = function (network) {
     collection.addresses = 'b_neo_m_addresses'
   }
 
-  let bSchema = mongoose.Schema
-
   // Schema defining a destructed block
-  let blockSchema = new bSchema({
+  const blockSchema = new bSchema({
     hash: String,
     size: Number,
     version: Number,
@@ -39,9 +37,9 @@ module.exports = function (network) {
     confirmations: Number,
     nextblockhash: String
   })
-  module.blocks = mongoose.model(collection.blockchain, blockSchema)
+  module.blocks = model(collection.blockchain, blockSchema)
 
-  let transactionSchema = new bSchema({
+  const transactionSchema = new bSchema({
     txid: { type: 'String', unique: true, required: true, dropDups: true, index: true },
     size: Number,
     type: { type: 'String', index: true },
@@ -55,16 +53,16 @@ module.exports = function (network) {
     scripts: [],
     script: String
   })
-  module.transactions = mongoose.model(collection.transactions, transactionSchema)
+  module.transactions = model(collection.transactions, transactionSchema)
 
-  let addressSchema = new bSchema({
+  const addressSchema = new bSchema({
     address: { type: 'String', unique: true, required: true, dropDups: true },
     asset: 'String',
     type: 'String',
     assets: [],
     history: []
   })
-  module.addresses = mongoose.model(collection.addresses, addressSchema)
+  module.addresses = model(collection.addresses, addressSchema)
 
   /**
    * @class node
@@ -114,7 +112,7 @@ module.exports = function (network) {
                 })
             } else {
               // Sort the assets into 'current' and 'needs update'
-              let parts = _.partition(res.assets, (asset) =>
+              const parts = _.partition(res.assets, (asset) =>
                 (node.index - asset.index) >= blockAge
               )
               /**
@@ -123,7 +121,7 @@ module.exports = function (network) {
                * an asset it appears in a transaction.
                */
               if (res.assets.length !== node.assets.length) {
-                let included = _.map(res.assets, 'asset')
+                const included = _.map(res.assets, 'asset')
                 node.assets.forEach((asset) => {
                   if (included.indexOf(asset.asset) === -1) {
                     parts[0].push({
@@ -186,7 +184,7 @@ module.exports = function (network) {
                 })
 
                 // Update the address balances in the collection
-                let result = { asset, balance, index: node.index, type: 'a' }
+                const result = { asset, balance, index: node.index, type: 'a' }
                 module.addresses.update({ address, 'assets.asset': asset }, {
                   'assets.$.balance': balance,
                   'assets.$.index': node.index
@@ -394,7 +392,7 @@ module.exports = function (network) {
 
     this.getBlockCount()
 
-    let updateAssetList = () => {
+    const updateAssetList = () => {
       module.addresses.find({ type: 'a' }, 'asset')
         .exec((err, res) => {
           node.assets = res
