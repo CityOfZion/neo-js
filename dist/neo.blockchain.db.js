@@ -122,11 +122,9 @@ module.exports = function (network) {
                */
               if (res.assets.length !== node.assets.length) {
                 const included = _.map(res.assets, 'asset')
-                node.assets.forEach((asset) => {
-                  if (included.indexOf(asset.asset) === -1) {
-                    parts[0].push({
-                      asset: asset.asset
-                    })
+                node.assets.forEach(({ asset }) => {
+                  if (included.includes(asset)) {
+                    parts[0].push({ asset })
                   }
                 })
               }
