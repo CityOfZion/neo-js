@@ -30,7 +30,7 @@ module.exports = {
           Hash: '0x5f3220532e3811ed49831eb2209b2fac49bbeaa61d2a29abb191fb3628348c5b',
           Size: 10,
           Type: 'MinerTransaction',
-          Nounce: 3774638267,
+          Nounce: 3774638267
         },
         {
           Hash: '0xc8fbc56acdbfa03f9eacb06e28c29dfd30af61255bd0f51f88851900bcd75937',

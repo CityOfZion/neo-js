@@ -52,7 +52,8 @@ module.exports = function (network) {
     sys_fee: Number,
     net_fee: Number,
     blockIndex: { type: 'Number', index: true },
-    scripts: []
+    scripts: [],
+    script: String
   })
   module.transactions = mongoose.model(collection.transactions, transactionSchema)
 
@@ -295,15 +296,21 @@ module.exports = function (network) {
       return new Promise((resolve, reject) => {
         // Store the raw block
         newBlock = delintBlock(newBlock)
+
         module.blocks(newBlock).save((err) => {
-          if (err) return reject(err)
+          if (err) {
+            return reject(err)
+          }
 
           // Store the raw transaction
           newBlock.tx.forEach((tx) => {
             tx.blockIndex = newBlock.index
             tx.vout.forEach((d) => {
               if (node.assetsFlat.indexOf(d.asset) === -1) {
-                module.addresses({ address: d.asset, asset: d.asset, type: 'a', assets: [] }).save()
+                const newAsset = { address: d.asset, asset: d.asset, type: 'a', assets: [] }
+                node.assetsFlat.push(d.asset)
+                node.assets.push(newAsset)
+                module.addresses(newAsset).save()
               }
             })
 

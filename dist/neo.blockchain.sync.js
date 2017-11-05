@@ -8,27 +8,27 @@
  * @requires async
  * @param {neo} blockchain A reference to the parent blockchain instance.
  * @example
- * var neoBlockchain = neo('full', 'testnet')
+ * let neoBlockchain = neo('full', 'testnet')
  * neoBlockchain.sync.start()
  */
 function sync (blockchain) {
-  var sync = this
-  var async = require('async')
+  const sync = this
+  const async = require('async')
   /** {boolean} runLock An attribute used to garantee only a single synchronization activity. */
   sync.runLock = false
   /** {number} blockWritePointer The sync horizon representing the heighest block index
    * which has either been commited to the database or is queue for commit.
    */
-  var blockWritePointer = -1
+  let blockWritePointer = -1
   /** {number} defaultWorkerCount The default number of workers to synchronize the blockchain with. */
-  var defaultWorkerCount = 20
+  let defaultWorkerCount = 20
   /* {number} maxQueueLength The number of blocks to keep in queue. Exists to reduce memory use. */
-  var maxQueueLength = 10000
+  let maxQueueLength = 10000
   /* {number} logPeriod Prints a status update every 'n' blocks. */
-  var logPeriod = 10000
+  let logPeriod = 10000
 
-  var stats = {}
-  var t0 = Date.now()
+  let stats = {}
+  let t0 = Date.now()
 
   /**
    * Maintains the synchronization queue for the blockchain.
@@ -38,9 +38,9 @@ function sync (blockchain) {
    * @example {'method': function, 'attrs': object}
    * @returns {Lyfe}
    */
-  var queue = async.priorityQueue(function (task, callback) {
+  let queue = async.priorityQueue((task, callback) => {
     task.method(task.attrs)
-      .then(function () {
+      .then(() => {
         // after a sync even is run, enqueue any other
         // outstanding blocks up to the max queue length.
         while ((queue.length() < maxQueueLength) &&
@@ -61,11 +61,11 @@ function sync (blockchain) {
 
         callback()
       })
-      .catch(function (err) {
+      .catch((err) => {
         // If the blcok request fails, throw it to the back to the queue to try again.
         // timout prevents inf looping on connections issues etc..
         console.log(task.attrs, 'fail')
-        setTimeout(function () {
+        setTimeout(() => {
           sync.enqueueBlock(task.attrs.index, 0)
         }, 2000)
         callback()
@@ -75,12 +75,12 @@ function sync (blockchain) {
   queue.pause() // Initialize the controller with synchronization paused (so we dont sync in light mode)
 
   /** Starts the synchronization activity. */
-  this.start = function () {
+  this.start = () => {
     if (sync.runLock) return false // prevent the overlapping runs
     sync.runLock = true
 
     console.log('Synchronizing')
-    sync.clock = setInterval(function () {
+    sync.clock = setInterval(() => {
       if (sync.runLock) {
         if ((blockchain.localNode.index < blockchain.highestNode().index) &&
           (queue.length() === 0)) {
@@ -93,11 +93,11 @@ function sync (blockchain) {
       }
     }, 2000)
 
-    sync.clock2 = setInterval(function () {
+    sync.clock2 = setInterval(() => {
       if (sync.runLock) {
         blockchain.localNode.verifyBlocks()
-          .then(function (res) {
-            res.forEach(function (r) {
+          .then((res) => {
+            res.forEach((r) => {
               sync.enqueueBlock(r, 0)
             })
           })
@@ -110,7 +110,7 @@ function sync (blockchain) {
   }
 
   /** Stops the synchronization activity. */
-  this.stop = function () {
+  this.stop = () => {
     sync.runLock = false
     queue.pause()
   }
@@ -119,7 +119,7 @@ function sync (blockchain) {
    * Update the number of workers in the sync activity.
    * @param {number} count The number of workers to use.
    */
-  this.setWorkers = function (count) {
+  this.setWorkers = (count) => {
     queue.concurrency = count
   }
 
@@ -128,26 +128,26 @@ function sync (blockchain) {
    * and inserts it into the local database.
    * @param {Object} attrs The block attributes
    */
-  this.storeBlock = function (attrs) {
-    return new Promise(function (resolve, reject) {
+  this.storeBlock = (attrs) => {
+    return new Promise((resolve, reject) => {
       // get the block using the rpc controller
-      var node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
-      if (!stats[node.domain]) stats[node.domain] = {'s': 0, 'f1': 0, 'f2': 0}
+      let node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
+      if (!stats[node.domain]) stats[node.domain] = {s: 0, f1: 0, f2: 0}
 
       node.getBlock(attrs.index)
-        .then(function (res) {
+        .then((res) => {
           // inject the block into the database and save.
           blockchain.localNode.saveBlock(res)
-            .then(function () {
+            .then(() => {
               stats[node.domain]['s']++
               resolve()
             })
-            .catch(function (err) {
+            .catch((err) => {
               stats[node.domain]['f2']++
               resolve()
             })
         })
-        .catch(function (err) {
+        .catch((err) => {
           stats[node.domain]['f1']++
           return reject(err)
         })
@@ -160,7 +160,7 @@ function sync (blockchain) {
    * @param {number} [priority=5] The priority of the block download request.
    * @param {Boolean} [safe = false] Insert if the queue is not empty?
    */
-  this.enqueueBlock = function (index, priority = 5, safe = false) {
+  this.enqueueBlock = (index, priority = 5, safe = false) => {
     if (safe && (queue.length() > 0)) return
     // if the blockheight is above the current height,
     // increment the write pointer.
