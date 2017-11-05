@@ -1,13 +1,13 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 module.exports = function (network) {
-  let module = {}
+  const module = {}
 
   const { schema: bSchema, model } = require('mongoose')
   const _ = require('lodash')
 
   // Outlines the collections to use for testnet (default)
-  let collection = {
+  const collection = {
     blockchain: 'b_neo_t_blocks', // The blockchain collection
     transactions: 'b_neo_t_transactions', // The transactions on the blockchains
     addresses: 'b_neo_t_addresses' // A collection maintaining accounts and their balances
@@ -369,7 +369,7 @@ module.exports = function (network) {
 
     this.verifyBlocks = (start = 0, end = node.index) => {
       return new Promise((resolve, reject) => {
-        let missing = []
+        const missing = []
         let pointer = -1
         module.blocks.find({}, 'index').sort('index')
           .exec((err, res) => {
