@@ -66,13 +66,9 @@ function neo (mode, network) {
    * @returns {node} The best node that has the requested block index.
    */
   this.nodeWithBlock = (index, sort = 'latency', allowLocal = true) => _.minBy(
-    _.filter(
-      this.nodes,
-      ({ index: nIndex, domain, active }) => active && (index <= nIndex) && (
-        domain === 'localhost'
-          ? allowLocal
-          : true
-    )),
+    _.filter(this.nodes, ({ index: nIndex, domain, active }) => {
+      return active && (index <= nIndex) && (domain === 'localhost' ? allowLocal : true)
+    }),
     sort
   )
 }

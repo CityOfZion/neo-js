@@ -1,6 +1,6 @@
 module.exports = {
   getBalance: {
-    AccessDenied: {'code': -400, 'message': 'Access denied.', 'data': '   at Neo.Network.RPC.RpcServerWithWallet.Process(String method, JArray _params)\r\n   at Neo.Network.RPC.RpcServer.ProcessRequest(JObject request)'}
+    AccessDenied: {code: -400, message: 'Access denied.', data: '   at Neo.Network.RPC.RpcServerWithWallet.Process(String method, JArray _params)\r\n   at Neo.Network.RPC.RpcServer.ProcessRequest(JObject request)'}
   },
   getBestBlockHash: {
     Success: { jsonrpc: '2.0', id: 0, result: '0xf760b3dd56a44e6b139d2a072d9f20ae503e13d01ef9f2385043b90f3a8ae876' },
@@ -90,25 +90,25 @@ module.exports = {
         address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G'
       }
     },
-    IndexOutOfRange: {'code': -2146233086, 'message': 'Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index'},
-    InvalidFormat: {'code': -2146233033, 'message': 'One of the identified items was in an invalid format.'}
+    IndexOutOfRange: {code: -2146233086, message: 'Index was out of range. Must be non-negative and less than the size of the collection.\r\nParameter name: index'},
+    InvalidFormat: {code: -2146233033, message: 'One of the identified items was in an invalid format.'}
   },
   getAccountState: {
     Success: {
-      'jsonrpc': '2.0',
-      'id': 1,
-      'result': {
-        'version': 0,
-        'script_hash': '0x869575db91de0265118002f26e00fe1d4a89b9f0',
-        'frozen': false,
-        'votes': [],
-        'balances': [{
-          'asset': '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
-          'value': '1488.1'
+      jsonrpc: '2.0',
+      id: 1,
+      result: {
+        version: 0,
+        script_hash: '0x869575db91de0265118002f26e00fe1d4a89b9f0',
+        frozen: false,
+        votes: [],
+        balances: [{
+          asset: '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7',
+          value: '1488.1'
         },
         {
-          'asset': '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
-          'value': '186'
+          asset: '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+          value: '186'
         }
         ]
       }
@@ -116,27 +116,27 @@ module.exports = {
   },
   getAssetState: {
     Success: {
-      'jsonrpc': '2.0',
-      'id': 1,
-      'result': {
-        'version': 0,
-        'id': '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
-        'type': 'GoverningToken',
-        'name': [{
-          'lang': 'zh-CN',
-          'name': '\u5C0F\u8681\u80A1'
+      jsonrpc: '2.0',
+      id: 1,
+      result: {
+        version: 0,
+        id: '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
+        type: 'GoverningToken',
+        name: [{
+          lang: 'zh-CN',
+          name: '\u5C0F\u8681\u80A1'
         }, {
-          'lang': 'en',
-          'name': 'AntShare'
+          lang: 'en',
+          name: 'AntShare'
         }],
-        'amount': '100000000',
-        'available': '100000000',
-        'precision': 0,
-        'owner': '00',
-        'admin': 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
-        'issuer': 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
-        'expiration': 4000000,
-        'frozen': false
+        amount: '100000000',
+        available: '100000000',
+        precision: 0,
+        owner: '00',
+        admin: 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
+        issuer: 'Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt',
+        expiration: 4000000,
+        frozen: false
       }
     }
   },
@@ -162,5 +162,5 @@ module.exports = {
         ]
       }
     }
-  },
+  }
 }
