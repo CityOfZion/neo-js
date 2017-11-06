@@ -22,7 +22,6 @@ const Neo = function (network, options = {}) {
   this.nodes = []
   this.currentNode = undefined // A reference pointer to a selected node as the current node
   this.localNode = undefined
-  // this.dataAccess = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -31,7 +30,7 @@ const Neo = function (network, options = {}) {
   Logger.setLevel(this.options.verboseLevel)
   this._initNodes()
   this._setDefaultNode()
-  this._initDiagnostic() // Hhaven't come up with a suitable terminology yet.
+  this._initDiagnostic() // Haven't come up with a suitable terminology yet.
   this._initLocalNode()
   // this._initFullMode()
 
@@ -71,9 +70,10 @@ Neo.Defaults = {
 
 // -- Static methods
 
-Neo.GetNodeUrl = function (node) {
-  return `${node.scheme}://${node.host}:${node.port}`
-}
+// Deprecated
+// Neo.GetNodeUrl = function (node) {
+//   return `${node.scheme}://${node.host}:${node.port}`
+// }
 
 // -- Class methods
 
@@ -115,124 +115,72 @@ Neo.prototype = {
   },
 
   getBestBlockHash: function () {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getBestBlockHash from DB...')
-      }
-
+    if (this.localNode) {
+      Logger.info('[neo] fetching getBestBlockHash from DB...')
       // TODO: if so, attempt to find out if it is fully sync'ed
-
       try {
-        return this.dataAccess.getBestBlockHash()
+        return this.localNode.api.getBestBlockHash()
       } catch (err) {
-        // if there's problem with getBlockCount, then we fall back to fetching info from RPC
-        if (this.verboseLevel >= 3) {
-          console.log('problem with getBestBlockHash in DB, fall back to RPC instead...')
-        }
+        Logger.info('[neo] problem with getBestBlockHash in DB, fall back to RPC instead...')
+        // TODO: fetch from RPC and store into DB
       }
     }
-
     return this.currentNode.api.getBestBlockHash()
   },
 
   getBlock: function (index) {
-    // if (this.localNode) {
-    //   Logger.info('fetching getBlock from DB...')
-    //   // const block = this.localNode.api.getBlock(index)
-    //   // if (block) { // TODO: formal block validation util
-    //   //   Logger.info('getBlock result found in DB!')
-    //   //   return block
-    //   // }
-
-    //   this.localNode.api.getBlock(index)
-    //     .then((res) => {
-    //       Logger.info('getBlock result found in DB!')
-    //       Logger.info('res:', res)
-    //       // return res
-    //       return new Promise((resolve) => { resolve(res) })
-    //     })
-    //     .catch((err) => {
-    //       Logger.log('oh on...')
-    //     })
-    // }
-
-    // Logger.info('fetching getBlock from RPC...')
-    // return this.currentNode.api.getBlock(index)
-
-    return new Promise((resolve, reject) => {
-      if (this.localNode) {
-        Logger.info('fetching getBlock from DB...')
-        this.localNode.api.getBlock(index)
-          .then((res) => {
-            Logger.info('getBlock result found in DB!')
-            Logger.info('res:', res)
-            resolve(res)
-          })
-          .catch((err) => {
-            Logger.log('oh on...')
-          })
-      } else {
-        Logger.info('fetching getBlock from RPC...')
-        this.currentNode.api.getBlock(index)
-          .then((res) => resolve(res))
+    if (this.localNode) {
+      Logger.info('[neo] fetching getBlock from DB...')
+      const block = this.localNode.api.getBlock(index)
+      if (block) { // TODO: formal block validation util
+        Logger.info('getBlock result found in DB!')
+        return block
       }
-    })
+      // TODO: fetch from RPC and store into DB
+    }
+    Logger.info('[neo] fetching getBlock from RPC...')
+    return this.currentNode.api.getBlock(index)
   },
 
   getBlockByHash: function (hash) {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getBlockByHash from DB...')
-      }
-      const block = this.dataAccess.getBlockByHash(hash)
+    if (this.localNode) {
+      Logger.info('[neo] fetching getBlockByHash from DB...')
+      const block = this.localNode.api.getBlockByHash(hash)
       if (block) { // TODO: formal block validation util
-        if (this.verboseLevel >= 3) {
-          console.log('getBlockByHash result found in DB!')
-        }
+        Logger.info('getBlockByHash result found in DB!')
         return block
       }
-      // TODO: fetch from RPC and store into db
+      // TODO: fetch from RPC and store into DB
     }
-
+    Logger.info('[neo] fetching getBlockByHash from RPC...')
     return this.currentNode.api.getBlockByHash(hash)
   },
 
   getBlockCount: function () {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getBlockCount from DB...')
-      }
-
+    if (this.localNode) {
+      Logger.info('[neo] fetching getBlockCount from DB...')
       // TODO: if so, attempt to find out if it is fully sync'ed
-
       try {
-        return this.dataAccess.getBlockCount()
+        return this.localNode.api.getBlockCount()
       } catch (err) {
-        // if there's problem with getBlockCount, then we fall back to fetching info from RPC
-        if (this.verboseLevel >= 3) {
-          console.log('problem with getBlockCount in DB, fall back to RPC instead...')
-        }
+        Logger.info('[neo] problem with getBlockCount in DB, fall back to RPC instead...')
       }
     }
-
+    Logger.info('[neo] fetching getBlockCount from RPC...')
     return this.currentNode.api.getBlockCount()
   },
 
-  getBlockHash: function (index) {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getBlock from DB...')
-      }
-      const block = this.dataAccess.getBlock(index)
+  getBlockHash: function (index) { // TODO: should this method simply reuses neo.getBlock() instead of having its own implementation?
+    if (this.localNode) {
+      Logger.info('[neo] fetching getBlockHash from DB...')
+      const block = this.localNode.api.getBlock(index)
       if (block) { // TODO: formal block validation util
-        if (this.verboseLevel >= 3) {
-          console.log('getBlock result found in DB!')
-        }
+        Logger.info('[neo] getBlockHash result found in DB!')
         return block.hash
       }
-      // TODO: fetch from RPC and store into db
+      // TODO: fetch from RPC and store into DB
     }
-
+    Logger.info('[neo] fetching getBlockHash from RPC...')
     return this.currentNode.api.getBlockHash(index)
   },
 
@@ -265,20 +213,16 @@ Neo.prototype = {
   },
 
   getRawTransaction: function (txid) {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getRawTransaction from DB...')
-      }
-      const transaction = this.dataAccess.getRawTransaction(txid)
+    if (this.localNode) {
+      Logger.info('[neo] fetching getRawTransaction from DB...')
+      const transaction = this.localNode.api.getRawTransaction(txid)
       if (transaction) { // TODO: formal tx validation util
-        if (this.verboseLevel >= 3) {
-          console.log('getRawTransaction result found in DB!')
-        }
+        Logger.info('[neo] getRawTransaction result found in DB!')
         return transaction
       }
-      // TODO: fetch from RPC and store into db
+      // TODO: fetch from RPC and store into DB
     }
-
+    Logger.info('[neo] fetching getRawTransaction from RPC...')
     return this.currentNode.api.getRawTransaction(txid)
   },
 
@@ -395,16 +339,16 @@ Neo.prototype = {
     this.nodes.push(node)
   },
 
-  _initFullMode: function () {
-    if (this.options.mode !== 'full') {
-      return
-    }
+  // _initFullMode: function () {
+  //   if (this.options.mode !== 'full') {
+  //     return
+  //   }
 
-    const connectionInfo = this._getMongoDbConnectionInfo()
-    this.dataAccess = new MongoDa(connectionInfo)
+  //   const connectionInfo = this._getMongoDbConnectionInfo()
+  //   this.dataAccess = new MongoDa(connectionInfo)
 
-    this.sync = new Sync()
-  },
+  //   this.sync = new Sync()
+  // },
 
   _getMongoDbConnectionInfo: function () {
     return this.options.enum.mongodb[this.network]

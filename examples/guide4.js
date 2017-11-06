@@ -22,8 +22,8 @@ async function main () {
    * By accessing to RPC delegates, Neo client will first attempt to seek for data in local storage before communicates with RPC API.
    */
   console.log('== Neo client full mode usage ==')
-  const neoBlockchain = new Neo('testnet', { mode: 'full', verboseLevel: 3 })
-  console.log('getBlock:', await neoBlockchain.getBlock(100000))
+  const neoBlockchain = new Neo('testnet', { localNodeEnabled: true, verboseLevel: 3 })
+  console.log('getBlock:', await neoBlockchain.getBlock(100))
 
   process.exit() // Since there'll be background process happening, you'll need to explicit terminate this script.
 }
