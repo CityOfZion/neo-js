@@ -3,7 +3,7 @@ const mongoose = require('mongoose')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
 const Node = require('./neo.blockchain.node')
-// const MongoDa = require('./neo.blockchain.da.mongodb')
+const MongoDa = require('./neo.blockchain.da.mongodb')
 const Sync = require('./neo.blockchain.sync')
 const Utils = require('./neo.blockchain.utils')
 const Logger = Utils.logger
@@ -19,12 +19,10 @@ const Neo = function (network, options = {}) {
   // Properties and default values
   this.network = network
   this.options = _.assign({}, Neo.Defaults, options)
-
-  // this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
   this.nodes = []
-  this.currentNode = undefined
-  // this.localNode = undefined
-  this.dataAccess = undefined
+  this.currentNode = undefined // A reference pointer to a selected node as the current node
+  this.localNode = undefined
+  // this.dataAccess = undefined
   // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
   // TODO: cache mechanism, in-memory, vs mongodb?
   // TODO: auto (re)pick 'an appropriate' node
@@ -34,24 +32,24 @@ const Neo = function (network, options = {}) {
   this._initNodes()
   this._setDefaultNode()
   this._initDiagnostic() // Hhaven't come up with a suitable terminology yet.
-  // this._initLocalNode()
-  this._initFullMode()
+  this._initLocalNode()
+  // this._initFullMode()
 
   // Event bindings
   if (this.options.eventEmitter) {
     // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
     this.options.eventEmitter.on('rpc:call', (e) => {
-      Logger.info('rpc:call triggered. e:', e)
+      // Logger.info('rpc:call triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests += 1
     })
     this.options.eventEmitter.on('rpc:call:response', (e) => {
-      Logger.info('rpc:call:response triggered. e:', e)
+      // Logger.info('rpc:call:response triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
     this.options.eventEmitter.on('rpc:call:error', (e) => {
-      Logger.info('rpc:call:error triggered. e:', e)
+      // Logger.info('rpc:call:error triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
@@ -68,7 +66,7 @@ Neo.Defaults = {
   verboseLevel: 2, // 0: off, 1: error, 2: warn, 3: log
   enum: require('./neo.blockchain.enum'), // User has the choice to BYO own enum definitions
   diagnosticInterval: 0, // How often to analyse a node. 0 means disable.
-  // localNodeEnabled: false
+  localNodeEnabled: false
 }
 
 // -- Static methods
@@ -138,21 +136,47 @@ Neo.prototype = {
   },
 
   getBlock: function (index) {
-    if (this.dataAccess) {
-      if (this.verboseLevel >= 3) {
-        console.log('fetching getBlock from DB...')
-      }
-      const block = this.dataAccess.getBlock(index)
-      if (block) { // TODO: formal block validation util
-        if (this.verboseLevel >= 3) {
-          console.log('getBlock result found in DB!')
-        }
-        return block
-      }
-      // TODO: fetch from RPC and store into db
-    }
+    // if (this.localNode) {
+    //   Logger.info('fetching getBlock from DB...')
+    //   // const block = this.localNode.api.getBlock(index)
+    //   // if (block) { // TODO: formal block validation util
+    //   //   Logger.info('getBlock result found in DB!')
+    //   //   return block
+    //   // }
 
-    return this.currentNode.api.getBlock(index)
+    //   this.localNode.api.getBlock(index)
+    //     .then((res) => {
+    //       Logger.info('getBlock result found in DB!')
+    //       Logger.info('res:', res)
+    //       // return res
+    //       return new Promise((resolve) => { resolve(res) })
+    //     })
+    //     .catch((err) => {
+    //       Logger.log('oh on...')
+    //     })
+    // }
+
+    // Logger.info('fetching getBlock from RPC...')
+    // return this.currentNode.api.getBlock(index)
+
+    return new Promise((resolve, reject) => {
+      if (this.localNode) {
+        Logger.info('fetching getBlock from DB...')
+        this.localNode.api.getBlock(index)
+          .then((res) => {
+            Logger.info('getBlock result found in DB!')
+            Logger.info('res:', res)
+            resolve(res)
+          })
+          .catch((err) => {
+            Logger.log('oh on...')
+          })
+      } else {
+        Logger.info('fetching getBlock from RPC...')
+        this.currentNode.api.getBlock(index)
+          .then((res) => resolve(res))
+      }
+    })
   },
 
   getBlockByHash: function (hash) {
@@ -358,16 +382,18 @@ Neo.prototype = {
     this.currentNode = node
   },
 
-  // _initLocalNode: function () {
-  //   if (!this.localNodeEnabled) {
-  //     return;
-  //   }
+  _initLocalNode: function () {
+    if (!this.options.localNodeEnabled) {
+      return;
+    }
 
-  //   const connectionInfo = this._getMongoDbConnectionInfo()
-  //   const db = new Db(connectionInfo)
-  //   this.localNode = db.getLocalNode()
-  //   this.nodes.push(this.localNode)
-  // },
+    const connectionInfo = this._getMongoDbConnectionInfo()
+    Logger.info('Enabling local node. connectionInfo:', connectionInfo)
+    const db = new MongoDa(connectionInfo) // TODO: have an abstract layer so user can inject any types of Data Access Object
+    const node = new Node(db, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
+    this.localNode = node
+    this.nodes.push(node)
+  },
 
   _initFullMode: function () {
     if (this.options.mode !== 'full') {

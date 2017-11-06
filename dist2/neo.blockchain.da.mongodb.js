@@ -176,7 +176,7 @@ MongoDA.prototype = {
         resolve()
       })
     })
-  }
+  },
 
   // -- Private methods
 
