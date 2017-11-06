@@ -2,7 +2,8 @@ const _ = require('lodash')
 const mongoose = require('mongoose')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
-const MongoDa = require('./neo.blockchain.da.mongodb')
+const Node = require('./neo.blockchain.node')
+// const MongoDa = require('./neo.blockchain.da.mongodb')
 const Sync = require('./neo.blockchain.sync')
 
 /**
@@ -17,7 +18,8 @@ const Neo = function (network, options = {}) {
   this.network = network
   this.options = _.assign({}, Neo.Defaults, options)
 
-  this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
+  // this.nodes = _.cloneDeep(this.options.enum.nodes[this.network]) // Make a carbon copy of the available nodes. This object will contain additional attributes.
+  this.nodes = []
   this.currentNode = undefined
   // this.localNode = undefined
   this.dataAccess = undefined
@@ -26,8 +28,9 @@ const Neo = function (network, options = {}) {
   // TODO: auto (re)pick 'an appropriate' node
 
   // Bootstrap
-  this.setDefaultNode()
-  this._initDiagnostic() // Again, haven't come up with a suitable terminology yet.
+  this._initNodes()
+  this._setDefaultNode()
+  this._initDiagnostic() // Hhaven't come up with a suitable terminology yet.
   // this._initLocalNode()
   this._initFullMode()
 
@@ -38,21 +41,21 @@ const Neo = function (network, options = {}) {
       if (this.verboseLevel >= 3) {
         console.log('rpc:call triggered. e:', e)
       }
-      const node = _.find(this.nodes, { url: e.url })
+      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests += 1
     })
     this.options.eventEmitter.on('rpc:call:response', (e) => {
       if (this.verboseLevel >= 3) {
         console.log('rpc:call:response triggered. e:', e)
       }
-      const node = _.find(this.nodes, { url: e.url })
+      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
     this.options.eventEmitter.on('rpc:call:error', (e) => {
       if (this.verboseLevel >= 3) {
         console.log('rpc:call:error triggered. e:', e)
       }
-      const node = _.find(this.nodes, { url: e.url })
+      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
   }
@@ -80,7 +83,7 @@ Neo.GetNodeUrl = function (node) {
 // -- Class methods
 
 Neo.prototype = {
-  setDefaultNode: function () {
+  _setDefaultNode: function () {
     const node = this.nodes[0] // Always pick the first node in the list as default choice
     this._setCurrentNode(node)
   },
@@ -106,14 +109,14 @@ Neo.prototype = {
   },
 
   getCurrentNodeUrl: function () {
-    return this.currentNode.url
+    return this.currentNode.api.url
   },
 
   // -- RPC Delegates
 
   getBalance: function (assetId) {
     // TODO
-    return this.currentNode.rpc.getBalance(assetId)
+    return this.currentNode.api.getBalance(assetId)
   },
 
   getBestBlockHash: function () {
@@ -134,7 +137,7 @@ Neo.prototype = {
       }
     }
 
-    return this.currentNode.rpc.getBestBlockHash()
+    return this.currentNode.api.getBestBlockHash()
   },
 
   getBlock: function (index) {
@@ -152,7 +155,7 @@ Neo.prototype = {
       // TODO: fetch from RPC and store into db
     }
 
-    return this.currentNode.rpc.getBlock(index)
+    return this.currentNode.api.getBlock(index)
   },
 
   getBlockByHash: function (hash) {
@@ -170,7 +173,7 @@ Neo.prototype = {
       // TODO: fetch from RPC and store into db
     }
 
-    return this.currentNode.rpc.getBlockByHash(hash)
+    return this.currentNode.api.getBlockByHash(hash)
   },
 
   getBlockCount: function () {
@@ -191,7 +194,7 @@ Neo.prototype = {
       }
     }
 
-    return this.currentNode.rpc.getBlockCount()
+    return this.currentNode.api.getBlockCount()
   },
 
   getBlockHash: function (index) {
@@ -209,35 +212,35 @@ Neo.prototype = {
       // TODO: fetch from RPC and store into db
     }
 
-    return this.currentNode.rpc.getBlockHash(index)
+    return this.currentNode.api.getBlockHash(index)
   },
 
   getBlockSystemFee: function (height) {
-    return this.currentNode.rpc.getBlockSystemFee(height)
+    return this.currentNode.api.getBlockSystemFee(height)
   },
 
   getConnectionCount: function () {
-    return this.currentNode.rpc.getConnectionCount()
+    return this.currentNode.api.getConnectionCount()
   },
 
   invoke: function (scriptHash, params) {
     // TODO
-    return this.currentNode.rpc.invoke(scriptHash, params)
+    return this.currentNode.api.invoke(scriptHash, params)
   },
 
   invokeFunction: function (scriptHash, operation, params) {
     // TODO
-    return this.currentNode.rpc.invokeFunction(scriptHash, operation, params)
+    return this.currentNode.api.invokeFunction(scriptHash, operation, params)
   },
 
   invokeScript: function (script) {
     // TODO
-    return this.currentNode.rpc.invokeScript(script)
+    return this.currentNode.api.invokeScript(script)
   },
 
   getRawMemPool: function () {
     // TODO
-    return this.currentNode.rpc.getRawMemPool()
+    return this.currentNode.api.getRawMemPool()
   },
 
   getRawTransaction: function (txid) {
@@ -255,45 +258,54 @@ Neo.prototype = {
       // TODO: fetch from RPC and store into db
     }
 
-    return this.currentNode.rpc.getRawTransaction(txid)
+    return this.currentNode.api.getRawTransaction(txid)
   },
 
   getTXOut: function (txid, index) {
     // TODO
-    return this.currentNode.rpc.getTXOut(txid, index)
+    return this.currentNode.api.getTXOut(txid, index)
   },
 
   sendRawTransaction: function (hex) {
-    return this.currentNode.rpc.sendRawTransaction(hex)
+    return this.currentNode.api.sendRawTransaction(hex)
   },
 
   sendToAddress: function (assetId, address, value) {
-    return this.currentNode.rpc.sendToAddress(assetId, address, value)
+    return this.currentNode.api.sendToAddress(assetId, address, value)
   },
 
   submitBlock: function (hex) {
-    return this.currentNode.rpc.submitBlock(hex)
+    return this.currentNode.api.submitBlock(hex)
   },
 
   getAccountState: function (address) {
     // TODO
-    return this.currentNode.rpc.getAccountState(address)
+    return this.currentNode.api.getAccountState(address)
   },
 
   getAssetState: function (assetId) {
     // TODO
-    return this.currentNode.rpc.getAssetState(assetId)
+    return this.currentNode.api.getAssetState(assetId)
   },
 
   validateAddress: function (address) {
-    return this.currentNode.rpc.validateAddress(address)
+    return this.currentNode.api.validateAddress(address)
   },
 
   getPeers: function () {
-    return this.currentNode.rpc.getPeers()
+    return this.currentNode.api.getPeers()
   },
 
   // -- Private methods
+
+  _initNodes: function () {
+    this.options.enum.nodes[this.network].forEach((nodeInfo) => {
+      const nodeUrl = `${nodeInfo.scheme}://${nodeInfo.host}:${nodeInfo.port}`
+      const rpc = new Rpc(nodeUrl, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
+      const node = new Node(rpc, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
+      this.nodes.push(node)
+    })
+  },
 
   _initDiagnostic: function () {
     if (this.options.diagnosticInterval <= 0) {
@@ -307,10 +319,18 @@ Neo.prototype = {
     // -- Experiment
     if (this.options.verboseLevel >= 3) { // Provide an update on the ladderboard
       setInterval(() => {
+        /**
+         * Example diagnostic information:
+         * !! Active nodes: 11 / 12
+         * !! Fastest node: http://seed4.neo.org:20332 latency: 321 pendingRequests: 0
+         * !! Highest node: http://seed2.neo.org:20332 blockHeight: 746169 pendingRequests: 0
+         */
+        const activeNodeCount = _.filter(this.nodes, 'active').length
+        console.log(`!! Active nodes: ${activeNodeCount} / ${this.nodes.length}`)
         const fNode = this.getFastestNode()
-        console.log('!! Fastest node:', fNode.url, 'latency:', fNode.latency, 'pendingRequests:', fNode.pendingRequests)
+        console.log('!! Fastest node:', fNode.api.url, 'latency:', fNode.latency, 'pendingRequests:', fNode.pendingRequests)
         const hNode = this.getHighestNode()
-        console.log('!! Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight, 'pendingRequests:', fNode.pendingRequests)
+        console.log('!! Highest node:', hNode.api.url, 'blockHeight:', hNode.blockHeight, 'pendingRequests:', fNode.pendingRequests)
       }, 10000)
     }
   },
@@ -320,14 +340,13 @@ Neo.prototype = {
     // TODO: use webworker?
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
-    this._initNode(targetNode)
 
     if (this.options.verboseLevel >= 3) {
-      console.log('=> #' + targetIndex, 'node:', targetNode.url)
+      console.log('=> #' + targetIndex, 'api:', targetNode.api.url)
     }
 
     const startTime = new Date() // Start timer
-    targetNode.rpc.getBlockCount()
+    targetNode.api.getBlockCount()
       .then((res) => {
         const latency = (new Date()) - startTime // Resolved time in milliseconds
         targetNode.active = true
@@ -335,33 +354,20 @@ Neo.prototype = {
         targetNode.latency = latency
 
         if (this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', targetNode.url, 'block count:', res)
+          console.log('<= #' + targetIndex, 'node:', targetNode.api.url, 'block count:', res)
         }
       })
       .catch((err) => {
         targetNode.active = false
 
         if (this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', targetNode.url, 'error:', err.message)
+          console.log('<= #' + targetIndex, 'node:', targetNode.api.url, 'error:', err.message)
         }
       })
   },
 
   _setCurrentNode: function (node) {
-    this._initNode(node)
     this.currentNode = node
-  },
-
-  _initNode: function (node) {
-    if (!node.url) {
-      node.url = Neo.GetNodeUrl(node)
-    }
-    if (!node.rpc) { // Lazy load if hasn't been instantiated yet
-      node.rpc = new Rpc(node.url, { eventEmitter: this.options.eventEmitter })
-    }
-    if (!node.pendingRequests) {
-      node.pendingRequests = 0
-    }
   },
 
   // _initLocalNode: function () {
