@@ -28,17 +28,17 @@ async function main () {
   await sleep(10000)
 
   const fNode = neoBlockchain.getFastestNode()
-  console.log('Fastest node:', fNode.url, 'latency:', fNode.latency)
+  console.log('Fastest node:', fNode.api.url, 'latency:', fNode.latency)
   const hNode = neoBlockchain.getHighestNode()
-  console.log('Highest node:', hNode.url, 'blockHeight:', hNode.blockHeight)
+  console.log('Highest node:', hNode.api.url, 'blockHeight:', hNode.blockHeight)
 
   console.log('give it another 10 seconds to see if any changes in rankings...')
   await sleep(10000)
 
   const fNode2 = neoBlockchain.getFastestNode()
-  console.log('Fastest node:', fNode2.url, 'latency:', fNode2.latency)
+  console.log('Fastest node:', fNode2.api.url, 'latency:', fNode2.latency)
   const hNode2 = neoBlockchain.getHighestNode()
-  console.log('Highest node:', hNode2.url, 'blockHeight:', hNode2.blockHeight)
+  console.log('Highest node:', hNode2.api.url, 'blockHeight:', hNode2.blockHeight)
 
   neoBlockchain.setFastestNode()
   console.log('setFastestNode(). getCurrentNodeUrl is now:', neoBlockchain.getCurrentNodeUrl())
