@@ -5,6 +5,8 @@ const Rpc = require('./neo.blockchain.rpc')
 const Node = require('./neo.blockchain.node')
 // const MongoDa = require('./neo.blockchain.da.mongodb')
 const Sync = require('./neo.blockchain.sync')
+const Utils = require('./neo.blockchain.utils')
+const Logger = Utils.logger
 
 /**
  * Neo blockchain client.
@@ -28,6 +30,7 @@ const Neo = function (network, options = {}) {
   // TODO: auto (re)pick 'an appropriate' node
 
   // Bootstrap
+  Logger.setLevel(this.options.verboseLevel)
   this._initNodes()
   this._setDefaultNode()
   this._initDiagnostic() // Hhaven't come up with a suitable terminology yet.
@@ -38,23 +41,17 @@ const Neo = function (network, options = {}) {
   if (this.options.eventEmitter) {
     // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
     this.options.eventEmitter.on('rpc:call', (e) => {
-      if (this.verboseLevel >= 3) {
-        console.log('rpc:call triggered. e:', e)
-      }
+      Logger.info('rpc:call triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests += 1
     })
     this.options.eventEmitter.on('rpc:call:response', (e) => {
-      if (this.verboseLevel >= 3) {
-        console.log('rpc:call:response triggered. e:', e)
-      }
+      Logger.info('rpc:call:response triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
     this.options.eventEmitter.on('rpc:call:error', (e) => {
-      if (this.verboseLevel >= 3) {
-        console.log('rpc:call:error triggered. e:', e)
-      }
+      Logger.info('rpc:call:error triggered. e:', e)
       const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
       node.pendingRequests -= 1
     })
@@ -340,10 +337,7 @@ Neo.prototype = {
     // TODO: use webworker?
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
-
-    if (this.options.verboseLevel >= 3) {
-      console.log('=> #' + targetIndex, 'api:', targetNode.api.url)
-    }
+    Logger.info('=> #' + targetIndex, 'api:', targetNode.api.url)
 
     const startTime = new Date() // Start timer
     targetNode.api.getBlockCount()
@@ -352,17 +346,11 @@ Neo.prototype = {
         targetNode.active = true
         targetNode.blockHeight = res
         targetNode.latency = latency
-
-        if (this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', targetNode.api.url, 'block count:', res)
-        }
+        Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'block count:', res)
       })
       .catch((err) => {
         targetNode.active = false
-
-        if (this.options.verboseLevel >= 3) {
-          console.log('<= #' + targetIndex, 'node:', targetNode.api.url, 'error:', err.message)
-        }
+        Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'error:', err.message)
       })
   },
 
