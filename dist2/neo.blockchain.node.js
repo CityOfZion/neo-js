@@ -1,4 +1,6 @@
 const _ = require('lodash')
+const Utils = require('./neo.blockchain.utils')
+const Logger = Utils.logger
 
 /**
  * Neo Node.
@@ -16,6 +18,8 @@ const NeoNode = function (api, options = {}) {
   this.latency = undefined
   this.pendingRequests = 0
   this.options = _.assign({}, NeoNode.Defaults, options)
+  // Bootstrap
+  Logger.setLevel(this.options.verboseLevel)
 }
 
 /**
@@ -24,7 +28,7 @@ const NeoNode = function (api, options = {}) {
  */
 NeoNode.Defaults = {
   eventEmitter: undefined,
-  verboseLevel: undefined,
+  verboseLevel: 2,
 }
 
 NeoNode.prototype = {
@@ -33,7 +37,34 @@ NeoNode.prototype = {
   },
 
   verifyBlocks: function () {
-    return new Error('not implemented')
+    if (!this.isLocalNode()) {
+      Logger.warn('verifyBlocks method is only available to local node.')
+      return Promise.resolve()
+    }
+  
+    const start = 0
+    const end = this.index
+    const missing = []
+    let pointer = -1
+
+    return new Promise((resolve, reject) => {
+      this.api.getAllBlocks()
+        .then((res) => {
+          Logger.info('Blockchain Verification: Scanning...')
+          res.forEach((d) => {
+            while (true) {
+              pointer++
+              if (d.index === pointer) {
+                break
+              } else {
+                missing.push(pointer)
+              }
+            }
+          })
+          Logger.info('Blockchain Verification: Found ' + missing.length + ' missing')
+          resolve(missing)
+        })
+    })
   }
 }
 

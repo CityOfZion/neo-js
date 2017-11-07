@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const mongoose = require('mongoose')
 const Utils = require('./neo.blockchain.utils')
+const Logger = Utils.logger
 
 /**
  * MongoDB Data Access
@@ -11,8 +12,17 @@ const Utils = require('./neo.blockchain.utils')
 const MongoDA = function (connectionInfo, options = {}) {
   // Properties and default values
   this.connectionInfo = connectionInfo
-  this.url = 'localhost'
   this.options = _.assign({}, MongoDA.Defaults, options)
+  this.url = 'localhost'
+
+  // TODO: node related properties shouldn't be here...
+  this.blockHeight = 0
+  this.index = -1
+  this.connections = 0
+  this.pendingRequests = 0
+  this.unlinkedBlocks = []
+  this.assets = []
+  this.assetsFlat = []
 
   this.blockSchema = this._getBlockSchema()
   this.transactionSchema = this._getTransactionSchema()
@@ -23,7 +33,9 @@ const MongoDA = function (connectionInfo, options = {}) {
   this.addressModel = mongoose.model(connectionInfo.collections.addresses, this.addressSchema)
 
   // Bootstrap
+  Logger.setLevel(this.options.verboseLevel)  
   mongoose.Promise = global.Promise // Explicitly proide own promise library (http://mongoosejs.com/docs/promises.html)
+  this._initUpdateAssetList()
 
   // Explicit connect to localhost DB
   if (options.connectOnInit) {
@@ -36,6 +48,7 @@ const MongoDA = function (connectionInfo, options = {}) {
  * @public
  */
 MongoDA.Defaults = {
+  verboseLevel: 2,  
   connectOnInit: true,
 }
 
@@ -140,15 +153,15 @@ MongoDA.prototype = {
         // Store the raw transaction
         newBlock.tx.forEach((tx) => {
           tx.blockIndex = newBlock.index
-          // tx.vout.forEach((d) => {
-          //   if (node.assetsFlat.indexOf(d.asset) === -1) {
-          //     module.addresses({ address: d.asset, asset: d.asset, type: 'a', assets: [] }).save()
-          //   }
-          // })
+          tx.vout.forEach((d) => {
+            if (this.assetsFlat.indexOf(d.asset) === -1) {
+              this.addressModel({ address: d.asset, asset: d.asset, type: 'a', assets: [] }).save()
+            }
+          })
 
           this.transactionModel(tx).save((err) => {
             if (err) {
-              console.log(err)
+              Logger.error('saveBlock transactionModel.save() error:', err)
             }
           })
         })
@@ -160,22 +173,40 @@ MongoDA.prototype = {
          * This code maintains the local blockheight by tracking
          * 'linked' and 'unlinked'(but stored) blocks
          */
-        // if (newBlock.index > node.index) {
-        //   node.unlinkedBlocks.push(newBlock.index)
-        //   let linkIndex = -1
-        //   while (true) {
-        //     linkIndex = node.unlinkedBlocks.indexOf(node.index + 1)
-        //     if (linkIndex !== -1) {
-        //       node.unlinkedBlocks.splice(linkIndex, 1)
-        //       node.index++
-        //       node.blockHeight++
-        //     } else {
-        //       break
-        //     }
-        //   }
-        // }
+        if (newBlock.index > this.index) {
+          this.unlinkedBlocks.push(newBlock.index)
+          let linkIndex = -1
+          while (true) {
+            linkIndex = this.unlinkedBlocks.indexOf(this.index + 1)
+            if (linkIndex !== -1) {
+              this.unlinkedBlocks.splice(linkIndex, 1)
+              this.index++
+              this.blockHeight++
+            } else {
+              break
+            }
+          }
+        }
         resolve()
       })
+    })
+  },
+
+  // -- Specialised endpoints
+
+  getAllBlocks: function () {
+    return new Promise((resolve, reject) => {
+      this.blockModel.find({}, 'index')
+        .sort('index')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('Blocks not found'))
+          }
+          resolve(res)
+        })
     })
   },
 
@@ -245,6 +276,19 @@ MongoDA.prototype = {
     return block
   },
 
+  _updateAssetList: function () {
+    Logger.info('_updateAssetList triggered.')
+    this.addressModel.find({ type: 'a' }, 'asset')
+      .exec((err, res) => {
+        this.assets = res
+        this.assetsFlat = _.map(res, 'asset')
+      })
+  },
+
+  _initUpdateAssetList: function () {
+    this.updateAssetList()
+    setInterval(this.updateAssetList.bind(this), 10000) // TODO: configurable interval
+  },
 }
 
 module.exports = MongoDA

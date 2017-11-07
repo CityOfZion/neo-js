@@ -18,7 +18,10 @@ const Sync = function (blockchain, localNode, options = {}) {
   this.queue = undefined
   this.runLock = false
   this.blockWritePointer = -1
-  this.stats = {} // For debugging purpose
+  // For debugging purpose
+  this.stats = {}
+  this.logPeriod = 10000
+  this.t0 = Date.now()
 
   // Bootstrap
   Logger.setLevel(this.options.verboseLevel)
@@ -97,17 +100,14 @@ Sync.prototype = {
             this._enqueueBlock(blockWritePointer + 1)
           }
   
-          // TODO: Reintroduce debugging log
-          // // Consider logging a status update...communication is important
-          // if ((task.attrs.index % logPeriod === 0) ||
-          //   (task.attrs.index === blockchain.highestNode().index)) {
-          //   console.log(task.attrs, logPeriod / ((Date.now() - t0) / 1000))
-          //   if ((task.attrs.index === blockchain.highestNode().index)) {
-          //     console.log(stats)
-          //   }
-  
-          //   t0 = Date.now()
-          // }
+          // Consider logging a status update... communication is important
+          if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === this.targetBlockIndex)) {
+            Logger.info(task.attrs, (this.logPeriod / ((Date.now() - this.t0) / 1000)))
+            if ((task.attrs.index === this.targetBlockIndex)) {
+              Logger.info('stats:', this.stats)
+            }
+            t0 = Date.now()
+          }
   
           callback()
         })
