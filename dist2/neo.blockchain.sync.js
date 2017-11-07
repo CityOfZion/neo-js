@@ -89,6 +89,10 @@ Sync.prototype = {
     this.queue.pause()
   },
 
+  setTargetBlockIndex: function (index) {
+    this.options.targetBlockIndex = index
+  },
+
   // -- Private methods
 
   _initQueue: function () {
