@@ -5,8 +5,10 @@ const Logger = Utils.logger
 
 /**
  * MongoDB Data Access
+ * @todo Re-evaluate node-like properties in this class.
  * @class
  * @public
+ * @param {Object} connectionInfo
  * @param {Object} options 
  */
 const MongoDA = function (connectionInfo, options = {}) {
@@ -64,6 +66,9 @@ MongoDA.prototype = {
 
   // getTX
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getBestBlockHash: function () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({})
@@ -80,6 +85,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getBlock: function (index) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
@@ -95,6 +103,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getBlockByHash: function (hash) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ hash })
@@ -110,6 +121,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getBlockCount: function () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'index')
@@ -126,6 +140,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getRawTransaction: function (txid) {
     return new Promise((resolve, reject) => {
       this.transactionModel.findOne({ txid })
@@ -141,6 +158,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   saveBlock: function (newBlock) {
     return new Promise((resolve, reject) => {
       // Store the raw block
@@ -194,6 +214,9 @@ MongoDA.prototype = {
 
   // -- Specialised endpoints
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getAllBlocks: function () {
     return new Promise((resolve, reject) => {
       this.blockModel.find({}, 'index')
@@ -212,6 +235,9 @@ MongoDA.prototype = {
 
   // -- Private methods
 
+  /**
+   * @private
+   */
   _getBlockSchema: function () {
     return new mongoose.Schema({
       hash: String,
@@ -233,6 +259,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @private
+   */
   _getTransactionSchema: function () {
     return new mongoose.Schema({
       txid: { type: 'String', unique: true, required: true, dropDups: true, index: true },
@@ -249,6 +278,9 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @private
+   */
   _getAddressSchema: function () {
     return new mongoose.Schema({
       address: { type: 'String', unique: true, required: true, dropDups: true },
@@ -259,6 +291,11 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @private
+   * @param {Object} block
+   * @return {Object}
+   */
   _delintBlock: function (block) {
     block.hash = Utils.normaliseHash(block.hash)
     block.previousblockhash = Utils.normaliseHash(block.previousblockhash)
@@ -276,6 +313,10 @@ MongoDA.prototype = {
     return block
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @private
+   */
   _updateAssetList: function () {
     Logger.info('_updateAssetList triggered.')
     this.addressModel.find({ type: 'a' }, 'asset')
@@ -285,9 +326,13 @@ MongoDA.prototype = {
       })
   },
 
+  /**
+   * @todo configurable interval value
+   * @private
+   */
   _initUpdateAssetList: function () {
     this.updateAssetList()
-    setInterval(this.updateAssetList.bind(this), 10000) // TODO: configurable interval
+    setInterval(this.updateAssetList.bind(this), 10000)
   },
 }
 

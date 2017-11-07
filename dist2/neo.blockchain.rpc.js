@@ -3,10 +3,13 @@ const axios = require('axios')
 
 /**
  * Neo RPC client.
+ * @todo Extending class from Events class, thus making EventEmitter permenant.
  * @class
  * @public
  * @param {String} url
- * @param {Object} options 
+ * @param {Object} options
+ * @property {string} url
+ * @property {Object} options.eventEmitter
  */
 const Rpc = function (url, options = {}) {
   // Properties and default values
@@ -25,7 +28,7 @@ Rpc.Defaults = {
 Rpc.prototype = {
   /**
    * Gets the NEO and GAS balance of an address.
-   * @param {string} assetId The address to get the balance of.
+   * @param {string} assetId - The address to get the balance of.
    * @returns {Promise.<Object>} A promise containing the address balances.
    */
   getBalance: function (assetId) {
@@ -40,7 +43,7 @@ Rpc.prototype = {
    * Gets the best block hash on the node
    * @example
    * node.getBestBlockHash()
-   * return 0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973
+   * return '0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973'
    * @returns {Promise.<Object>}
    */
   getBestBlockHash: function () {
@@ -92,7 +95,7 @@ Rpc.prototype = {
    *      "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
    *    }
    *  }
-   * @param {number} index The index of the block being requested.
+   * @param {number} index - The index of the block being requested.
    * @returns {Promise.<string>} A promise returning the hex contents of the block
    */
   getBlock: function (index) {
@@ -144,7 +147,7 @@ Rpc.prototype = {
    *      "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
    *    }
    *  }
-   * @param {string} hash The hash of the block being requested.
+   * @param {string} hash - The hash of the block being requested.
    * @returns {Promise.<Object>} A promise returning information of the block
    */
   getBlockByHash: function (hash) {
@@ -196,7 +199,7 @@ Rpc.prototype = {
   /**
    * Invokes the getblocksysfee rpc request to return system fee.
    *
-   * @param {number} index The index of the block hash being requested.
+   * @param {number} index - The index of the block hash being requested.
    * @example
    * node.getBlockSystemFee(100000)
    * return 905
@@ -230,8 +233,8 @@ Rpc.prototype = {
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
-   * @param scriptHash  The hash of the script to invoke.
-   * @param params The params used to invoke the contract.
+   * @param scriptHash - The hash of the script to invoke.
+   * @param params - The params used to invoke the contract.
    * @returns {Promise.<Object>) The invoke response.
    */
   invoke: function (scriptHash, params) {
@@ -245,9 +248,9 @@ Rpc.prototype = {
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
-   * @param scriptHash  The hash of the script to invoke.
-   * @param operation Defines the operation to invoke on the contract.
-   * @param params The params used to invoke the contract.
+   * @param scriptHash - The hash of the script to invoke.
+   * @param operation - Defines the operation to invoke on the contract.
+   * @param params - The params used to invoke the contract.
    * @returns {Promise.<Object>) The invoke response.
    */
   invokeFunction: function (scriptHash, operation, params) {
@@ -261,7 +264,7 @@ Rpc.prototype = {
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
-   * @param script raw script to invoke.
+   * @param script - Raw script to invoke.
    * @returns {Promise.<Object>) The invoke response.
    */
   invokeScript: function (script) {
@@ -285,7 +288,7 @@ Rpc.prototype = {
 
   /**
    * Polls the node for the raw transaction data associated with an input txid.
-   * @param {string} txid The requested transaction ID.
+   * @param {string} txid - The requested transaction ID.
    * @example
    * node.getRawTransaction('0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042')
    *  return {
@@ -316,7 +319,7 @@ Rpc.prototype = {
 
   /**
    * Polls the node for the raw transaction response associated with an input txid.
-   * @param {string} txid The requested transaction ID.
+   * @param {string} txid - The requested transaction ID.
    * @returns {Promise.<Object>} An object containing the transaction response.
    */
   getTXOut: function (txid, index) {
@@ -329,7 +332,7 @@ Rpc.prototype = {
 
   /**
    * Submits a raw transaction event to the blockchain.
-   * @param {string} hex The hex string representing the raw transaction.
+   * @param {string} hex - The hex string representing the raw transaction.
    * @returns {Promise.<Object>} The transaction response.
    */
   sendRawTransaction: function (hex) {
@@ -365,7 +368,7 @@ Rpc.prototype = {
   /**
    * Invokes the getaccountstate rpc request to return information of requested account.
    *
-   * @param {string} address The address of the wallet being requested.
+   * @param {string} address - The address of the wallet being requested.
    * node.getAccountState('Adii5po62hCCS9s9upsK6bXdWJosjHBt4G')
    * @example
    *  return {
@@ -396,7 +399,7 @@ Rpc.prototype = {
   /**
    * Invokes the getassetstate rpc request to return information of requested asset.
    *
-   * @param {string} assetId The address of the asset being requested.
+   * @param {string} assetId - The address of the asset being requested.
    * @example
    * node.getAssetState('0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
    *  return {
@@ -432,7 +435,7 @@ Rpc.prototype = {
   /**
    * Invokes the validateaddress rpc request to verify a requested address.
    *
-   * @param {string} address The address of the wallet being requested.
+   * @param {string} address - The address of the wallet being requested.
    * @example
    * node.validateAddress('Adii5po62hCCS9s9upsK6bXdWJosjHBt4G')
    *  return {
@@ -460,12 +463,15 @@ Rpc.prototype = {
     })
   },
 
+  /**
+   * @private
+   * @param {Object} payload
+   * @return {Promise}
+   */
   _call: function (payload) {
     const startTime = new Date() // Start timer
     const TIMEOUT_MS = 20000
 
-    // TODO: consider a similar emitting methodology to web3.js
-    // TODO: also consider adopting https://github.com/primus/eventemitter3
     this._emit('rpc:call', { url: this.url, method: payload.method, params: payload.params })
     return new Promise((resolve, reject) => {
       axios({

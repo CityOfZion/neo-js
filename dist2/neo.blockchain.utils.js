@@ -3,7 +3,11 @@
  */
 module.exports = {
   /**
-   * TBA
+   * Standardize hash syntax.
+   * By Default it should have '0x' prefix follow by 64 hexdecimal characters.
+   * @param {stirng} hash
+   * @param {boolean} [withHexPrefix=true]
+   * @return {string}
    */
   normaliseHash: function (hash, withHexPrefix = true) {
     if (withHexPrefix) {
@@ -21,6 +25,9 @@ module.exports = {
     }
   },
 
+  /**
+   * A logger utility object.
+   */
   logger: {
     _level: 0,
     setLevel: function (level) {

@@ -2,9 +2,11 @@ const _ = require('lodash')
 
 /**
  * LevelDB Data Access
+ * @todo To be implemented.
  * @class
  * @public
- * @param {Object} options 
+ * @param {Object} connectionInfo
+ * @param {Object} [options]
  */
 const LevelDa = function (connectionInfo, options = {}) {
   // Properties and default values

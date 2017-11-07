@@ -6,6 +6,7 @@ const Logger = Utils.logger
 
 /**
  * @todo Is there a way to eliminate circular reference with 'blockchain' and 'node'?
+ * @todo Better way to manage deubbing variables
  * @param {Object} blockchain 
  * @param {Object} node 
  * @param {Object} options 
@@ -41,6 +42,10 @@ Sync.Defaults = {
 }
 
 Sync.prototype = {
+  /**
+   * @todo Verify if the implementation is working
+   * @todo configuration interval values
+   */
   start: function () {
     Logger.info('sync.start triggered.')
     
@@ -65,7 +70,7 @@ Sync.prototype = {
       } else {
         clearInterval(this.clock1)
       }
-    }, 2000) // TODO: configurable interval time
+    }, 2000)
 
     this.clock2 = setInterval(() => {
       if (this.runLock) {
@@ -78,23 +83,33 @@ Sync.prototype = {
       } else {
         clearInterval(this.clock2)
       }
-    }, 60000) // TODO: configurable interval time
+    }, 60000)
 
     this.queue.resume()
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   stop: function () {
     Logger.info('sync.stop triggered.')
     this.runLock = false
     this.queue.pause()
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   setTargetBlockIndex: function (index) {
     this.options.targetBlockIndex = index
   },
 
   // -- Private methods
 
+  /**
+   * @todo Verify if the implementation is working
+   * @private
+   */
   _initQueue: function () {
     this.queue = async.priorityQueue((task, callback) => {
       task.method(task.attrs)
@@ -131,6 +146,8 @@ Sync.prototype = {
 
   /**
    * Adds a block request to the sync queue.
+   * @todo Verify if the implementation is working
+   * @private
    * @param {number} index The index of the block to synchronize.
    * @param {number} [priority=5] The priority of the block download request.
    * @param {Boolean} [safe=false] Insert if the queue is not empty?
@@ -158,6 +175,8 @@ Sync.prototype = {
 
   /**
    * Makes an RPC call to get the requested block and inserts it into the local database.
+   * @todo Verify if the implementation is working
+   * @private
    * @param {Object} attrs The block attributes
    */
   _storeBlock: function (attrs) {

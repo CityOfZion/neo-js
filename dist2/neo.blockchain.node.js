@@ -6,7 +6,7 @@ const Logger = Utils.logger
  * Neo Node.
  * @class
  * @public
- * @param {Object} api
+ * @param {Object} api - A RPC instance or data access object
  * @param {Object} options 
  */
 const NeoNode = function (api, options = {}) {
@@ -32,10 +32,17 @@ NeoNode.Defaults = {
 }
 
 NeoNode.prototype = {
+  /**
+   * Check if it is a local node.
+   * @return {boolean}
+   */
   isLocalNode: function () {
     return (this.api.url === 'localhost')
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   verifyBlocks: function () {
     if (!this.isLocalNode()) {
       Logger.warn('verifyBlocks method is only available to local node.')

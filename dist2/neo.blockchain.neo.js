@@ -58,19 +58,32 @@ Neo.Defaults = {
 // -- Class methods
 
 Neo.prototype = {
-
+  /**
+   * Identifies and set current node as the fastest node based on the latency of the last transaction.
+   */
   setFastestNode: function () {
     this._setCurrentNode(this.getFastestNode())
   },
 
+  /**
+   * Identifies and set current node as the node with the highest blockheight.
+   */
   setHighestNode: function () {
     this._setCurrentNode(this.getHighestNode())
   },
 
+  /**
+   * Identifies and returns the fastest node based on the latency of the last transaction.
+   * @returns {node} The lowest latency node instance.
+   */
   getFastestNode: function () {
     return _.minBy(_.filter(this.nodes, 'active'), 'latency') || this.nodes[0]
   },
 
+  /**
+   * Identifies and returns the node with the highest blockheight.
+   * @returns {node} The node instance with the greatest blockHeight.
+   */
   getHighestNode: function () {
     return _.maxBy(_.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
   },
@@ -96,10 +109,16 @@ Neo.prototype = {
     return _.minBy(filteredNodes, sort)
   },
 
+  /**
+   * @return {node}
+   */
   getCurrentNode: function () {
     return this.currentNode
   },
 
+  /**
+   * @return {string}
+   */
   getCurrentNodeUrl: function () {
     return this.currentNode.api.url
   },
@@ -107,56 +126,69 @@ Neo.prototype = {
   // -- RPC Delegates
 
   getBalance: function (assetId) {
-    // TODO
     return this.currentNode.api.getBalance(assetId)
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Ability to check if the node is 'considered as fully synced'
+   * @todo Save fetched data from RPC, into local storage
+   */
   getBestBlockHash: function () {
     if (this.localNode) {
       Logger.info('[neo] fetching getBestBlockHash from DB...')
-      // TODO: if so, attempt to find out if it is fully sync'ed
       try {
         return this.localNode.api.getBestBlockHash()
       } catch (err) {
         Logger.info('[neo] problem with getBestBlockHash in DB, fall back to RPC instead...')
-        // TODO: fetch from RPC and store into DB
       }
     }
     return this.currentNode.api.getBestBlockHash()
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Better block validation algorithm
+   * @todo Save fetched data from RPC, into local storage
+   */
   getBlock: function (index) {
     if (this.localNode) {
       Logger.info('[neo] fetching getBlock from DB...')
       const block = this.localNode.api.getBlock(index)
-      if (block) { // TODO: formal block validation util
+      if (block) {
         Logger.info('getBlock result found in DB!')
         return block
       }
-      // TODO: fetch from RPC and store into DB
     }
     Logger.info('[neo] fetching getBlock from RPC...')
     return this.currentNode.api.getBlock(index)
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Better block validation algorithm
+   * @todo Save fetched data from RPC, into local storage
+   */
   getBlockByHash: function (hash) {
     if (this.localNode) {
       Logger.info('[neo] fetching getBlockByHash from DB...')
       const block = this.localNode.api.getBlockByHash(hash)
-      if (block) { // TODO: formal block validation util
+      if (block) {
         Logger.info('getBlockByHash result found in DB!')
         return block
       }
-      // TODO: fetch from RPC and store into DB
     }
     Logger.info('[neo] fetching getBlockByHash from RPC...')
     return this.currentNode.api.getBlockByHash(hash)
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Ability to check if the node is 'considered as fully synced'
+   */
   getBlockCount: function () {
     if (this.localNode) {
       Logger.info('[neo] fetching getBlockCount from DB...')
-      // TODO: if so, attempt to find out if it is fully sync'ed
       try {
         return this.localNode.api.getBlockCount()
       } catch (err) {
@@ -167,15 +199,19 @@ Neo.prototype = {
     return this.currentNode.api.getBlockCount()
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Ability to check if the node is 'considered as fully synced'
+   * @todo Save fetched data from RPC, into local storage
+   */
   getBlockHash: function (index) { // TODO: should this method simply reuses neo.getBlock() instead of having its own implementation?
     if (this.localNode) {
       Logger.info('[neo] fetching getBlockHash from DB...')
       const block = this.localNode.api.getBlock(index)
-      if (block) { // TODO: formal block validation util
+      if (block) {
         Logger.info('[neo] getBlockHash result found in DB!')
         return block.hash
       }
-      // TODO: fetch from RPC and store into DB
     }
     Logger.info('[neo] fetching getBlockHash from RPC...')
     return this.currentNode.api.getBlockHash(index)
@@ -190,41 +226,43 @@ Neo.prototype = {
   },
 
   invoke: function (scriptHash, params) {
-    // TODO
     return this.currentNode.api.invoke(scriptHash, params)
   },
 
   invokeFunction: function (scriptHash, operation, params) {
-    // TODO
     return this.currentNode.api.invokeFunction(scriptHash, operation, params)
   },
 
   invokeScript: function (script) {
-    // TODO
     return this.currentNode.api.invokeScript(script)
   },
 
   getRawMemPool: function () {
-    // TODO
     return this.currentNode.api.getRawMemPool()
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   * @todo Better tx validation algorithm
+   * @todo Save fetched data from RPC, into local storage
+   */
   getRawTransaction: function (txid) {
     if (this.localNode) {
       Logger.info('[neo] fetching getRawTransaction from DB...')
       const transaction = this.localNode.api.getRawTransaction(txid)
-      if (transaction) { // TODO: formal tx validation util
+      if (transaction) {
         Logger.info('[neo] getRawTransaction result found in DB!')
         return transaction
       }
-      // TODO: fetch from RPC and store into DB
     }
     Logger.info('[neo] fetching getRawTransaction from RPC...')
     return this.currentNode.api.getRawTransaction(txid)
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
   getTXOut: function (txid, index) {
-    // TODO
     return this.currentNode.api.getTXOut(txid, index)
   },
 
@@ -241,12 +279,10 @@ Neo.prototype = {
   },
 
   getAccountState: function (address) {
-    // TODO
     return this.currentNode.api.getAccountState(address)
   },
 
   getAssetState: function (assetId) {
-    // TODO
     return this.currentNode.api.getAssetState(assetId)
   },
 
@@ -260,12 +296,18 @@ Neo.prototype = {
 
   // -- Event Handlers
 
+  /**
+   * @private
+   */
   _rpcCallHandler: function (e) {
     // Logger.info('rpc:call triggered. e:', e)
     const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
     node.pendingRequests += 1
   },
 
+  /**
+   * @private
+   */
   _rpcCallResponseHandler: function (e) {
     // Logger.info('rpc:call:response triggered. e:', e)
     const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
@@ -276,6 +318,9 @@ Neo.prototype = {
     }
   },
 
+  /**
+   * @private
+   */
   _rpcCallErrorHandler: function (e) {
     // Logger.info('rpc:call:error triggered. e:', e)
     const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
@@ -284,11 +329,17 @@ Neo.prototype = {
 
   // -- Private methods
 
+  /**
+   * @private
+   */
   _setDefaultNode: function () {
     const node = this.nodes[0] // Always pick the first node in the list as default choice
     this._setCurrentNode(node)
   },
 
+  /**
+   * @private
+   */
   _initNodes: function () {
     this.options.enum.nodes[this.network].forEach((nodeInfo) => {
       const nodeUrl = `${nodeInfo.scheme}://${nodeInfo.host}:${nodeInfo.port}`
@@ -298,6 +349,9 @@ Neo.prototype = {
     })
   },
 
+  /**
+   * @private
+   */
   _initDiagnostic: function () {
     if (this.options.diagnosticInterval <= 0) {
       return
@@ -326,9 +380,12 @@ Neo.prototype = {
     }
   },
 
+  /**
+   * @todo instead of randomised targetIndex, adapt a better algorithm?
+   * @todo use webworker instead?
+   * @private
+   */
   _diagnoseRandomNode: function () {
-    // TODO: instead of randomised targetIndex, adapt a better algorithm?
-    // TODO: use webworker?
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
     Logger.info('=> #' + targetIndex, 'api:', targetNode.api.url)
@@ -348,10 +405,16 @@ Neo.prototype = {
       })
   },
 
+  /**
+   * @private
+   */
   _setCurrentNode: function (node) {
     this.currentNode = node
   },
 
+  /**
+   * @private
+   */
   _initLocalNode: function () {
     if (!this.options.localNodeEnabled) {
       return
@@ -369,6 +432,10 @@ Neo.prototype = {
     this.sync = new Sync(this, this.localNode, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
   },
 
+  /**
+   * @private
+   * @return {Object}
+   */
   _getMongoDbConnectionInfo: function () {
     return this.options.enum.mongodb[this.network]
   },
