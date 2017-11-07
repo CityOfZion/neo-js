@@ -47,6 +47,11 @@ module.exports = {
       if (this._level >= 3) {
         console.log.apply(this, arguments)
       }
+    },
+    trace: function () {
+      if (this._level >= 3) {
+        console.trace.apply(this, arguments)
+      }
     }
   }
 }

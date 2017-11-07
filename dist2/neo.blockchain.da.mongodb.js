@@ -76,9 +76,11 @@ MongoDA.prototype = {
         .sort({ index: -1 })
         .exec((err, res) => {
           if (err) {
+            Logger.trace()
             reject(err)
           }
           if (!res) {
+            Logger.trace()
             reject(new Error('Block not found'))
           }
           resolve(res)
@@ -94,9 +96,11 @@ MongoDA.prototype = {
       this.blockModel.findOne({ index })
         .exec((err, res) => {
           if (err) {
+            Logger.trace()
             reject(err)
           }
           if (!res) {
+            Logger.trace()
             reject(new Error('Block not found'))
           }
           resolve(res)
@@ -112,9 +116,11 @@ MongoDA.prototype = {
       this.blockModel.findOne({ hash })
         .exec((err, res) => {
           if (err) {
+            Logger.trace()
             reject(err)
           }
           if (!res) {
+            Logger.trace()
             reject(new Error('Block not found'))
           }
           resolve(res)
