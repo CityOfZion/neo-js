@@ -146,21 +146,28 @@ Neo.prototype = {
   },
 
   /**
-   * @todo Verify if the implementation is working
-   * @todo Better block validation algorithm
    * @todo Save fetched data from RPC, into local storage
    */
   getBlock: function (index) {
-    if (this.localNode) {
-      Logger.info('[neo] fetching getBlock from DB...')
-      const block = this.localNode.api.getBlock(index)
-      if (block) {
-        Logger.info('getBlock result found in DB!')
-        return block
-      }
+    if (!this.localNode) {
+      Logger.info('[neo] Fetching getBlock from RPC...')
+      return this.currentNode.api.getBlock(index)
     }
-    Logger.info('[neo] fetching getBlock from RPC...')
-    return this.currentNode.api.getBlock(index)
+
+    Logger.info('[neo] Attempt to fetch getBlock from local storage...')
+    return new Promise((resolve, reject) => {
+      this.localNode.api.getBlock(index)
+        .then((res) => {
+          Logger.info('[neo] Result found in local storage!')
+          resolve(res)
+        })
+        .catch((err) => {
+          Logger.info('[neo] Failed or not found from local storage. Fetch from RPC instead...')
+          this.currentNode.api.getBlock(index)
+            .then((res) => resolve(res))
+            .catch((err) => reject(err))
+        })
+    })
   },
 
   /**
