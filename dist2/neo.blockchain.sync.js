@@ -1,6 +1,6 @@
+/* eslint handle-callback-err: "off" */
 const _ = require('lodash')
 const async = require('async')
-const EventEmitter = require('events')
 const Utils = require('./neo.blockchain.utils')
 const Logger = Utils.logger
 
@@ -38,7 +38,7 @@ Sync.Defaults = {
   workerCount: 20,
   maxQueueLength: 10000,
   startBlockIndex: 0,
-  targetBlockIndex: 700000,
+  targetBlockIndex: 700000
 }
 
 Sync.prototype = {
@@ -48,7 +48,7 @@ Sync.prototype = {
    */
   start: function () {
     Logger.info('sync.start triggered.')
-    
+
     if (!this.queue) {
       this._initQueue()
     }
@@ -64,8 +64,8 @@ Sync.prototype = {
       if (this.runLock) {
         if ((this.localNode.index < this.targetBlockIndex) && (this.queue.length() === 0)) {
           this.blockWritePointer = this.localNode.index
-          Logger.info('blockWritePointer:', blockWritePointer)
-          this._enqueueBlock(blockWritePointer + 1, true)
+          Logger.info('blockWritePointer:', this.blockWritePointer)
+          this._enqueueBlock(this.blockWritePointer + 1, true)
         }
       } else {
         clearInterval(this.clock1)
@@ -115,19 +115,19 @@ Sync.prototype = {
       task.method(task.attrs)
         .then(() => {
           // After a sync even is run, enqueue any other outstanding blocks up to the max queue length.
-          while ((queue.length() < this.maxQueueLength) && (blockWritePointer < this.targetBlockIndex)) {
-            this._enqueueBlock(blockWritePointer + 1)
+          while ((this.queue.length() < this.maxQueueLength) && (this.blockWritePointer < this.targetBlockIndex)) {
+            this._enqueueBlock(this.blockWritePointer + 1)
           }
-  
+
           // Consider logging a status update... communication is important
           if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === this.targetBlockIndex)) {
             Logger.info(task.attrs, (this.logPeriod / ((Date.now() - this.t0) / 1000)))
             if ((task.attrs.index === this.targetBlockIndex)) {
               Logger.info('stats:', this.stats)
             }
-            t0 = Date.now()
+            this.t0 = Date.now()
           }
-  
+
           callback()
         })
         .catch((err) => {
@@ -140,7 +140,7 @@ Sync.prototype = {
           callback()
         })
     }, this.workerCount)
-  
+
     this.queue.pause() // Initialize the controller with synchronization paused (so we dont sync in light mode)
   },
 

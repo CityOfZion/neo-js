@@ -1,3 +1,4 @@
+/* eslint handle-callback-err: "off" */
 const _ = require('lodash')
 const mongoose = require('mongoose')
 const Utils = require('./neo.blockchain.utils')
@@ -35,7 +36,7 @@ const MongoDA = function (connectionInfo, options = {}) {
   this.addressModel = mongoose.model(connectionInfo.collections.addresses, this.addressSchema)
 
   // Bootstrap
-  Logger.setLevel(this.options.verboseLevel)  
+  Logger.setLevel(this.options.verboseLevel)
   mongoose.Promise = global.Promise // Explicitly proide own promise library (http://mongoosejs.com/docs/promises.html)
   this._initUpdateAssetList()
 
@@ -50,8 +51,8 @@ const MongoDA = function (connectionInfo, options = {}) {
  * @public
  */
 MongoDA.Defaults = {
-  verboseLevel: 2,  
-  connectOnInit: true,
+  verboseLevel: 2,
+  connectOnInit: true
 }
 
 MongoDA.prototype = {
@@ -333,7 +334,7 @@ MongoDA.prototype = {
   _initUpdateAssetList: function () {
     this.updateAssetList()
     setInterval(this.updateAssetList.bind(this), 10000)
-  },
+  }
 }
 
 module.exports = MongoDA

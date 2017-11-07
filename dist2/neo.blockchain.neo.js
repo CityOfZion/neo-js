@@ -1,5 +1,4 @@
 const _ = require('lodash')
-const mongoose = require('mongoose')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
 const Node = require('./neo.blockchain.node')
@@ -97,7 +96,7 @@ Neo.prototype = {
    * @returns {node} The best node that has the requested block index.
    */
   getNodeWithBlock: function (index, sort = 'latency', allowLocal = true) {
-    const filteredNodes = []
+    let filteredNodes = []
     filteredNodes = _.filter(this.nodes, (n) => {
       return n.active && n.index > index
     })
@@ -314,7 +313,7 @@ Neo.prototype = {
     node.pendingRequests -= 1
     if (e.method === 'getblockcount') {
       node.blockHeight = e.result
-      node.index = ndoe.blockHeight - 1
+      node.index = node.blockHeight - 1
     }
   },
 
@@ -438,8 +437,7 @@ Neo.prototype = {
    */
   _getMongoDbConnectionInfo: function () {
     return this.options.enum.mongodb[this.network]
-  },
-
+  }
 }
 
 module.exports = Neo

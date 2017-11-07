@@ -28,7 +28,7 @@ const NeoNode = function (api, options = {}) {
  */
 NeoNode.Defaults = {
   eventEmitter: undefined,
-  verboseLevel: 2,
+  verboseLevel: 2
 }
 
 NeoNode.prototype = {
@@ -48,9 +48,9 @@ NeoNode.prototype = {
       Logger.warn('verifyBlocks method is only available to local node.')
       return Promise.resolve()
     }
-  
-    const start = 0
-    const end = this.index
+
+    // const start = 0
+    // const end = this.index
     const missing = []
     let pointer = -1
 
