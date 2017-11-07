@@ -267,7 +267,7 @@ Neo.prototype = {
 
   _initDiagnostic: function () {
     if (this.options.diagnosticInterval <= 0) {
-      return;
+      return
     }
 
     setInterval(() => {
@@ -321,7 +321,7 @@ Neo.prototype = {
 
   _initLocalNode: function () {
     if (!this.options.localNodeEnabled) {
-      return;
+      return
     }
 
     // Setup a Data Access Object as API of local node
