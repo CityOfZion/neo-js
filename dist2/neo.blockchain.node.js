@@ -4,13 +4,15 @@ const _ = require('lodash')
  * Neo Node.
  * @class
  * @public
+ * @param {Object} api
  * @param {Object} options 
  */
 const NeoNode = function (api, options = {}) {
   // Properties and default values
   this.api = api
   this.active = false
-  this.blockHeight = undefined
+  this.index = -1
+  this.blockHeight = 0
   this.latency = undefined
   this.pendingRequests = 0
   this.options = _.assign({}, NeoNode.Defaults, options)
@@ -27,8 +29,12 @@ NeoNode.Defaults = {
 
 NeoNode.prototype = {
   isLocalNode: function () {
-    return false
+    return (this.api.url === 'localhost')
   },
+
+  verifyBlocks: function () {
+    return new Error('not implemented')
+  }
 }
 
 module.exports = NeoNode

@@ -10,12 +10,11 @@ const Logger = Utils.logger
 
 /**
  * Neo blockchain client.
- * 
- * TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
- * TODO: auto (re)pick 'an appropriate' node
+ * @todo have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
+ * @todo auto (re)pick 'an appropriate' node
  * @class
  * @public
- * @param {String} network can be either 'mainnet' or 'testnet'
+ * @param {String} network - Can be either 'mainnet' or 'testnet'
  * @param {Object} options 
  */
 const Neo = function (network, options = {}) {
@@ -36,22 +35,10 @@ const Neo = function (network, options = {}) {
 
   // Event bindings
   if (this.options.eventEmitter) {
-    // TODO: pink elephant: is event emitter usage going to be heavy on process/memory?
-    this.options.eventEmitter.on('rpc:call', (e) => {
-      // Logger.info('rpc:call triggered. e:', e)
-      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
-      node.pendingRequests += 1
-    })
-    this.options.eventEmitter.on('rpc:call:response', (e) => {
-      // Logger.info('rpc:call:response triggered. e:', e)
-      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
-      node.pendingRequests -= 1
-    })
-    this.options.eventEmitter.on('rpc:call:error', (e) => {
-      // Logger.info('rpc:call:error triggered. e:', e)
-      const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
-      node.pendingRequests -= 1
-    })
+    // TODO: Are these event emitter usages going to be heavy on process/memory?
+    this.options.eventEmitter.on('rpc:call', this._rpcCallHandler.bind(this))
+    this.options.eventEmitter.on('rpc:call:response', this._rpcCallResponseHandler.bind(this))
+    this.options.eventEmitter.on('rpc:call:error', this._rpcCallErrorHandler.bind(this))
   }
 }
 
@@ -71,10 +58,6 @@ Neo.Defaults = {
 // -- Class methods
 
 Neo.prototype = {
-  _setDefaultNode: function () {
-    const node = this.nodes[0] // Always pick the first node in the list as default choice
-    this._setCurrentNode(node)
-  },
 
   setFastestNode: function () {
     this._setCurrentNode(this.getFastestNode())
@@ -90,6 +73,27 @@ Neo.prototype = {
 
   getHighestNode: function () {
     return _.maxBy(_.filter(this.nodes, 'active'), 'blockHeight') || this.nodes[0]
+  },
+
+  /**
+   * Identifies and returns the best node that has a specific block based on an input criteria.
+   * @todo allow change of sorting order on input
+   * @param {number} index - The index of the requested block.
+   * @param {string} [sort='latency'] - The attribute to rank nodes by.
+   * @param {Boolean} [allowLocal=true] - A flag to indicate whether the local node is allowed
+   * @returns {node} The best node that has the requested block index.
+   */
+  getNodeWithBlock: function (index, sort = 'latency', allowLocal = true) {
+    const filteredNodes = []
+    filteredNodes = _.filter(this.nodes, (n) => {
+      return n.active && n.index > index
+    })
+    if (!allowLocal) {
+      filteredNodes = _.filter(filteredNodes, (n) => {
+        return !n.isLocalNode()
+      })
+    }
+    return _.minBy(filteredNodes, sort)
   },
 
   getCurrentNode: function () {
@@ -254,7 +258,36 @@ Neo.prototype = {
     return this.currentNode.api.getPeers()
   },
 
+  // -- Event Handlers
+
+  _rpcCallHandler: function (e) {
+    // Logger.info('rpc:call triggered. e:', e)
+    const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
+    node.pendingRequests += 1
+  },
+
+  _rpcCallResponseHandler: function (e) {
+    // Logger.info('rpc:call:response triggered. e:', e)
+    const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
+    node.pendingRequests -= 1
+    if (e.method === 'getblockcount') {
+      node.blockHeight = e.result
+      node.index = ndoe.blockHeight - 1
+    }
+  },
+
+  _rpcCallErrorHandler: function (e) {
+    // Logger.info('rpc:call:error triggered. e:', e)
+    const node = _.find(this.nodes, (node) => { return node.api.url === e.url })
+    node.pendingRequests -= 1
+  },
+
   // -- Private methods
+
+  _setDefaultNode: function () {
+    const node = this.nodes[0] // Always pick the first node in the list as default choice
+    this._setCurrentNode(node)
+  },
 
   _initNodes: function () {
     this.options.enum.nodes[this.network].forEach((nodeInfo) => {
@@ -333,7 +366,7 @@ Neo.prototype = {
     this.nodes.push(node)
 
     // Setup sync instance
-    this.sync = new Sync(this.localNode, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
+    this.sync = new Sync(this, this.localNode, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
   },
 
   _getMongoDbConnectionInfo: function () {

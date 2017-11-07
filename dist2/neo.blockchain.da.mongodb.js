@@ -11,6 +11,7 @@ const Utils = require('./neo.blockchain.utils')
 const MongoDA = function (connectionInfo, options = {}) {
   // Properties and default values
   this.connectionInfo = connectionInfo
+  this.url = 'localhost'
   this.options = _.assign({}, MongoDA.Defaults, options)
 
   this.blockSchema = this._getBlockSchema()
@@ -99,7 +100,7 @@ MongoDA.prototype = {
   getBlockCount: function () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'index')
-        .sort('-index')
+        .sort({ index: -1 })
         .exec((err, res) => {
           if (err) {
             reject(err)
