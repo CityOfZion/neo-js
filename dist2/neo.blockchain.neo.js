@@ -164,7 +164,18 @@ Neo.prototype = {
         .catch((err) => {
           Logger.info('[neo] Failed or not found from local storage. Fetch from RPC instead...')
           this.currentNode.api.getBlock(index)
-            .then((res) => resolve(res))
+            .then((res) => {
+              Logger.info('[neo] Attempt to save block into local storage...')
+              this.localNode.api.saveBlock(res)
+                .then(() => {
+                  Logger.info('[neo] Complete saving block into local storage.')
+                  resolve(res)
+                })
+                .catch(() => {
+                  Logger.warn('[neo] Failed saving block into local storage. Continue...')
+                  resolve(res)
+                })
+            })
             .catch((err) => reject(err))
         })
     })

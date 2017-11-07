@@ -166,7 +166,7 @@ MongoDA.prototype = {
   },
 
   /**
-   * @todo Verify if the implementation is working
+   * @todo Duplicate detection
    */
   saveBlock: function (newBlock) {
     return new Promise((resolve, reject) => {
@@ -174,6 +174,7 @@ MongoDA.prototype = {
       newBlock = this._delintBlock(newBlock)
       this.blockModel(newBlock).save((err) => {
         if (err) {
+          Logger.trace('[da.mongodb] Failed saving block model. Rejected.')
           reject(err)
         }
 
@@ -182,13 +183,15 @@ MongoDA.prototype = {
           tx.blockIndex = newBlock.index
           tx.vout.forEach((d) => {
             if (this.assetsFlat.indexOf(d.asset) === -1) {
+              Logger.info('[da.mongodb] Saving an address...')
               this.addressModel({ address: d.asset, asset: d.asset, type: 'a', assets: [] }).save()
             }
           })
 
           this.transactionModel(tx).save((err) => {
             if (err) {
-              Logger.error('saveBlock transactionModel.save() error:', err)
+              Logger.trace()
+              Logger.error('[da.mongodb] saveBlock transactionModel.save() error:', err)
             }
           })
         })
