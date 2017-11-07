@@ -21,7 +21,7 @@ async function main () {
    * Set a high 'verboseLevel' to see debugging information print out to console log.
    */
   console.log('== Neo syncing mode ==')
-  const neoBlockchain = new Neo('testnet', { mode: 'full', verboseLevel: 3 })
+  const neoBlockchain = new Neo('testnet', { localNodeEnabled: true, verboseLevel: 3 })
   // neoBlockchain.startSync()
   neoBlockchain.sync.start()
   await sleep(10000)

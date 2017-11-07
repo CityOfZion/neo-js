@@ -10,6 +10,9 @@ const Logger = Utils.logger
 
 /**
  * Neo blockchain client.
+ * 
+ * TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
+ * TODO: auto (re)pick 'an appropriate' node
  * @class
  * @public
  * @param {String} network can be either 'mainnet' or 'testnet'
@@ -22,9 +25,7 @@ const Neo = function (network, options = {}) {
   this.nodes = []
   this.currentNode = undefined // A reference pointer to a selected node as the current node
   this.localNode = undefined
-  // TODO: have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
-  // TODO: cache mechanism, in-memory, vs mongodb?
-  // TODO: auto (re)pick 'an appropriate' node
+  this.sync = undefined
 
   // Bootstrap
   Logger.setLevel(this.options.verboseLevel)
@@ -32,7 +33,6 @@ const Neo = function (network, options = {}) {
   this._setDefaultNode()
   this._initDiagnostic() // Haven't come up with a suitable terminology yet.
   this._initLocalNode()
-  // this._initFullMode()
 
   // Event bindings
   if (this.options.eventEmitter) {
@@ -67,13 +67,6 @@ Neo.Defaults = {
   diagnosticInterval: 0, // How often to analyse a node. 0 means disable.
   localNodeEnabled: false
 }
-
-// -- Static methods
-
-// Deprecated
-// Neo.GetNodeUrl = function (node) {
-//   return `${node.scheme}://${node.host}:${node.port}`
-// }
 
 // -- Class methods
 
@@ -331,24 +324,17 @@ Neo.prototype = {
       return;
     }
 
+    // Setup a Data Access Object as API of local node
     const connectionInfo = this._getMongoDbConnectionInfo()
     Logger.info('Enabling local node. connectionInfo:', connectionInfo)
     const db = new MongoDa(connectionInfo) // TODO: have an abstract layer so user can inject any types of Data Access Object
     const node = new Node(db, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
     this.localNode = node
     this.nodes.push(node)
+
+    // Setup sync instance
+    this.sync = new Sync(this.localNode, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
   },
-
-  // _initFullMode: function () {
-  //   if (this.options.mode !== 'full') {
-  //     return
-  //   }
-
-  //   const connectionInfo = this._getMongoDbConnectionInfo()
-  //   this.dataAccess = new MongoDa(connectionInfo)
-
-  //   this.sync = new Sync()
-  // },
 
   _getMongoDbConnectionInfo: function () {
     return this.options.enum.mongodb[this.network]

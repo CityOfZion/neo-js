@@ -1,16 +1,19 @@
+const _ = require('lodash')
 const async = require('async')
 const EventEmitter = require('events')
+const Utils = require('./neo.blockchain.utils')
+const Logger = Utils.logger
 
-const Sync = function (options = {}) {
+const Sync = function (node, options = {}) {
   // Properties and default values
+  this.node = node // Designated local node
   this.options = _.assign({}, Sync.Defaults, options)
-  
-  // Bootstrap
-  this.eventEmitter = new EventEmitter()
   this.queue = undefined
   this.writeLock = false
-
   this.blockPointer = -1
+
+  // Bootstrap
+  Logger.setLevel(this.options.verboseLevel)
 }
 
 /**
@@ -18,6 +21,8 @@ const Sync = function (options = {}) {
  * @public
  */
 Sync.Defaults = {
+  eventEmitter: undefined,
+  verboseLevel: 2,
   workerCount: 20,
   maxQueueLength: 10000,
   startBlockIndex: 0,
@@ -170,8 +175,6 @@ Sync.prototype = {
         })
     })
   }
-
-
 }
 
 module.exports = Sync
