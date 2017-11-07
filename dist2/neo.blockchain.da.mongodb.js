@@ -41,8 +41,8 @@ const MongoDA = function (connectionInfo, options = {}) {
   this._initUpdateAssetList()
 
   // Explicit connect to localhost DB
-  if (options.connectOnInit) {
-    mongoose.connect('mongodb://localhost/ipsum') // TODO: use connectionInfo
+  if (this.options.connectOnInit) {
+    this._initConnection()
   }
 }
 
@@ -324,6 +324,7 @@ MongoDA.prototype = {
       .exec((err, res) => {
         this.assets = res
         this.assetsFlat = _.map(res, 'asset')
+        Logger.info('assetsFlat:', this.assetsFlat)
       })
   },
 
@@ -332,8 +333,21 @@ MongoDA.prototype = {
    * @private
    */
   _initUpdateAssetList: function () {
-    this.updateAssetList()
-    setInterval(this.updateAssetList.bind(this), 10000)
+    this._updateAssetList()
+    setInterval(this._updateAssetList.bind(this), 10000)
+  },
+
+  /**
+   * @private
+   */
+  _initConnection: function () {
+    const conn = `mongodb://${this.connectionInfo.server}/${this.connectionInfo.database}`
+
+    mongoose.connect(conn, { useMongoClient: true }, (ignore, connection) => {
+      connection.onOpen()
+    })
+      .then(() => { Logger.info('mongoose connected. connection string:', conn) })
+      .catch(console.error)
   }
 }
 

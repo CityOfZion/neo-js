@@ -23,6 +23,7 @@ async function main () {
    */
   console.log('== Neo client full mode usage ==')
   const neoBlockchain = new Neo('testnet', { localNodeEnabled: true, verboseLevel: 3 })
+  // TODO: is there a racing condition (where the call is made before mongoDB is ready)?
   console.log('getBlock:', await neoBlockchain.getBlock(100))
 
   process.exit() // Since there'll be background process happening, you'll need to explicit terminate this script.
