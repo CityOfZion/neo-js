@@ -150,9 +150,6 @@ Neo.prototype = {
     return this.currentNode.api.getBestBlockHash()
   },
 
-  /**
-   * @todo Save fetched data from RPC, into local storage
-   */
   getBlock: function (index) {
     if (!this.localNode) {
       Logger.info('[neo] Fetching getBlock from RPC...')
@@ -188,20 +185,38 @@ Neo.prototype = {
 
   /**
    * @todo Verify if the implementation is working
-   * @todo Better block validation algorithm
-   * @todo Save fetched data from RPC, into local storage
    */
   getBlockByHash: function (hash) {
-    if (this.localNode) {
-      Logger.info('[neo] fetching getBlockByHash from DB...')
-      const block = this.localNode.api.getBlockByHash(hash)
-      if (block) {
-        Logger.info('getBlockByHash result found in DB!')
-        return block
-      }
+    if (!this.localNode) {
+      Logger.info('[neo] Fetching getBlockByHash from RPC...')
+      return this.currentNode.api.getBlockByHash(hash)
     }
-    Logger.info('[neo] fetching getBlockByHash from RPC...')
-    return this.currentNode.api.getBlockByHash(hash)
+
+    Logger.info('[neo] Attempt to fetch getBlockByHash from local storage...')
+    return new Promise((resolve, reject) => {
+      this.localNode.api.getBlockByHash(hash)
+        .then((res) => {
+          Logger.info('[neo] Result found in local storage!')
+          resolve(res)
+        })
+        .catch((err) => {
+          Logger.info('[neo] Failed or not found from local storage. Fetch from RPC instead...')
+          this.currentNode.api.getBlockByHash(hash)
+            .then((res) => {
+              Logger.info('[neo] Attempt to save block into local storage...')
+              this.localNode.api.saveBlock(res)
+                .then(() => {
+                  Logger.info('[neo] Complete saving block into local storage.')
+                  resolve(res)
+                })
+                .catch(() => {
+                  Logger.warn('[neo] Failed saving block into local storage. Continue...')
+                  resolve(res)
+                })
+            })
+            .catch((err) => reject(err))
+        })
+    })
   },
 
   /**
@@ -223,20 +238,15 @@ Neo.prototype = {
 
   /**
    * @todo Verify if the implementation is working
-   * @todo Ability to check if the node is 'considered as fully synced'
-   * @todo Save fetched data from RPC, into local storage
    */
-  getBlockHash: function (index) { // TODO: should this method simply reuses neo.getBlock() instead of having its own implementation?
-    if (this.localNode) {
-      Logger.info('[neo] fetching getBlockHash from DB...')
-      const block = this.localNode.api.getBlock(index)
-      if (block) {
-        Logger.info('[neo] getBlockHash result found in DB!')
-        return block.hash
-      }
-    }
-    Logger.info('[neo] fetching getBlockHash from RPC...')
-    return this.currentNode.api.getBlockHash(index)
+  getBlockHash: function (index) {
+    return new Promise((resolve, reject) => {
+      this.getBlock(index)
+        .then((res) => {
+          resolve(res.hash)
+        })
+        .catch((err) => reject(err))
+    })
   },
 
   getBlockSystemFee: function (height) {
