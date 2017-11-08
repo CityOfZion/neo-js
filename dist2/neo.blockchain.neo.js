@@ -90,7 +90,6 @@ Neo.prototype = {
   /**
    * Identifies and returns the best node that has a specific block based on an input criteria.
    * @todo allow change of sorting order on input
-   * @todo Verify if the implementation is working
    * @param {number} index - The index of the requested block.
    * @param {string} [sort='latency'] - The attribute to rank nodes by.
    * @param {Boolean} [allowLocal=true] - A flag to indicate whether the local node is allowed

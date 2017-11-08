@@ -44,7 +44,6 @@ Sync.Defaults = {
 
 Sync.prototype = {
   /**
-   * @todo Verify if the implementation is working
    * @todo configuration interval values
    */
   start: function () {
@@ -92,18 +91,12 @@ Sync.prototype = {
     this.queue.resume()
   },
 
-  /**
-   * @todo Verify if the implementation is working
-   */
   stop: function () {
     Logger.info('[sync] stop() triggered.')
     this.runLock = false
     this.queue.pause()
   },
 
-  /**
-   * @todo Verify if the implementation is working
-   */
   setTargetBlockIndex: function (index) {
     this.options.targetBlockIndex = index
   },
@@ -119,7 +112,6 @@ Sync.prototype = {
   // -- Private methods
 
   /**
-   * @todo Verify if the implementation is working
    * @private
    */
   _initQueue: function () {
@@ -161,7 +153,6 @@ Sync.prototype = {
 
   /**
    * Adds a block request to the sync queue.
-   * @todo Verify if the implementation is working
    * @todo Make queue.push priority parameter configurable
    * @todo Make use of 'priority' local variable
    * @private
@@ -195,7 +186,6 @@ Sync.prototype = {
 
   /**
    * Makes an RPC call to get the requested block and inserts it into the local database.
-   * @todo Verify if the implementation is working
    * @private
    * @param {Object} attrs The block attributes
    */

@@ -33,7 +33,7 @@ NeoNode.Defaults = {
 
 NeoNode.prototype = {
   /**
-   * Check if it is a local node.
+   * Check if this is a local node.
    * @return {boolean}
    */
   isLocalNode: function () {
