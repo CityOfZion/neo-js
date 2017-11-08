@@ -430,6 +430,7 @@ Neo.prototype = {
   },
 
   /**
+   * @todo Setup abstract layer to allow injection of any types of Data Access Object
    * @private
    */
   _initLocalNode: function () {
@@ -440,7 +441,7 @@ Neo.prototype = {
     // Setup a Data Access Object as API of local node
     const connectionInfo = this._getMongoDbConnectionInfo()
     Logger.info('Enabling local node. connectionInfo:', connectionInfo)
-    const db = new MongoDa(connectionInfo, { verboseLevel: this.options.verboseLevel }) // TODO: have an abstract layer so user can inject any types of Data Access Object
+    const db = new MongoDa(connectionInfo, { verboseLevel: this.options.verboseLevel })
     const node = new Node(db, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
     this.localNode = node
     this.nodes.push(node)

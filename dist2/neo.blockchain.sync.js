@@ -47,7 +47,7 @@ Sync.prototype = {
    * @todo configuration interval values
    */
   start: function () {
-    Logger.info('sync.start triggered.')
+    Logger.info('[sync] start() triggered.')
 
     if (!this.queue) {
       this._initQueue()
@@ -92,7 +92,7 @@ Sync.prototype = {
    * @todo Verify if the implementation is working
    */
   stop: function () {
-    Logger.info('sync.stop triggered.')
+    Logger.info('[sync] stop() triggered.')
     this.runLock = false
     this.queue.pause()
   },
@@ -111,9 +111,12 @@ Sync.prototype = {
    * @private
    */
   _initQueue: function () {
+    Logger.info('[sync] _initQueue() triggered.')
     this.queue = async.priorityQueue((task, callback) => {
       task.method(task.attrs)
         .then(() => {
+          Logger.info('task.method() succeed! task.attrs:', task.attrs)
+          
           // After a sync even is run, enqueue any other outstanding blocks up to the max queue length.
           while ((this.queue.length() < this.maxQueueLength) && (this.blockWritePointer < this.targetBlockIndex)) {
             this._enqueueBlock(this.blockWritePointer + 1)
@@ -133,7 +136,7 @@ Sync.prototype = {
         .catch((err) => {
           // If the blcok request fails, throw it to the back to the queue to try again.
           // timout prevents inf looping on connections issues etc..
-          Logger.info('task.method() failed. task.attrs:', task.attrs)
+          Logger.info('task.method() failed, try again later... task.attrs:', task.attrs)
           setTimeout(() => {
             this._enqueueBlock(task.attrs.index, 0)
           }, 2000) // TODO: configurable interval time
