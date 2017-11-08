@@ -108,6 +108,14 @@ Sync.prototype = {
     this.options.targetBlockIndex = index
   },
 
+  /**
+   * Determine whether the sync instance is currently running.
+   * @return {boolean}
+   */
+  isRunning: function () {
+    return this.runLock
+  },
+
   // -- Private methods
 
   /**
@@ -174,6 +182,7 @@ Sync.prototype = {
     }
 
     // Enqueue the block.
+    Logger.info('_enqueueBlock before queue.push(). index:', index, 'targetBlockIndex:', this.options.targetBlockIndex)
     this.queue.push({
       method: this._storeBlock.bind(this),
       attrs: {
@@ -210,7 +219,7 @@ Sync.prototype = {
       // Fetch
       node.api.getBlock(attrs.index)
         .then((res) => {
-          Logger.info('node.api.getBlock() success. Attempt to saveBlock()...')
+          // Logger.info('node.api.getBlock() success. Attempt to saveBlock()...')
           // Save to local node
           this.localNode.api.saveBlock(res)
             .then(() => {

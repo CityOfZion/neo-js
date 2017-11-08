@@ -454,6 +454,16 @@ Neo.prototype = {
 
     // Setup sync instance
     this.sync = new Sync(this, this.localNode, { eventEmitter: this.options.eventEmitter, verboseLevel: this.options.verboseLevel })
+
+    // Periodically updates sync process' target index
+    setInterval(() => {
+      if(this.sync.isRunning()) {
+        const index = this.getHighestNode().blockHeight - 1
+        if(index) {
+          this.sync.setTargetBlockIndex(index)
+        }
+      }
+    }, 10000)
   },
 
   /**
