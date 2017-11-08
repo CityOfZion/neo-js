@@ -166,7 +166,8 @@ MongoDA.prototype = {
   },
 
   /**
-   * @todo Duplicate detection
+   * @todo Duplicate block detection and handling
+   * @todo Duplicate transaction detection and handling
    */
   saveBlock: function (newBlock) {
     return new Promise((resolve, reject) => {
@@ -347,6 +348,7 @@ MongoDA.prototype = {
   },
 
   /**
+   * @todo Verify if mongodb server is available/reachable
    * @private
    */
   _initConnection: function () {

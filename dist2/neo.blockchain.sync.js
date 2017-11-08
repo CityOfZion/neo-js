@@ -14,6 +14,7 @@ const Logger = Utils.logger
 const Sync = function (blockchain, localNode, options = {}) {
   // Properties and default values
   this.blockchain = blockchain
+  // Logger.info('Constructor triggered. blockchain:', this.blockchain)
   this.localNode = localNode
   this.options = _.assign({}, Sync.Defaults, options)
   this.queue = undefined
@@ -37,7 +38,7 @@ Sync.Defaults = {
   verboseLevel: 2,
   workerCount: 20,
   maxQueueLength: 10000,
-  startBlockIndex: 0,
+  startBlockIndex: 0, // NOTE: not yet been used
   targetBlockIndex: 700000
 }
 
@@ -62,12 +63,15 @@ Sync.prototype = {
     Logger.info('Synchronizing...')
     this.clock1 = setInterval(() => {
       if (this.runLock) {
-        if ((this.localNode.index < this.targetBlockIndex) && (this.queue.length() === 0)) {
+        Logger.info('tick. localNode.index:', this.localNode.index, 'targetBlockIndex:', this.options.targetBlockIndex, 'queue.length():', this.queue.length())
+        if ((this.localNode.index < this.options.targetBlockIndex) && (this.queue.length() === 0)) {
+          // Logger.info('tock')
           this.blockWritePointer = this.localNode.index
-          Logger.info('blockWritePointer:', this.blockWritePointer)
-          this._enqueueBlock(this.blockWritePointer + 1, true)
+          // Logger.info('blockWritePointer:', this.blockWritePointer)
+          this._enqueueBlock(this.blockWritePointer + 1, true) // TODO: Why is the 2nd parameter 'true' when an integer is expected?
         }
       } else {
+        Logger.info('clearInterval for clock1')
         clearInterval(this.clock1)
       }
     }, 2000)
@@ -118,14 +122,14 @@ Sync.prototype = {
           Logger.info('task.method() succeed! task.attrs:', task.attrs)
           
           // After a sync even is run, enqueue any other outstanding blocks up to the max queue length.
-          while ((this.queue.length() < this.maxQueueLength) && (this.blockWritePointer < this.targetBlockIndex)) {
+          while ((this.queue.length() < this.options.maxQueueLength) && (this.blockWritePointer < this.options.targetBlockIndex)) {
             this._enqueueBlock(this.blockWritePointer + 1)
           }
 
           // Consider logging a status update... communication is important
-          if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === this.targetBlockIndex)) {
+          if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === this.options.targetBlockIndex)) {
             Logger.info(task.attrs, (this.logPeriod / ((Date.now() - this.t0) / 1000)))
-            if ((task.attrs.index === this.targetBlockIndex)) {
+            if ((task.attrs.index === this.options.targetBlockIndex)) {
               Logger.info('stats:', this.stats)
             }
             this.t0 = Date.now()
@@ -142,7 +146,7 @@ Sync.prototype = {
           }, 2000) // TODO: configurable interval time
           callback()
         })
-    }, this.workerCount)
+    }, this.options.workerCount)
 
     this.queue.pause() // Initialize the controller with synchronization paused (so we dont sync in light mode)
   },
@@ -150,13 +154,17 @@ Sync.prototype = {
   /**
    * Adds a block request to the sync queue.
    * @todo Verify if the implementation is working
+   * @todo Make queue.push priority parameter configurable
+   * @todo Make use of 'priority' local variable
    * @private
    * @param {number} index The index of the block to synchronize.
-   * @param {number} [priority=5] The priority of the block download request.
-   * @param {Boolean} [safe=false] Insert if the queue is not empty?
+   * @param {number|boolean} [priority=5] The priority of the block download request.
+   * @param {boolean} [safe=false] Insert if the queue is not empty?
    */
   _enqueueBlock: function (index, priority = 5, safe = false) {
+    // Logger.info('_enqueueBlock triggered. index:', index, 'blockWritePointer:', this.blockWritePointer)
     if (safe && (this.queue.length() > 0)) {
+      Logger.info('No go. Exiting...')
       return
     }
 
@@ -167,13 +175,13 @@ Sync.prototype = {
 
     // Enqueue the block.
     this.queue.push({
-      method: this._storeBlock,
+      method: this._storeBlock.bind(this),
       attrs: {
         index: index,
-        max: this.targetBlockIndex,
-        percent: (index / this.targetBlockIndex * 100)
+        max: this.options.targetBlockIndex,
+        percent: (index / this.options.targetBlockIndex * 100)
       }
-    }, 5) // TODO: Configurable priority value
+    }, 5)
   },
 
   /**
@@ -183,9 +191,16 @@ Sync.prototype = {
    * @param {Object} attrs The block attributes
    */
   _storeBlock: function (attrs) {
+    // Logger.info('_storeBlock triggered. attrs:', attrs)
     return new Promise((resolve, reject) => {
       // Get the block using the rpc controller
       const node = this.blockchain.getNodeWithBlock(attrs.index, 'pendingRequests', false)
+      // Logger.info('Fetched node. url:', node.api.url)
+
+      if(!node) {
+        Logger.info('No available node found.')
+        reject()
+      }
 
       // Setup stats report
       if (!this.stats[node.api.url]) {
@@ -195,6 +210,7 @@ Sync.prototype = {
       // Fetch
       node.api.getBlock(attrs.index)
         .then((res) => {
+          Logger.info('node.api.getBlock() success. Attempt to saveBlock()...')
           // Save to local node
           this.localNode.api.saveBlock(res)
             .then(() => {
@@ -207,6 +223,7 @@ Sync.prototype = {
             })
         })
         .catch((err) => {
+          Logger.info('node.api.getBlock() failed.')
           this.stats[node.api.url]['f1']++
           reject(err)
         })

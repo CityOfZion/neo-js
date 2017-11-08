@@ -21,7 +21,8 @@ async function main () {
    * Set a high 'verboseLevel' to see debugging information print out to console log.
    */
   console.log('== Neo syncing mode ==')
-  const neoBlockchain = new Neo('testnet', { localNodeEnabled: true, verboseLevel: 3 })
+  // NOTES: diagnostic loop must be running at the background, otherwise non of the nodes will be marked as active...
+  const neoBlockchain = new Neo('testnet', { diagnosticInterval: 1000, localNodeEnabled: true, verboseLevel: 3 })
   neoBlockchain.sync.start()
   await sleep(60000)
   neoBlockchain.sync.stop()

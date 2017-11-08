@@ -90,21 +90,27 @@ Neo.prototype = {
   /**
    * Identifies and returns the best node that has a specific block based on an input criteria.
    * @todo allow change of sorting order on input
+   * @todo Verify if the implementation is working
    * @param {number} index - The index of the requested block.
    * @param {string} [sort='latency'] - The attribute to rank nodes by.
    * @param {Boolean} [allowLocal=true] - A flag to indicate whether the local node is allowed
    * @returns {node} The best node that has the requested block index.
    */
   getNodeWithBlock: function (index, sort = 'latency', allowLocal = true) {
+    // Logger.info('getNodeWithBlock triggered. index:', index, 'sort:', sort, 'allowLocal:', allowLocal)
+    // Logger.info('available nodes:', this.nodes.length)
+
     let filteredNodes = []
     filteredNodes = _.filter(this.nodes, (n) => {
       return n.active && n.index > index
     })
+    // Logger.info('filteredNodes:', filteredNodes)
     if (!allowLocal) {
       filteredNodes = _.filter(filteredNodes, (n) => {
         return !n.isLocalNode()
       })
     }
+    // Logger.info('filteredNodes (2):', filteredNodes)
     return _.minBy(filteredNodes, sort)
   },
 
@@ -405,7 +411,7 @@ Neo.prototype = {
   _diagnoseRandomNode: function () {
     const targetIndex = Math.floor(Math.random() * this.nodes.length)
     const targetNode = this.nodes[targetIndex]
-    Logger.info('=> #' + targetIndex, 'api:', targetNode.api.url)
+    // Logger.info('=> #' + targetIndex, 'api:', targetNode.api.url)
 
     const startTime = new Date() // Start timer
     targetNode.api.getBlockCount()
@@ -414,11 +420,11 @@ Neo.prototype = {
         targetNode.active = true
         targetNode.blockHeight = res
         targetNode.latency = latency
-        Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'block count:', res)
+        // Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'block count:', res)
       })
       .catch((err) => {
         targetNode.active = false
-        Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'error:', err.message)
+        // Logger.info('<= #' + targetIndex, 'node:', targetNode.api.url, 'error:', err.message)
       })
   },
 
