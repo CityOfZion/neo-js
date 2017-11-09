@@ -235,7 +235,7 @@ Rpc.prototype = {
    * Note: This transcation will NOT be published to the blockchain.
    * @param scriptHash - The hash of the script to invoke.
    * @param params - The params used to invoke the contract.
-   * @returns {Promise.<Object>) The invoke response.
+   * @returns {Promise.<Object>} The invoke response.
    */
   invoke: function (scriptHash, params) {
     return this._call({
@@ -251,7 +251,7 @@ Rpc.prototype = {
    * @param scriptHash - The hash of the script to invoke.
    * @param operation - Defines the operation to invoke on the contract.
    * @param params - The params used to invoke the contract.
-   * @returns {Promise.<Object>) The invoke response.
+   * @returns {Promise.<Object>} The invoke response.
    */
   invokeFunction: function (scriptHash, operation, params) {
     return this._call({
@@ -265,7 +265,7 @@ Rpc.prototype = {
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
    * @param script - Raw script to invoke.
-   * @returns {Promise.<Object>) The invoke response.
+   * @returns {Promise.<Object>} The invoke response.
    */
   invokeScript: function (script) {
     return this._call({
@@ -498,6 +498,12 @@ Rpc.prototype = {
     })
   },
 
+  /**
+   * @private
+   * @param {string} name
+   * @param {Object} payload
+   * @return {Promise}
+   */
   _emit: function (name, payload) {
     if (this.options.eventEmitter) {
       this.options.eventEmitter.emit(name, payload)
