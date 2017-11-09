@@ -104,7 +104,7 @@ function sync (blockchain) {
       } else {
         clearInterval(sync.clock)
       }
-    }, 60000)
+    }, 180000)
 
     queue.resume()
   }

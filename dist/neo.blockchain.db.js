@@ -354,22 +354,25 @@ module.exports = function (network) {
     new Promise((resolve, reject) => {
       var missing = []
       var pointer = -1
-      module.blocks.find({}, 'index').sort('index')
-        .exec((err, res) => {
-          console.log('Blockchain Verification: Scanning')
-          res.forEach((d) => {
-            while (true) {
-              pointer++
-              if (d.index === pointer) {
-                break
-              } else {
-                missing.push(pointer)
-              }
-            }
-          })
-          console.log('Blockchain Verification: Found ' + missing.length + ' missing')
-          resolve(missing)
-        })
+
+      console.log('Blockchain Verification: Scanning')
+
+      var stream = module.blocks
+        .find({}, 'index').sort('index')
+        .cursor();
+
+      stream.on('data', (d) => {
+        while (true) {
+          pointer++
+          if (d.index === pointer) {
+            break
+          } else {
+            missing.push(pointer)
+          }
+        }
+      })
+      stream.on('end', () => resolve(missing) )
+
     })
 
     this.getBlockCount()
