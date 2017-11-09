@@ -7,7 +7,7 @@ const Logger = Utils.logger
  * @class
  * @public
  * @param {Object} api - A RPC instance or data access object
- * @param {Object} options 
+ * @param {Object} options
  */
 const NeoNode = function (api, options = {}) {
   // Properties and default values

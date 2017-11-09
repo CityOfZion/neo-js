@@ -1,4 +1,5 @@
 /* eslint handle-callback-err: "off" */
+/* eslint prefer-promise-reject-errors: "off" */
 const _ = require('lodash')
 const async = require('async')
 const Utils = require('./neo.blockchain.utils')
@@ -7,9 +8,9 @@ const Logger = Utils.logger
 /**
  * @todo Is there a way to eliminate circular reference with 'blockchain' and 'node'?
  * @todo Better way to manage deubbing variables
- * @param {Object} blockchain 
- * @param {Object} node 
- * @param {Object} options 
+ * @param {Object} blockchain
+ * @param {Object} node
+ * @param {Object} options
  */
 const Sync = function (blockchain, localNode, options = {}) {
   // Properties and default values
@@ -37,7 +38,7 @@ Sync.Defaults = {
   verboseLevel: 2,
   workerCount: 20,
   maxQueueLength: 10000,
-  startBlockIndex: 0, // NOTE: not yet been used
+  startBlockIndex: 0 // NOTE: not yet been used
 }
 
 Sync.prototype = {
@@ -116,7 +117,7 @@ Sync.prototype = {
         .then(() => {
           Logger.info('task.method() succeed! task.attrs:', task.attrs)
           const targetBlockIndex = this.blockchain.getHighestNode().blockHeight - 1
-          
+
           // After a sync even is run, enqueue any other outstanding blocks up to the max queue length.
           while ((this.queue.length() < this.options.maxQueueLength) && (this.blockWritePointer < targetBlockIndex)) {
             this._enqueueBlock(this.blockWritePointer + 1)
@@ -193,7 +194,7 @@ Sync.prototype = {
       const node = this.blockchain.getNodeWithBlock(attrs.index, 'pendingRequests', false)
       // Logger.info('Fetched node. url:', node.api.url)
 
-      if(!node) {
+      if (!node) {
         Logger.info('No available node found.')
         reject()
       }

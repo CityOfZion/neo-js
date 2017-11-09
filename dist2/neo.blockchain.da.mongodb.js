@@ -10,7 +10,7 @@ const Logger = Utils.logger
  * @class
  * @public
  * @param {Object} connectionInfo
- * @param {Object} options 
+ * @param {Object} options
  */
 const MongoDA = function (connectionInfo, options = {}) {
   // Properties and default values

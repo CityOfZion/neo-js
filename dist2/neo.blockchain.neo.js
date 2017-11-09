@@ -1,3 +1,4 @@
+/* eslint handle-callback-err: "off" */
 const _ = require('lodash')
 const EventEmitter = require('events')
 const Rpc = require('./neo.blockchain.rpc')
@@ -15,7 +16,7 @@ const Logger = Utils.logger
  * @class
  * @public
  * @param {String} network - Can be either 'mainnet' or 'testnet'
- * @param {Object} options 
+ * @param {Object} options
  */
 const Neo = function (network, options = {}) {
   // Properties and default values

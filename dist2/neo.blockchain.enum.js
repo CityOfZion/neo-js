@@ -39,7 +39,7 @@ module.exports = {
       collections: {
         blocks: 'b_neo_t_blocks', // The blockchain collection
         transactions: 'b_neo_t_transactions', // The transactions on the blockchains
-        addresses: 'b_neo_t_addresses' // A collection maintaining accounts and their balances    
+        addresses: 'b_neo_t_addresses' // A collection maintaining accounts and their balances
       }
     },
     mainnet: {
@@ -48,7 +48,7 @@ module.exports = {
       collections: {
         blocks: 'b_neo_m_blocks', // The blockchain collection
         transactions: 'b_neo_m_transactions', // The transactions on the blockchains
-        addresses: 'b_neo_m_addresses' // A collection maintaining accounts and their balances    
+        addresses: 'b_neo_m_addresses' // A collection maintaining accounts and their balances
       }
     }
   }
