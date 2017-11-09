@@ -220,6 +220,22 @@ MongoDA.prototype = {
     })
   },
 
+  /**
+   * @todo Verify if the implementation is working
+   */
+  saveTransaction: function (tx) {
+    return new Promise((resolve, reject) => {
+      this.transactionModel(tx).save((err) => {
+        if (err) {
+          Logger.trace()
+          reject(err)
+        }
+      })
+
+      resolve()
+    })
+  },
+
   // -- Specialised endpoints
 
   /**

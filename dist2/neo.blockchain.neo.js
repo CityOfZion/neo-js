@@ -11,6 +11,7 @@ const Logger = Utils.logger
  * Neo blockchain client.
  * @todo have some worker in the background that keep pining getBlockCount in order to fetch height and speed info. Make this a feature toggle
  * @todo auto (re)pick 'an appropriate' node
+ * @todo add ability to toggle diagnosticInterval asynchronously
  * @class
  * @public
  * @param {String} network - Can be either 'mainnet' or 'testnet'
@@ -65,7 +66,7 @@ Neo.prototype = {
   },
 
   /**
-   * Identifies and set current node as the node with the highest blockheight.
+   * Identifies and set current node as the node with the highest block height.
    */
   setHighestNode: function () {
     this._setCurrentNode(this.getHighestNode())
@@ -80,7 +81,7 @@ Neo.prototype = {
   },
 
   /**
-   * Identifies and returns the node with the highest blockheight.
+   * Identifies and returns the node with the highest block height.
    * @returns {node} The node instance with the greatest blockHeight.
    */
   getHighestNode: function () {
@@ -279,16 +280,37 @@ Neo.prototype = {
    * @todo Save fetched data from RPC, into local storage
    */
   getRawTransaction: function (txid) {
-    if (this.localNode) {
-      Logger.info('[neo] fetching getRawTransaction from DB...')
-      const transaction = this.localNode.api.getRawTransaction(txid)
-      if (transaction) {
-        Logger.info('[neo] getRawTransaction result found in DB!')
-        return transaction
-      }
+    if (!this.localNode) {
+      Logger.info('[neo] Fetching getRawTransaction from RPC...')
+      return this.currentNode.api.getRawTransaction(txid)
     }
-    Logger.info('[neo] fetching getRawTransaction from RPC...')
-    return this.currentNode.api.getRawTransaction(txid)
+
+    Logger.info('[neo] Attempt to fetch getRawTransaction from local storage...')
+    return new Promise((resolve, reject) => {
+      this.localNode.api.getRawTransaction(txid)
+        .then((res) => {
+          Logger.info('[neo] Result found in local storage!')
+          resolve(res)
+        })
+        .catch((err) => {
+          Logger.info('[neo] Failed or not found from local storage. Fetch from RPC instead...')
+          this.currentNode.api.getRawTransaction(txid)
+            .then((res) => {
+              Logger.info('[neo] Attempt to save transaction into local storage...')
+              Logger.info('getRawTransaction. res:', res)
+              this.localNode.api.saveTransaction(res)
+                .then(() => {
+                  Logger.info('[neo] Complete saving transaction into local storage.')
+                  resolve(res)
+                })
+                .catch(() => {
+                  Logger.warn('[neo] Failed saving transaction into local storage. Continue...')
+                  resolve(res)
+                })
+            })
+            .catch((err) => reject(err))
+        })
+    })
   },
 
   /**
