@@ -14,7 +14,6 @@ const Logger = Utils.logger
 const Sync = function (blockchain, localNode, options = {}) {
   // Properties and default values
   this.blockchain = blockchain
-  // Logger.info('Constructor triggered. blockchain:', this.blockchain)
   this.localNode = localNode
   this.options = _.assign({}, Sync.Defaults, options)
   this.queue = undefined
@@ -39,7 +38,6 @@ Sync.Defaults = {
   workerCount: 20,
   maxQueueLength: 10000,
   startBlockIndex: 0, // NOTE: not yet been used
-  targetBlockIndex: 700000
 }
 
 Sync.prototype = {
@@ -62,8 +60,9 @@ Sync.prototype = {
     Logger.info('Synchronizing...')
     this.clock1 = setInterval(() => {
       if (this.runLock) {
-        Logger.info('tick. localNode.index:', this.localNode.index, 'targetBlockIndex:', this.options.targetBlockIndex, 'queue.length():', this.queue.length())
-        if ((this.localNode.index < this.options.targetBlockIndex) && (this.queue.length() === 0)) {
+        Logger.info('tick. localNode.index:', this.localNode.index, 'queue.length():', this.queue.length())
+        const targetBlockIndex = this.blockchain.getHighestNode().blockHeight - 1
+        if ((this.localNode.index < targetBlockIndex) && (this.queue.length() === 0)) {
           // Logger.info('tock')
           this.blockWritePointer = this.localNode.index
           // Logger.info('blockWritePointer:', this.blockWritePointer)
@@ -97,10 +96,6 @@ Sync.prototype = {
     this.queue.pause()
   },
 
-  setTargetBlockIndex: function (index) {
-    this.options.targetBlockIndex = index
-  },
-
   /**
    * Determine whether the sync instance is currently running.
    * @return {boolean}
@@ -120,16 +115,17 @@ Sync.prototype = {
       task.method(task.attrs)
         .then(() => {
           Logger.info('task.method() succeed! task.attrs:', task.attrs)
+          const targetBlockIndex = this.blockchain.getHighestNode().blockHeight - 1
           
           // After a sync even is run, enqueue any other outstanding blocks up to the max queue length.
-          while ((this.queue.length() < this.options.maxQueueLength) && (this.blockWritePointer < this.options.targetBlockIndex)) {
+          while ((this.queue.length() < this.options.maxQueueLength) && (this.blockWritePointer < targetBlockIndex)) {
             this._enqueueBlock(this.blockWritePointer + 1)
           }
 
           // Consider logging a status update... communication is important
-          if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === this.options.targetBlockIndex)) {
+          if ((task.attrs.index % this.logPeriod === 0) || (task.attrs.index === targetBlockIndex)) {
             Logger.info(task.attrs, (this.logPeriod / ((Date.now() - this.t0) / 1000)))
-            if ((task.attrs.index === this.options.targetBlockIndex)) {
+            if ((task.attrs.index === targetBlockIndex)) {
               Logger.info('stats:', this.stats)
             }
             this.t0 = Date.now()
@@ -173,13 +169,14 @@ Sync.prototype = {
     }
 
     // Enqueue the block.
-    Logger.info('_enqueueBlock before queue.push(). index:', index, 'targetBlockIndex:', this.options.targetBlockIndex)
+    Logger.info('_enqueueBlock before queue.push().')
+    const targetBlockIndex = this.blockchain.getHighestNode().blockHeight - 1
     this.queue.push({
       method: this._storeBlock.bind(this),
       attrs: {
         index: index,
-        max: this.options.targetBlockIndex,
-        percent: (index / this.options.targetBlockIndex * 100)
+        max: targetBlockIndex,
+        percent: (index / targetBlockIndex * 100)
       }
     }, 5)
   },
