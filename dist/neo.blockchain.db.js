@@ -357,7 +357,7 @@ module.exports = function (network) {
 
       console.log('Blockchain Verification: Scanning')
 
-      var stream = module.blocks
+      const stream = module.blocks
         .find({}, 'index').sort('index')
         .cursor();
 
