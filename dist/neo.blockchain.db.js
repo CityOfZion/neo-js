@@ -350,15 +350,21 @@ module.exports = function (network) {
       return hex
     }
 
+    /**
+     * Verifies local blockchain integrity over a block range.
+     * @param {String} [start = 0] The start index of the block range to verify.
+     * @param {Number} [end = node.index] The end index of the block range to verify.
+     * @returns Promise.<Array> An array containing the indices of the missing blocks.
+     */
     this.verifyBlocks = (start = 0, end = node.index) =>
     new Promise((resolve, reject) => {
       var missing = []
-      var pointer = -1
+      var pointer = start - 1
 
       console.log('Blockchain Verification: Scanning')
 
       const stream = module.blocks
-        .find({}, 'index').sort('index')
+        .find({ index: { '$gte': start, '$lte': end } }, 'index').sort('index')
         .cursor();
 
       stream.on('data', (d) => {
