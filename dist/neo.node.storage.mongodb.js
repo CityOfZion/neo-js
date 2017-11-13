@@ -32,7 +32,267 @@ class MongodbStorage {
 
   // Static methods
 
+  /**
+   * @todo Migrate to a helper class
+   * @static
+   * @param {Object} block 
+   * @return {Object}
+   */
+  static delintBlock(block) {
+    block.hash = this.hexFix(block.hash)
+    block.previousblockhash = this.hexFix(block.previousblockhash)
+    block.merkleroot = this.hexFix(block.merkleroot)
+    block.tx.forEach((tx) => {
+      tx.txid = this.hexFix(tx.txid)
+      tx.sys_fee = parseFloat(tx.sys_fee)
+      tx.net_fee = parseFloat(tx.net_fee)
+
+      tx.vout.forEach((vout) => {
+        vout.asset = this.hexFix(vout.asset)
+        vout.value = parseFloat(vout.value)
+      })
+    })
+    return block
+  }
+
+  /**
+   * @todo Migrate to a helper class
+   * @static
+   * @param {string} block 
+   * @return {string}
+   */
+  static hexFix(hex) {
+    if (hex.length === 64) {
+      hex = '0x' + hex
+    }
+    return hex
+  }
+
   // Pubic methods
+
+  /**
+   * @todo Use helper function to normalise txid
+   * @param {string} txid 
+   */
+  getTX(txid) {
+    new Promise((resolve, reject) => {
+      if (txid.length > 64) {
+        txid = txid.slice(2)
+      }
+
+      module.transactions.findOne({ $or: [{'txid': txid}, {'txid': '0x' + txid}] })
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('transaction not found'))
+          }
+          resolve(res)
+        })
+    })
+  }
+
+  /**
+   * @todo Implement
+   */
+  getBalance(address, assets, blockAge) {
+    return new Promise((resolve, reject) => {
+      console.log('[mongo] getBalance triggered.')
+      resolve(true)
+    })
+  }
+
+  getBlock(index) {
+    return new Promise((resolve, reject) => {
+      console.log('[mongo] getBlock triggered. index:', index)
+      
+      this.blockModel.findOne({ index })
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+
+          if (!res) {
+            reject(new Error('Block not found'))
+          }
+
+          resolve(res)
+        })
+    })
+  }
+
+  getBlockList() {
+    return new Promise((resolve, reject) => {
+      this.blockModel.find({}, 'index')
+        .sort('index')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('Block not found.'))
+          }
+          resolve(res)
+        })
+    })
+  }
+
+  getBlockCount() {
+    return new Promise((resolve, reject) => {
+      this.blockModel.findOne({}, 'index')
+        .sort('-index')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            res = { index: -1 }
+          }
+          const height = res.index + 1
+          resolve(height)
+        })
+    })
+  }
+
+  getAssetList() {
+    return new Promise((resolve, reject) => {
+      this.addressModel.find({ type: 'a' }, 'asset')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('assets not found'))
+          }
+          resolve(res)
+        })
+    })
+  }
+
+  getAssetListByAddress(address, asset, startBlock) {
+    return new Promise((resolve, reject) => {
+      this.transactionModel.find({
+        'vout.address': address,
+        $or: [
+          {'type': 'ContractTransaction'},
+          {'type': 'InvocationTransaction'},
+          {'type': 'ClaimTransaction'}
+        ],
+        'vout.asset': asset,
+        'blockIndex': { '$gte': startBlock }
+      }, 'txid')
+        .sort('blockIndex')
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          if (!res) {
+            reject(new Error('assets not found'))
+          }
+          resolve(res)
+        })
+    })
+  }
+
+  saveAsset(asset) {
+    return new Promise((resolve, reject) => {
+      this.addressModel(asset).save((err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  saveBlock(block) {
+    return new Promise((resolve, reject) => {
+      block = this.delintBlock(block)
+
+      this.blockModel(block).save((err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  saveTransaction(tx) {
+    return new Promise((resolve, reject) => {
+      this.transactionModel(tx).save((err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  updateTransaction(tx) {
+    return new Promise((resolve, reject) => {
+      this.transactionModel.update({'txid': tx.txid}, tx, (err) => {
+        if (err) {
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  getAddress(addressHash) {
+    return new Promise((resolve, reject) => {
+      this.addressModel.findOne({ 'address': addressHash })
+      .exec((err, res) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(res)
+      })
+    })
+  }
+
+  saveAddress(addressHash, type) {
+    return new Promise((resolve, reject) => {
+      this.addressModel({ 'address': addressHash, 'type': type, 'assets': [] })
+        .save((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(res)
+        })
+    })
+  }
+
+  updateBalance(address, asset, balance, index) {
+    return new Promise((resolve, reject) => {
+      this.addressModel.update({ 'address': address, 'assets.asset': asset }, {
+        'assets.$.balance': balance,
+        'assets.$.index': index
+      }).exec((err, res) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(res)
+      })
+    })
+  }
+
+  /**
+   * @todo Need a better name for its purpose.
+   * @param {*} address 
+   * @param {*} result 
+   */
+  updateBalance2(address, result) {
+    this.addressModel.update({ 'address': address }, { '$push': {'assets': result} })
+      .exec((err, res) => {
+        if (err) {
+          reject(err)
+        }
+        resolve(res)
+      })
+  }
 
   // Private methods
 
