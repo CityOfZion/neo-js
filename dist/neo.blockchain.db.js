@@ -1,6 +1,5 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
-var mongoose = require('mongoose')
 var _ = require('lodash')
 var MongodbStorage = require('./neo.node.storage.mongodb')
 
@@ -8,21 +7,19 @@ module.exports = function (network) {
   var module = {}
 
   const EXPLICIT_DB_CONNECT = true
-  const collectionNames = {
-    'blockchain': 'b_neo_t_blocks',
-    'transactions': 'b_neo_t_transactions',
-    'addresses': 'b_neo_t_addresses'
+  let collectionNames = {
+    blocks: 'b_neo_t_blocks',
+    transactions: 'b_neo_t_transactions',
+    addresses: 'b_neo_t_addresses'
   }
   if (network === 'mainnet') {
-    collection.blockchain = 'b_neo_m_blocks'
-    collection.transactions = 'b_neo_m_transactions'
-    collection.addresses = 'b_neo_m_addresses'
+    collectionNames = {
+      blocks: 'b_neo_m_blocks',
+      transactions: 'b_neo_m_transactions',
+      addresses: 'b_neo_m_addresses'
+    }
   }
   const dataAccess = new MongodbStorage({ connectOnInit: true, collectionNames })
-
-  // module.blocks = mongoose.model(collection.blockchain, blockSchema)
-  // module.transactions = mongoose.model(collection.transactions, transactionSchema);
-  // module.addresses = mongoose.model(collection.addresses, addressSchema)
 
   /**
    * @class node
@@ -56,7 +53,7 @@ module.exports = function (network) {
      * @returns Promise.<Array> An array containing the balances of an address.
      */
     this.getBalance = function (address, assets = node.assets, blockAge = 1) {
-      return new Promise((resolve, reject) {
+      return new Promise((resolve, reject) => {
         dataAccess.getAddress(address)
           .then((res) => {
             // If the address is not found in the database, its new...So add it and retry.
