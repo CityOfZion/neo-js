@@ -13,6 +13,7 @@ class MongodbStorage {
     // Associate class properties
     Object.assign(this, {
       connectOnInit: false,
+      connectionString: 'mongodb://localhost/neo',
       collectionNames: {
         blocks: 'b_neo_t_blocks',
         transactions: 'b_neo_t_transactions',
@@ -302,8 +303,7 @@ class MongodbStorage {
    * @private
    */
   _initConnection() {
-    const conn = 'mongodb://localhost/demo5'
-    mongoose.connect(conn, { useMongoClient: true }, (ignore, connection) => {
+    mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
       connection.onOpen()
     })
       .then(() => { console.log('mongoose connected.') })
