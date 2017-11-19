@@ -134,7 +134,7 @@ function sync (blockchain) {
       let node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
       if (!stats[node.domain]) stats[node.domain] = {s: 0, f1: 0, f2: 0}
 
-      node.getBlock(attrs.index)
+      node.rpc.getBlock(attrs.index)
         .then((res) => {
           // inject the block into the database and save.
           blockchain.localNode.saveBlock(res)
