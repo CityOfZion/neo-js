@@ -136,21 +136,9 @@ module.exports = function (network) {
 
                 // Update the address balances in the collection
                 const result = { 'asset': asset, 'balance': balance, 'index': node.index, 'type': 'a' }
-
                 dataAccess.updateBalance(address, asset, balance, node.index)
                   .then((res) => {
-                    // If no asset was updated, the asset must be new, append it
-                    if (res.n === 0) {
-                      dataAccess.updateBalance2(address, result)
-                        .then((res) => {
-                          resolve(result)
-                        })
-                        .catch((res) => { // Resolve anyway
-                          resolve(result)
-                        })
-                    } else {
-                      resolve(result)
-                    }
+                    resolve(result)
                   }) // Not catching errors
               })
               .catch((err) => {

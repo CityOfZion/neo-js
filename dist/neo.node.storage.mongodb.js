@@ -275,24 +275,18 @@ class MongodbStorage {
         if (err) {
           reject(err)
         }
-        resolve(res)
+
+        if (res.n === 0) {
+          const result = { 'asset': asset, 'balance': balance, 'index': index, 'type': 'a' }
+          this.addressModel.update({ 'address': address }, { '$push': {'assets': result} })
+            .exec((err, res) => { // Resolve anyway
+              resolve(res)
+            })
+        } else {
+          resolve(res)
+        }
       })
     })
-  }
-
-  /**
-   * @todo Need a better name for its purpose.
-   * @param {*} address 
-   * @param {*} result 
-   */
-  updateBalance2(address, result) {
-    this.addressModel.update({ 'address': address }, { '$push': {'assets': result} })
-      .exec((err, res) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(res)
-      })
   }
 
   // Private methods
