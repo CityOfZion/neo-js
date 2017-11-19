@@ -5,7 +5,6 @@ module.exports = function (network) {
     nodes: []
   }
 
-  const axios = require('axios')
 
   // Neo Council Seeds
   const neoSeeds = [
@@ -75,7 +74,7 @@ module.exports = function (network) {
     })
     const node = this
 
-    this.rpc = require('./node/util/node.util.rpc')(this)
+    this.rpc = require('./node/util/rpc')(this)
 
     /**
      * Runs a deferred update loop to periodically poll (with jitter)

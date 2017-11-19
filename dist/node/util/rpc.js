@@ -1,6 +1,6 @@
   const axios = require('axios')
 
-  module.exports = (node) => {
+  module.exports = (node, options) => {
     var module = {}
 
     /**
