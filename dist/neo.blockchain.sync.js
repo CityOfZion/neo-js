@@ -85,7 +85,6 @@ function sync (blockchain) {
         if ((blockchain.localNode.index < blockchain.highestNode().index) &&
           (queue.length() === 0)) {
           blockWritePointer = blockchain.localNode.index
-          console.log(blockWritePointer)
           sync.enqueueBlock(blockWritePointer + 1, true)
         }
       } else {
@@ -95,8 +94,9 @@ function sync (blockchain) {
 
     sync.clock2 = setInterval(() => {
       if (sync.runLock) {
-        blockchain.localNode.verifyBlocks()
+        blockchain.localNode.verify()
           .then((res) => {
+            console.log('verified', res)
             res.forEach((r) => {
               sync.enqueueBlock(r, 0)
             })
@@ -104,7 +104,7 @@ function sync (blockchain) {
       } else {
         clearInterval(sync.clock)
       }
-    }, 180000)
+    }, 20000)
 
     queue.resume()
   }

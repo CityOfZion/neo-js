@@ -5,7 +5,7 @@ const mongoose = require('mongoose')
 class MongodbStorage {
 
   /**
-   * @param {Object} options 
+   * @param {Object} options
    */
   constructor(options = {}) {
     console.log('[mongo] constructor triggered.')
@@ -23,7 +23,7 @@ class MongodbStorage {
     this.blockModel = this._getBlockModel()
     this.transactionModel = this._getTransactionModel()
     this.addressModel = this._getAddressModel()
-  
+
     // Bootstrap
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
     if (this.connectOnInit) {
@@ -36,7 +36,7 @@ class MongodbStorage {
   /**
    * @todo Migrate to a helper class
    * @static
-   * @param {Object} block 
+   * @param {Object} block
    * @return {Object}
    */
   static delintBlock(block) {
@@ -59,7 +59,7 @@ class MongodbStorage {
   /**
    * @todo Migrate to a helper class
    * @static
-   * @param {string} block 
+   * @param {string} block
    * @return {string}
    */
   static hexFix(hex) {
@@ -73,15 +73,15 @@ class MongodbStorage {
 
   /**
    * @todo Use helper function to normalise txid
-   * @param {string} txid 
+   * @param {string} txid
    */
   getTX(txid) {
-    new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       if (txid.length > 64) {
         txid = txid.slice(2)
       }
 
-      module.transactions.findOne({ $or: [{'txid': txid}, {'txid': '0x' + txid}] })
+      this.transactionModel.findOne({ $or: [{'txid': txid}, {'txid': '0x' + txid}] })
         .exec((err, res) => {
           if (err) {
             reject(err)
@@ -107,7 +107,7 @@ class MongodbStorage {
   getBlock(index) {
     return new Promise((resolve, reject) => {
       console.log('[mongo] getBlock triggered. index:', index)
-      
+
       this.blockModel.findOne({ index })
         .exec((err, res) => {
           if (err) {
@@ -285,6 +285,40 @@ class MongodbStorage {
         } else {
           resolve(res)
         }
+      })
+    })
+  }
+
+  /**
+   * Verifies local blockchain integrity over a block range.
+   * @param {String} [start = 0] The start index of the block range to verify.
+   * @param {Number} [end] The end index of the block range to verify.
+   * @returns Promise.<Array> An array containing the indices of the missing blocks.
+   */
+  verify(start, end) {
+    return new Promise((resolve, reject) => {
+      var missing = []
+      var pointer = start - 1
+
+      console.log('Blockchain Verification: Scanning')
+
+      var stream = this.blockModel
+        .find({index: {'$gte': start, '$lte': end}}, 'index').sort('index')
+        .cursor();
+
+      stream.on('data', (d) => {
+        console.log(d)
+        while (true) {
+          pointer++
+          if (d.index === pointer) {
+            break
+          } else {
+            missing.push(pointer)
+          }
+        }
+      })
+      stream.on('end', () => {
+        resolve(missing)
       })
     })
   }
