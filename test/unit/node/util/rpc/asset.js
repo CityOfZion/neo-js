@@ -1,8 +1,8 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
+const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
@@ -12,9 +12,9 @@ TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getRawTransaction()', () => {
+describe('Unit test getAssetState()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
+    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -23,13 +23,11 @@ describe('Unit test getRawTransaction()', () => {
         done(err)
       })
   })
-})
 
-describe('Unit test getTXOut()', () => {
-  it("should have 'object' as its response data type.", (done) => {
-    neoNode.getTXOut(Profiles.Blocks.Block_608999.Transactions[1].Hash, 0)
+  it("should contain 'id' property with an expected value.", (done) => {
+    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
-        expect(res).to.be.a('object')
+        expect(res.id).to.be.equal(Profiles.Assets.Neo)
         done()
       })
       .catch((err) => {
