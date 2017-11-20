@@ -39,7 +39,7 @@ class MongodbStorage {
    * @param {Object} block
    * @return {Object}
    */
-  static delintBlock(block) {
+  delintBlock(block) {
     block.hash = this.hexFix(block.hash)
     block.previousblockhash = this.hexFix(block.previousblockhash)
     block.merkleroot = this.hexFix(block.merkleroot)
@@ -62,7 +62,7 @@ class MongodbStorage {
    * @param {string} block
    * @return {string}
    */
-  static hexFix(hex) {
+  hexFix(hex) {
     if (hex.length === 64) {
       hex = '0x' + hex
     }
@@ -210,7 +210,6 @@ class MongodbStorage {
   saveBlock(block) {
     return new Promise((resolve, reject) => {
       block = this.delintBlock(block)
-
       this.blockModel(block).save((err) => {
         if (err) {
           reject(err)
@@ -254,9 +253,9 @@ class MongodbStorage {
     })
   }
 
-  saveAddress(addressHash, type) {
+  saveAddress(address) {
     return new Promise((resolve, reject) => {
-      this.addressModel({ 'address': addressHash, 'type': type, 'assets': [] })
+      this.addressModel(address)
         .save((err, res) => {
           if (err) {
             reject(err)
@@ -307,7 +306,6 @@ class MongodbStorage {
         .cursor();
 
       stream.on('data', (d) => {
-        console.log(d)
         while (true) {
           pointer++
           if (d.index === pointer) {
