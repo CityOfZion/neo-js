@@ -1,18 +1,18 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
+const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
-const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
+TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe(`${describeBadge} getAssetState()`, () => {
+describe('Unit test getAssetState()', () => {
   it("should have 'object' as its response data type.", (done) => {
     neoNode.rpc.getAssetState(Profiles.Assets.Neo)
       .then((res) => {

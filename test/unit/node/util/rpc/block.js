@@ -1,18 +1,18 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
+const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
-const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
+TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe(`${describeBadge} getBlock()`, () => {
+describe('Unit test getBlock()', () => {
   it("should have 'object' as its response data type.", (done) => {
     neoNode.rpc.getBlock(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
@@ -38,7 +38,7 @@ describe(`${describeBadge} getBlock()`, () => {
   })
 })
 
-describe(`${describeBadge} getBlockByHash()`, () => {
+describe('Unit test getBlockByHash()', () => {
   it("should have 'object' as its response data type.", (done) => {
     neoNode.rpc.getBlockByHash(Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
@@ -64,7 +64,7 @@ describe(`${describeBadge} getBlockByHash()`, () => {
   })
 })
 
-describe(`${describeBadge} getBlockHash()`, () => {
+describe('Unit test getBlockHash()', () => {
   it('should have string as its response data type.', (done) => {
     neoNode.rpc.getBlockHash(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
@@ -90,7 +90,7 @@ describe(`${describeBadge} getBlockHash()`, () => {
   })
 })
 
-describe(`${describeBadge} getBlockSystemFee()`, () => {
+describe('Unit test getBlockSystemFee()', () => {
   it('should be a whole number as its response.', (done) => {
     neoNode.rpc.getBlockSystemFee(Profiles.Blocks.Block_100000.Number)
       .then((res) => {

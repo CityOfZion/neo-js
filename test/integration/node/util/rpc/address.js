@@ -1,18 +1,18 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
+const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getAccountState()', () => {
+describe(`${describeBadge} getAccountState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     neoNode.rpc.getAccountState(Profiles.Wallets.WalletN.Address)
       .then((res) => {
@@ -36,7 +36,7 @@ describe('Unit test getAccountState()', () => {
   })
 })
 
-describe('Unit test validateAddress()', () => {
+describe(`${describeBadge} validateAddress()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     neoNode.rpc.validateAddress(Profiles.Wallets.WalletN.Address)
       .then((res) => {
