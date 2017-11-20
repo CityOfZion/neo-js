@@ -58,7 +58,7 @@ module.exports = function (network) {
           .then((res) => {
             // If the address is not found in the database, its new...So add it and retry.
             if (!res) {
-              dataAccess.saveAddress(address, 'c')
+              dataAccess.saveAddress({ address: address, type: 'c', assets: [] })
                 .then((res) => {
                   node.getBalance(address)
                     .then((res) => {
@@ -238,12 +238,18 @@ module.exports = function (network) {
                 dataAccess.saveAddress(newAsset)
               }
             })
-
             dataAccess.saveTransaction(tx)
               .catch((err) => {
+                reject(err)
                 console.log('[db] saveBlock, saveTransaction err:', err)
               })
           })
+
+          Promise.all(_.map(newBlock.tx).map(dataAccess.saveTransaction))
+            .then((res) => {
+              resolve(res)
+            })
+            .catch((err) => reject(err))
         })
         .catch((err) => {
           reject(err)
