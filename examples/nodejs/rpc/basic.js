@@ -2,7 +2,6 @@
 
 /**
  * Basic RPC Example
- * 
  * A simple example to get started with neo-js's RPC client.
  */
 
@@ -17,7 +16,7 @@ async function main () {
 
   // Instantiate a 'light' mode Neo blockchain against 'testnet' network
   const neoBlockchain = new Neo('light', 'testnet')
-  
+
   // Verify neoBlockchain properties
   console.log('neoBlockchain.mode:', neoBlockchain.mode)
   console.log('neoBlockchain.network:', neoBlockchain.network)
@@ -35,7 +34,7 @@ async function main () {
   console.log('getBlockCount:', await node.rpc.getBlockCount())
   console.log('getBestBlockHash:', await node.rpc.getBestBlockHash())
 
-  console.log('== END ==')  
+  console.log('== END ==')
 
   // neoBlockchain process in the background. Explicit exit call is used.
   process.exit()
