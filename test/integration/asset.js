@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`${describeBadge} getAssetState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getAssetState(Profiles.Assets.Neo)
+    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe(`${describeBadge} getAssetState()`, () => {
   })
 
   it("should contain 'id' property with an expected value.", (done) => {
-    neoNode.getAssetState(Profiles.Assets.Neo)
+    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
       .then((res) => {
         expect(res.id).to.be.equal(Profiles.Assets.Neo)
         done()

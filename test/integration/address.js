@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`${describeBadge} getAccountState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getAccountState(Profiles.Wallets.WalletN.Address)
+    neoNode.rpc.getAccountState(Profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe(`${describeBadge} getAccountState()`, () => {
   })
 
   it("should contain 'script_hash' property with an expected value.", (done) => {
-    neoNode.getAccountState(Profiles.Wallets.WalletN.Address)
+    neoNode.rpc.getAccountState(Profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res.script_hash).to.be.equal(Profiles.Wallets.WalletN.Hash)
         done()
@@ -38,7 +38,7 @@ describe(`${describeBadge} getAccountState()`, () => {
 
 describe(`${describeBadge} validateAddress()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.validateAddress(Profiles.Wallets.WalletN.Address)
+    neoNode.rpc.validateAddress(Profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -49,7 +49,7 @@ describe(`${describeBadge} validateAddress()`, () => {
   })
 
   it("should contain 'isvalid' property with an expected value of true.", (done) => {
-    neoNode.validateAddress(Profiles.Wallets.WalletN.Address)
+    neoNode.rpc.validateAddress(Profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res.isvalid).to.be.equal(true)
         done()

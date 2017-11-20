@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`${describeBadge} getRawTransaction()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
+    neoNode.rpc.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -27,7 +27,7 @@ describe(`${describeBadge} getRawTransaction()`, () => {
 
 describe(`${describeBadge} getTXOut()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getTXOut(Profiles.Blocks.Block_100000.Transactions[0].Hash, 0)
+    neoNode.rpc.getTXOut(Profiles.Blocks.Block_100000.Transactions[0].Hash, 0)
       .then((res) => {
         expect(res).to.be.null
         done()
