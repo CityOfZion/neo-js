@@ -509,7 +509,7 @@
       node.pendingRequests += 1
       axios({
         method: 'post',
-        url: `http://seed5.cityofzion.io:8080`,
+        url: `${node.domain}:${node.port}`,
         data: {
           jsonrpc: '2.0',
           method: payload.method,
