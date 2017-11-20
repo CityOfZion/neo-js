@@ -251,32 +251,36 @@ module.exports = function (network) {
       })
     }
 
-    this.verifyBlocks = function (start = 0, end = node.index) {
-      return new Promise((resolve, reject) => {
-        var missing = []
-        var pointer = -1
+    /**
+     * Verifies local blockchain integrity over a block range.
+     * @param {String} [start = 0] The start index of the block range to verify.
+     * @param {Number} [end = node.index] The end index of the block range to verify.
+     * @returns Promise.<Array> An array containing the indices of the missing blocks.
+     */
+    this.verifyBlocks = (start = 0, end = node.index) =>
+    new Promise((resolve, reject) => {
+      var missing = []
+      var pointer = start - 1
 
-        dataAccess.getBlockList()
-          .then((res) => {
-            console.log('Blockchain Verification: Scanning')
-            res.forEach((d) => {
-              while (true) {
-                pointer++
-                if (d.index === pointer) {
-                  break
-                } else {
-                  missing.push(pointer)
-                }
-              }
-            })
-            console.log('Blockchain Verification: Found ' + missing.length + ' missing')
-            resolve(missing)
-          })
-          .catch((err) => { // Resolve anyway
-            resolve(missing)
-          })
+      console.log('Blockchain Verification: Scanning')
+
+      const stream = module.blocks
+        .find({ index: { '$gte': start, '$lte': end } }, 'index').sort('index')
+        .cursor();
+
+      stream.on('data', (d) => {
+        while (true) {
+          pointer++
+          if (d.index === pointer) {
+            break
+          } else {
+            missing.push(pointer)
+          }
+        }
       })
-    }
+      stream.on('end', () => resolve(missing) )
+
+    })
 
     this.getBlockCount()
 
