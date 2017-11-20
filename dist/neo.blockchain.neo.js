@@ -30,7 +30,7 @@ function neo (mode, network) {
 
   if (this.mode === 'full') {
     Object.assign(this, {
-      db: require('./neo.blockchain.db')(network)
+      db: require('./node/storage')(network)
     })
     this.localNode = new this.db.node() // Initialize the local node.
 

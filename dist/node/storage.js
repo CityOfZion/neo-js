@@ -1,7 +1,7 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 var _ = require('lodash')
-var MongodbStorage = require('./neo.node.storage.mongodb')
+var MongodbStorage = require('./storage/mongodb')
 
 module.exports = function (network) {
   var module = {}
@@ -251,36 +251,20 @@ module.exports = function (network) {
       })
     }
 
+
+
     /**
      * Verifies local blockchain integrity over a block range.
      * @param {String} [start = 0] The start index of the block range to verify.
      * @param {Number} [end = node.index] The end index of the block range to verify.
      * @returns Promise.<Array> An array containing the indices of the missing blocks.
      */
-    this.verifyBlocks = (start = 0, end = node.index) =>
-    new Promise((resolve, reject) => {
-      var missing = []
-      var pointer = start - 1
-
-      console.log('Blockchain Verification: Scanning')
-
-      const stream = module.blocks
-        .find({ index: { '$gte': start, '$lte': end } }, 'index').sort('index')
-        .cursor();
-
-      stream.on('data', (d) => {
-        while (true) {
-          pointer++
-          if (d.index === pointer) {
-            break
-          } else {
-            missing.push(pointer)
-          }
-        }
+    this.verify = (start = 0, end = node.index) => {
+      return new Promise((resolve, reject) => {
+        dataAccess.verify(start, end)
+          .then((res) => resolve(res))
       })
-      stream.on('end', () => resolve(missing) )
-
-    })
+    }
 
     this.getBlockCount()
 

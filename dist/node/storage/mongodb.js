@@ -289,6 +289,40 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * Verifies local blockchain integrity over a block range.
+   * @param {String} [start = 0] The start index of the block range to verify.
+   * @param {Number} [end] The end index of the block range to verify.
+   * @returns Promise.<Array> An array containing the indices of the missing blocks.
+   */
+  verify(start, end) {
+    return new Promise((resolve, reject) => {
+      var missing = []
+      var pointer = start - 1
+
+      console.log('Blockchain Verification: Scanning')
+
+      var stream = this.blockModel
+        .find({index: {'$gte': start, '$lte': end}}, 'index').sort('index')
+        .cursor();
+
+      stream.on('data', (d) => {
+        console.log(d)
+        while (true) {
+          pointer++
+          if (d.index === pointer) {
+            break
+          } else {
+            missing.push(pointer)
+          }
+        }
+      })
+      stream.on('end', () => {
+        resolve(missing)
+      })
+    })
+  }
+
   // Private methods
 
   /**
