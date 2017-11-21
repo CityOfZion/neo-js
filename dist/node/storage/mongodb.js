@@ -23,7 +23,7 @@ class MongodbStorage {
     this.blockModel = this._getBlockModel()
     this.transactionModel = this._getTransactionModel()
     this.addressModel = this._getAddressModel()
-
+    
     // Bootstrap
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
     if (this.connectOnInit) {
@@ -377,7 +377,8 @@ class MongodbStorage {
       sys_fee: Number,
       net_fee: Number,
       blockIndex: { type: 'Number', index: true },
-      scripts: []
+      scripts: [],
+      script: String
     })
 
     return mongoose.model(this.collectionNames.transactions, schema)

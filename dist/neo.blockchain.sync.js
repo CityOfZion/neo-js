@@ -25,7 +25,7 @@ function sync (blockchain) {
   /* {number} maxQueueLength The number of blocks to keep in queue. Exists to reduce memory use. */
   let maxQueueLength = 10000
   /* {number} logPeriod Prints a status update every 'n' blocks. */
-  let logPeriod = 10000
+  let logPeriod = 5000
 
   let stats = {}
   let t0 = Date.now()
@@ -64,7 +64,7 @@ function sync (blockchain) {
       .catch((err) => {
         // If the blcok request fails, throw it to the back to the queue to try again.
         // timout prevents inf looping on connections issues etc..
-        console.log(task.attrs, 'fail')
+        console.log(task.attrs, err)
         setTimeout(() => {
           sync.enqueueBlock(task.attrs.index, 0)
         }, 2000)
@@ -104,7 +104,7 @@ function sync (blockchain) {
       } else {
         clearInterval(sync.clock)
       }
-    }, 20000)
+    }, 180000)
 
     queue.resume()
   }
@@ -144,7 +144,7 @@ function sync (blockchain) {
             })
             .catch((err) => {
               stats[node.domain]['f2']++
-              resolve()
+              resolve(err)
             })
         })
         .catch((err) => {

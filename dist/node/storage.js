@@ -238,18 +238,35 @@ module.exports = function (network) {
                 dataAccess.saveAddress(newAsset)
               }
             })
-            dataAccess.saveTransaction(tx)
-              .catch((err) => {
-                reject(err)
-                console.log('[db] saveBlock, saveTransaction err:', err)
-              })
+
           })
 
-          Promise.all(_.map(newBlock.tx).map(dataAccess.saveTransaction))
+          Promise.all(_.map(newBlock.tx).map( (tx) => dataAccess.saveTransaction(tx)))
             .then((res) => {
+
+              //Because we asynchronously sync the blockchain,
+              //we need to keep track of the blocks that have been stored
+              //(higher indices could arrive before the lower ones)
+              //This code maintains the local blockheight by tracking
+              //'linked' and 'unlinked'(but stored) blocks
+              if (newBlock.index > node.index) {
+                node.unlinkedBlocks.push(newBlock.index);
+                var linkIndex = -1;
+                while (true){
+                  linkIndex = node.unlinkedBlocks.indexOf(node.index + 1);
+                  if (linkIndex != -1){
+                    node.unlinkedBlocks.splice(linkIndex,1);
+                    node.index++;
+                    node.blockHeight++;
+                  }
+                  else break;
+                }
+              }
+
               resolve(res)
             })
             .catch((err) => reject(err))
+
         })
         .catch((err) => {
           reject(err)
