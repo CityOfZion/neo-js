@@ -10,15 +10,15 @@
   A package for running a full or light node on the <b>neo</b> blockchain.
 </p>
 
-
 ## Overview
+
 The neo-js package is designed to interface with the **neo** blockchain in two modes on both 'testnet' and 'mainnet':
 
-### full ###
+### Full Node ###
 
 In full mode, the package will sync the blockchain and derivative collections to a local mongo instance.  In this mode, requests will be returned from the local database if the database is able to resolve the request.
 
-### light ###
+### Light Node ###
 
 In light mode, the package will interface with other full nodes using the seed rpc calls to acquire data.
 
@@ -33,6 +33,7 @@ This mechanic is also used for address balances.  Upon requesting an update for 
 This mechanic will also be expanded to NEP5 tokens in the future.
 
 ## Installation
+
 Install the package using:
 
 ```bash
@@ -42,32 +43,61 @@ $ npm install neo-js-blockchain --save
 **note:** neo-js requires that mongodb is installed to run the instance as a full node.
 Installation instructions can be found [here](https://docs.mongodb.com/manual/installation/).
 
-
-## Using neo-js
+## Quick Start
 
 ```js
-var neo = require('neo-js-blockchain');
+var Neo = require('neo-js-blockchain')
 ```
 
 To create a new blockchain instance:
+
 ```js
-var neoBlockchain = neo('full', 'testnet');
+var neoBlockchain = new Neo('full', 'testnet')
 ```
+
 This will create a new testnet instance and configure it to run as a full node.
 
 Additionally, to create a light node on mainnet:
+
 ```js
-var neoBlockchain = neo('light', 'mainnet');
+var neoBlockchain = new Neo('light', 'mainnet')
 ```
 
 To begin synchronizing the blockchain if the instance is a full node:
+
 ```js
 neoBlockchain.sync.start();
 ```
+
 To pause:
+
 ```js
 neoBlockchain.sync.stop();
 ```
+
 When running, synchronization will continue to maintain blocks as they are generated on the blockchain.
 
+## Documentation
 
+Documentation (incomplete) for the project can be found here:
+
+* http://cityofzion.io/neo-js/
+
+Self-documented code examples are available as part of the project source code:
+
+* https://github.com/CityOfZion/neo-js/blob/master/examples
+
+## Contribution
+
+`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
+
+By contributing to `neo-js`, you agree that your contributions will be licensed under its MIT license.
+
+## License
+
+* Open-source [MIT](https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md).
+* Main author is [@lllwvlvwlll](https://github.com/lllwvlvwlll).
+
+## Donations
+
+Accepted at __ATEMNPSjRVvsXmaJW4ZYJBSVuJ6uR2mjQU__
