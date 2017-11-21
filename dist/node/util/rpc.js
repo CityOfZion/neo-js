@@ -461,6 +461,36 @@
     })
 
     /**
+     * Invokes the getcontractstate rpc request to return information of requested contract.
+     * 
+     * @param {string} hash - The hash value of the contract been requested.
+     * @example node.rpc.getContractState('0x5b7074e873973a6ed3708862f219a6fbf4d1c411')
+     * return {
+     *   version: 0,
+     *   hash: '0x5b7074e873973a6ed3708862f219a6fbf4d1c411',
+     *   script: '... OMITTED ...',
+     *   parameters: [ 'String', 'Array' ],
+     *   returntype: 'ByteArray',
+     *   storage: true,
+     *   name: 'rpx',
+     *   code_version: '3',
+     *   author: '1',
+     *   email: '1',
+     *   description: '1' 
+     * }
+     * @returns {Promise.<Object>} An object containing the contract information.
+     */
+    module.getContractState = (hash) => new Promise((resolve, reject) => {
+      call({
+        method: 'getcontractstate',
+        params: [hash],
+        id: 0
+      }).then(({result}) => {
+        resolve(result)
+      }).catch(reject)
+    })
+  
+    /**
      * Invokes the validateaddress rpc request to verify a requested address.
      *
      * @param {string} address The address of the wallet being requested.
