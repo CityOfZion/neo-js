@@ -95,7 +95,3 @@ By contributing to `neo-js`, you agree that your contributions will be licensed 
 
 * Open-source [MIT](https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md).
 * Main author is [@lllwvlvwlll](https://github.com/lllwvlvwlll).
-
-## Donations
-
-Accepted at __ATEMNPSjRVvsXmaJW4ZYJBSVuJ6uR2mjQU__
