@@ -162,5 +162,24 @@ module.exports = {
         ]
       }
     }
-  }
+  },
+  getContractState: {
+    Success: {
+      jsonrpc: '2.0',
+      id: 1,
+      result: {
+        version: 0,
+        hash: '0x5b7074e873973a6ed3708862f219a6fbf4d1c411',
+        script: '... OMITTED ...',
+        parameters: [ 'String', 'Array' ],
+        returntype: 'ByteArray',
+        storage: true,
+        name: 'rpx',
+        code_version: '3',
+        author: '1',
+        email: '1',
+        description: '1'
+      }
+    }
+  },
 }
