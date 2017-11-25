@@ -27,10 +27,9 @@ class storage {
     assets: [] },
     options)
 
-
     //If the model type is mongoDB, load the mongoDB drive
     //and instantiate the storage.
-    if (this.model === 'mongoDB'){
+    if (this.storage.model === 'mongoDB'){
       var MongodbStorage = require('./storage/mongodb')
       this.dataAccess = new MongodbStorage(this.storage)
 

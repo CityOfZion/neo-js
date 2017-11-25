@@ -30,7 +30,7 @@ class node {
     }, options)
 
     if (this.storage.model === 'mongoDB') {
-      this.storage = new storage(this.storage)
+      this.storage = new storage({storage: this.storage})
     }
 
     this.rpc = require('./node/rpc')(this)
