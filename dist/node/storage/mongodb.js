@@ -13,7 +13,7 @@ class MongodbStorage {
     // Associate class properties
     Object.assign(this, {
       connectOnInit: true,
-      connectionString: 'mongodb://localhost/mean-dev',
+      connectionString: 'mongodb://localhost/neo',
       collectionNames: {
         blocks: 'b_neo_t_blocks',
         transactions: 'b_neo_t_transactions',
