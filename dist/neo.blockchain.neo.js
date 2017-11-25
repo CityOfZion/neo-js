@@ -3,7 +3,7 @@
  * An instance of the neo blockchain
  * @class
  * @requires lodash
- * @requires neo.blockchain.node
+ * @requires node
  * @requires neo.blockchain.sync
  * @param {string} mode Sets whether the library should run in full or light mode.
  * @param {string} network Indicates which network to operate the instance on.
@@ -17,7 +17,7 @@
 function neo (mode, network) {
   const _ = require('lodash')
   const sync = require('./neo.blockchain.sync')
-  const node = require('./neo.blockchain.node')
+  const node = require('./node')
 
   Object.assign(this, {
     mode,
