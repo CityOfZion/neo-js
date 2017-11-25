@@ -1,7 +1,6 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 var _ = require('lodash')
-var MongodbStorage = require('./storage/mongodb')
 
 /**
  * @class node
@@ -29,6 +28,7 @@ class storage {
 
 
     if (this.model === 'mongoDB'){
+      var MongodbStorage = require('./storage/mongodb')
       this.dataAccess = new MongodbStorage(this.storage)
       this.updateAssetList()
       setInterval(function(){
