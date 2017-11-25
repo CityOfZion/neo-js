@@ -1,12 +1,14 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
-var _ = require('lodash')
+const _ = require('lodash')
 
 /**
- * @class node
- * @variation 2
+ * @class storage
  * @description
- * A class defining a local node on the neo blockchain.
+ * A storage class for the various storage methods supported by the neo-js.  This class will
+ * include high level storage interface methods that will interface with a standard set of methods available
+ * on each type of storage.
+ * @requires lodash
  */
 class storage {
 
@@ -14,7 +16,6 @@ class storage {
    * @param {Object} options
    */
   constructor(options = {}) {
-    // Associate class properties
     Object.assign(this, {
     storage: {
       model: 'memory'
@@ -27,15 +28,20 @@ class storage {
     options)
 
 
+    //If the model type is mongoDB, load the mongoDB drive
+    //and instantiate the storage.
     if (this.model === 'mongoDB'){
       var MongodbStorage = require('./storage/mongodb')
       this.dataAccess = new MongodbStorage(this.storage)
+
+      //Periodically update the list of assets available
       this.updateAssetList()
       setInterval(function(){
         this.updateAssetList, 10000
       })
     }
 
+    //Get the block count available in storage
     this.getBlockCount()
 
   }
@@ -120,7 +126,6 @@ class storage {
         .then((res) => {
           Promise.all(_.map(res, 'txid').map(this.getExpandedTX))
             .then((res) => {
-
               // Balancing
               res.forEach((r) => {
                 r.vout.forEach((output) => {
@@ -152,6 +157,12 @@ class storage {
     })
   }
 
+  /**
+   * Calculates and returns the expanded transaction.  This method will also
+   * update the expanded transaction in local storage to improve later performance.
+   * @param {String} txid The '0x' formatted transaction ID.
+   * @returns {Promise.<object>} A JSON formatted representation of a transaction.
+   */
   getExpandedTX(txid) {
     return new Promise((resolve, reject) => {
       this.getTX(txid)
@@ -186,23 +197,36 @@ class storage {
     })
   }
 
+  /**
+   * Returns the JSON formatted transaction from the blockchain.
+   * @param {String} txid A '0x' formatted transaction ID.
+   * @returns {Promise.<object>} A JSON formatted representation of a transaction.
+   */
   getTX(txid) {
     return this.dataAccess.getTX(txid)
   }
 
-  getBestBlockHash() {}
-
+  /**
+   * Returns the requested block from local storage.
+   * @param {Number} index The block index being requested.
+   * @returns {Promise.<object>} A JSON formatted block on the blockchain.
+   */
   getBlock(index) {
     return this.dataAccess.getBlock(index)
   }
 
+  /**
+   * Gets the block height of the blockchain maintained in local storage.
+   * This method also caches the height and index in memory for use when identifying
+   * blocks that need to be downloaded.
+   * @returns {Promise.<number>} The block height
+   */
   getBlockCount() {
     return new Promise((resolve, reject) => {
       this.dataAccess.getBlockCount()
         .then((res) => {
           this.index = res - 1
           this.blockHeight = res
-          console.log(res)
           resolve(res)
         })
         .catch((err) => {
@@ -211,20 +235,12 @@ class storage {
     })
   }
 
-  getBlockHash(index) {}
-
-  getConnectionCount() {}
-
-  getRawMemPool() {}
-
-  getTXOut(txid) {}
-
-  sendRawTransaction() {}
-
-  sendToAddress(assetId, address, value) {}
-
-  submitBlock() {}
-
+  /**
+   * Saves a json formated block to storage.  This method will also split out the
+   * transactions for storage as well as caching them for later use.
+   * @param newBlock {Object} The JSON representation of a block on the blockchain.
+   * @returns {Promise.<object>}
+   */
   saveBlock(newBlock) {
     return new Promise((resolve, reject) => {
       this.dataAccess.saveBlock(newBlock)
@@ -240,12 +256,10 @@ class storage {
               this.dataAccess.saveAddress(newAsset)
             }
           })
-
         })
 
         Promise.all(_.map(newBlock.tx).map( (tx) => this.dataAccess.saveTransaction(tx)))
           .then((res) => {
-
             //Because we asynchronously sync the blockchain,
             //we need to keep track of the blocks that have been stored
             //(higher indices could arrive before the lower ones)
@@ -264,7 +278,6 @@ class storage {
                 else break;
               }
             }
-
             resolve(res)
           })
           .catch((err) => reject(err))
@@ -280,7 +293,7 @@ class storage {
    * Verifies local blockchain integrity over a block range.
    * @param {String} [start = 0] The start index of the block range to verify.
    * @param {Number} [end = this.index] The end index of the block range to verify.
-   * @returns Promise.<Array> An array containing the indices of the missing blocks.
+   * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verify(start = 0, end = this.index) {
     return new Promise((resolve, reject) => {
@@ -289,6 +302,9 @@ class storage {
     })
   }
 
+  /**
+   * Caches the list of assets to improve performance of asset related operations.
+   */
   updateAssetList() {
     this.dataAccess.getAssetList()
       .then((res) => {

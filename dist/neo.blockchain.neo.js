@@ -5,27 +5,24 @@
  * @requires lodash
  * @requires neo.blockchain.node
  * @requires neo.blockchain.sync
- * @requires neo.blockchain.db
  * @param {string} mode Sets whether the library should run in full or light mode.
  * @param {string} network Indicates which network to operate the instance on.
  * @example
- * var neoBlockchain = neo('full', 'testnet') // Creates a new full node instance on testnet.
+ * neo = require('neo-js-blockchain');
+ * var blockchainNeo = new neo('full', 'testnet'); // Creates a new full node instance on testnet.
  * @example
- * var neoBlockchain = neo('light', 'mainnet') // Creates a new light node instances on mainnet.
+ * neo = require('neo-js-blockchain');
+ * var neoBlockchain = new neo('light', 'mainnet') // Creates a new light node instances on mainnet.
  */
 function neo (mode, network) {
   const _ = require('lodash')
   const sync = require('./neo.blockchain.sync')
-  var node = require('./neo.blockchain.node')
+  const node = require('./neo.blockchain.node')
 
-  /** {string} The operating mode of the instance ('full', 'light'). */
-  /** {string} The network for the instance to attach to ('testnet', 'mainnet'). */
-  /** {Array} The array of nodes that the instance currently has access to. */
   Object.assign(this, {
     mode,
     network,
     nodes: [],
-
     sync: new sync(this)
   })
 
@@ -42,7 +39,7 @@ function neo (mode, network) {
   let neoPort = 20332
   let cozPort = 8880
   let cozNetwork = 'test'
-  var options = {
+  let options = {
     storage: {
       model: 'mongoDB',
       connectOnInit: true,
@@ -54,9 +51,9 @@ function neo (mode, network) {
       }
     }
   }
-  
+
   if (network === 'mainnet') {
-    var options = {
+    options = {
       storage: {
         model: 'mongoDB',
         connectOnInit: true,
@@ -94,7 +91,6 @@ function neo (mode, network) {
   this.localNode = new node(options)
   this.nodes.push(this.localNode)
 
-
   /**
    * Identifies and returns the fastest node based on the latency of the last transaction.
    * @returns {node} The lowest latency node instance.
@@ -130,6 +126,4 @@ function neo (mode, network) {
   )
 }
 
-exports.neo = neo
-
-
+module.exports = neo

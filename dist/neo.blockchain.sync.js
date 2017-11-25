@@ -2,7 +2,7 @@
 /**
  *
  * The synchronization functionality for the neo blockchain.
- * This code is only executed when running a neo instance in 'full' mode.
+ * Synchronization is responsible to managing the download of data and commiting to local storage.
  * @class
  * @requires lodash
  * @requires async
@@ -132,24 +132,24 @@ function sync (blockchain) {
     return new Promise((resolve, reject) => {
       // get the block using the rpc controller
       let node = blockchain.nodeWithBlock(attrs.index, 'pendingRequests', false)
-      if (!stats[node.domain]) stats[node.domain] = {s: 0, f1: 0, f2: 0}
+      if (!stats[node.domain]) stats[node.domain] = { s: 0, f1: 0, f2: 0 }
 
       node.rpc.getBlock(attrs.index)
         .then((res) => {
           // inject the block into the database and save.
           blockchain.localNode.storage.saveBlock(res)
             .then(() => {
-              stats[node.domain]['s']++
+              stats[node.domain].s++
               resolve()
             })
             .catch((err) => {
               console.log(err)
-              stats[node.domain]['f2']++
+              stats[node.domain].f2++
               resolve(err)
             })
         })
         .catch((err) => {
-          stats[node.domain]['f1']++
+          stats[node.domain].f1++
           return reject(err)
         })
     })
