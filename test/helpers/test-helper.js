@@ -26,6 +26,7 @@ module.exports = {
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getassetstate', params: [Profiles.Assets.Neo], id: 0 }).reply(200, MockResponses.getAssetState.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'validateaddress', params: [Profiles.Wallets.WalletN.Address], id: 0 }).reply(200, MockResponses.validateAddress.Success)
     mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getpeers', params: [], id: 0 }).reply(200, MockResponses.getPeers.Success)
+    mockHttpClient.onPost(/(.*)/, { jsonrpc: '2.0', method: 'getcontractstate', params: [Profiles.Contracts.RPX_Test], id: 0 }).reply(200, MockResponses.getContractState.Success)
     mockHttpClient.onAny().passThrough()
   },
 
