@@ -60,6 +60,7 @@ async function main () {
   console.log('transaction count:', await TransactionModel.count({}))
 
   // Cherry pick a block, address and transaction document
+  // User is expected to find block index '5953' within the first 30 seconds of synchronization
   const cherryBlock = await BlockModel.findOne({ index: 5953 })
   console.log('cherryBlock, index:', cherryBlock.index, 'hash:', cherryBlock.hash, 'tx.length:', cherryBlock.tx.length)
   const cherryTransaction = await TransactionModel.findOne({ txid: '0x0198c35d32a8b50e5a4ec4923efc7e74f7ec5a1323eae395ae8331aea80da5ff' })
