@@ -33,7 +33,6 @@ function neo (mode, network) {
     'http://seed3.neo.org',
     'http://seed4.neo.org',
     'http://seed5.neo.org',
-    'http://seed8.antshares.org',
     'http://api.otcgo.cn'
   ]
   let neoPort = 20332

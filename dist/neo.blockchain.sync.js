@@ -64,7 +64,7 @@ function sync (blockchain) {
       .catch((err) => {
         // If the blcok request fails, throw it to the back to the queue to try again.
         // timout prevents inf looping on connections issues etc..
-        console.log(task.attrs, err)
+        console.log('ERROR:', err.config.url, err.config.data, err.code)
         setTimeout(() => {
           sync.enqueueBlock(task.attrs.index, 0)
         }, 2000)
