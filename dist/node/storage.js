@@ -36,6 +36,7 @@ class storage {
       })
     }
 
+    this.getBlockCount()
 
   }
 

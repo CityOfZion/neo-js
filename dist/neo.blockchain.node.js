@@ -41,10 +41,8 @@ class node {
 
     if (this.storage.model === 'mongoDB') {
       this.storage = new storage(this.storage)
-      this.storage.getBlockCount()
     }
-
-
+    
     this.rpc = require('./node/rpc')(this)
     this.deferredUpdateLoop()
   }
