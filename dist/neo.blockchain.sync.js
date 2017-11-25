@@ -82,9 +82,9 @@ function sync (blockchain) {
     console.log('Synchronizing')
     sync.clock = setInterval(() => {
       if (sync.runLock) {
-        if ((blockchain.localNode.index < blockchain.highestNode().index) &&
+        if ((blockchain.localNode.storage.index < blockchain.highestNode().index) &&
           (queue.length() === 0)) {
-          blockWritePointer = blockchain.localNode.index
+          blockWritePointer = blockchain.localNode.storage.index
           sync.enqueueBlock(blockWritePointer + 1, true)
         }
       } else {
@@ -94,7 +94,7 @@ function sync (blockchain) {
 
     sync.clock2 = setInterval(() => {
       if (sync.runLock) {
-        blockchain.localNode.verify()
+        blockchain.localNode.storage.verify()
           .then((res) => {
             console.log('verified', res)
             res.forEach((r) => {
@@ -137,12 +137,13 @@ function sync (blockchain) {
       node.rpc.getBlock(attrs.index)
         .then((res) => {
           // inject the block into the database and save.
-          blockchain.localNode.saveBlock(res)
+          blockchain.localNode.storage.saveBlock(res)
             .then(() => {
               stats[node.domain]['s']++
               resolve()
             })
             .catch((err) => {
+              console.log(err)
               stats[node.domain]['f2']++
               resolve(err)
             })
@@ -179,4 +180,4 @@ function sync (blockchain) {
   }
 }
 
-exports.sync = sync
+module.exports = sync
