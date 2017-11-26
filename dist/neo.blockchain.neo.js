@@ -87,8 +87,11 @@ function neo (mode, network) {
   })
 
   // create the local node instance
-  this.localNode = new node(options)
-  this.nodes.push(this.localNode)
+  if (this.mode === 'full') {
+    // create the local node instance
+    this.localNode = new node(options)
+    this.nodes.push(this.localNode)
+  }
 
   /**
    * Identifies and returns the fastest node based on the latency of the last transaction.
