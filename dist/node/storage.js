@@ -34,9 +34,9 @@ class storage {
 
       // Periodically update the list of assets available
       this.updateAssetList()
-      setInterval(function(){
-        this.updateAssetList, 10000
-      })
+      setInterval(function () {
+        this.updateAssetList()
+      }, 10000)
     }
 
     // Get the block count available in storage
