@@ -1,7 +1,7 @@
 <p align="center">
   <img 
     src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png" 
-    width="125px;">
+    width="125px">
 </p>
 
 <h1 align="center">neo-js</h1>
@@ -12,7 +12,7 @@
 
 ## Overview
 
-The `neo-js` package is designed to interface with the **Neo** blockchain in a number of different ways that are configured by options that are used to initialize a node.  A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
+The `neo-js` package is designed to interface with the **Neo** blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
 
 **note:** All blockchain events (Invocation and Deploy) use the RPC calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
 
@@ -62,7 +62,6 @@ const nodeM = new Neo({ network: 'mainnet' }) //on mainnet
 nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
 nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
 ```
-
 
 This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:
 
