@@ -12,7 +12,7 @@ class MongodbStorage {
 
     // Associate class properties
     Object.assign(this, {
-      connectOnInit: false,
+      connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
       collectionNames: {
         blocks: 'b_neo_t_blocks',
@@ -23,7 +23,7 @@ class MongodbStorage {
     this.blockModel = this._getBlockModel()
     this.transactionModel = this._getTransactionModel()
     this.addressModel = this._getAddressModel()
-    
+
     // Bootstrap
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
     if (this.connectOnInit) {
@@ -347,7 +347,7 @@ class MongodbStorage {
       previousblockhash: String,
       merkleroot: String,
       time: Number,
-      index: { type: 'Number', unique: true, required: true, dropDups: true },
+      index: {type: 'Number', unique: true, required: true, dropDups: true},
       nonce: String,
       nextconsensus: String,
       script: {
@@ -359,7 +359,7 @@ class MongodbStorage {
       nextblockhash: String
     })
 
-    return mongoose.model(this.collectionNames.blocks, schema)
+    return mongoose.models[this.collectionNames.blocks] || mongoose.model(this.collectionNames.blocks, schema)
   }
 
   /**
@@ -381,7 +381,7 @@ class MongodbStorage {
       script: String
     })
 
-    return mongoose.model(this.collectionNames.transactions, schema)
+    return mongoose.models[this.collectionNames.transactions] || mongoose.model(this.collectionNames.transactions, schema)
   }
 
   /**
@@ -396,7 +396,7 @@ class MongodbStorage {
       history: []
     })
 
-    return mongoose.model(this.collectionNames.addresses, schema)
+    return mongoose.models[this.collectionNames.addresses] || mongoose.model(this.collectionNames.addresses, schema)
   }
 
 }

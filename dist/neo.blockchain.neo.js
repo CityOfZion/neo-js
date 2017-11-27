@@ -3,39 +3,94 @@
  * An instance of the neo blockchain
  * @class
  * @requires lodash
- * @requires neo.blockchain.node
+ * @requires node
  * @requires neo.blockchain.sync
- * @requires neo.blockchain.db
  * @param {string} mode Sets whether the library should run in full or light mode.
  * @param {string} network Indicates which network to operate the instance on.
  * @example
- * var neoBlockchain = neo('full', 'testnet') // Creates a new full node instance on testnet.
+ * neo = require('neo-js-blockchain');
+ * var blockchainNeo = new neo('full', 'testnet'); // Creates a new full node instance on testnet.
  * @example
- * var neoBlockchain = neo('light', 'mainnet') // Creates a new light node instances on mainnet.
+ * neo = require('neo-js-blockchain');
+ * var neoBlockchain = new neo('light', 'mainnet') // Creates a new light node instances on mainnet.
  */
 function neo (mode, network) {
   const _ = require('lodash')
   const sync = require('./neo.blockchain.sync')
+  const node = require('./node')
 
-  /** {string} The operating mode of the instance ('full', 'light'). */
-  /** {string} The network for the instance to attach to ('testnet', 'mainnet'). */
-  /** {Array} The array of nodes that the instance currently has access to. */
   Object.assign(this, {
     mode,
     network,
-    sync: new sync.sync(this),
-    node: require('./neo.blockchain.node')(network)
+    nodes: [],
+    sync: new sync(this)
   })
-  this.nodes = this.node.nodes
 
+  // Neo Council Seeds
+  const neoSeeds = [
+    'http://seed1.neo.org',
+    'http://seed2.neo.org',
+    'http://seed3.neo.org',
+    'http://seed4.neo.org',
+    'http://seed5.neo.org',
+    'http://api.otcgo.cn'
+  ]
+  let neoPort = 20332
+  let cozPort = 8880
+  let cozNetwork = 'test'
+  let options = {
+    storage: {
+      model: 'mongoDB',
+      connectOnInit: true,
+      connectionString: 'mongodb://localhost/neo',
+      collectionNames: {
+        blocks: 'b_neo_t_blocks',
+        transactions: 'b_neo_t_transactions',
+        addresses: 'b_neo_t_addresses'
+      }
+    }
+  }
+
+  if (network === 'mainnet') {
+    options = {
+      storage: {
+        model: 'mongoDB',
+        connectOnInit: true,
+        connectionString: 'mongodb://localhost/neo',
+        collectionNames: {
+          blocks: 'b_neo_m_blocks',
+          transactions: 'b_neo_m_transactions',
+          addresses: 'b_neo_m_addresses'
+        }
+      }
+    }
+    neoPort = 10332
+    cozPort = 8080
+    cozNetwork = 'seed'
+  }
+
+  // build the list of neo-maintained nodes
+  neoSeeds.forEach((domain) => {
+    this.nodes.push(new node({
+      domain,
+      port: neoPort
+    }))
+  })
+
+  // build the list of CoZ maintained nodes
+  const cozNodes = [1, 2, 3, 4, 5]
+  cozNodes.forEach((i) => {
+    this.nodes.push(new node({
+      domain: `http://${cozNetwork}${i}.cityofzion.io`,
+      port: cozPort
+    }))
+  })
+
+  // create the local node instance
   if (this.mode === 'full') {
-    Object.assign(this, {
-      db: require('./node/storage')(network)
-    })
-    this.localNode = new this.db.node() // Initialize the local node.
-
-    /** {node} A direct reference to the local node when running in 'full' mode. */
-    this.nodes.push(this.localNode) // Add the local node to the pool of options for general queries.
+    // create the local node instance
+    this.localNode = new node(options)
+    this.nodes.push(this.localNode)
   }
 
   /**
@@ -73,4 +128,4 @@ function neo (mode, network) {
   )
 }
 
-exports.neo = neo
+module.exports = neo
