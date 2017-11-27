@@ -15,7 +15,7 @@ class storage {
   /**
    * @param {Object} options
    */
-  constructor(options = {}) {
+  constructor (options = {}) {
     Object.assign(this, {
     storage: {
       model: 'memory'
@@ -58,7 +58,7 @@ class storage {
    * of balance discretization.
    * @returns Promise.<Array> An array containing the balances of an address.
    */
-  getBalance(address, assets = this.assets, blockAge = 1) {
+  getBalance (address, assets = this.assets, blockAge = 1) {
     return new Promise((resolve, reject) => {
       this.dataAccess.getAddress(address)
         .then((res) => {
@@ -119,7 +119,7 @@ class storage {
    * @param {Number} [balance = 0] the balance at the startBlock.
    * @returns Promise.<object> An object containing the asset balance.
    */
-  getAssetBalance(address, asset, startBlock = 0, balance = 0) {
+  getAssetBalance (address, asset, startBlock = 0, balance = 0) {
     return new Promise((resolve, reject) => {
       this.getAssetListByAddress(address, asset, startBlock)
         .then((res) => {
@@ -162,7 +162,7 @@ class storage {
    * @param {String} txid The '0x' formatted transaction ID.
    * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
-  getExpandedTX(txid) {
+  getExpandedTX (txid) {
     return new Promise((resolve, reject) => {
       this.getTX(txid)
         .then((tx) => {
@@ -201,7 +201,7 @@ class storage {
    * @param {String} txid A '0x' formatted transaction ID.
    * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
-  getTX(txid) {
+  getTX (txid) {
     return this.dataAccess.getTX(txid)
   }
 
@@ -210,7 +210,7 @@ class storage {
    * @param {Number} index The block index being requested.
    * @returns {Promise.<object>} A JSON formatted block on the blockchain.
    */
-  getBlock(index) {
+  getBlock (index) {
     return this.dataAccess.getBlock(index)
   }
 
@@ -220,7 +220,7 @@ class storage {
    * blocks that need to be downloaded.
    * @returns {Promise.<number>} The block height
    */
-  getBlockCount() {
+  getBlockCount () {
     return new Promise((resolve, reject) => {
       this.dataAccess.getBlockCount()
         .then((res) => {
@@ -240,7 +240,7 @@ class storage {
    * @param newBlock {Object} The JSON representation of a block on the blockchain.
    * @returns {Promise.<object>}
    */
-  saveBlock(newBlock) {
+  saveBlock (newBlock) {
     return new Promise((resolve, reject) => {
       this.dataAccess.saveBlock(newBlock)
       .then((res) => {
@@ -294,7 +294,7 @@ class storage {
    * @param {Number} [end = this.index] The end index of the block range to verify.
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
-  verify(start = 0, end = this.index) {
+  verify (start = 0, end = this.index) {
     return new Promise((resolve, reject) => {
       this.dataAccess.verify(start, end)
         .then((res) => resolve(res))
@@ -304,7 +304,7 @@ class storage {
   /**
    * Caches the list of assets to improve performance of asset related operations.
    */
-  updateAssetList() {
+  updateAssetList () {
     this.dataAccess.getAssetList()
       .then((res) => {
         this.assets = res

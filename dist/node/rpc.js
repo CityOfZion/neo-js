@@ -86,7 +86,9 @@
         id: 0
       }).then(({result}) => {
         resolve(result)
-      }).catch(reject)
+      }).catch( (err) => {
+        reject(err)
+      })
     })
 
     /**
@@ -535,7 +537,6 @@
      */
     const call = (payload) => new Promise((resolve, reject) => {
       const t0 = Date.now()
-
       node.pendingRequests += 1
       axios({
         method: 'post',
