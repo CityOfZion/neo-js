@@ -44,8 +44,8 @@ To create a new blockchain instance:
 
 ```js
 // create the local node instance that will interface with the rpc methods
-const nodeT = new neo({ network: 'testnet' }) //on testnet
-const nodeM = new neo({ network: 'mainnet' }) //on mainnet
+const nodeT = new Neo({ network: 'testnet' }) //on testnet
+const nodeM = new Neo({ network: 'mainnet' }) //on mainnet
 
 nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
 nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
@@ -68,7 +68,7 @@ let options = {
 }
 
 // create the local node instance and get the local block count after 5 seconds.
-const node = new neo(options)
+const node = new Neo(options)
 
 setTimeout(() => {
   node.storage.getBlockCount()
