@@ -1,7 +1,7 @@
 {
   "name": "neo-js-blockchain",
   "version": "0.0.4",
-  "description": "A package for running a full or light node on the neo blockchain.",
+  "description": "A package for running a node on the neo blockchain.",
   "main": "dist/node.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./dist/**/*.js",
