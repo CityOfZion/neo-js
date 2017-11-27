@@ -88,19 +88,23 @@ class storage {
               this.assets.forEach((asset) => {
                 if (included.indexOf(asset.asset) === -1) {
                   parts[0].push({
-                    'asset': asset.asset
+                    'asset': asset.asset,
+                    'index': -1,
+                    'balance': 0
                   })
                 }
               })
             }
 
             // Update stale balances and resolve
-            Promise.all(parts[0].map((asset) =>
-              this.getAssetBalance({ address, asset: asset.asset, startBlock: asset.index + 1, balance: asset.balance })
+            Promise.all(parts[0].map((asset) => {
+                return this.getAssetBalance(address, asset.asset, asset.index + 1, asset.balance)
+              }
             ))
-              .then((res) =>
-                resolve(parts[1].concat(res))
-              ) // Not handling errors
+            .then((res) => {
+              resolve({'address': address, 'assets': parts[1].concat(res)})
+            })
+              .catch( (err) => console.log(err))
           }
         })
         .catch((err) => {
@@ -121,8 +125,9 @@ class storage {
    */
   getAssetBalance (address, asset, startBlock = 0, balance = 0) {
     return new Promise((resolve, reject) => {
-      this.getAssetListByAddress(address, asset, startBlock)
+      this.dataAccess.getAssetListByAddress(address, asset, startBlock)
         .then((res) => {
+          resolve(res)
           Promise.all(_.map(res, 'txid').map(this.getExpandedTX))
             .then((res) => {
               // Balancing
@@ -141,8 +146,9 @@ class storage {
 
               // Update the address balances in the collection
               const result = { 'asset': asset, 'balance': balance, 'index': this.index, 'type': 'a' }
-              dataAccess.updateBalance(address, asset, balance, this.index)
+              this.dataAccess.updateBalance(address, asset, balance, this.index)
                 .then((res) => {
+                  console.log(result)
                   resolve(result)
                 }) // Not catching errors
             })

@@ -77,11 +77,7 @@ class MongodbStorage {
    */
   getTX(txid) {
     return new Promise((resolve, reject) => {
-      if (txid.length > 64) {
-        txid = txid.slice(2)
-      }
-
-      this.transactionModel.findOne({ $or: [{'txid': txid}, {'txid': '0x' + txid}] })
+      this.transactionModel.findOne({ txid })
         .exec((err, res) => {
           if (err) {
             reject(err)
@@ -106,8 +102,6 @@ class MongodbStorage {
 
   getBlock(index) {
     return new Promise((resolve, reject) => {
-      console.log('[mongo] getBlock triggered. index:', index)
-
       this.blockModel.findOne({ index })
         .exec((err, res) => {
           if (err) {
@@ -182,7 +176,7 @@ class MongodbStorage {
         ],
         'vout.asset': asset,
         'blockIndex': { '$gte': startBlock }
-      }, 'txid')
+      })
         .sort('blockIndex')
         .exec((err, res) => {
           if (err) {

@@ -237,7 +237,7 @@
      * @param params The params used to invoke the contract.
      * @returns {Promise.<Object>) The invoke response.
        */
-    module.invoke = (scriptHash, params) => new Promise((resolve, reject) => {
+    module.invoke = ({ scriptHash, params }) => new Promise((resolve, reject) => {
       call({
         method: 'invoke',
         params: [scriptHash, params],
@@ -257,7 +257,7 @@
      * @param params The params used to invoke the contract.
      * @returns {Promise.<Object>) The invoke response.
        */
-    module.invokeFunction = (scriptHash, operation, params) => new Promise((resolve, reject) => {
+    module.invokeFunction = ({ scriptHash, operation, params }) => new Promise((resolve, reject) => {
       call({
         method: 'invokefunction',
         params: [scriptHash, operation, params],
@@ -340,7 +340,7 @@
      * @param {string} txid The requested transaction ID.
      * @returns {Promise.<Object>} An object containing the transaction response.
      */
-    module.getTXOut = (txid, index) => new Promise((resolve, reject) => {
+    module.getTXOut = ({ txid, index }) => new Promise((resolve, reject) => {
       call({
         method: 'gettxout',
         params: [txid, index],
@@ -368,7 +368,7 @@
     /**
      * TBA
      */
-    module.sendToAddress = (assetId, address, value) => new Promise((resolve, reject) => {
+    module.sendToAddress = ({ assetId, address, value }) => new Promise((resolve, reject) => {
       call({
         method: 'sendtoaddress',
         params: [assetId, address, value],
