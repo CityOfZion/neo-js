@@ -33,7 +33,7 @@ class node {
 
   constructor(options = {}) {
     Object.assign(this, {
-      network: 'testnet', /** the network to connect to.
+      network: 'testnet', /** the network to connect to. */
       domain: 'localhost', /** {String} The domain of the node */
       port: '666', /** {String} The port that the node is operating on. */
       blockRange: [0,0], /** {Array} The range of blocks that this node is responsible for synchronizing */
@@ -53,10 +53,11 @@ class node {
     }, options)
 
     this.rpc = require('./node/rpc')(this)
-
+    console.log(this.domain)
     //If this is a local node instance, connect to the mesh
     if (this.domain == 'localhost') {
       this.mesh = new mesh({network: this.network})
+      console.log(this.mesh)
     }
 
     //If mongoDB is the storage type, initialize it and start chain sync
@@ -69,6 +70,7 @@ class node {
         this.blockWritePointer = this.storage.index
         //enqueue blocks for download
         setInterval(() => {
+            console.log(this.domain)
           while ((this.blockWritePointer < this.mesh.highestNode().index) &&
           (this.queue.length() < this.maxQueueLength)){
             this.enqueueBlock(this.blockWritePointer + 1)
