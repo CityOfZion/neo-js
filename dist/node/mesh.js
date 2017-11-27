@@ -2,7 +2,6 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 
-
 /**
  * @class mesh
  * @description
@@ -50,7 +49,6 @@ class mesh {
         port: cozPort
       }))
     })
-
   }
 
   /**
@@ -59,8 +57,8 @@ class mesh {
    */
   fastestNode () {
     return _.minBy(
-    _.filter(this.nodes, 'active'),
-    'latency'
+      _.filter(this.nodes, 'active'),
+      'latency'
     )
   }
 
@@ -70,8 +68,8 @@ class mesh {
    */
   highestNode () {
     return _.maxBy(
-    _.filter(this.nodes, 'active'),
-    'blockHeight'
+      _.filter(this.nodes, 'active'),
+      'blockHeight'
     )
   }
 
@@ -86,10 +84,10 @@ class mesh {
    */
   nodeWithBlock (index, sort = 'latency') {
     return _.minBy(
-    _.filter(this.nodes, ({index: nIndex, active}) => {
-      return active && (index <= nIndex)
-    }),
-    sort
+      _.filter(this.nodes, ({index: nIndex, active}) => {
+        return active && (index <= nIndex)
+      }),
+      sort
     )
   }
 
