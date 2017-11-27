@@ -35,7 +35,7 @@ class storage {
       // Periodically update the list of assets available
       this.updateAssetList()
       setInterval(() => {
-        this.updateAssetList
+        this.updateAssetList()
       }, 10000)
     }
 
