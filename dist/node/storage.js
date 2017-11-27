@@ -11,38 +11,36 @@ const _ = require('lodash')
  * @requires lodash
  */
 class storage {
-
   /**
    * @param {Object} options
    */
   constructor (options = {}) {
     Object.assign(this, {
-    storage: {
-      model: 'memory'
-    },
-    blockHeight: 0,
-    index: -1,
-    dataAccess: {},
-    unlinkedBlocks: [],
-    assets: [] },
+      storage: {
+        model: 'memory'
+      },
+      blockHeight: 0,
+      index: -1,
+      dataAccess: {},
+      unlinkedBlocks: [],
+      assets: [] },
     options)
 
-    //If the model type is mongoDB, load the mongoDB drive
-    //and instantiate the storage.
-    if (this.storage.model === 'mongoDB'){
-      var MongodbStorage = require('./storage/mongodb')
+    // If the model type is mongoDB, load the mongoDB drive
+    // and instantiate the storage.
+    if (this.storage.model === 'mongoDB') {
+      let MongodbStorage = require('./storage/mongodb')
       this.dataAccess = new MongodbStorage(this.storage)
 
-      //Periodically update the list of assets available
+      // Periodically update the list of assets available
       this.updateAssetList()
       setInterval(function(){
         this.updateAssetList, 10000
       })
     }
 
-    //Get the block count available in storage
+    // Get the block count available in storage
     this.getBlockCount()
-
   }
 
   /**
@@ -76,7 +74,7 @@ class storage {
               })
           } else {
             // Sort the assets into 'current' and 'needs update'
-            var parts = _.partition(res.assets, (asset) => {
+            let parts = _.partition(res.assets, (asset) => {
               return (this.index - asset.index) >= blockAge
             })
 
@@ -84,13 +82,13 @@ class storage {
             // This mechanic is used to automatically add new asset support as
             // an asset it appears in a transaction.
             if (res.assets.length !== this.assets.length) {
-              var included = _.map(res.assets, 'asset')
+              let included = _.map(res.assets, 'asset')
               this.assets.forEach((asset) => {
                 if (included.indexOf(asset.asset) === -1) {
                   parts[0].push({
-                    'asset': asset.asset,
-                    'index': -1,
-                    'balance': 0
+                    asset: asset.asset,
+                    index: -1,
+                    balance: 0
                   })
                 }
               })
@@ -98,13 +96,13 @@ class storage {
 
             // Update stale balances and resolve
             Promise.all(parts[0].map((asset) => {
-                return this.getAssetBalance(address, asset.asset, asset.index + 1, asset.balance)
-              }
+              return this.getAssetBalance(address, asset.asset, asset.index + 1, asset.balance)
+            }
             ))
-            .then((res) => {
-              resolve({'address': address, 'assets': parts[1].concat(res)})
-            })
-              .catch( (err) => console.log(err))
+              .then((res) => {
+                resolve({address: address, assets: parts[1].concat(res)})
+              })
+              .catch((err) => console.log(err))
           }
         })
         .catch((err) => {
@@ -145,7 +143,7 @@ class storage {
               })
 
               // Update the address balances in the collection
-              const result = { 'asset': asset, 'balance': balance, 'index': this.index, 'type': 'a' }
+              const result = { asset: asset, balance: balance, index: this.index, type: 'a' }
               this.dataAccess.updateBalance(address, asset, balance, this.index)
                 .then((res) => {
                   console.log(result)
@@ -176,25 +174,25 @@ class storage {
             reject(new Error('Could not find the transaction'))
           }
 
-        // If the tx has already been expanded, return it
-        if (tx.vin.some((entry) => _.has(entry, 'asset'))) {
-          resolve(tx)
-        }
+          // If the tx has already been expanded, return it
+          if (tx.vin.some((entry) => _.has(entry, 'asset'))) {
+            resolve(tx)
+          }
 
-        Promise.all(_.map(tx.vin, 'txid').map(this.getTX))
-          .then((res) => {
-            tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout])
-            this.updateTransaction(tx)
-              .then((res) => {
-                resolve(tx)
-              })
-              .catch((err) => { // Despite error, still resolve anyway
-                resolve(tx)
-              })
-          })
-          .catch(function (err) {
-            console.log('[db] getExpandedTX Promise.all err:', err)
-          })
+          Promise.all(_.map(tx.vin, 'txid').map(this.getTX))
+            .then((res) => {
+              tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout])
+              this.updateTransaction(tx)
+                .then((res) => {
+                  resolve(tx)
+                })
+                .catch((err) => { // Despite error, still resolve anyway
+                  resolve(tx)
+                })
+            })
+            .catch((err) => {
+              console.log('[db] getExpandedTX Promise.all err:', err)
+            })
         })
         .catch((err) => {
           console.log('[db] getExpendedTX getTX err:', err)
@@ -249,48 +247,46 @@ class storage {
   saveBlock (newBlock) {
     return new Promise((resolve, reject) => {
       this.dataAccess.saveBlock(newBlock)
-      .then((res) => {
+        .then((res) => {
         // Store the raw transaction
-        newBlock.tx.forEach((tx) => {
-          tx.blockIndex = newBlock.index;
-          tx.vout.forEach((d) => {
-            if (this.assetsFlat.indexOf(d.asset) == -1) {
-              const newAsset = { address: d.asset, asset: d.asset, type: 'a', assets: [] }
-              this.assetsFlat.push(d.asset)
-              this.assets.push(newAsset)
-              this.dataAccess.saveAddress(newAsset)
-            }
-          })
-        })
-
-        Promise.all(_.map(newBlock.tx).map( (tx) => this.dataAccess.saveTransaction(tx)))
-          .then((res) => {
-            //Because we asynchronously sync the blockchain,
-            //we need to keep track of the blocks that have been stored
-            //(higher indices could arrive before the lower ones)
-            //This code maintains the local blockheight by tracking
-            //'linked' and 'unlinked'(but stored) blocks
-            if (newBlock.index > this.index) {
-              this.unlinkedBlocks.push(newBlock.index);
-              var linkIndex = -1;
-              while (true){
-                linkIndex = this.unlinkedBlocks.indexOf(this.index + 1);
-                if (linkIndex != -1){
-                  this.unlinkedBlocks.splice(linkIndex,1);
-                  this.index++;
-                  this.blockHeight++;
-                }
-                else break;
+          newBlock.tx.forEach((tx) => {
+            tx.blockIndex = newBlock.index
+            tx.vout.forEach((d) => {
+              if (this.assetsFlat.indexOf(d.asset) === -1) {
+                const newAsset = { address: d.asset, asset: d.asset, type: 'a', assets: [] }
+                this.assetsFlat.push(d.asset)
+                this.assets.push(newAsset)
+                this.dataAccess.saveAddress(newAsset)
               }
-            }
-            resolve(res)
+            })
           })
-          .catch((err) => reject(err))
 
-      })
-      .catch((err) => {
-        reject(err)
-      })
+          Promise.all(_.map(newBlock.tx).map((tx) => this.dataAccess.saveTransaction(tx)))
+            .then((res) => {
+            // Because we asynchronously sync the blockchain,
+            // we need to keep track of the blocks that have been stored
+            // (higher indices could arrive before the lower ones)
+            // This code maintains the local blockheight by tracking
+            // 'linked' and 'unlinked'(but stored) blocks
+              if (newBlock.index > this.index) {
+                this.unlinkedBlocks.push(newBlock.index)
+                let linkIndex = -1
+                while (true) {
+                  linkIndex = this.unlinkedBlocks.indexOf(this.index + 1)
+                  if (linkIndex !== -1) {
+                    this.unlinkedBlocks.splice(linkIndex, 1)
+                    this.index++
+                    this.blockHeight++
+                  } else break
+                }
+              }
+              resolve(res)
+            })
+            .catch((err) => reject(err))
+        })
+        .catch((err) => {
+          reject(err)
+        })
     })
   }
 
@@ -321,4 +317,3 @@ class storage {
 }
 
 module.exports = storage
-
