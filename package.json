@@ -9,7 +9,7 @@
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*.js",
     "coverage": "./node_modules/.bin/nyc npm test",
     "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
-    "prepush": "echo 'running lint...' && yarn lint && echo 'running tests...' && yarn test"
+    "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
   },
   "repository": {
     "type": "git",
