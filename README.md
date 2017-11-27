@@ -7,28 +7,21 @@
 <h1 align="center">neo-js</h1>
 
 <p align="center">
-  A package for running a full or light node on the <b>neo</b> blockchain.
+  A package for running a node on the <b>neo</b> blockchain.
 </p>
 
 ## Overview
 
-The `neo-js` package is designed to interface with the **Neo** blockchain in two modes on both 'testnet' and 'mainnet':
-
-### Full Mode ###
-
-In full mode, the package will sync the blockchain and derivative collections to a local MongoDB instance. In this mode, requests will be returned from the local database if the database is able to resolve the request.
-
-### Light Mode ###
-
-In light mode, the package will interface with other full nodes using the seed RPC calls to acquire data.
+The `neo-js` package is designed to interface with the **Neo** blockchain in a number of different ways that are configured by options that are used to initialize a node.  A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
 
 **note:** All blockchain events (Invocation and Deploy) use the RPC calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
 
-This module uses 'lazy caching' to improve performance in full-node mode. Blocks are initially downloaded and stored in two collections (one for the raw blockchain and another for the raw transactions) as a result of the sync process. Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as [described in Neon wallet architecture](https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md) and updated in the collection. The next time the block is requested, the expanded transaction will already be available in the collection.
+## A note on local storage
+Currently this module only support mongoDB for synchronizing the blockchain.  Future storage types are planning including other noSQL databases, SQL databases, and in-memory solutions.
+
+This module uses 'lazy caching' to improve performance when using local storage. Blocks are initially downloaded and stored in three collections (blocks, transactions, and addresses) as a result of the sync process. Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as [described in Neon wallet architecture](https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md) and updated in the collection. The next time the block is requested, the expanded transaction will already be available in the collection.
 
 This mechanic is also used for address balances. Upon requesting an update for an asset balance, the transaction collection is analyzed and the asset balance is stored in an account collection along with the max block height during the calculation. Upon future requests for the asset balance, the asset collection is first queried for previous balance.  The asset balance is then updated using only the new blocks since the previous calculation event.
-
-This mechanic will also be expanded to NEP5 tokens.
 
 ## Installation
 
@@ -50,30 +43,38 @@ var Neo = require('neo-js-blockchain')
 To create a new blockchain instance:
 
 ```js
-var neoBlockchain = new Neo('full', 'testnet')
+// create the local node instance that will interface with the rpc methods
+const nodeT = new neo({ network: 'testnet' }) //on testnet
+const nodeM = new neo({ network: 'mainnet' }) //on mainnet
+
+nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
+nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
 ```
 
-This will create a new 'testnet' instance and configure it to run as a full node.
 
-Additionally, to create a light node on 'mainnet':
+This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:
 
 ```js
-var neoBlockchain = new Neo('light', 'mainnet')
+let options = {
+  network: 'testnet',
+  storage: {
+    model: 'mongoDB',
+    collectionNames: {
+      blocks: 'b_neo_t_blocks',
+      transactions: 'b_neo_t_transactions',
+      addresses: 'b_neo_t_addresses'
+    }
+  }
+}
+
+// create the local node instance and get the local block count after 5 seconds.
+const node = new neo(options)
+
+setTimeout(() => {
+  node.storage.getBlockCount()
+    .then( (res) => console.log(res) )
+}, 5000)
 ```
-
-To begin synchronizing the blockchain if the instance is a full node:
-
-```js
-neoBlockchain.sync.start();
-```
-
-To pause:
-
-```js
-neoBlockchain.sync.stop();
-```
-
-When running, synchronization will continue to maintain blocks as they are generated on the blockchain.
 
 ## Documentation
 
@@ -87,11 +88,11 @@ Self-documented code examples are available as part of the project source code:
 
 ## Contribution
 
-`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
+`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
 
 By contributing to `neo-js`, you agree that your contributions will be licensed under its MIT license.
 
 ## License
 
-* Open-source [MIT](https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md).
+* Open-source [MIT](LICENSE.md).
 * Main author is [@lllwvlvwlll](https://github.com/lllwvlvwlll).
