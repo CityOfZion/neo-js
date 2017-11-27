@@ -9,7 +9,7 @@
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*.js",
     "coverage": "./node_modules/.bin/nyc npm test",
     "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
-    "prepublish": "echo \"Not Implemented: unit test, JS lint and documentations to be performed here.\" && exit 0"
+    "prepush": "echo 'running lint...' && yarn lint && echo 'running tests...' && yarn test"
   },
   "repository": {
     "type": "git",
@@ -27,10 +27,10 @@
   },
   "homepage": "https://github.com/CityOfZion/neo-js#readme",
   "dependencies": {
+    "async": "~2.5.0",
     "axios": "^0.16.2",
     "lodash": "~4.17.4",
-    "mongoose": "~4.11.3",
-    "async": "~2.5.0"
+    "mongoose": "~4.11.3"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.9.0",
@@ -41,6 +41,7 @@
     "eslint-plugin-node": "^5.2.0",
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1"
   }
