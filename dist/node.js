@@ -30,13 +30,12 @@ const mesh = require('./node/mesh')
  * n.mesh.rpc('getBlock', 1000)
  */
 class node {
-
-  constructor(options = {}) {
+  constructor (options = {}) {
     Object.assign(this, {
       network: 'testnet', /** the network to connect to. */
       domain: 'localhost', /** {String} The domain of the node */
       port: '666', /** {String} The port that the node is operating on. */
-      blockRange: [0,0], /** {Array} The range of blocks that this node is responsible for synchronizing */
+      blockRange: [0, 0], /** {Array} The range of blocks that this node is responsible for synchronizing */
       storage: 'memory', /** {String} The storage type used for this node instance, will be overwritten with actual storage object on init. */
       active: true, /** {boolean} Indicates whether the node is active. */
       latency: 0, /** {number} The nodes latency(in seconds) as reported by the last transaction. */
@@ -54,57 +53,56 @@ class node {
 
     this.rpc = require('./node/rpc')(this)
 
-    //If this is a local node instance, connect to the mesh
-    if (this.domain == 'localhost') {
-      this.mesh = new mesh({network: this.network})
+    // If this is a local node instance, connect to the mesh
+    if (this.domain === 'localhost') {
+      this.mesh = new mesh({ network: this.network })
     }
 
-    //If mongoDB is the storage type, initialize it and start chain sync
-    //and verification intervals.
+    // If mongoDB is the storage type, initialize it and start chain sync
+    // and verification intervals.
     if (this.storage.model === 'mongoDB') {
-      this.storage = new storage({storage: this.storage})
+      this.storage = new storage({ storage: this.storage })
 
       this.storage.getBlockCount()
-      .then( () => {
-        this.blockWritePointer = this.storage.index
-        //enqueue blocks for download
-        setInterval(() => {
-          while ((this.blockWritePointer < this.mesh.highestNode().index) &&
-          (this.queue.length() < this.maxQueueLength)){
-            this.enqueueBlock(this.blockWritePointer + 1)
-          }
-        }, 2000)
-      })
+        .then(() => {
+          this.blockWritePointer = this.storage.index
+          // enqueue blocks for download
+          setInterval(() => {
+            while ((this.blockWritePointer < this.mesh.highestNode().index) &&
+            (this.queue.length() < this.maxQueueLength)) {
+              this.enqueueBlock(this.blockWritePointer + 1)
+            }
+          }, 2000)
+        })
 
       setInterval(() => {
-          this.storage.verify()
+        this.storage.verify()
           .then((res) => {
             console.log('Verified: missing:', res.length)
             res.forEach((r) => {
               this.enqueueBlock(r, 0)
             })
           })
-        }, 180000)
-
+      }, 180000)
     }
 
     this.deferredUpdateLoop()
 
-    //Initialize an asynchronous event queue for the node to use
+    // Initialize an asynchronous event queue for the node to use
     this.queue = async.priorityQueue((task, callback) => {
       this[task.method](task.attrs)
-      .then(() => {
-        callback()
-      })
-      .catch((err) => {
-        // If the blcok request fails, throw it to the back to the queue to try again.
-        // timout prevents inf looping on connections issues etc..
-        console.log(err)
-        setTimeout(() => {
-          this.enqueueBlock(task.attrs.index, 4)
-        }, 2000)
-        callback()
-      })
+        .then(() => {
+          callback()
+        })
+        .catch((err) => {
+          // If the blcok request fails, throw it to the back to the queue to try again.
+          // timout prevents inf looping on connections issues etc..
+          console.log(err)
+          setTimeout(() => {
+            this.enqueueBlock(task.attrs.index, 4)
+          }, 2000)
+          callback()
+        })
     }, this.workerCount)
   }
 
@@ -113,28 +111,27 @@ class node {
    * and inserts it into the local database.
    * @param {Object} attrs The block attributes
    */
-  storeBlock(attrs) {
+  storeBlock (attrs) {
     return new Promise((resolve, reject) => {
       this.mesh.getBlock(attrs.index)
-      .then((res) => {
-
-        // inject the block into the database and save.
-        this.storage.saveBlock(res)
-        .then(() => {
-          // Consider logging a status update...communication is important
-          if ((attrs.index % this.logPeriod === 0) ||
-          (attrs.index === this.mesh.highestNode().index)) {
-            console.log(attrs)
-          }
-          resolve()
+        .then((res) => {
+          // inject the block into the database and save.
+          this.storage.saveBlock(res)
+            .then(() => {
+              // Consider logging a status update...communication is important
+              if ((attrs.index % this.logPeriod === 0) ||
+              (attrs.index === this.mesh.highestNode().index)) {
+                console.log(attrs)
+              }
+              resolve()
+            })
+            .catch((err) => {
+              resolve(err)
+            })
         })
         .catch((err) => {
-          resolve(err)
+          return reject(err)
         })
-      })
-      .catch((err) => {
-        return reject(err)
-      })
     })
   }
 
@@ -143,7 +140,7 @@ class node {
    * @param {number} index The index of the block to synchronize.
    * @param {number} [priority=5] The priority of the block download request.
    */
-  enqueueBlock(index, priority = 5) {
+  enqueueBlock (index, priority = 5) {
     // if the blockheight is above the current height,
     // increment the write pointer.
     if (index > this.blockWritePointer) {
@@ -157,7 +154,7 @@ class node {
         max: this.mesh.highestNode().index || index,
         percent: (index) / (this.mesh.highestNode().index || index) * 100
       }
-    },priority)
+    }, priority)
   }
 
   /**
@@ -165,7 +162,7 @@ class node {
    * the node for its block height.
    * @TODO: This needs to be revised to support all node types
    */
-  deferredUpdateLoop() {
+  deferredUpdateLoop () {
     const base = !this.active ? 10000 : 5000
     this.rpc.getBlockCount().then((res) => {
     }).catch((err) => {

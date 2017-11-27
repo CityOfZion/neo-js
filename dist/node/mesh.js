@@ -15,7 +15,7 @@ const _ = require('lodash')
  * n.mesh.rpc('getBlock', 1000)
  */
 class mesh {
-  constructor(options = {}) {
+  constructor (options = {}) {
     Object.assign(this, {
       network: 'testnet',
       nodes: []
@@ -110,7 +110,7 @@ class mesh {
    * @param params {Array} An array of input parameters.
    * @returns {Promise.<*>} The response of the rpc method.
    */
-  rpc(method, params) {
+  rpc (method, params) {
     return this.highestNode().rpc[method](params)
   }
 }
