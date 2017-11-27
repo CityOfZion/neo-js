@@ -6,7 +6,7 @@ const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
-const neoNode = TestHelper.getNeoNode()
+const node = TestHelper.getNeoNode()
 TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe('Unit test getRawTransaction()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
+    node.mesh.rpc('getRawTransaction', Profiles.Blocks.Block_100000.Transactions[0].Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -27,7 +27,7 @@ describe('Unit test getRawTransaction()', () => {
 
 describe('Unit test getTXOut()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getTXOut(Profiles.Blocks.Block_608999.Transactions[1].Hash, 0)
+    node.mesh.rpc('getTXOut', { txid: Profiles.Blocks.Block_608999.Transactions[1].Hash, index: 0 })
       .then((res) => {
         expect(res).to.be.a('object')
         done()

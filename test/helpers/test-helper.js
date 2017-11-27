@@ -1,13 +1,13 @@
 const axios = require('axios')
 const MockAdapter = require('axios-mock-adapter')
-const Neo = require('../../dist/neo.blockchain.neo').neo
+const Neo = require('../../dist/node')
 const Profiles = require('./profiles')
 const MockResponses = require('./mock-responses')
 
 module.exports = {
   getNeoNode: function () {
-    const neoBlockchain = new Neo('light', 'testnet')
-    return neoBlockchain.nodeWithBlock(-1, 'latency', false)
+    const node = new Neo()
+    return node
   },
 
   setMockHttpClient: function () {

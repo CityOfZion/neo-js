@@ -6,7 +6,7 @@ const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
-const neoNode = TestHelper.getNeoNode()
+const node = TestHelper.getNeoNode()
 TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe('Unit test getAssetState()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
+    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe('Unit test getAssetState()', () => {
   })
 
   it("should contain 'id' property with an expected value.", (done) => {
-    neoNode.rpc.getAssetState(Profiles.Assets.Neo)
+    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
       .then((res) => {
         expect(res.id).to.be.equal(Profiles.Assets.Neo)
         done()

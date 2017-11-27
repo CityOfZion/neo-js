@@ -7,32 +7,28 @@
 
 // -- Bootstrap
 
-const Neo = require('../../../dist/neo.blockchain.neo').neo
+const Neo = require('../../../dist/node')
 
 // -- Chain of command
 
 async function main () {
   console.log('== Basic RPC Example ==')
 
-  // Instantiate a 'light' mode Neo blockchain against 'testnet' network
-  const neoBlockchain = new Neo('light', 'testnet')
+  // Instantiate a node that provides access to the testnet mesh
+  const node = new Neo({ network: 'testnet' })
 
   // Verify neoBlockchain properties
-  console.log('neoBlockchain.mode:', neoBlockchain.mode)
-  console.log('neoBlockchain.network:', neoBlockchain.network)
-  console.log('neoBlockchain.nodes.length:', neoBlockchain.nodes.length)
-  console.log('list of potential nodes:')
-  neoBlockchain.nodes.forEach((node, index) => {
+  console.log('node.domain:', node.domain)
+  console.log('node.network:', node.network)
+  console.log('node.mesh.nodes.length:', node.mesh.nodes.length)
+  console.log('list of nodes in the mesh:')
+  node.mesh.nodes.forEach((node, index) => {
     console.log(`> [${index}] ${node.domain}:${node.port}`)
   })
 
-  // Since you cannot analyse status of each node in 'light' mode, this example will pick the first potential node for RPC interaction.
-  const node = neoBlockchain.nodes[0]
-  console.log(`Selected node: ${node.domain}:${node.port}`)
-
   // Example RPC requests
-  console.log('getBlockCount:', await node.rpc.getBlockCount())
-  console.log('getBestBlockHash:', await node.rpc.getBestBlockHash())
+  console.log('getBlockCount:', await node.mesh.rpc('getBlockCount'))
+  console.log('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
 
   console.log('== END ==')
 
