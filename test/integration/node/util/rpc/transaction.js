@@ -1,20 +1,20 @@
 /* global describe it */
-
+/* eslint no-unused-expressions: "off" */
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
+const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
 const neoNode = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getRawTransaction()', () => {
+describe(`${describeBadge} getRawTransaction()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
+    neoNode.rpc.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,11 +25,11 @@ describe('Unit test getRawTransaction()', () => {
   })
 })
 
-describe('Unit test getTXOut()', () => {
+describe(`${describeBadge} getTXOut()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.getTXOut(Profiles.Blocks.Block_608999.Transactions[1].Hash, 0)
+    neoNode.rpc.getTXOut(Profiles.Blocks.Block_100000.Transactions[0].Hash, 0)
       .then((res) => {
-        expect(res).to.be.a('object')
+        expect(res).to.be.null
         done()
       })
       .catch((err) => {

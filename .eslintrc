@@ -1,0 +1,15 @@
+{
+  "extends": "standard",
+  "env": {
+    "browser": true,
+    "node": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "arrow-parens": 2,
+    "prefer-arrow-callback": 2,
+    "no-var": 2,
+    "quote-props": [2, "as-needed"]
+  }
+}

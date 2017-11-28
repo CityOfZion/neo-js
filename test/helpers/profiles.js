@@ -9,6 +9,10 @@ module.exports = {
     Neo: '0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b',
     Gas: '0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7'
   },
+  Contracts: {
+    RPX: '0xecc6b20d3ccac1ee9ef109af5a7cdb85706b1df9',
+    RPX_Test: '0x5b7074e873973a6ed3708862f219a6fbf4d1c411'
+  },
   Blocks: {
     Block_100000: {
       Number: 100000,
@@ -30,7 +34,7 @@ module.exports = {
           Hash: '0x5f3220532e3811ed49831eb2209b2fac49bbeaa61d2a29abb191fb3628348c5b',
           Size: 10,
           Type: 'MinerTransaction',
-          Nounce: 3774638267,
+          Nounce: 3774638267
         },
         {
           Hash: '0xc8fbc56acdbfa03f9eacb06e28c29dfd30af61255bd0f51f88851900bcd75937',

@@ -1,20 +1,19 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../helpers/test-helper')
-const Profiles = require('../helpers/profiles')
+const TestHelper = require('../../../../helpers/test-helper')
 
 // Bootstrapping
 
-const neoNode = TestHelper.getNeoNode()
-const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
+const node = TestHelper.getNeoNode()
+TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe(`${describeBadge} getBestBlockHash()`, () => {
+describe('Unit test getBestBlockHash()', () => {
   it('should have string as its response data type.', (done) => {
-    neoNode.getBestBlockHash()
+    node.mesh.rpc('getBestBlockHash')
       .then((res) => {
         const hash = res
         expect(hash).to.be.a('string')
@@ -26,7 +25,7 @@ describe(`${describeBadge} getBestBlockHash()`, () => {
   })
 
   it("should be '0x' follow by 64 hex characters in lower-case.", (done) => {
-    neoNode.getBestBlockHash()
+    node.mesh.rpc('getBestBlockHash')
       .then((res) => {
         const hash = res
         expect(hash).to.match(/^(0x)[a-f0-9]{64}$/)
@@ -38,9 +37,9 @@ describe(`${describeBadge} getBestBlockHash()`, () => {
   })
 })
 
-describe(`${describeBadge} getBlockCount()`, () => {
+describe('Unit test getBlockCount()', () => {
   it('should have integer as its response data type.', (done) => {
-    neoNode.getBlockCount()
+    node.mesh.rpc('getBlockCount')
       .then((res) => {
         const blockCount = res
         expect(blockCount).to.be.a('number')
@@ -53,7 +52,7 @@ describe(`${describeBadge} getBlockCount()`, () => {
   })
 
   it('should have at least 1 block.', (done) => {
-    neoNode.getBlockCount()
+    node.mesh.rpc('getBlockCount')
       .then((res) => {
         const blockCount = res
         expect(blockCount).to.be.at.least(1)
@@ -65,9 +64,9 @@ describe(`${describeBadge} getBlockCount()`, () => {
   })
 })
 
-describe(`${describeBadge} getConnectionCount()`, () => {
+describe('Unit test getConnectionCount()', () => {
   it('should have integer as its response data type.', (done) => {
-    neoNode.getConnectionCount()
+    node.mesh.rpc('getConnectionCount')
       .then((res) => {
         const count = res
         expect(count).to.be.a('number')
@@ -80,7 +79,7 @@ describe(`${describeBadge} getConnectionCount()`, () => {
   })
 
   it('should have at least 1 connection.', (done) => {
-    neoNode.getBlockCount()
+    node.mesh.rpc('getBlockCount')
       .then((res) => {
         const count = res
         expect(count).to.be.at.least(1)
@@ -92,9 +91,9 @@ describe(`${describeBadge} getConnectionCount()`, () => {
   })
 })
 
-describe(`${describeBadge} getRawMemPool()`, () => {
+describe('Unit test getRawMemPool()', () => {
   it('should have array as its response data type.', (done) => {
-    neoNode.getRawMemPool()
+    node.mesh.rpc('getRawMemPool')
       .then((res) => {
         expect(res).to.be.an('array')
         done()
@@ -105,9 +104,9 @@ describe(`${describeBadge} getRawMemPool()`, () => {
   })
 })
 
-describe(`${describeBadge} getPeers()`, () => {
+describe('Unit test getPeers()', () => {
   it('should have object as its response data type.', (done) => {
-    neoNode.getPeers()
+    node.mesh.rpc('getPeers')
       .then((res) => {
         expect(res).to.be.an('object')
         done()

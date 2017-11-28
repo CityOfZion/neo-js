@@ -1,13 +1,15 @@
 {
   "name": "neo-js-blockchain",
-  "version": "0.0.4",
-  "description": "A package for running a full or light node on the neo blockchain.",
-  "main": "dist/neo.blockchain.neo.js",
+  "version": "0.5.0",
+  "description": "A package for running a node on the neo blockchain.",
+  "main": "dist/node.js",
   "scripts": {
-    "lint": "node_modules/standard/bin/cmd.js **/*.js || exit 0",
-    "integration": "node_modules/mocha/bin/mocha -b test/integration/*.js",
-    "test": "node_modules/mocha/bin/mocha -b test/unit/*.js",
-    "coverage": "node_modules/nyc/bin/nyc.js npm test"
+    "lint": "./node_modules/.bin/eslint ./dist/**/*.js",
+    "integration": "./node_modules/.bin/mocha -b ./test/integration/**/*.js",
+    "test": "./node_modules/.bin/mocha -b ./test/unit/**/*.js",
+    "coverage": "./node_modules/.bin/nyc npm test",
+    "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
+    "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
   },
   "repository": {
     "type": "git",
@@ -25,16 +27,22 @@
   },
   "homepage": "https://github.com/CityOfZion/neo-js#readme",
   "dependencies": {
+    "async": "~2.5.0",
     "axios": "^0.16.2",
     "lodash": "~4.17.4",
-    "mongoose": "~4.11.3",
-    "async": "~2.5.0"
+    "mongoose": "~4.11.3"
   },
   "devDependencies": {
     "axios-mock-adapter": "^1.9.0",
     "chai": "^4.1.2",
+    "eslint": "^4.9.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.0",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "husky": "^0.14.3",
     "mocha": "^3.5.3",
-    "nyc": "^11.2.1",
-    "standard": "^10.0.3"
+    "nyc": "^11.2.1"
   }
 }
