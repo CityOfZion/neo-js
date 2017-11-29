@@ -2,6 +2,19 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 
+const network = {
+  testnet: {
+    neoPort: 20332,
+    cozPort: 8880,
+    cozNetwork: 'test'
+  },
+  mainnet: {
+    neoPort: 10332,
+    cozPort: 8080,
+    cozNetwork: 'seed'
+  }
+}
+
 /**
  * @class mesh
  * @description
@@ -26,15 +39,7 @@ class mesh {
     const node = require('../node')
 
     if (this.network === 'mainnet' || this.network === 'testnet') {
-      let neoPort = 20332
-      let cozPort = 8880
-      let cozNetwork = 'test'
-
-      if (this.network === 'mainnet') {
-        neoPort = 10332
-        cozPort = 8080
-        cozNetwork = 'seed'
-      }
+      const { neoPort, cozPort, cozNetwork } = _.get(network, this.network, network['testnet'])
 
       // build the list of neo maintained nodes
       const neoNodes = [1, 2, 3, 4, 5]
