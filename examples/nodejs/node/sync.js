@@ -18,9 +18,7 @@ async function main () {
 
   // Instantiate a testnet node with local storage
   let options = {
-    network: {
-      network: 'testnet'
-    },
+    network: 'testnet',
     storage: {
       model: 'mongoDB',
       collectionNames: {

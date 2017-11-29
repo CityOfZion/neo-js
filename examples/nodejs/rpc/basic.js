@@ -15,11 +15,11 @@ async function main () {
   console.log('== Basic RPC Example ==')
 
   // Instantiate a node that provides access to the testnet mesh
-  const node = new Neo({ network: { network: 'testnet' } })
+  const node = new Neo({ network: 'testnet' })
 
   // Verify neoBlockchain properties
   console.log('node.domain:', node.domain)
-  console.log('node.network.network:', node.network.network)
+  console.log('node.network:', node.network)
   console.log('node.mesh.nodes.length:', node.mesh.nodes.length)
   console.log('list of nodes in the mesh:')
   node.mesh.nodes.forEach((node, index) => {

@@ -25,11 +25,11 @@ class mesh {
 
     const node = require('../node')
 
-    let neoPort = 20332
-    let cozPort = 8880
-    let cozNetwork = 'test'
+    if (this.network === 'mainnet' || this.network === 'testnet') {
+      let neoPort = 20332
+      let cozPort = 8880
+      let cozNetwork = 'test'
 
-    if (!this.network.seeds || !this.network.seeds.length) {
       if (this.network === 'mainnet') {
         neoPort = 10332
         cozPort = 8080
