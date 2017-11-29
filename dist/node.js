@@ -32,8 +32,7 @@ const mesh = require('./node/mesh')
 class node {
   constructor (options = {}) {
     Object.assign(this, {
-      network: 'testnet', /** the network to connect to. */
-      nodes: [], /** {Array} optionally manually set the nodes to connect to **/
+      network: { network: 'testnet', seeds: [] }, /** the network to connect to. */
       domain: 'localhost', /** {String} The domain of the node */
       port: '666', /** {String} The port that the node is operating on. */
       blockRange: [0, 0], /** {Array} The range of blocks that this node is responsible for synchronizing */
@@ -56,7 +55,7 @@ class node {
 
     // If this is a local node instance, connect to the mesh
     if (this.domain === 'localhost') {
-      this.mesh = new mesh({ network: this.network, nodes: this.nodes })
+      this.mesh = new mesh({ network: this.network })
     }
 
     // If mongoDB is the storage type, initialize it and start chain sync

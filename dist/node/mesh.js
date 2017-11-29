@@ -16,7 +16,10 @@ const _ = require('lodash')
 class mesh {
   constructor (options = {}) {
     Object.assign(this, {
-      network: 'testnet',
+      network: {
+        network: 'testnet',
+        seeds: []
+      },
       nodes: []
     }, options)
 
@@ -26,7 +29,7 @@ class mesh {
     let cozPort = 8880
     let cozNetwork = 'test'
 
-    if (!this.nodes.length) {
+    if (!this.network.seeds || !this.network.seeds.length) {
       if (this.network === 'mainnet') {
         neoPort = 10332
         cozPort = 8080
@@ -48,6 +51,13 @@ class mesh {
         this.nodes.push(new node({
           domain: `http://${cozNetwork}${i}.cityofzion.io`,
           port: cozPort
+        }))
+      })
+    } else {
+      this.network.seeds.forEach((seed) => {
+        this.nodes.push(new node({
+          domain: seed.domain,
+          port: seed.port
         }))
       })
     }
