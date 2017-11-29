@@ -26,29 +26,31 @@ class mesh {
     let cozPort = 8880
     let cozNetwork = 'test'
 
-    if (this.network === 'mainnet') {
-      neoPort = 10332
-      cozPort = 8080
-      cozNetwork = 'seed'
+    if (!this.nodes.length) {
+      if (this.network === 'mainnet') {
+        neoPort = 10332
+        cozPort = 8080
+        cozNetwork = 'seed'
+      }
+
+      // build the list of neo maintained nodes
+      const neoNodes = [1, 2, 3, 4, 5]
+      neoNodes.forEach((i) => {
+        this.nodes.push(new node({
+          domain: `http://seed${i}.neo.org`,
+          port: neoPort
+        }))
+      })
+
+      // build the list of CoZ maintained nodes
+      const cozNodes = [1, 2, 3, 4, 5]
+      cozNodes.forEach((i) => {
+        this.nodes.push(new node({
+          domain: `http://${cozNetwork}${i}.cityofzion.io`,
+          port: cozPort
+        }))
+      })
     }
-
-    // build the list of neo maintained nodes
-    const neoNodes = [1, 2, 3, 4, 5]
-    neoNodes.forEach((i) => {
-      this.nodes.push(new node({
-        domain: `http://seed${i}.neo.org`,
-        port: neoPort
-      }))
-    })
-
-    // build the list of CoZ maintained nodes
-    const cozNodes = [1, 2, 3, 4, 5]
-    cozNodes.forEach((i) => {
-      this.nodes.push(new node({
-        domain: `http://${cozNetwork}${i}.cityofzion.io`,
-        port: cozPort
-      }))
-    })
   }
 
   /**
