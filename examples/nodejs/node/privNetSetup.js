@@ -18,17 +18,17 @@ const Neo = require('../../../dist/node')
 async function main () {
   console.log('== NeoBlockchain PrivNet Example ==')
 
-  const seeds = []
-
-  // We manually set up the nodes to connect to. These are the ones neo-privatenet-docker
-  // exposes to the Docker container.
+  /**
+   * We manually set up the nodes to connect to. These are the ones neo-privatenet-docker
+   * exposes to the Docker container.
+   */
   const options = {
     network: {
       endpoints: [
         { domain: 'http://127.0.0.1', port: 30333 },
         { domain: 'http://127.0.0.1', port: 30334 },
         { domain: 'http://127.0.0.1', port: 30335 },
-        { domain: 'http://127.0.0.1', port: 30336 },
+        { domain: 'http://127.0.0.1', port: 30336 }
       ]
     }
   }
