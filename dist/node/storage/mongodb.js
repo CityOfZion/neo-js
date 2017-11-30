@@ -82,9 +82,6 @@ class MongodbStorage {
           if (err) {
             reject(err)
           }
-          if (!res) {
-            reject(new Error('transaction not found'))
-          }
           resolve(res)
         })
     })
@@ -106,27 +103,6 @@ class MongodbStorage {
         .exec((err, res) => {
           if (err) {
             reject(err)
-          }
-
-          if (!res) {
-            reject(new Error('Block not found'))
-          }
-
-          resolve(res)
-        })
-    })
-  }
-
-  getBlockList() {
-    return new Promise((resolve, reject) => {
-      this.blockModel.find({}, 'index')
-        .sort('index')
-        .exec((err, res) => {
-          if (err) {
-            reject(err)
-          }
-          if (!res) {
-            reject(new Error('Block not found.'))
           }
           resolve(res)
         })
@@ -152,13 +128,11 @@ class MongodbStorage {
 
   getAssetList() {
     return new Promise((resolve, reject) => {
-      this.addressModel.find({ type: 'a' }, 'asset')
+      // this.addressModel.find({ type: 'a' }, 'asset')
+      this.addressModel.find({ type: 'a' })
         .exec((err, res) => {
           if (err) {
             reject(err)
-          }
-          if (!res) {
-            reject(new Error('assets not found'))
           }
           resolve(res)
         })
@@ -181,9 +155,6 @@ class MongodbStorage {
         .exec((err, res) => {
           if (err) {
             reject(err)
-          }
-          if (!res) {
-            reject(new Error('assets not found'))
           }
           resolve(res)
         })
