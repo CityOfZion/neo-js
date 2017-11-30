@@ -22,23 +22,20 @@ async function main () {
 
   // We manually set up the nodes to connect to. These are the ones neo-privatenet-docker
   // exposes to the Docker container.
-  const localNodePorts = [30333, 30334, 30335, 30336]
-  localNodePorts.forEach((i) => {
-    seeds.push({
-      domain: `http://127.0.0.1`,
-      port: i
-    })
-  })
-
-  // Instantiate a private network node with memory storage
-  let options = {
+  const options = {
     network: {
-      network: 'privnet', // ignored if not 'testing' or 'mainnet'. Manually set the nodes below.
-      seeds: seeds // manually set the nodes we want to connect to.
+      endpoints: [
+        { domain: 'http://127.0.0.1', port: 30333 },
+        { domain: 'http://127.0.0.1', port: 30334 },
+        { domain: 'http://127.0.0.1', port: 30335 },
+        { domain: 'http://127.0.0.1', port: 30336 },
+      ]
     }
   }
 
+  // Instantiate a private network node with memory storage
   const node = new Neo(options)
+
   console.log('The node is set up. Test call to getBestBlockHash follows.')
   console.log('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
 
