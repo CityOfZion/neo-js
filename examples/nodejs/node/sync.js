@@ -3,7 +3,7 @@
 /**
  * Blockchain Syncing Example
  *
- * An example usage to have a running node instance syncing in the background while 
+ * An example usage to have a running node instance syncing in the background while
  * perform user tasks at foreground. Please make sure there is a local MongoDB server running.
  *
  */
