@@ -32,7 +32,7 @@ const mesh = require('./node/mesh')
 class node {
   constructor (options = {}) {
     Object.assign(this, {
-      network: 'testnet', /** the network to connect to. This is either 'testnet' or 'mainnet' or an object defining an Array of seeds */
+      network: undefined, /** {String|Object} the network to connect to. This is either 'testnet' or 'mainnet' or an object defining an Array of endpoints */
       domain: 'localhost', /** {String} The domain of the node */
       port: '666', /** {String} The port that the node is operating on. */
       blockRange: [0, 0], /** {Array} The range of blocks that this node is responsible for synchronizing */
