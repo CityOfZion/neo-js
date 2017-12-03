@@ -79,7 +79,7 @@ const options = {
 }
 
 // create the local node instance and get the local block count after 5 seconds.
-const node = new Neo(options)
+const node = new Node(options)
 
 setTimeout(() => {
   node.storage.getBlockCount()
