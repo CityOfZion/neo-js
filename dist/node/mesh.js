@@ -1,43 +1,7 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 const _ = require('lodash')
-
-const initializeNodes = ({ neoPort, cozPort, cozNetwork }) => {
-  const node = require('../node')
-
-  return _.flatMap([1, 2, 3, 4, 5], (index) => [
-    new node({
-      domain: `http://seed${index}.neo.org`,
-      port: neoPort
-    }),
-    new node({
-      domain: `http://${cozNetwork}${index}.cityofzion.io`,
-      port: cozPort
-    })
-  ])
-}
-
-const availableNetwork = {
-  testnet: {
-    neoPort: 20332,
-    cozPort: 8880,
-    cozNetwork: 'test',
-    initializeNodes
-  },
-  mainnet: {
-    neoPort: 10332,
-    cozPort: 8080,
-    cozNetwork: 'seed',
-    initializeNodes
-  },
-  privnet: {
-    initializeNodes: () => {
-      const node = require('../node')
-
-      return this.network.seeds.map(({port, domain}) => new node({ port, domain }))
-    }
-  }
-}
+const profiles = require('../profiles')
 
 /**
  * @class mesh
@@ -53,16 +17,26 @@ const availableNetwork = {
 class mesh {
   constructor (options = {}) {
     Object.assign(this, {
-      network: {
-        network: 'testnet',
-        seeds: []
-      },
+      network: undefined, /** {String|Object} the network to connect to. This is either 'testnet' or 'mainnet' or an object defining an Array of endpoints */
       nodes: []
     }, options)
 
-    const network = _.get(availableNetwork, this.network.network, availableNetwork.testnet)
+    const node = require('../node')
+    let endpoints
+    if (this.network === 'mainnet') {
+      endpoints = profiles.rpc.mainnet.endpoints
+    } else if (this.network === 'testnet') {
+      endpoints = profiles.rpc.testnet.endpoints
+    } else {
+      endpoints = this.network.endpoints
+    }
 
-    this.nodes = [ this.nodes, ...(network.initializeNodes(network)) ]
+    endpoints.forEach((endpoint) => {
+      this.nodes.push(new node({
+        domain: endpoint.domain,
+        port: endpoint.port
+      }))
+    })
   }
 
   /**
