@@ -11,7 +11,7 @@ const mesh = require('./node/mesh')
  * A class defining a node on the neo blockchain.
  * @param {Object} options Configuration parameters for the node.
  * @example
- * neo = require('neo-js-blockchain');
+ * node = require('neo-js-blockchain');
  * let options = {
  *   network: 'mainnet',
  *   storage: {
@@ -25,7 +25,7 @@ const mesh = require('./node/mesh')
  * }
  * const n = node(options)
  * @example
- * neo = require('neo-js-blockchain');
+ * node = require('neo-js-blockchain');
  * const n = node()
  * n.mesh.rpc('getBlock', 1000)
  */

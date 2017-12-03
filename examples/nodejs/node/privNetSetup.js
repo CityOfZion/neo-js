@@ -11,7 +11,7 @@
  */
 // -- Bootstrap
 
-const Neo = require('../../../dist/node')
+const Node = require('../../../dist/node')
 
 // -- Chain of command
 
@@ -34,7 +34,7 @@ async function main () {
   }
 
   // Instantiate a private network node with memory storage
-  const node = new Neo(options)
+  const node = new Node(options)
 
   console.log('The node is set up. Test call to getBestBlockHash follows.')
   console.log('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))

@@ -6,7 +6,7 @@
 
 // -- Bootstrap
 
-const Neo = require('../../../dist/node')
+const Node = require('../../../dist/node')
 
 // -- Chain of command
 
@@ -16,9 +16,9 @@ async function main () {
   /**
    * Instantiate a node that either connect to 'netnet', 'mainnet' or specified RPC endpoints.
    */
-  // const node = new Neo({ network: 'testnet' })
-  // const node = new Neo({ network: 'mainnet' })
-  const node = new Neo({ network: {
+  // const node = new Node({ network: 'testnet' })
+  // const node = new Node({ network: 'mainnet' })
+  const node = new Node({ network: {
     endpoints: [
       { domain: 'http://seed1.neo.org', port: 10332 },
       { domain: 'http://seed1.cityofzion.io', port: 8080 }

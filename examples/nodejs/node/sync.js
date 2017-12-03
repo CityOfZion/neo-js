@@ -9,7 +9,7 @@
  */
 // -- Bootstrap
 
-const Neo = require('../../../dist/node')
+const Node = require('../../../dist/node')
 
 // -- Chain of command
 
@@ -29,7 +29,7 @@ async function main () {
     }
   }
 
-  const node = new Neo(options)
+  const node = new Node(options)
 
   // Allow it to sync for 30 seconds
   console.log('Start syncing for 30 seconds...')

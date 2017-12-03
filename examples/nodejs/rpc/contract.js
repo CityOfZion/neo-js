@@ -7,7 +7,7 @@
 
 // -- Bootstrap
 
-const Neo = require('../../../dist/node')
+const Node = require('../../../dist/node')
 
 // -- Chain of command
 
@@ -15,7 +15,7 @@ async function main () {
   console.log('== Basic RPC Example ==')
 
   // Instantiate a node to interact with the testnet mesh
-  const node = new Neo({ network: 'testnet' })
+  const node = new Node({ network: 'testnet' })
 
   // Example RPC requests
   const rpxHash = '0x5b7074e873973a6ed3708862f219a6fbf4d1c411' // RPX's hash value in testnet (which is different to mainnet)
