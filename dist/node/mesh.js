@@ -2,6 +2,43 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 
+const initializeNodes = ({ neoPort, cozPort, cozNetwork }) => {
+  const node = require('../node')
+
+  return _.flatMap([1, 2, 3, 4, 5], (index) => [
+    new node({
+      domain: `http://seed${index}.neo.org`,
+      port: neoPort
+    }),
+    new node({
+      domain: `http://${cozNetwork}${index}.cityofzion.io`,
+      port: cozPort
+    })
+  ])
+}
+
+const availableNetwork = {
+  testnet: {
+    neoPort: 20332,
+    cozPort: 8880,
+    cozNetwork: 'test',
+    initializeNodes
+  },
+  mainnet: {
+    neoPort: 10332,
+    cozPort: 8080,
+    cozNetwork: 'seed',
+    initializeNodes
+  },
+  privnet: {
+    initializeNodes: () => {
+      const node = require('../node')
+
+      return this.network.seeds.map(({port, domain}) => new node({ port, domain }))
+    }
+  }
+}
+
 /**
  * @class mesh
  * @description
@@ -23,44 +60,9 @@ class mesh {
       nodes: []
     }, options)
 
-    const node = require('../node')
+    const network = _.get(availableNetwork, this.network.network, availableNetwork.testnet)
 
-    if (this.network === 'mainnet' || this.network === 'testnet') {
-      let neoPort = 20332
-      let cozPort = 8880
-      let cozNetwork = 'test'
-
-      if (this.network === 'mainnet') {
-        neoPort = 10332
-        cozPort = 8080
-        cozNetwork = 'seed'
-      }
-
-      // build the list of neo maintained nodes
-      const neoNodes = [1, 2, 3, 4, 5]
-      neoNodes.forEach((i) => {
-        this.nodes.push(new node({
-          domain: `http://seed${i}.neo.org`,
-          port: neoPort
-        }))
-      })
-
-      // build the list of CoZ maintained nodes
-      const cozNodes = [1, 2, 3, 4, 5]
-      cozNodes.forEach((i) => {
-        this.nodes.push(new node({
-          domain: `http://${cozNetwork}${i}.cityofzion.io`,
-          port: cozPort
-        }))
-      })
-    } else {
-      this.network.seeds.forEach((seed) => {
-        this.nodes.push(new node({
-          domain: seed.domain,
-          port: seed.port
-        }))
-      })
-    }
+    this.nodes = [ this.nodes, ...(network.initializeNodes(network)) ]
   }
 
   /**
