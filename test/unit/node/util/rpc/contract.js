@@ -35,4 +35,3 @@ describe(`Unit test getContractState()`, () => {
       })
   })
 })
-

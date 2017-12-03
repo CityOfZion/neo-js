@@ -54,7 +54,7 @@ async function main () {
 // -- Helper methods
 
 function sleep (ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 // -- Execute

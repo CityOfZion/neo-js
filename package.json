@@ -4,7 +4,7 @@
   "description": "A package for running a node on the neo blockchain.",
   "main": "dist/node.js",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint ./dist/**/*.js",
+    "lint": "./node_modules/.bin/eslint ./{dist,examples,test} --ext .js",
     "integration": "./node_modules/.bin/mocha -b ./test/integration/**/*.js",
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*.js",
     "coverage": "./node_modules/.bin/nyc npm test",

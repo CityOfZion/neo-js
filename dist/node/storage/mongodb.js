@@ -1,13 +1,11 @@
 /* eslint handle-callback-err: "off" */
-const _ = require('lodash')
 const mongoose = require('mongoose')
 
 class MongodbStorage {
-
   /**
    * @param {Object} options
    */
-  constructor(options = {}) {
+  constructor (options = {}) {
     console.log('[mongo] constructor triggered.')
 
     // Associate class properties
@@ -39,7 +37,7 @@ class MongodbStorage {
    * @param {Object} block
    * @return {Object}
    */
-  delintBlock(block) {
+  delintBlock (block) {
     block.hash = this.hexFix(block.hash)
     block.previousblockhash = this.hexFix(block.previousblockhash)
     block.merkleroot = this.hexFix(block.merkleroot)
@@ -62,7 +60,7 @@ class MongodbStorage {
    * @param {string} block
    * @return {string}
    */
-  hexFix(hex) {
+  hexFix (hex) {
     if (hex.length === 64) {
       hex = '0x' + hex
     }
@@ -75,7 +73,7 @@ class MongodbStorage {
    * @todo Use helper function to normalise txid
    * @param {string} txid
    */
-  getTX(txid) {
+  getTX (txid) {
     return new Promise((resolve, reject) => {
       this.transactionModel.findOne({ txid })
         .exec((err, res) => {
@@ -93,14 +91,14 @@ class MongodbStorage {
   /**
    * @todo Implement
    */
-  getBalance(address, assets, blockAge) {
+  getBalance (address, assets, blockAge) {
     return new Promise((resolve, reject) => {
       console.log('[mongo] getBalance triggered.')
       resolve(true)
     })
   }
 
-  getBlock(index) {
+  getBlock (index) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
         .exec((err, res) => {
@@ -117,7 +115,7 @@ class MongodbStorage {
     })
   }
 
-  getBlockList() {
+  getBlockList () {
     return new Promise((resolve, reject) => {
       this.blockModel.find({}, 'index')
         .sort('index')
@@ -133,7 +131,7 @@ class MongodbStorage {
     })
   }
 
-  getBlockCount() {
+  getBlockCount () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'index')
         .sort('-index')
@@ -150,7 +148,7 @@ class MongodbStorage {
     })
   }
 
-  getAssetList() {
+  getAssetList () {
     return new Promise((resolve, reject) => {
       this.addressModel.find({ type: 'a' }, 'asset')
         .exec((err, res) => {
@@ -165,17 +163,17 @@ class MongodbStorage {
     })
   }
 
-  getAssetListByAddress(address, asset, startBlock) {
+  getAssetListByAddress (address, asset, startBlock) {
     return new Promise((resolve, reject) => {
       this.transactionModel.find({
         'vout.address': address,
         $or: [
-          {'type': 'ContractTransaction'},
-          {'type': 'InvocationTransaction'},
-          {'type': 'ClaimTransaction'}
+          {type: 'ContractTransaction'},
+          {type: 'InvocationTransaction'},
+          {type: 'ClaimTransaction'}
         ],
         'vout.asset': asset,
-        'blockIndex': { '$gte': startBlock }
+        blockIndex: { $gte: startBlock }
       })
         .sort('blockIndex')
         .exec((err, res) => {
@@ -190,7 +188,7 @@ class MongodbStorage {
     })
   }
 
-  saveAsset(asset) {
+  saveAsset (asset) {
     return new Promise((resolve, reject) => {
       this.addressModel(asset).save((err) => {
         if (err) {
@@ -201,7 +199,7 @@ class MongodbStorage {
     })
   }
 
-  saveBlock(block) {
+  saveBlock (block) {
     return new Promise((resolve, reject) => {
       block = this.delintBlock(block)
       this.blockModel(block).save((err) => {
@@ -213,7 +211,7 @@ class MongodbStorage {
     })
   }
 
-  saveTransaction(tx) {
+  saveTransaction (tx) {
     return new Promise((resolve, reject) => {
       this.transactionModel(tx).save((err) => {
         if (err) {
@@ -224,9 +222,9 @@ class MongodbStorage {
     })
   }
 
-  updateTransaction(tx) {
+  updateTransaction (tx) {
     return new Promise((resolve, reject) => {
-      this.transactionModel.update({'txid': tx.txid}, tx, (err) => {
+      this.transactionModel.update({txid: tx.txid}, tx, (err) => {
         if (err) {
           reject(err)
         }
@@ -235,19 +233,19 @@ class MongodbStorage {
     })
   }
 
-  getAddress(addressHash) {
+  getAddress (addressHash) {
     return new Promise((resolve, reject) => {
-      this.addressModel.findOne({ 'address': addressHash })
-      .exec((err, res) => {
-        if (err) {
-          reject(err)
-        }
-        resolve(res)
-      })
+      this.addressModel.findOne({ address: addressHash })
+        .exec((err, res) => {
+          if (err) {
+            reject(err)
+          }
+          resolve(res)
+        })
     })
   }
 
-  saveAddress(address) {
+  saveAddress (address) {
     return new Promise((resolve, reject) => {
       this.addressModel(address)
         .save((err, res) => {
@@ -259,9 +257,9 @@ class MongodbStorage {
     })
   }
 
-  updateBalance(address, asset, balance, index) {
+  updateBalance (address, asset, balance, index) {
     return new Promise((resolve, reject) => {
-      this.addressModel.update({ 'address': address, 'assets.asset': asset }, {
+      this.addressModel.update({ address: address, 'assets.asset': asset }, {
         'assets.$.balance': balance,
         'assets.$.index': index
       }).exec((err, res) => {
@@ -270,8 +268,8 @@ class MongodbStorage {
         }
 
         if (res.n === 0) {
-          const result = { 'asset': asset, 'balance': balance, 'index': index, 'type': 'a' }
-          this.addressModel.update({ 'address': address }, { '$push': {'assets': result} })
+          const result = { asset: asset, balance: balance, index: index, type: 'a' }
+          this.addressModel.update({ address: address }, { $push: {assets: result} })
             .exec((err, res) => { // Resolve anyway
               resolve(res)
             })
@@ -288,16 +286,16 @@ class MongodbStorage {
    * @param {Number} [end] The end index of the block range to verify.
    * @returns Promise.<Array> An array containing the indices of the missing blocks.
    */
-  verify(start, end) {
+  verify (start, end) {
     return new Promise((resolve, reject) => {
-      var missing = []
-      var pointer = start - 1
+      let missing = []
+      let pointer = start - 1
 
       console.log('Blockchain Verification: Scanning')
 
-      var stream = this.blockModel
-        .find({index: {'$gte': start, '$lte': end}}, 'index').sort('index')
-        .cursor();
+      let stream = this.blockModel
+        .find({index: {$gte: start, $lte: end}}, 'index').sort('index')
+        .cursor()
 
       stream.on('data', (d) => {
         while (true) {
@@ -322,7 +320,7 @@ class MongodbStorage {
    * @todo Verify if mongodb server is available/reachable
    * @private
    */
-  _initConnection() {
+  _initConnection () {
     mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
       connection.onOpen()
     })
@@ -333,7 +331,7 @@ class MongodbStorage {
   /**
    * @private
    */
-  _getBlockModel() {
+  _getBlockModel () {
     const schema = new mongoose.Schema({
       hash: String,
       size: Number,
@@ -359,7 +357,7 @@ class MongodbStorage {
   /**
    * @private
    */
-  _getTransactionModel() {
+  _getTransactionModel () {
     const schema = new mongoose.Schema({
       txid: { type: 'String', unique: true, required: true, dropDups: true, index: true },
       size: Number,
@@ -381,7 +379,7 @@ class MongodbStorage {
   /**
    * @private
    */
-  _getAddressModel() {
+  _getAddressModel () {
     const schema = new mongoose.Schema({
       address: { type: 'String', unique: true, required: true, dropDups: true },
       asset: 'String',
@@ -392,7 +390,6 @@ class MongodbStorage {
 
     return mongoose.models[this.collectionNames.addresses] || mongoose.model(this.collectionNames.addresses, schema)
   }
-
 }
 
 module.exports = MongodbStorage
