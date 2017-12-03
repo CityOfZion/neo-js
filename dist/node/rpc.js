@@ -2,22 +2,56 @@
 const axios = require('axios')
 
 module.exports = (node, options) => {
-  let module = {}
+  const module = {}
+
+  /**
+   * Makes an RPC call to the node.*
+   * @param {Object} payload An object defining the request.
+   * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
+   * @returns {Promise.<Object>} A promise returning the data field of the response.
+   * @example
+   * call({'method': 'getblock', 'params': [666,1], 'id': 0})
+   */
+  const call = (payload) => {
+    const t0 = Date.now()
+    node.pendingRequests += 1
+    return axios({
+      method: 'post',
+      url: `${node.domain}:${node.port}`,
+      data: {
+        jsonrpc: '2.0',
+        method: payload.method,
+        params: payload.params,
+        id: payload.id
+      },
+      timeout: 10000
+    }).then((response) => {
+      node.pendingRequests -= 1
+      node.age = Date.now()
+      if (response.data.error) return Promise.reject(response.data.error)
+      node.latency = node.age - t0
+      node.active = true
+      return response.data.result
+    }).catch((err) => {
+      node.pendingRequests -= 1
+      node.age = Date.now()
+      node.active = false
+      return Promise.reject(err)
+    })
+  }
 
   /**
    * Gets the NEO and GAS balance of an address.
    * @param {string} assetId The address to get the balance of.
    * @returns {Promise.<Object>} A promise containing the address balances.
    */
-  module.getBalance = (assetId) => new Promise((resolve, reject) => {
+  module.getBalance = (assetId) => (
     call({
       method: 'getbalance',
       params: [],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Gets the best block hash on the node
@@ -26,15 +60,13 @@ module.exports = (node, options) => {
    * return 0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973
    * @returns {Promise.<Object>}
    */
-  module.getBestBlockHash = () => new Promise((resolve, reject) => {
+  module.getBestBlockHash = () => (
     call({
       method: 'getbestblockhash',
       params: [],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getblock rpc request to return a block.  This method
@@ -80,17 +112,13 @@ module.exports = (node, options) => {
    * @param {number} index The index of the block being requested.
    * @returns {Promise.<string>} A promise returning the hex contents of the block
    */
-  module.getBlock = (index) => new Promise((resolve, reject) => {
+  module.getBlock = (index) => (
     call({
       method: 'getblock',
       params: [index, 1],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch((err) => {
-      reject(err)
     })
-  })
+  )
 
   /**
    * Invokes the getblock rpc request to return a block.  This method
@@ -136,15 +164,13 @@ module.exports = (node, options) => {
    * @param {string} hash The hash of the block being requested.
    * @returns {Promise.<Object>} A promise returning information of the block
    */
-  module.getBlockByHash = (hash) => new Promise((resolve, reject) => {
+  module.getBlockByHash = (hash) => (
     call({
       method: 'getblock',
       params: [hash, 1],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getblockcount rpc request to return the block height.  This
@@ -157,17 +183,18 @@ module.exports = (node, options) => {
    * return 1000000
    * @returns {Promise.<number>} A promise returning the block count.
    */
-  module.getBlockCount = () => new Promise((resolve, reject) => {
+  module.getBlockCount = () => (
     call({
       method: 'getblockcount',
       params: [],
       id: 0
-    }).then(({result}) => {
+    }).then((result) => {
       node.blockHeight = result
       node.index = result - 1
-      resolve(result)
-    }).catch(reject)
-  })
+
+      return result
+    })
+  )
 
   /**
    * Invokes the getblockhash rpc request to return a block's hash.  This method
@@ -180,15 +207,13 @@ module.exports = (node, options) => {
    * return '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'
    * @returns {Promise.<string>} A promise returning the hash of the block
    */
-  module.getBlockHash = (index) => new Promise((resolve, reject) => {
+  module.getBlockHash = (index) => (
     call({
       method: 'getblockhash',
       params: [index],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getblocksysfee rpc request to return system fee.
@@ -199,15 +224,13 @@ module.exports = (node, options) => {
    * return 905
    * @returns {Promise.<number>} The system fee.
    */
-  module.getBlockSystemFee = (height) => new Promise((resolve, reject) => {
+  module.getBlockSystemFee = (height) => (
     call({
       method: 'getblocksysfee',
       params: [height],
       id: 0
-    }).then(({result}) => {
-      resolve(parseInt(result, 10))
-    }).catch(reject)
-  })
+    }).then((result) => parseInt(result, 10))
+  )
 
   /**
    * Invokes the getconnectioncount rpc request to return the number of connections to
@@ -218,18 +241,14 @@ module.exports = (node, options) => {
    * return 10
    * @returns {Promise.<number>} A promise returning the number of connections to the node.
    */
-  module.getConnectionCount = () => new Promise((resolve, reject) => {
+  module.getConnectionCount = () => (
     call({
       method: 'getconnectioncount',
       params: [],
       id: 0
-    }).then(({result}) => {
-      node.connections = result
-      resolve(result)
-    }).catch((err) => {
-      reject(new Error('Unable to contact the requested node.'))
     })
-  })
+      .catch((err) => Promise.reject(new Error('Unable to contact the requested node.')))
+  )
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
@@ -238,17 +257,13 @@ module.exports = (node, options) => {
    * @param params The params used to invoke the contract.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invoke = ({ scriptHash, params }) => new Promise((resolve, reject) => {
+  module.invoke = ({ scriptHash, params }) => (
     call({
       method: 'invoke',
       params: [scriptHash, params],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch((_err) => {
-      reject(new Error('Unable to contact the requested node.'))
-    })
-  })
+    }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
+  )
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
@@ -258,17 +273,13 @@ module.exports = (node, options) => {
    * @param params The params used to invoke the contract.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invokeFunction = ({ scriptHash, operation, params }) => new Promise((resolve, reject) => {
+  module.invokeFunction = ({ scriptHash, operation, params }) => (
     call({
       method: 'invokefunction',
       params: [scriptHash, operation, params],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch((_err) => {
-      reject(new Error('Unable to contact the requested node.'))
-    })
-  })
+    }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
+  )
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
@@ -276,32 +287,24 @@ module.exports = (node, options) => {
    * @param script raw script to invoke.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invokeScript = (script) => new Promise((resolve, reject) => {
+  module.invokeScript = (script) => (
     call({
       method: 'invokescript',
       params: [script],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch((_err) => {
-      reject(new Error('Unable to contact the requested node.'))
-    })
-  })
+    }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
+  )
 
   /**
    * TBA
    */
-  module.getRawMemPool = () => new Promise((resolve, reject) => {
+  module.getRawMemPool = () => (
     call({
       method: 'getrawmempool',
       params: [],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch((_err) => {
-      reject(new Error('Unable to contact the requested node.'))
-    })
-  })
+    }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
+  )
 
   /**
    * Polls the node for the raw transaction data associated with an input txid.
@@ -326,71 +329,61 @@ module.exports = (node, options) => {
    *  }
    * @returns {Promise.<Object>} An object containing the transaction information.
    */
-  module.getRawTransaction = (txid) => new Promise((resolve, reject) => {
+  module.getRawTransaction = (txid) => (
     call({
       method: 'getrawtransaction',
       params: [txid, 1],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Polls the node for the raw transaction response associated with an input txid.
    * @param {string} txid The requested transaction ID.
    * @returns {Promise.<Object>} An object containing the transaction response.
    */
-  module.getTXOut = ({ txid, index }) => new Promise((resolve, reject) => {
+  module.getTXOut = ({ txid, index }) => (
     call({
       method: 'gettxout',
       params: [txid, index],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Submits a raw transaction event to the blockchain.
    * @param {string} hex The hex string representing the raw transaction.
    * @returns {Promise.<Object>} The transaction response.
    */
-  module.sendRawTransaction = (hex) => new Promise((resolve, reject) => {
+  module.sendRawTransaction = (hex) => (
     call({
       method: 'sendrawtransaction',
       params: [hex],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * TBA
    */
-  module.sendToAddress = ({ assetId, address, value }) => new Promise((resolve, reject) => {
+  module.sendToAddress = ({ assetId, address, value }) => (
     call({
       method: 'sendtoaddress',
       params: [assetId, address, value],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * TBA
    */
-  module.submitBlock = (hex) => new Promise((resolve, reject) => {
+  module.submitBlock = (hex) => (
     call({
       method: 'submitblock',
       params: [hex],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getaccountstate rpc request to return information of requested account.
@@ -415,15 +408,13 @@ module.exports = (node, options) => {
    * }
    * @returns {Promise.<Object>} An object containing the account information.
    */
-  module.getAccountState = (address) => new Promise((resolve, reject) => {
+  module.getAccountState = (address) => (
     call({
       method: 'getaccountstate',
       params: [address],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getassetstate rpc request to return information of requested asset.
@@ -453,15 +444,13 @@ module.exports = (node, options) => {
    * }
    * @returns {Promise.<Object>} An object containing the asset information.
    */
-  module.getAssetState = (assetId) => new Promise((resolve, reject) => {
+  module.getAssetState = (assetId) => (
     call({
       method: 'getassetstate',
       params: [assetId],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the getcontractstate rpc request to return information of requested contract.
@@ -483,15 +472,13 @@ module.exports = (node, options) => {
    * }
    * @returns {Promise.<Object>} An object containing the contract information.
    */
-  module.getContractState = (hash) => new Promise((resolve, reject) => {
+  module.getContractState = (hash) => (
     call({
       method: 'getcontractstate',
       params: [hash],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * Invokes the validateaddress rpc request to verify a requested address.
@@ -505,64 +492,24 @@ module.exports = (node, options) => {
    * }
    * @returns {Promise.<Object>} An object containing the validation information of the requested account.
    */
-  module.validateAddress = (address) => new Promise((resolve, reject) => {
+  module.validateAddress = (address) => (
     call({
       method: 'validateaddress',
       params: [address],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
+    })
+  )
 
   /**
    * TBA
    */
-  module.getPeers = () => new Promise((resolve, reject) => {
+  module.getPeers = () => (
     call({
       method: 'getpeers',
       params: [],
       id: 0
-    }).then(({result}) => {
-      resolve(result)
-    }).catch(reject)
-  })
-
-  /**
-   * Makes an RPC call to the node.*
-   * @param {Object} payload An object defining the request.
-   * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
-   * @returns {Promise.<Object>} A promise returning the data field of the response.
-   * @example
-   * call({'method': 'getblock', 'params': [666,1], 'id': 0})
-   */
-  const call = (payload) => new Promise((resolve, reject) => {
-    const t0 = Date.now()
-    node.pendingRequests += 1
-    axios({
-      method: 'post',
-      url: `${node.domain}:${node.port}`,
-      data: {
-        jsonrpc: '2.0',
-        method: payload.method,
-        params: payload.params,
-        id: payload.id
-      },
-      timeout: 10000
-    }).then((response) => {
-      node.pendingRequests -= 1
-      node.age = Date.now()
-      if (response.data.error) return reject(response.data.error)
-      node.latency = node.age - t0
-      node.active = true
-      resolve(response.data)
-    }).catch((err) => {
-      node.pendingRequests -= 1
-      node.age = Date.now()
-      node.active = false
-      return reject(err)
     })
-  })
+  )
 
   return module
 }

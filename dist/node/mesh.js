@@ -22,7 +22,6 @@ class mesh {
     }, options)
 
     const node = require('../node')
-
     let endpoints
     if (this.network === 'mainnet') {
       endpoints = profiles.rpc.mainnet.endpoints
