@@ -57,8 +57,8 @@ class MongodbStorage {
   /**
    * @todo Migrate to a helper class
    * @static
-   * @param {string} block
-   * @return {string}
+   * @param {String} hex
+   * @return {String}
    */
   hexFix (hex) {
     if (hex.length === 64) {
@@ -71,7 +71,7 @@ class MongodbStorage {
 
   /**
    * @todo Use helper function to normalise txid
-   * @param {string} txid
+   * @param {String} txid
    */
   getTX (txid) {
     return new Promise((resolve, reject) => {
@@ -88,7 +88,7 @@ class MongodbStorage {
   /**
    * List transactions of a specific wallet.
    * @param {String} address
-   * @return Promise.<Object>
+   * @return {Promise.<Object>}
    */
   getTransactions (address) {
     return new Promise((resolve, reject) => {
@@ -110,15 +110,9 @@ class MongodbStorage {
   }
 
   /**
-   * @todo Implement
+   * @param {Number} index
+   * @return {Promise.<Object>}
    */
-  getBalance (address, assets, blockAge) {
-    return new Promise((resolve, reject) => {
-      // console.log('[mongo] getBalance triggered.')
-      reject(new Error('Not implemented'))
-    })
-  }
-
   getBlock (index) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
@@ -131,6 +125,10 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {String} hash
+   * @return {Promise.<Object>}
+   */
   getBlockByHash (hash) {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ hash })
@@ -143,6 +141,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @return {Promise.<Number>}
+   */
   getBlockCount () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'index')
@@ -160,6 +161,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @return {Promise.<String>}
+   */
   getBestBlockHash () {
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'hash')
@@ -173,6 +177,10 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {String} hash
+   * @returns {Promise.<Object>}
+   */
   getAsset (hash) {
     return new Promise((resolve, reject) => {
       this.addressModel.findOne({ type: 'a', address: hash })
@@ -185,6 +193,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @returns {Promise.<Array>}
+   */
   getAssetList () {
     return new Promise((resolve, reject) => {
       this.addressModel.find({ type: 'a' })
@@ -197,6 +208,12 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {String} address
+   * @param {String} assetHash
+   * @param {Number} startBlock
+   * @returns {Promise.<Array>}
+   */
   getAssetListByAddress (address, assetHash, startBlock = 0) {
     return new Promise((resolve, reject) => {
       this.transactionModel.find({
@@ -219,6 +236,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {Object} asset
+   */
   saveAsset (asset) {
     return new Promise((resolve, reject) => {
       this.addressModel(asset).save((err) => {
@@ -230,6 +250,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {Object} block
+   */
   saveBlock (block) {
     return new Promise((resolve, reject) => {
       block = this.delintBlock(block)
@@ -242,6 +265,10 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {String} hash
+   * @param {Object} assetState
+   */
   saveAssetState (hash, assetState) {
     return new Promise((resolve, reject) => {
       this.getAsset(hash)
@@ -258,6 +285,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {Object} tx
+   */
   saveTransaction (tx) {
     return new Promise((resolve, reject) => {
       this.transactionModel(tx).save((err) => {
@@ -269,6 +299,9 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {Object} tx
+   */
   updateTransaction (tx) {
     return new Promise((resolve, reject) => {
       this.transactionModel.update({txid: tx.txid}, tx, (err) => {
@@ -280,6 +313,10 @@ class MongodbStorage {
     })
   }
 
+  /**
+   * @param {String} hash
+   * @returns {Promise.<Object>}
+   */
   getAddress (hash) {
     return new Promise((resolve, reject) => {
       this.addressModel.findOne({ address: hash })
@@ -292,9 +329,12 @@ class MongodbStorage {
     })
   }
 
-  saveAddress (hash) {
+  /**
+   * @param {Object} address
+   */
+  saveAddress (address) {
     return new Promise((resolve, reject) => {
-      this.addressModel(hash)
+      this.addressModel(address)
         .save((err, res) => {
           if (err) {
             reject(err)
@@ -304,9 +344,15 @@ class MongodbStorage {
     })
   }
 
-  updateBalance (address, asset, balance, index) {
+  /**
+   * @param {String} addressHash
+   * @param {String} assetHash
+   * @param {Number} balance
+   * @param {Number} index
+   */
+  updateBalance (addressHash, assetHash, balance, index) {
     return new Promise((resolve, reject) => {
-      this.addressModel.update({ address: address, 'assets.asset': asset }, {
+      this.addressModel.update({ address: addressHash, 'assets.asset': assetHash }, {
         'assets.$.balance': balance,
         'assets.$.index': index
       }).exec((err, res) => {
@@ -315,8 +361,8 @@ class MongodbStorage {
         }
 
         if (res.n === 0) {
-          const result = { asset: asset, balance: balance, index: index, type: 'a' }
-          this.addressModel.update({ address: address }, { $push: {assets: result} })
+          const result = { asset: assetHash, balance: balance, index: index, type: 'a' }
+          this.addressModel.update({ address: addressHash }, { $push: {assets: result} })
             .exec((err, res) => { // Resolve anyway
               resolve(res)
             })
@@ -329,9 +375,9 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over a block range.
-   * @param {String} [start = 0] The start index of the block range to verify.
-   * @param {Number} [end] The end index of the block range to verify.
-   * @returns Promise.<Array> An array containing the indices of the missing blocks.
+   * @param {String} start - The start index of the block range to verify.
+   * @param {Number} end - The end index of the block range to verify.
+   * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verifyBlocks (start, end) {
     return new Promise((resolve, reject) => {
@@ -362,7 +408,7 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over assets.
-   * @returns Promise.<Array> An array containing the indices of the invalid assets.
+   * @returns {Promise.<Array>} An array containing the indices of the invalid assets.
    */
   verifyAssets () {
     return new Promise((resolve, reject) => {
