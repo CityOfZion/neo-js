@@ -86,7 +86,7 @@ class mesh {
    * @returns {Promise.<Object>}
    */
   getBlock (index, sort = 'latency') {
-    return this.nodeWithBlock(index, sort).rpc.getBlock(index)
+    return (this.nodeWithBlock(index, sort) || this.nodes[0]).rpc.getBlock(index)
   }
 
   /**
@@ -97,7 +97,7 @@ class mesh {
    * @returns {Promise.<*>} The response of the rpc method.
    */
   rpc (method, params) {
-    return this.highestNode().rpc[method](params)
+    return (this.highestNode() || this.nodes[0]).rpc[method](params)
   }
 }
 

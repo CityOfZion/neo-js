@@ -7,7 +7,7 @@
 
 // -- Bootstrap
 
-const Neo = require('../../../dist/node')
+const Node = require('../../../dist/node')
 
 // -- Chain of command
 
@@ -15,7 +15,7 @@ async function main () {
   console.log('== Basic RPC Example ==')
 
   // Instantiate a node that provides access to the testnet mesh
-  const node = new Neo({ network: 'testnet' })
+  const node = new Node({ network: 'testnet' })
 
   // Verify neoBlockchain properties
   console.log('node.domain:', node.domain)
