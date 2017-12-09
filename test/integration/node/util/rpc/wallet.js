@@ -8,7 +8,7 @@ const Profiles = require('../../../../helpers/profiles')
 
 const neoNode = TestHelper.getNeoNode()
 const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
-TestHelper.setHttpInterceptors(true)
+TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 describe(`${describeBadge} getBalance()`, () => {
