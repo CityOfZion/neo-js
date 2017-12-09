@@ -77,14 +77,25 @@ class node {
         })
 
       setInterval(() => {
-        this.storage.verify()
+        this.storage.verifyBlocks()
           .then((res) => {
-            console.log('Verified: missing:', res.length)
-            res.forEach((r) => {
-              this.enqueueBlock(r, 0)
+            console.log('Blocks verified. missing:', res.length)
+            res.forEach((blockIndex) => {
+              this.enqueueBlock(blockIndex, 0)
             })
           })
       }, 180000)
+
+      setInterval(() => {
+        // check for asset state
+        this.storage.verifyAssets()
+          .then((res) => {
+            console.log('Assets verified. missing states:', res.length)
+            res.forEach((assetHash) => {
+              this.enqueueAsset(assetHash, 0)
+            })
+          })
+      }, 60000)
     }
 
     // Initialize wallet. Just light for now.
@@ -112,8 +123,8 @@ class node {
 
   /**
    * Makes an RPC call to get the requested block
-   * and inserts it into the local database.
-   * @param {Object} attrs The block attributes
+   * and inserts it into the local storage.
+   * @param {Object} attrs - The block attributes
    */
   storeBlock (attrs) {
     return new Promise((resolve, reject) => {
@@ -140,9 +151,30 @@ class node {
   }
 
   /**
+   * Makes a RPC call to get the state information of requested
+   * asset and inserts into the local storage.
+   * @param {Object} attrs - The block attributes
+   */
+  storeAsset (attrs) {
+    return new Promise((resolve, reject) => {
+      this.mesh.rpc('getAssetState', attrs.hash)
+        .then((res) => {
+          this.storage.saveAssetState(attrs.hash, res)
+            .then((res) => {
+              resolve(res)
+            })
+            .catch((err) => reject(err))
+        })
+        .catch((err) => {
+          return reject(err)
+        })
+    })
+  }
+
+  /**
    * Adds a block request to the sync queue.
-   * @param {number} index The index of the block to synchronize.
-   * @param {number} [priority=5] The priority of the block download request.
+   * @param {Number} index - The index of the block to synchronize.
+   * @param {Number} [priority=5] - The priority of the block download request.
    */
   enqueueBlock (index, priority = 5) {
     // if the blockheight is above the current height,
@@ -162,15 +194,29 @@ class node {
   }
 
   /**
+   * Adds asset's state request to the sync queue.
+   * @param {Number} hash - The hash value of the asset to synchronize.
+   * @param {Number} [priority=5] - The priority of the block download request.
+   */
+  enqueueAsset (hash, priority = 5) {
+    this.queue.push({
+      method: 'storeAsset',
+      attrs: {
+        hash
+      }
+    }, priority)
+  }
+
+  /**
    * Runs a deferred update loop to periodically poll (with jitter)
    * the node for its block height.
    * @TODO: This needs to be revised to support all node types
    */
   deferredUpdateLoop () {
     const base = !this.active ? 10000 : 5000
-    this.rpc.getBlockCount().then((res) => {
-    }).catch((err) => {
-    })
+    this.rpc.getBlockCount()
+      .then((res) => {})
+      .catch((err) => {})
 
     setTimeout(() => this.deferredUpdateLoop(), base + Math.random() * 5000)
   }
