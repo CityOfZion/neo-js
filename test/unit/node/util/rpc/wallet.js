@@ -14,7 +14,7 @@ const nep5 = require('@cityofzion/neon-js').api.nep5
 
 // Test Cases
 
-describe('hooks', () => {
+describe('Wallet unit tests', () => {
   let sandbox
 
   before(() => {
