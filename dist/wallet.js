@@ -1,6 +1,7 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
-const neonJs = require('@cityofzion/neon-js').default
+const neonDB = require('@cityofzion/neon-js').api.neonDB
+const nep5 = require('@cityofzion/neon-js').api.nep5
 
 /**
  * @class wallet
@@ -27,13 +28,17 @@ class wallet {
     }
   }
 
+  prepareScriptHash (scriptHash) {
+    return scriptHash.replace(/^0x/, '')
+  }
+
   /**
    * Get balances of NEO and GAS for an address
    * @param {string} address - Address to check.
    * @return {Promise<Balance>} Balance of address
    */
   getBalance (address) {
-    return neonJs.get.balance(this.neonDbNet, address)
+    return neonDB.getBalance(this.neonDbNet, address)
       .catch((err) => {
         console.log('[light-wallet] getBalance err:', err)
       })
@@ -45,7 +50,7 @@ class wallet {
    * @return {Promise<Claim>} An object with available and unavailable GAS amounts.
    */
   getClaims (address) {
-    return neonJs.get.claims(this.neonDbNet, address)
+    return neonDB.getClaims(this.neonDbNet, address)
       .catch((err) => {
         console.log('[light-wallet] getClaims err:', err)
       })
@@ -57,7 +62,7 @@ class wallet {
    * @return {Promise<History>} History
    */
   getTransactionHistory (address) {
-    return neonJs.get.transactionHistory(this.neonDbNet, address)
+    return neonDB.getTransactionHistory(this.neonDbNet, address)
       .catch((err) => {
         console.log('[light-wallet] transactionHistory err:', err)
       })
@@ -70,7 +75,10 @@ class wallet {
    * @return {Promise<number>}
    */
   getTokenBalance (scriptHash, address) {
-    return neonJs.get.tokenBalance(this.neonDbNet, scriptHash, address)
+    return neonDB.getRPCEndpoint(this.neonDbNet)
+      .then((endpoint) => {
+        return nep5.getTokenBalance(endpoint, this.prepareScriptHash(scriptHash), address)
+      })
       .catch((err) => {
         console.log('[light-wallet] getTokenBalance err:', err)
       })
@@ -85,7 +93,7 @@ class wallet {
    * @return {Promise<Response>} RPC Response
    */
   doSendAsset (toAddress, from, assetAmounts, signingFunction) {
-    return neonJs.do.sendAsset(this.neonDbNet, toAddress, from, assetAmounts, signingFunction)
+    return neonDB.doSendAsset(this.neonDbNet, toAddress, from, assetAmounts, signingFunction)
       .catch((err) => {
         console.log('[light-wallet] sendAsset err:', err)
       })
@@ -98,7 +106,7 @@ class wallet {
    * @return {Promise<Response>} RPC response from sending transaction
    */
   doClaimAllGas (privateKey, signingFunction) {
-    return neonJs.do.claimAllGas(this.neonDbNet, privateKey, signingFunction)
+    return neonDB.doClaimAllGas(this.neonDbNet, privateKey, signingFunction)
       .catch((err) => {
         console.log('[light-wallet] claimAllGas err:', err)
       })
@@ -113,9 +121,27 @@ class wallet {
    * @return {Promise<Response>} RPC Response
    */
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
-    return neonJs.do.mintTokens(this.neonDbNetnet, scriptHash, fromWif, neo, gasCost, signingFunction)
+    return neonDB.doMintTokens(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, neo, gasCost, signingFunction)
       .catch((err) => {
         console.log('[light-wallet] mintTokens err:', err)
+      })
+  }
+
+  /**
+   * Transfers NEP5 Tokens.
+   * @param {string} net
+   * @param {string} scriptHash
+   * @param {string} fromWif
+   * @param {string} toAddress
+   * @param {number} transferAmount
+   * @param {number} gasCost
+   * @param {function} signingFunction
+   * @return {Promise<Response>} RPC response
+   */
+  doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
+    return nep5.doTransferToken(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)
+      .catch((err) => {
+        console.log('[light-wallet] doTransferToken err:', err)
       })
   }
 }
