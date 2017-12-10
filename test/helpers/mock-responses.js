@@ -181,5 +181,5 @@ module.exports = {
         description: '1'
       }
     }
-  },
+  }
 }

@@ -6,7 +6,7 @@ const MockResponses = require('./mock-responses')
 
 module.exports = {
   getNeoNode: function () {
-    const node = new Neo()
+    const node = new Neo({ network: 'testnet' })
     return node
   },
 
