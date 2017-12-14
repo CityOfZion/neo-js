@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Basic RPC Example
- * A simple example to get started with neo-js's RPC client.
+ * Contract RPC Example
+ * A simple example to profile a contract via RPC client.
  */
 
 // -- Bootstrap
@@ -12,7 +12,7 @@ const Node = require('../../../dist/node')
 // -- Chain of command
 
 async function main () {
-  console.log('== Basic RPC Example ==')
+  console.log('== Contract RPC Example ==')
 
   // Instantiate a node to interact with the testnet mesh
   const node = new Node({ network: 'testnet' })

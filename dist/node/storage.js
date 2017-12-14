@@ -97,8 +97,7 @@ class storage {
             // Update stale balances and resolve
             Promise.all(parts[0].map((asset) => {
               return this.getAssetBalance(address, asset.asset, asset.index + 1, asset.balance)
-            }
-            ))
+            }))
               .then((res) => {
                 resolve({address: address, assets: parts[1].concat(res)})
               })
@@ -109,6 +108,31 @@ class storage {
           reject(err)
         })
     })
+  }
+
+  /**
+   * Gets the state information of the requested asset.
+   * @param {String} hash
+   */
+  getAssetState (hash) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAsset(hash)
+        .then((res) => {
+          if (!res) {
+            resolve(undefined)
+          }
+          resolve(res.state)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  /**
+   * Returns the requested asset from local storage.
+   * @param {String} hash
+   */
+  getAsset (hash) {
+    return this.dataAccess.getAsset(hash)
   }
 
   /**
@@ -125,8 +149,7 @@ class storage {
     return new Promise((resolve, reject) => {
       this.dataAccess.getAssetListByAddress(address, asset, startBlock)
         .then((res) => {
-          resolve(res)
-          Promise.all(_.map(res, 'txid').map(this.getExpandedTX))
+          Promise.all(_.map(res, 'txid').map(this.getExpandedTX.bind(this)))
             .then((res) => {
               // Balancing
               res.forEach((r) => {
@@ -146,13 +169,55 @@ class storage {
               const result = { asset: asset, balance: balance, index: this.index, type: 'a' }
               this.dataAccess.updateBalance(address, asset, balance, this.index)
                 .then((res) => {
-                  console.log(result)
                   resolve(result)
                 }) // Not catching errors
             })
             .catch((err) => {
               reject(err)
             })
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Returns list of transactions of an asset belonging to a specific address
+   * on the blockchain.
+   * @param {String} address
+   * @param {String} assetHash
+   * @returns {Promise.<Array>}
+   */
+  getAssetTransactions (address, assetHash) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAssetListByAddress(address, assetHash)
+        .then((res) => {
+          const transactions = []
+          res.forEach((txObj, index) => {
+            let subtotal = 0
+
+            txObj.vout.forEach((valueOutObj) => {
+              if ((valueOutObj.address === address) && (valueOutObj.asset === assetHash)) {
+                subtotal += valueOutObj.value
+              }
+            })
+            txObj.vin.forEach((valueInObj) => {
+              if ((valueInObj.address === address) && (valueInObj.asset === assetHash)) {
+                subtotal -= valueInObj.value
+              }
+            })
+
+            const transaction = {
+              blockIndex: txObj.blockIndex,
+              // blockTime: undefined,
+              value: subtotal,
+              tx: txObj
+            }
+            transactions.push(transaction)
+          })
+
+          resolve(transactions)
         })
         .catch((err) => {
           reject(err)
@@ -179,10 +244,10 @@ class storage {
             resolve(tx)
           }
 
-          Promise.all(_.map(tx.vin, 'txid').map(this.getTX))
+          Promise.all(_.map(tx.vin, 'txid').map(this.getTX.bind(this)))
             .then((res) => {
-              tx.vin = _.map(res, (r, i) => r.vout[tx.vin[i].vout])
-              this.updateTransaction(tx)
+              tx.vin = _.map(res, (r, i) => (r.vout[tx.vin[i].vout]))
+              this.dataAccess.updateTransaction(tx)
                 .then((res) => {
                   resolve(tx)
                 })
@@ -191,7 +256,7 @@ class storage {
                 })
             })
             .catch((err) => {
-              console.log('[db] getExpandedTX Promise.all err:', err)
+              // console.log('[db] getExpandedTX Promise.all err:', err)
             })
         })
         .catch((err) => {
@@ -219,10 +284,19 @@ class storage {
   }
 
   /**
+   * Returns the requested block from local storage.
+   * @param {String} hash The hash of the block being requested.
+   * @returns {Promise.<Object>} A promise returning information of the block
+   */
+  getBlockByHash (hash) {
+    return this.dataAccess.getBlockByHash(hash)
+  }
+
+  /**
    * Gets the block height of the blockchain maintained in local storage.
    * This method also caches the height and index in memory for use when identifying
    * blocks that need to be downloaded.
-   * @returns {Promise.<number>} The block height
+   * @returns {Promise.<Number>} The block height
    */
   getBlockCount () {
     return new Promise((resolve, reject) => {
@@ -239,10 +313,27 @@ class storage {
   }
 
   /**
-   * Saves a json formated block to storage.  This method will also split out the
+   * Gets the best block hash on the node
+   * @returns {Promise.<Object>}
+   */
+  getBestBlockHash () {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getBestBlockHash()
+        .then((res) => {
+          if (!res) {
+            resolve(undefined)
+          }
+          resolve(res.hash)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  /**
+   * Saves a json formated block to storage. This method will also split out the
    * transactions for storage as well as caching them for later use.
    * @param newBlock {Object} The JSON representation of a block on the blockchain.
-   * @returns {Promise.<object>}
+   * @returns {Promise.<Object>}
    */
   saveBlock (newBlock) {
     return new Promise((resolve, reject) => {
@@ -291,16 +382,38 @@ class storage {
   }
 
   /**
+   * Saves the state information of an asset.
+   * @param {String} hash
+   * @param {Object} assetState
+   */
+  saveAssetState (hash, assetState) {
+    return this.dataAccess.saveAssetState(hash, assetState)
+  }
+
+  /**
    * Verifies local blockchain integrity over a block range.
    * @param {String} [start = 0] The start index of the block range to verify.
    * @param {Number} [end = this.index] The end index of the block range to verify.
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
-  verify (start = 0, end = this.index) {
-    return new Promise((resolve, reject) => {
-      this.dataAccess.verify(start, end)
-        .then((res) => resolve(res))
-    })
+  verifyBlocks (start = 0, end = this.index) {
+    return this.dataAccess.verifyBlocks(start, end)
+  }
+
+  /**
+   * Verifies local blockchain's asset integrity.
+   * @returns {Promise.<Array>} An array containing the indices of the invlid assets.
+   */
+  verifyAssets () {
+    return this.dataAccess.verifyAssets()
+  }
+
+  /**
+   * Returns list of all assets in local storage.
+   * @returns {Promise.<Array>}
+   */
+  getAssetList () {
+    return this.dataAccess.getAssetList()
   }
 
   /**

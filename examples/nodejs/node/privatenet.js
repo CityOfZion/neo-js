@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Private network Example
+ * Private Network Example
  *
  * An example usage to have a running node instance connecting to a private network.
  * This works with the neo-privatenet-docker project found here:
@@ -9,6 +9,7 @@
  * https://github.com/CityOfZion/neo-privatenet-docker
  *
  */
+
 // -- Bootstrap
 
 const Node = require('../../../dist/node')
@@ -16,7 +17,7 @@ const Node = require('../../../dist/node')
 // -- Chain of command
 
 async function main () {
-  console.log('== NeoBlockchain PrivNet Example ==')
+  console.log('== Private Network Example ==')
 
   /**
    * We manually set up the nodes to connect to. These are the ones neo-privatenet-docker
@@ -24,7 +25,8 @@ async function main () {
    */
   const options = {
     network: {
-      endpoints: [
+      network: 'privnet',
+      seeds: [
         { domain: 'http://127.0.0.1', port: 30333 },
         { domain: 'http://127.0.0.1', port: 30334 },
         { domain: 'http://127.0.0.1', port: 30335 },
