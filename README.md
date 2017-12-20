@@ -49,15 +49,15 @@ Installation instructions can be found in [MongoDB installation manual](https://
 ## Quick Start
 
 ```js
-const Neo = require('neo-js-blockchain')
+const Node = require('neo-js-blockchain')
 ```
 
 To create a new blockchain instance:
 
 ```js
 // create the local node instance that will interface with the rpc methods
-const nodeT = new Neo({ network: 'testnet' }) //on testnet
-const nodeM = new Neo({ network: 'mainnet' }) //on mainnet
+const nodeT = new Node({ network: 'testnet' }) //on testnet
+const nodeM = new Node({ network: 'mainnet' }) //on mainnet
 
 nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
 nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
@@ -79,7 +79,7 @@ const options = {
 }
 
 // create the local node instance and get the local block count after 5 seconds.
-const node = new Neo(options)
+const node = new Node(options)
 
 setTimeout(() => {
   node.storage.getBlockCount()
