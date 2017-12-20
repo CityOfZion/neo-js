@@ -4,6 +4,7 @@
 const async = require('async')
 const storage = require('./node/storage')
 const mesh = require('./node/mesh')
+const wallet = require('./wallet')
 
 /**
  * @class node
@@ -96,6 +97,9 @@ class node {
           })
       }, 60000)
     }
+
+    // Initialize wallet. Just light for now.
+    this.wallet = new wallet({ network: this.network })
 
     this.deferredUpdateLoop()
 
