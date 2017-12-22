@@ -80,21 +80,21 @@ describe(`${describeBadge} doSendAsset()`, () => {
         done(err)
       })
   })
+})
 
-  describe(`${describeBadge} doTransferTokens()`, () => {
-    it('should successfully transfer a token.', (done) => {
-      const scriptHash = Profiles.Contracts.LOCALTOKEN_Test
-      const fromWif = 'L5FzBMGSG2d7HVJL5vWuXfxUKsrkX5irFhtw1L5zU4NAvNuXzd8a'
-      const transferAmount = 1
-      const gasCost = 0
-      node.wallet.doTransferToken(scriptHash, fromWif, Profiles.Wallets.WalletC.Address, transferAmount, gasCost)
-        .then(({ result }) => {
-          expect(result).to.equal(true)
-          done()
-        })
-        .catch((err) => {
-          done(err)
-        })
-    })
+describe(`${describeBadge} doTransferTokens()`, () => {
+  it('should successfully transfer a token.', (done) => {
+    const scriptHash = Profiles.Contracts.LOCALTOKEN_Test
+    const fromWif = 'L5FzBMGSG2d7HVJL5vWuXfxUKsrkX5irFhtw1L5zU4NAvNuXzd8a'
+    const transferAmount = 1
+    const gasCost = 0
+    node.wallet.doTransferToken(scriptHash, fromWif, Profiles.Wallets.WalletC.Address, transferAmount, gasCost)
+      .then(({ result }) => {
+        expect(result).to.equal(true)
+        done()
+      })
+      .catch((err) => {
+        done(err)
+      })
   })
 })
