@@ -1,20 +1,20 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
-const Profiles = require('../../../../helpers/profiles')
+const TestHelper = require('../../../helpers/test-helper')
+const Profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
 const node = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getBlock()', () => {
+describe(`${describeBadge} getBlock()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getBlock', Profiles.Blocks.Block_100000.Number)
+    node.rpc.getBlock(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe('Unit test getBlock()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (done) => {
-    node.mesh.rpc('getBlock', Profiles.Blocks.Block_100000.Number)
+    node.rpc.getBlock(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -38,9 +38,9 @@ describe('Unit test getBlock()', () => {
   })
 })
 
-describe('Unit test getBlockByHash()', () => {
+describe(`${describeBadge} getBlockByHash()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getBlockByHash', Profiles.Blocks.Block_100000.Hash)
+    node.rpc.getBlockByHash(Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -51,7 +51,7 @@ describe('Unit test getBlockByHash()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (done) => {
-    node.mesh.rpc('getBlockByHash', Profiles.Blocks.Block_100000.Hash)
+    node.rpc.getBlockByHash(Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -64,9 +64,9 @@ describe('Unit test getBlockByHash()', () => {
   })
 })
 
-describe('Unit test getBlockHash()', () => {
+describe(`${describeBadge} getBlockHash()`, () => {
   it('should have string as its response data type.', (done) => {
-    node.mesh.rpc('getBlockHash', Profiles.Blocks.Block_100000.Number)
+    node.rpc.getBlockHash(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const hash = res
         expect(hash).to.be.a('string')
@@ -78,7 +78,7 @@ describe('Unit test getBlockHash()', () => {
   })
 
   it("should be '0x' follow by 64 hex characters in lower-case.", (done) => {
-    node.mesh.rpc('getBlockHash', Profiles.Blocks.Block_100000.Number)
+    node.rpc.getBlockHash(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const hash = res
         expect(hash).to.match(/^(0x)[a-f0-9]{64}$/)
@@ -90,9 +90,9 @@ describe('Unit test getBlockHash()', () => {
   })
 })
 
-describe('Unit test getBlockSystemFee()', () => {
+describe(`${describeBadge} getBlockSystemFee()`, () => {
   it('should be a whole number as its response.', (done) => {
-    node.mesh.rpc('getBlockSystemFee', Profiles.Blocks.Block_100000.Number)
+    node.rpc.getBlockSystemFee(Profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const fee = res
         expect(fee).to.be.a('number')

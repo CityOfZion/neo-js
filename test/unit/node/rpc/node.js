@@ -1,7 +1,7 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
+const TestHelper = require('../../../helpers/test-helper')
 
 // Bootstrapping
 
