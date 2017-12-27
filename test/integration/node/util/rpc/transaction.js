@@ -6,15 +6,15 @@ const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
-const neoNode = TestHelper.getNeoNode()
-const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
+const node = TestHelper.getNeoNode()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
 describe(`${describeBadge} getRawTransaction()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getRawTransaction(Profiles.Blocks.Block_100000.Transactions[0].Hash)
+    node.mesh.rpc('getRawTransaction', Profiles.Blocks.Block_100000.Transactions[0].Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -27,7 +27,7 @@ describe(`${describeBadge} getRawTransaction()`, () => {
 
 describe(`${describeBadge} getTXOut()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getTXOut(Profiles.Blocks.Block_100000.Transactions[0].Hash, 0)
+    node.mesh.rpc('getTXOut', { txid: Profiles.Blocks.Block_100000.Transactions[0].Hash, index: 0 })
       .then((res) => {
         expect(res).to.be.null
         done()
