@@ -34,7 +34,7 @@ This mechanic is also used for address balances. Upon requesting an update for a
 Install the package using:
 
 ```bash
-$ npm install --save neo-js-blockchain
+$ npm install --save @cityofzion/neo-js
 ```
 
 Alternatively, to access to the latest available code, you can reference to the git repository directly:
@@ -49,7 +49,7 @@ Installation instructions can be found in [MongoDB installation manual](https://
 ## Quick Start
 
 ```js
-const Neo = require('neo-js-blockchain')
+const Neo = require('@cityofzion/neo-js')
 ```
 
 To create a new blockchain instance:
