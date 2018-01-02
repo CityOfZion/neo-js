@@ -1,6 +1,7 @@
 {
-  "name": "neo-js-blockchain",
-  "version": "0.5.0",
+  "name": "@cityofzion/neo-js",
+  "version": "0.5.11",
+  "private": false,
   "description": "A package for running a node on the neo blockchain.",
   "main": "dist/node.js",
   "scripts": {
