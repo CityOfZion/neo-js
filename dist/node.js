@@ -12,7 +12,7 @@ const wallet = require('./wallet')
  * A class defining a node on the neo blockchain.
  * @param {Object} options Configuration parameters for the node.
  * @example
- * node = require('neo-js-blockchain');
+ * node = require('@cityofzion/neo-js');
  * let options = {
  *   network: 'mainnet',
  *   storage: {
@@ -26,7 +26,7 @@ const wallet = require('./wallet')
  * }
  * const n = node(options)
  * @example
- * node = require('neo-js-blockchain');
+ * node = require('@cityofzion/neo-js');
  * const n = node()
  * n.mesh.rpc('getBlock', 1000)
  */

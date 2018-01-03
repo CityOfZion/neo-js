@@ -6,15 +6,15 @@ const Profiles = require('../../../../helpers/profiles')
 
 // Bootstrapping
 
-const neoNode = TestHelper.getNeoNode()
-const describeBadge = `[light mode on ${neoNode.domain}:${neoNode.port}]`
+const node = TestHelper.getNeoNode()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
 describe(`${describeBadge} getContractState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    neoNode.rpc.getContractState(Profiles.Contracts.RPX_Test)
+    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe(`${describeBadge} getContractState()`, () => {
   })
 
   it("should contain 'hash' property with an expected value.", (done) => {
-    neoNode.rpc.getContractState(Profiles.Contracts.RPX_Test)
+    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
       .then((res) => {
         expect(res.hash).to.be.equal(Profiles.Contracts.RPX_Test)
         done()
