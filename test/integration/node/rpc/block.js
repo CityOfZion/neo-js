@@ -1,18 +1,18 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
-const Profiles = require('../../../../helpers/profiles')
+const TestHelper = require('../../../helpers/test-helper')
+const Profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
 const node = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe('Unit test getBlock()', () => {
+describe(`${describeBadge} getBlock()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     node.mesh.rpc('getBlock', Profiles.Blocks.Block_100000.Number)
       .then((res) => {
@@ -38,7 +38,7 @@ describe('Unit test getBlock()', () => {
   })
 })
 
-describe('Unit test getBlockByHash()', () => {
+describe(`${describeBadge} getBlockByHash()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     node.mesh.rpc('getBlockByHash', Profiles.Blocks.Block_100000.Hash)
       .then((res) => {
@@ -64,7 +64,7 @@ describe('Unit test getBlockByHash()', () => {
   })
 })
 
-describe('Unit test getBlockHash()', () => {
+describe(`${describeBadge} getBlockHash()`, () => {
   it('should have string as its response data type.', (done) => {
     node.mesh.rpc('getBlockHash', Profiles.Blocks.Block_100000.Number)
       .then((res) => {
@@ -90,7 +90,7 @@ describe('Unit test getBlockHash()', () => {
   })
 })
 
-describe('Unit test getBlockSystemFee()', () => {
+describe(`${describeBadge} getBlockSystemFee()`, () => {
   it('should be a whole number as its response.', (done) => {
     node.mesh.rpc('getBlockSystemFee', Profiles.Blocks.Block_100000.Number)
       .then((res) => {

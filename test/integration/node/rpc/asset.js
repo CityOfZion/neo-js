@@ -1,20 +1,20 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
-const Profiles = require('../../../../helpers/profiles')
+const TestHelper = require('../../../helpers/test-helper')
+const Profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
 const node = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe(`Unit test getContractState()`, () => {
+describe(`${describeBadge} getAssetState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
+    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -24,10 +24,10 @@ describe(`Unit test getContractState()`, () => {
       })
   })
 
-  it("should contain 'hash' property with an expected value.", (done) => {
-    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
+  it("should contain 'id' property with an expected value.", (done) => {
+    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
       .then((res) => {
-        expect(res.hash).to.be.equal(Profiles.Contracts.RPX_Test)
+        expect(res.id).to.be.equal(Profiles.Assets.Neo)
         done()
       })
       .catch((err) => {

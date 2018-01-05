@@ -2,9 +2,9 @@
 
 const sinon = require('sinon')
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
-const MockNeonJs = require('../../../../helpers/mock-neon-js')
-const Profiles = require('../../../../helpers/profiles')
+const TestHelper = require('../../../helpers/test-helper')
+const MockNeonJs = require('../../../helpers/mock-neon-js')
+const Profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
