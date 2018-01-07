@@ -1,6 +1,6 @@
 <p align="center">
-  <img 
-    src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png" 
+  <img
+    src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png"
     width="125px">
 </p>
 
@@ -11,6 +11,8 @@
 </p>
 
 ## Overview
+
+[![Help Contribute to Open Source](https://www.codetriage.com/cityofzion/neo-js/badges/users.svg)](https://www.codetriage.com/cityofzion/neo-js)
 
 The `neo-js` package is designed to interface with the **Neo** blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
 
