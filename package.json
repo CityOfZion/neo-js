@@ -9,6 +9,7 @@
     "integration": "./node_modules/.bin/mocha -b ./test/integration/**/*.js",
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*.js",
     "coverage": "./node_modules/.bin/nyc npm test",
+    "build:docs": "./node_modules/.bin/documentation build dist/** -f html -o ./docs",
     "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
     "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
   },
@@ -37,6 +38,7 @@
   "devDependencies": {
     "axios-mock-adapter": "^1.9.0",
     "chai": "^4.1.2",
+    "documentation": "^5.3.5",
     "eslint": "^4.9.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
