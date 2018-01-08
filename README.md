@@ -1,13 +1,23 @@
 <p align="center">
   <img 
     src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png" 
-    width="125px">
+    width="125px"
+    alt="City of Zion logo">
 </p>
 
 <h1 align="center">neo-js</h1>
 
 <p align="center">
   A package for running a node on the <b>neo</b> blockchain.
+</p>
+
+<p align="center">
+  <a href="https://travis-ci.org/CityOfZion/neo-js">
+    <img src="https://travis-ci.org/CityOfZion/neo-js.svg?branch=master" alt="Build Status">
+  </a>
+  <a href="https://badge.fury.io/js/%40cityofzion%2Fneo-js">
+    <img src="https://badge.fury.io/js/%40cityofzion%2Fneo-js.svg" alt="npm version">
+  </a>
 </p>
 
 ## Overview
