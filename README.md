@@ -1,13 +1,23 @@
 <p align="center">
   <img 
     src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png" 
-    width="125px">
+    width="125px"
+    alt="City of Zion logo">
 </p>
 
 <h1 align="center">neo-js</h1>
 
 <p align="center">
   A package for running a node on the <b>neo</b> blockchain.
+</p>
+
+<p align="center">
+  <a href="https://travis-ci.org/CityOfZion/neo-js">
+    <img src="https://travis-ci.org/CityOfZion/neo-js.svg?branch=master" alt="Build Status">
+  </a>
+  <a href="https://badge.fury.io/js/%40cityofzion%2Fneo-js">
+    <img src="https://badge.fury.io/js/%40cityofzion%2Fneo-js.svg" alt="npm version">
+  </a>
 </p>
 
 ## Overview
@@ -34,7 +44,7 @@ This mechanic is also used for address balances. Upon requesting an update for a
 Install the package using:
 
 ```bash
-$ npm install --save neo-js-blockchain
+$ npm install --save @cityofzion/neo-js
 ```
 
 Alternatively, to access to the latest available code, you can reference to the git repository directly:
@@ -49,15 +59,15 @@ Installation instructions can be found in [MongoDB installation manual](https://
 ## Quick Start
 
 ```js
-const Neo = require('neo-js-blockchain')
+const Node = require('@cityofzion/neo-js')
 ```
 
 To create a new blockchain instance:
 
 ```js
 // create the local node instance that will interface with the rpc methods
-const nodeT = new Neo({ network: 'testnet' }) //on testnet
-const nodeM = new Neo({ network: 'mainnet' }) //on mainnet
+const nodeT = new Node({ network: 'testnet' }) //on testnet
+const nodeM = new Node({ network: 'mainnet' }) //on mainnet
 
 nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
 nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
@@ -79,7 +89,7 @@ const options = {
 }
 
 // create the local node instance and get the local block count after 5 seconds.
-const node = new Neo(options)
+const node = new Node(options)
 
 setTimeout(() => {
   node.storage.getBlockCount()

@@ -10,7 +10,7 @@ const profiles = require('../profiles')
  * will interface with.
  * @param {Object} options Configuration parameters for the mesh.
  * @example
- * neo = require('neo-js-blockchain');
+ * node = require('@cityofzion/neo-js');
  * const n = node()
  * n.mesh.rpc('getBlock', 1000)
  */

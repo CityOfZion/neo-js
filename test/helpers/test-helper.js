@@ -1,12 +1,12 @@
 const axios = require('axios')
 const MockAdapter = require('axios-mock-adapter')
-const Neo = require('../../dist/node')
+const Node = require('../../dist/node')
 const Profiles = require('./profiles')
 const MockResponses = require('./mock-responses')
 
 module.exports = {
   getNeoNode: function () {
-    const node = new Neo({ network: 'testnet' })
+    const node = new Node({ network: 'testnet' })
     return node
   },
 

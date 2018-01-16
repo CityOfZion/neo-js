@@ -1,18 +1,18 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const TestHelper = require('../../../../helpers/test-helper')
-const Profiles = require('../../../../helpers/profiles')
+const TestHelper = require('../../../helpers/test-helper')
+const Profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
 const node = TestHelper.getNeoNode()
-TestHelper.setMockHttpClient()
+const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
 // Test Cases
 
-describe(`Unit test getContractState()`, () => {
+describe(`${describeBadge} getContractState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
       .then((res) => {

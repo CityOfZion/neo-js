@@ -4,6 +4,7 @@
 const async = require('async')
 const storage = require('./node/storage')
 const mesh = require('./node/mesh')
+const wallet = require('./wallet')
 
 /**
  * @class node
@@ -11,7 +12,7 @@ const mesh = require('./node/mesh')
  * A class defining a node on the neo blockchain.
  * @param {Object} options Configuration parameters for the node.
  * @example
- * neo = require('neo-js-blockchain');
+ * node = require('@cityofzion/neo-js');
  * let options = {
  *   network: 'mainnet',
  *   storage: {
@@ -25,7 +26,7 @@ const mesh = require('./node/mesh')
  * }
  * const n = node(options)
  * @example
- * neo = require('neo-js-blockchain');
+ * node = require('@cityofzion/neo-js');
  * const n = node()
  * n.mesh.rpc('getBlock', 1000)
  */
@@ -96,6 +97,9 @@ class node {
           })
       }, 60000)
     }
+
+    // Initialize wallet. Just light for now.
+    this.wallet = new wallet({ network: this.network })
 
     this.deferredUpdateLoop()
 
