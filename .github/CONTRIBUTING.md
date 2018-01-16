@@ -16,7 +16,7 @@ When contributing to this repository, please first discuss the change you wish t
 
 Please start by search the issue tracker as your issue may have already been discussed or fixed. If it is something that is not yet discussed, please file a new issue in the issue tracker.
 
-You may also use the [official community chat on Slack](https://discord.gg/R8v48YA) and join the software discussion on `#develop` channel.
+You may also use the [official community chat](https://discord.gg/R8v48YA) and join the software discussion on its developer channel.
 
 ## Core Style Guide
 
