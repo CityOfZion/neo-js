@@ -2,6 +2,7 @@
 /* eslint new-cap: "off" */
 const neonDB = require('@cityofzion/neon-js').api.neonDB
 const nep5 = require('@cityofzion/neon-js').api.nep5
+const Logger = require('./common/logger')
 
 /**
  * @class wallet
@@ -16,7 +17,8 @@ class wallet {
   constructor (options = {}) {
     Object.assign(this, {
       network: {},
-      neonDbNet: ''
+      neonDbNet: '',
+      logger: new Logger('wallet')
     }, options)
 
     if (this.neonDbNet === '') {
@@ -40,7 +42,7 @@ class wallet {
   getBalance (address) {
     return neonDB.getBalance(this.neonDbNet, address)
       .catch((err) => {
-        console.log('[light-wallet] getBalance err:', err)
+        this.logger.error('getBalance err:', err)
       })
   }
 
@@ -52,7 +54,7 @@ class wallet {
   getClaims (address) {
     return neonDB.getClaims(this.neonDbNet, address)
       .catch((err) => {
-        console.log('[light-wallet] getClaims err:', err)
+        this.logger.error('getClaims err:', err)
       })
   }
 
@@ -64,7 +66,7 @@ class wallet {
   getTransactionHistory (address) {
     return neonDB.getTransactionHistory(this.neonDbNet, address)
       .catch((err) => {
-        console.log('[light-wallet] transactionHistory err:', err)
+        this.logger.error('transactionHistory err:', err)
       })
   }
 
@@ -80,7 +82,7 @@ class wallet {
         return nep5.getTokenBalance(endpoint, this.prepareScriptHash(scriptHash), address)
       })
       .catch((err) => {
-        console.log('[light-wallet] getTokenBalance err:', err)
+        this.logger.error('getTokenBalance err:', err)
       })
   }
 
@@ -95,7 +97,7 @@ class wallet {
   doSendAsset (toAddress, from, assetAmounts, signingFunction) {
     return neonDB.doSendAsset(this.neonDbNet, toAddress, from, assetAmounts, signingFunction)
       .catch((err) => {
-        console.log('[light-wallet] sendAsset err:', err)
+        this.logger.error('sendAsset err:', err)
       })
   }
 
@@ -108,7 +110,7 @@ class wallet {
   doClaimAllGas (privateKey, signingFunction) {
     return neonDB.doClaimAllGas(this.neonDbNet, privateKey, signingFunction)
       .catch((err) => {
-        console.log('[light-wallet] claimAllGas err:', err)
+        this.logger.error('claimAllGas err:', err)
       })
   }
 
@@ -123,7 +125,7 @@ class wallet {
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
     return neonDB.doMintTokens(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, neo, gasCost, signingFunction)
       .catch((err) => {
-        console.log('[light-wallet] mintTokens err:', err)
+        this.logger.error('mintTokens err:', err)
       })
   }
 
@@ -141,7 +143,7 @@ class wallet {
   doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
     return nep5.doTransferToken(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)
       .catch((err) => {
-        console.log('[light-wallet] doTransferToken err:', err)
+        this.logger.error('doTransferToken err:', err)
       })
   }
 }

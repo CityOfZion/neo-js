@@ -13,11 +13,13 @@
 // -- Bootstrap
 
 const Node = require('../../dist/node')
+const Logger = require('../../dist/common/logger')
+const logger = new Logger('examples:node:privatenet', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  console.log('== Private Network Example ==')
+  logger.info('== Private Network Example ==')
 
   /**
    * We manually set up the nodes to connect to. These are the ones neo-privatenet-docker
@@ -38,13 +40,17 @@ async function main () {
   // Instantiate a private network node with memory storage
   const node = new Node(options)
 
-  console.log('The node is set up. Test call to getBestBlockHash follows.')
-  console.log('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
+  logger.info('The node is set up. Test call to getBestBlockHash follows.')
+  logger.info('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
 
-  console.log('== END ==')
+  logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
 }
 
 // -- Execute
+
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
 main()

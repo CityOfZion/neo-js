@@ -10,11 +10,13 @@
 // -- Bootstrap
 
 const Node = require('../../dist/node')
+const Logger = require('../../dist/common/logger')
+const logger = new Logger('examples:node:sync-test', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  console.log('== Test Syncing Example ==')
+  logger.info('== Test Syncing Example ==')
 
   // Instantiate a testnet node with specified local storage (and to a separate database as default of mongodb.js)
   const options = {
@@ -33,25 +35,25 @@ async function main () {
   const node = new Node(options)
 
   // Allow it to sync for 30 seconds
-  console.log('Start syncing for 30 seconds...')
+  logger.info('Start syncing for 30 seconds...')
   await sleep(30000)
 
   // Report document counts per collection type
-  console.log('block count:', await node.storage.getBlockCount())
+  logger.info('block count:', await node.storage.getBlockCount())
 
   const hash = await node.storage.getBestBlockHash()
-  console.log('best block hash:', hash)
+  logger.info('best block hash:', hash)
 
   const block = await node.storage.getBlockByHash(hash)
-  console.log('best block:', block)
+  logger.info('best block:', block)
 
   const txid = block.tx[0].txid
-  console.log('a TX ID of the best block:', txid)
+  logger.info('a TX ID of the best block:', txid)
 
   const transaction = await node.storage.getTX(txid)
-  console.log('transaction:', transaction)
+  logger.info('transaction:', transaction)
 
-  console.log('== END ==')
+  logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
 }
 
@@ -64,7 +66,7 @@ function sleep (ms) {
 // -- Execute
 
 process.on('unhandledRejection', (reason, p) => {
-  console.log('Unhandled Rejection at: Promise', p, 'reason:', reason)
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
 })
 
 main()

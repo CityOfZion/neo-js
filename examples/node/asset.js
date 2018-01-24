@@ -16,11 +16,13 @@
 // -- Bootstrap
 
 const Node = require('../../dist/node')
+const Logger = require('../../dist/common/logger')
+const logger = new Logger('examples:node:asset', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  console.log('== Test Syncing Example ==')
+  logger.info('== Test Syncing Example ==')
 
   // Instantiate a testnet node with local storage
   const node = new Node({
@@ -36,7 +38,7 @@ async function main () {
   // -- Example usages of asset related usages
 
   const assetList = await node.storage.getAssetList()
-  console.log('assetList:', assetList)
+  logger.info('assetList:', assetList)
   /**
    * Expected response:
    * [ { _id: 5a1dcfc64e45910dfdfe395d,
@@ -62,7 +64,7 @@ async function main () {
    */
 
   const assetState = await node.storage.getAssetState(kacHash)
-  console.log('assetState:', assetState)
+  logger.info('assetState:', assetState)
   /**
    * Expected response:
    * { frozen: false,
@@ -80,7 +82,7 @@ async function main () {
    */
 
   const assetBalance = await node.storage.getAssetBalance(address_AUX, kacHash)
-  console.log('assetBalance:', assetBalance)
+  logger.info('assetBalance:', assetBalance)
   /**
    * Expected response:
    * { asset: '0xb426d50907c2b1ff91a8d5c8f1da3bea77e79ada05885719130d99cabae697c0',
@@ -90,7 +92,7 @@ async function main () {
    */
 
   const transactions = await node.storage.getAssetTransactions(address_AUX, kacHash)
-  console.log('transactions:', transactions)
+  logger.info('transactions:', transactions)
   /**
    * Expected response:
    * [ { blockIndex: 155487,
@@ -111,7 +113,7 @@ async function main () {
    *      attributes: [] } }, ... TRUNCATED ...]
    */
 
-  console.log('== END ==')
+  logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
 }
 

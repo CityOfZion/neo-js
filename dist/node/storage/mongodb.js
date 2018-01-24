@@ -1,13 +1,12 @@
 /* eslint handle-callback-err: "off" */
 const mongoose = require('mongoose')
+const Logger = require('../../common/logger')
 
 class MongodbStorage {
   /**
    * @param {Object} options
    */
   constructor (options = {}) {
-    console.log('[mongo] constructor triggered.')
-
     // Associate class properties
     Object.assign(this, {
       connectOnInit: true,
@@ -16,8 +15,11 @@ class MongodbStorage {
         blocks: 'b_neo_t_blocks',
         transactions: 'b_neo_t_transactions',
         addresses: 'b_neo_t_addresses'
-      }
+      },
+      logger: new Logger('storage.mongodb')
     }, options)
+    this.logger.debug('constructor triggered.')
+
     this.blockModel = this._getBlockModel()
     this.transactionModel = this._getTransactionModel()
     this.addressModel = this._getAddressModel()
@@ -384,7 +386,7 @@ class MongodbStorage {
       let missing = []
       let pointer = start - 1
 
-      console.log('Blockchain Verification: Scanning')
+      this.logger.info('Blockchain Verification: Scanning')
 
       let stream = this.blockModel
         .find({index: {$gte: start, $lte: end}}, 'index').sort('index')
@@ -439,8 +441,12 @@ class MongodbStorage {
     mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
       connection.onOpen()
     })
-      .then(() => { console.log('mongoose connected.') })
-      .catch(console.error)
+      .then(() => {
+        this.logger.info('mongoose connected.')
+      })
+      .catch((err) => {
+        this.logger.error(err)
+      })
   }
 
   /**

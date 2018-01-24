@@ -2,6 +2,7 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 const profiles = require('../profiles')
+const Logger = require('../common/logger')
 
 /**
  * @class mesh
@@ -18,7 +19,8 @@ class mesh {
   constructor (options = {}) {
     Object.assign(this, {
       network: undefined, /** {String|Object} the network to connect to. This is either 'testnet' or 'mainnet' or an object defining an Array of endpoints */
-      nodes: []
+      nodes: [],
+      logger: new Logger('mesh')
     }, options)
 
     const node = require('../node')
@@ -30,6 +32,7 @@ class mesh {
     } else {
       endpoints = this.network.endpoints
     }
+    this.logger.debug('endpoints:', endpoints)
 
     endpoints.forEach((endpoint) => {
       this.nodes.push(new node({
