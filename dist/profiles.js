@@ -16,7 +16,7 @@ const profiles = {
     },
     testnet: {
       endpoints: [
-        { domain: 'http://seed1.neo.org', port: 20332 },
+        // { domain: 'http://seed1.neo.org', port: 20332 },
         { domain: 'http://seed2.neo.org', port: 20332 },
         { domain: 'http://seed3.neo.org', port: 20332 },
         { domain: 'http://seed4.neo.org', port: 20332 },
