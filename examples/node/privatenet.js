@@ -28,7 +28,7 @@ async function main () {
   const options = {
     network: {
       network: 'privnet',
-      seeds: [
+      endpoints: [
         { domain: 'http://127.0.0.1', port: 30333 },
         { domain: 'http://127.0.0.1', port: 30334 },
         { domain: 'http://127.0.0.1', port: 30335 },

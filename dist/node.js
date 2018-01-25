@@ -146,7 +146,7 @@ class node {
             })
         })
         .catch((err) => {
-          return reject(err)
+          reject(err)
         })
     })
   }
@@ -167,7 +167,7 @@ class node {
             .catch((err) => reject(err))
         })
         .catch((err) => {
-          return reject(err)
+          reject(err)
         })
     })
   }
