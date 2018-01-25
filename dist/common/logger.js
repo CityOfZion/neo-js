@@ -18,7 +18,7 @@ class Logger {
       displayTimestamp: true,
       displayName: true,
       displayLevel: true,
-      timestampFormat: 'MM-DD hh:mm:ss.SSS'
+      timestampFormat: 'hh:mm:ss.SSS'
     }, options)
 
     // Bootstrapping
@@ -72,7 +72,6 @@ class Logger {
 
     // Prepend items in reverse order
     if (this.displayLevel) {
-      // const levelLabel = level[0].toUpperCase() + ':'
       const levelLabel = level + ':'
       args.unshift('\x1b[1m' + levelLabel + '\x1b[0m')
     }
@@ -80,7 +79,7 @@ class Logger {
       args.unshift('\x1b[36m' + this.name + '\x1b[0m')
     }
     if (this.displayTimestamp) {
-      const tsLabel = '[' + moment().format(this.timestampFormat) + ']'
+      const tsLabel = moment().format(this.timestampFormat)
       args.unshift('\x1b[2m' + tsLabel + '\x1b[0m')
     }
 
