@@ -8,29 +8,31 @@
 // -- Bootstrap
 
 const Node = require('../../dist/node')
+const Logger = require('../../dist/common/logger')
+const logger = new Logger('examples:rpc:basic', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  console.log('== Basic RPC Example ==')
+  logger.info('== Basic RPC Example ==')
 
   // Instantiate a node that provides access to the testnet mesh
   const node = new Node({ network: 'testnet' })
 
   // Verify neoBlockchain properties
-  console.log('node.domain:', node.domain)
-  console.log('node.network:', node.network)
-  console.log('node.mesh.nodes.length:', node.mesh.nodes.length)
-  console.log('list of nodes in the mesh:')
+  logger.info('node.domain:', node.domain)
+  logger.info('node.network:', node.network)
+  logger.info('node.mesh.nodes.length:', node.mesh.nodes.length)
+  logger.info('list of nodes in the mesh:')
   node.mesh.nodes.forEach((node, index) => {
-    console.log(`> [${index}] ${node.domain}:${node.port}`)
+    logger.info(`> [${index}] ${node.domain}:${node.port}`)
   })
 
   // Example RPC requests
-  console.log('getBlockCount:', await node.mesh.rpc('getBlockCount'))
-  console.log('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
+  logger.info('getBlockCount:', await node.mesh.rpc('getBlockCount'))
+  logger.info('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
 
-  console.log('== END ==')
+  logger.info('== END ==')
 
   // neoBlockchain process in the background. Explicit exit call is used.
   process.exit()

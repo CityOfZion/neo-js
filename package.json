@@ -33,6 +33,8 @@
     "async": "~2.5.0",
     "axios": "^0.16.2",
     "lodash": "~4.17.4",
+    "loglevel": "^1.6.1",
+    "moment": "^2.20.1",
     "mongoose": "~4.11.3"
   },
   "devDependencies": {

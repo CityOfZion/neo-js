@@ -1,6 +1,7 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 const _ = require('lodash')
+const Logger = require('../common/logger')
 
 /**
  * @class storage
@@ -23,8 +24,9 @@ class storage {
       index: -1,
       dataAccess: {},
       unlinkedBlocks: [],
-      assets: [] },
-    options)
+      assets: [],
+      logger: new Logger('storage')
+    }, options)
 
     // If the model type is mongoDB, load the mongoDB drive
     // and instantiate the storage.
@@ -101,7 +103,9 @@ class storage {
               .then((res) => {
                 resolve({address: address, assets: parts[1].concat(res)})
               })
-              .catch((err) => console.log(err))
+              .catch((err) => {
+                this.logger.error(err)
+              })
           }
         })
         .catch((err) => {
@@ -256,11 +260,11 @@ class storage {
                 })
             })
             .catch((err) => {
-              // console.log('[db] getExpandedTX Promise.all err:', err)
+              this.logger.error('getExpandedTX Promise.all err:', err)
             })
         })
         .catch((err) => {
-          console.log('[db] getExpendedTX getTX err:', err)
+          this.logger.error('getExpendedTX getTX err:', err)
         })
     })
   }

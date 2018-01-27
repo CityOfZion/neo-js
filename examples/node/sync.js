@@ -9,11 +9,13 @@
 // -- Bootstrap
 
 const Node = require('../../dist/node')
+const Logger = require('../../dist/common/logger')
+const logger = new Logger('examples:node:sync', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  console.log('== Test Syncing Example ==')
+  logger.info('== Test Syncing Example ==')
 
   // Instantiate a testnet node with local storage
   const options = {
@@ -25,12 +27,12 @@ async function main () {
 
   // By initiating the Node class, the synchronization begins on its own.
   const node = new Node(options)
-  console.log('node.network:', node.network)
+  logger.info('node.network:', node.network)
 
   // Check for current syncing progress every 30 seconds
-  console.log(`[${new Date()}] Start syncing...`)
+  logger.info(`Start syncing...`)
   setInterval(async () => {
-    console.log(`[${new Date()}] block count:`, await node.storage.getBlockCount())
+    logger.info(`current block count:`, await node.storage.getBlockCount())
   }, 30000)
 }
 

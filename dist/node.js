@@ -5,6 +5,7 @@ const async = require('async')
 const storage = require('./node/storage')
 const mesh = require('./node/mesh')
 const wallet = require('./wallet')
+const Logger = require('./common/logger')
 
 /**
  * @class node
@@ -49,7 +50,8 @@ class node {
       logPeriod: 1000, /** {number} Period at which to print a log message indicating blockchain sync status. */
       pendingRequests: 0, /** {number} Number of unresolved requests to this node. */
       unlinkedBlocks: [], /** {Array} Synchronized blocks which have not been linked to predecessors on the chain */
-      assets: []
+      assets: [],
+      logger: new Logger('node')
     }, options)
 
     this.rpc = require('./node/rpc')(this)
@@ -69,8 +71,7 @@ class node {
           this.blockWritePointer = this.storage.index
           // enqueue blocks for download
           setInterval(() => {
-            while ((this.blockWritePointer < this.mesh.highestNode().index) &&
-            (this.queue.length() < this.maxQueueLength)) {
+            while ((this.blockWritePointer < this.mesh.highestNode().index) && (this.queue.length() < this.maxQueueLength)) {
               this.enqueueBlock(this.blockWritePointer + 1)
             }
           }, 2000)
@@ -79,7 +80,7 @@ class node {
       setInterval(() => {
         this.storage.verifyBlocks()
           .then((res) => {
-            console.log('Blocks verified. missing:', res.length)
+            this.logger.info('Blocks verified. missing:', res.length)
             res.forEach((blockIndex) => {
               this.enqueueBlock(blockIndex, 0)
             })
@@ -90,7 +91,7 @@ class node {
         // check for asset state
         this.storage.verifyAssets()
           .then((res) => {
-            console.log('Assets verified. missing states:', res.length)
+            this.logger.info('Assets verified. missing states:', res.length)
             res.forEach((assetHash) => {
               this.enqueueAsset(assetHash, 0)
             })
@@ -110,9 +111,9 @@ class node {
           callback()
         })
         .catch((err) => {
-          // If the blcok request fails, throw it to the back to the queue to try again.
-          // timout prevents inf looping on connections issues etc..
-          console.log(err)
+          // If the block request fails, throw it to the back to the queue to try again.
+          // timeout prevents inf looping on connections issues etc..
+          this.logger.error(err)
           setTimeout(() => {
             this.enqueueBlock(task.attrs.index, 4)
           }, 2000)
@@ -127,6 +128,7 @@ class node {
    * @param {Object} attrs - The block attributes
    */
   storeBlock (attrs) {
+    this.logger.debug('storeBlock triggered. attrs:', attrs)
     return new Promise((resolve, reject) => {
       this.mesh.getBlock(attrs.index)
         .then((res) => {
@@ -134,9 +136,8 @@ class node {
           this.storage.saveBlock(res)
             .then(() => {
               // Consider logging a status update...communication is important
-              if ((attrs.index % this.logPeriod === 0) ||
-              (attrs.index === this.mesh.highestNode().index)) {
-                console.log(attrs)
+              if ((attrs.index % this.logPeriod === 0) || (attrs.index === this.mesh.highestNode().index)) {
+                this.logger.info(attrs)
               }
               resolve()
             })
