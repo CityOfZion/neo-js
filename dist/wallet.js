@@ -2,6 +2,7 @@
 /* eslint new-cap: "off" */
 const neonDB = require('@cityofzion/neon-js').api.neonDB
 const nep5 = require('@cityofzion/neon-js').api.nep5
+const HashHelper = require('./common/hash-helper')
 const Logger = require('./common/logger')
 
 /**
@@ -28,10 +29,6 @@ class wallet {
         this.neonDbNet = 'TestNet'
       }
     }
-  }
-
-  prepareScriptHash (scriptHash) {
-    return scriptHash.replace(/^0x/, '')
   }
 
   /**
@@ -79,7 +76,7 @@ class wallet {
   getTokenBalance (scriptHash, address) {
     return neonDB.getRPCEndpoint(this.neonDbNet)
       .then((endpoint) => {
-        return nep5.getTokenBalance(endpoint, this.prepareScriptHash(scriptHash), address)
+        return nep5.getTokenBalance(endpoint, HashHelper.denormalize(scriptHash), address)
       })
       .catch((err) => {
         this.logger.error('getTokenBalance err:', err)
@@ -123,7 +120,7 @@ class wallet {
    * @return {Promise<Response>} RPC Response
    */
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
-    return neonDB.doMintTokens(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, neo, gasCost, signingFunction)
+    return neonDB.doMintTokens(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, neo, gasCost, signingFunction)
       .catch((err) => {
         this.logger.error('mintTokens err:', err)
       })
@@ -141,7 +138,7 @@ class wallet {
    * @return {Promise<Response>} RPC response
    */
   doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
-    return nep5.doTransferToken(this.neonDbNet, this.prepareScriptHash(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)
+    return nep5.doTransferToken(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)
       .catch((err) => {
         this.logger.error('doTransferToken err:', err)
       })
