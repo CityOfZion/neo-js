@@ -33,7 +33,7 @@ async function main () {
       { domain: 'http://test2.cityofzion.io', port: 8880 },
       { domain: 'http://test3.cityofzion.io', port: 8880 },
       { domain: 'http://test4.cityofzion.io', port: 8880 },
-      { domain: 'http://test5.cityofzion.io', port: 8880 },
+      { domain: 'http://test5.cityofzion.io', port: 8880 }
     ]
   }})
 
