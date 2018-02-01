@@ -2,11 +2,11 @@
 
 const expect = require('chai').expect
 const TestHelper = require('../../../helpers/test-helper')
-const Profiles = require('../../../helpers/profiles')
+const profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
-const node = TestHelper.getNeoNode()
+const neo = TestHelper.getNeo()
 const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`${describeBadge} getAccountState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getAccountState', Profiles.Wallets.WalletN.Address)
+    neo.mesh.rpc('getAccountState', profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,9 +25,9 @@ describe(`${describeBadge} getAccountState()`, () => {
   })
 
   it("should contain 'script_hash' property with an expected value.", (done) => {
-    node.mesh.rpc('getAccountState', Profiles.Wallets.WalletN.Address)
+    neo.mesh.rpc('getAccountState', profiles.Wallets.WalletN.Address)
       .then((res) => {
-        expect(res.script_hash).to.be.equal(Profiles.Wallets.WalletN.Hash)
+        expect(res.script_hash).to.be.equal(profiles.Wallets.WalletN.Hash)
         done()
       })
       .catch((err) => {
@@ -38,7 +38,7 @@ describe(`${describeBadge} getAccountState()`, () => {
 
 describe(`${describeBadge} validateAddress()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('validateAddress', Profiles.Wallets.WalletN.Address)
+    neo.mesh.rpc('validateAddress', profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -49,7 +49,7 @@ describe(`${describeBadge} validateAddress()`, () => {
   })
 
   it("should contain 'isvalid' property with an expected value of true.", (done) => {
-    node.mesh.rpc('validateAddress', Profiles.Wallets.WalletN.Address)
+    neo.mesh.rpc('validateAddress', profiles.Wallets.WalletN.Address)
       .then((res) => {
         expect(res.isvalid).to.be.equal(true)
         done()

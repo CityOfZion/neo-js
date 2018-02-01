@@ -1,4 +1,4 @@
-module.exports = {
+const profiles = {
   Wallets: {
     WalletA: {
       Address: 'ALq7AWrhAueN6mJNqk6FHJjnsEoPRytLdW',
@@ -70,3 +70,5 @@ module.exports = {
     }
   }
 }
+
+module.exports = profiles

@@ -1,7 +1,7 @@
 /* global describe it */
 
 const expect = require('chai').expect
-const Profiles = require('../../helpers/profiles')
+const profiles = require('../../helpers/profiles')
 const HashHelper = require('../../../dist/common/hash-helper')
 
 // Bootstrapping
@@ -9,7 +9,7 @@ const HashHelper = require('../../../dist/common/hash-helper')
 // Test Cases
 
 describe('HashHelper unit tests', () => {
-  const rpxHash = Profiles.Contracts.RPX_Test
+  const rpxHash = profiles.Contracts.RPX_Test
   const rpxHashWithoutPrefix = '5b7074e873973a6ed3708862f219a6fbf4d1c411'
 
   describe('Unit test normalize()', () => {

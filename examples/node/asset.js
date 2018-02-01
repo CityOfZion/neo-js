@@ -15,7 +15,7 @@
 
 // -- Bootstrap
 
-const Node = require('../../dist/node')
+const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:node:asset', { level: Logger.levels.INFO })
 
@@ -25,9 +25,9 @@ async function main () {
   logger.info('== Test Syncing Example ==')
 
   // Instantiate a testnet node with local storage
-  const node = new Node({
+  const neo = new Neo({
     network: 'testnet',
-    storage: {
+    storageMeta: {
       model: 'mongoDB'
     }
   })
@@ -37,7 +37,7 @@ async function main () {
 
   // -- Example usages of asset related usages
 
-  const assetList = await node.storage.getAssetList()
+  const assetList = await neo.storage.getAssetList()
   logger.info('assetList:', assetList)
   /**
    * Expected response:
@@ -63,7 +63,7 @@ async function main () {
    *     assets: [] }, ... TRUNCATED ... ]
    */
 
-  const assetState = await node.storage.getAssetState(kacHash)
+  const assetState = await neo.storage.getAssetState(kacHash)
   logger.info('assetState:', assetState)
   /**
    * Expected response:
@@ -81,7 +81,7 @@ async function main () {
    *   version: 0 }
    */
 
-  const assetBalance = await node.storage.getAssetBalance(address_AUX, kacHash)
+  const assetBalance = await neo.storage.getAssetBalance(address_AUX, kacHash)
   logger.info('assetBalance:', assetBalance)
   /**
    * Expected response:
@@ -91,7 +91,7 @@ async function main () {
    *   type: 'a' }
    */
 
-  const transactions = await node.storage.getAssetTransactions(address_AUX, kacHash)
+  const transactions = await neo.storage.getAssetTransactions(address_AUX, kacHash)
   logger.info('transactions:', transactions)
   /**
    * Expected response:
@@ -118,5 +118,9 @@ async function main () {
 }
 
 // -- Execute
+
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
 main()

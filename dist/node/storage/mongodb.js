@@ -3,13 +3,17 @@ const mongoose = require('mongoose')
 const HashHelper = require('../../common/hash-helper')
 const Logger = require('../../common/logger')
 
+/**
+ * @class MongodbStorage
+ * @param {Object} options
+ */
 class MongodbStorage {
-  /**
-   * @param {Object} options
-   */
   constructor (options = {}) {
-    // Associate class properties
-    Object.assign(this, {
+    // -- Properties
+    this.blockModel = undefined
+    this.transactionModel = undefined
+    this.addressModel = undefined
+    this.defaultOptions = {
       connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
       collectionNames: {
@@ -17,28 +21,27 @@ class MongodbStorage {
         transactions: 'b_neo_t_transactions',
         addresses: 'b_neo_t_addresses'
       },
-      logger: new Logger('storage.mongodb')
-    }, options)
+      logger: new Logger('MongodbStorage')
+    }
+
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
     this.logger.debug('constructor triggered.')
+    this.blockModel = this.getBlockModel()
+    this.transactionModel = this.getTransactionModel()
+    this.addressModel = this.getAddressModel()
 
-    this.blockModel = this._getBlockModel()
-    this.transactionModel = this._getTransactionModel()
-    this.addressModel = this._getAddressModel()
-
-    // Bootstrap
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
     if (this.connectOnInit) {
-      this._initConnection()
+      this.initConnection()
     }
   }
 
-  // Static methods
-
   /**
-   * @todo Migrate to a helper class
    * @static
+   * @access private
    * @param {Object} block
-   * @return {Object}
+   * @returns {Object}
    */
   delintBlock (block) {
     block.hash = HashHelper.normalize(block.hash)
@@ -57,11 +60,10 @@ class MongodbStorage {
     return block
   }
 
-  // Pubic methods
-
   /**
    * @todo Use helper function to normalise txid
-   * @param {String} txid
+   * @access public
+   * @param {string} txid
    */
   getTX (txid) {
     return new Promise((resolve, reject) => {
@@ -77,8 +79,9 @@ class MongodbStorage {
 
   /**
    * List transactions of a specific wallet.
-   * @param {String} address
-   * @return {Promise.<Object>}
+   * @access public
+   * @param {string} address
+   * @returns {Promise.<Object>}
    */
   getTransactions (address) {
     return new Promise((resolve, reject) => {
@@ -100,8 +103,9 @@ class MongodbStorage {
   }
 
   /**
-   * @param {Number} index
-   * @return {Promise.<Object>}
+   * @access public
+   * @param {number} index
+   * @returns {Promise.<Object>}
    */
   getBlock (index) {
     return new Promise((resolve, reject) => {
@@ -116,8 +120,9 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} hash
-   * @return {Promise.<Object>}
+   * @access public
+   * @param {string} hash
+   * @returns {Promise.<Object>}
    */
   getBlockByHash (hash) {
     return new Promise((resolve, reject) => {
@@ -132,7 +137,8 @@ class MongodbStorage {
   }
 
   /**
-   * @return {Promise.<Number>}
+   * @access public
+   * @returns {Promise.<Number>}
    */
   getBlockCount () {
     return new Promise((resolve, reject) => {
@@ -152,7 +158,8 @@ class MongodbStorage {
   }
 
   /**
-   * @return {Promise.<String>}
+   * @access public
+   * @returns {Promise.<String>}
    */
   getBestBlockHash () {
     return new Promise((resolve, reject) => {
@@ -168,7 +175,8 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    * @returns {Promise.<Object>}
    */
   getAsset (hash) {
@@ -184,6 +192,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @returns {Promise.<Array>}
    */
   getAssetList () {
@@ -199,9 +208,10 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} address
-   * @param {String} assetHash
-   * @param {Number} startBlock
+   * @access public
+   * @param {string} address
+   * @param {string} assetHash
+   * @param {number} startBlock
    * @returns {Promise.<Array>}
    */
   getAssetListByAddress (address, assetHash, startBlock = 0) {
@@ -227,6 +237,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @param {Object} asset
    */
   saveAsset (asset) {
@@ -241,6 +252,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @param {Object} block
    */
   saveBlock (block) {
@@ -256,7 +268,8 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    * @param {Object} assetState
    */
   saveAssetState (hash, assetState) {
@@ -276,6 +289,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @param {Object} tx
    */
   saveTransaction (tx) {
@@ -290,6 +304,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @param {Object} tx
    */
   updateTransaction (tx) {
@@ -304,7 +319,8 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    * @returns {Promise.<Object>}
    */
   getAddress (hash) {
@@ -320,6 +336,7 @@ class MongodbStorage {
   }
 
   /**
+   * @access public
    * @param {Object} address
    */
   saveAddress (address) {
@@ -335,10 +352,11 @@ class MongodbStorage {
   }
 
   /**
-   * @param {String} addressHash
-   * @param {String} assetHash
-   * @param {Number} balance
-   * @param {Number} index
+   * @access public
+   * @param {string} addressHash
+   * @param {string} assetHash
+   * @param {number} balance
+   * @param {number} index
    */
   updateBalance (addressHash, assetHash, balance, index) {
     return new Promise((resolve, reject) => {
@@ -365,8 +383,9 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over a block range.
-   * @param {String} start - The start index of the block range to verify.
-   * @param {Number} end - The end index of the block range to verify.
+   * @access public
+   * @param {string} start - The start index of the block range to verify.
+   * @param {number} end - The end index of the block range to verify.
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verifyBlocks (start, end) {
@@ -398,6 +417,7 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over assets.
+   * @access public
    * @returns {Promise.<Array>} An array containing the indices of the invalid assets.
    */
   verifyAssets () {
@@ -418,14 +438,12 @@ class MongodbStorage {
     })
   }
 
-  // Private methods
-
   /**
    * @todo Remove magic connection string
    * @todo Verify if mongodb server is available/reachable
-   * @private
+   * @access private
    */
-  _initConnection () {
+  initConnection () {
     mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
       connection.onOpen()
     })
@@ -438,9 +456,9 @@ class MongodbStorage {
   }
 
   /**
-   * @private
+   * @access private
    */
-  _getBlockModel () {
+  getBlockModel () {
     const schema = new mongoose.Schema({
       hash: String,
       size: Number,
@@ -464,9 +482,9 @@ class MongodbStorage {
   }
 
   /**
-   * @private
+   * @access private
    */
-  _getTransactionModel () {
+  getTransactionModel () {
     const schema = new mongoose.Schema({
       txid: { type: 'String', unique: true, required: true, dropDups: true, index: true },
       size: Number,
@@ -486,9 +504,9 @@ class MongodbStorage {
   }
 
   /**
-   * @private
+   * @access private
    */
-  _getAddressModel () {
+  getAddressModel () {
     const schema = new mongoose.Schema({
       address: { type: 'String', unique: true, required: true, dropDups: true },
       asset: 'String',

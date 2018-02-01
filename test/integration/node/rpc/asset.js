@@ -2,11 +2,11 @@
 
 const expect = require('chai').expect
 const TestHelper = require('../../../helpers/test-helper')
-const Profiles = require('../../../helpers/profiles')
+const profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
-const node = TestHelper.getNeoNode()
+const neo = TestHelper.getNeo()
 const describeBadge = `[light mode on testnet]`
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`${describeBadge} getAssetState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
+    neo.mesh.rpc('getAssetState', profiles.Assets.Neo)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,9 +25,9 @@ describe(`${describeBadge} getAssetState()`, () => {
   })
 
   it("should contain 'id' property with an expected value.", (done) => {
-    node.mesh.rpc('getAssetState', Profiles.Assets.Neo)
+    neo.mesh.rpc('getAssetState', profiles.Assets.Neo)
       .then((res) => {
-        expect(res.id).to.be.equal(Profiles.Assets.Neo)
+        expect(res.id).to.be.equal(profiles.Assets.Neo)
         done()
       })
       .catch((err) => {

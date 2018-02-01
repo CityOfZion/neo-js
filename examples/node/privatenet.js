@@ -12,7 +12,7 @@
 
 // -- Bootstrap
 
-const Node = require('../../dist/node')
+const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:node:privatenet', { level: Logger.levels.INFO })
 
@@ -38,10 +38,10 @@ async function main () {
   }
 
   // Instantiate a private network node with memory storage
-  const node = new Node(options)
+  const neo = new Neo(options)
 
   logger.info('The node is set up. Test call to getBestBlockHash follows.')
-  logger.info('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
+  logger.info('getBestBlockHash:', await neo.mesh.rpc('getBestBlockHash'))
 
   logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.

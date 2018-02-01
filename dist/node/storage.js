@@ -2,22 +2,23 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 const Logger = require('../common/logger')
+const MongodbStorage = require('./storage/mongodb')
 
 /**
- * @class storage
+ * @class Storage
  * @description
  * A storage class for the various storage methods supported by the neo-js.  This class will
  * include high level storage interface methods that will interface with a standard set of methods available
  * on each type of storage.
- * @requires lodash
  */
-class storage {
+class Storage {
   /**
    * @param {Object} options
    */
   constructor (options = {}) {
-    Object.assign(this, {
-      storage: {
+    // -- Properties
+    this.defaultOptions = {
+      storageMeta: {
         model: 'memory'
       },
       blockHeight: 0,
@@ -25,24 +26,31 @@ class storage {
       dataAccess: {},
       unlinkedBlocks: [],
       assets: [],
-      logger: new Logger('storage')
-    }, options)
-
-    // If the model type is mongoDB, load the mongoDB drive
-    // and instantiate the storage.
-    if (this.storage.model === 'mongoDB') {
-      let MongodbStorage = require('./storage/mongodb')
-      this.dataAccess = new MongodbStorage(this.storage)
-
-      // Periodically update the list of assets available
-      this.updateAssetList()
-      setInterval(() => {
-        this.updateAssetList()
-      }, 10000)
+      logger: new Logger('Storage')
     }
 
-    // Get the block count available in storage
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
+
+    if (this.storageMeta.model === 'mongoDB') {
+      this.dataAccess = new MongodbStorage(this.storageMeta)
+      this.initBackgroundTasks()
+    } else {
+      // TODO: what to do with no storage model defined?
+    }
+  }
+
+  /**
+   * @access private
+   */
+  initBackgroundTasks () {
     this.getBlockCount()
+
+    // Periodically update the list of assets available
+    this.updateAssetList()
+    setInterval(() => {
+      this.updateAssetList()
+    }, 10000)
   }
 
   /**
@@ -50,9 +58,10 @@ class storage {
    * complete balance sheet for an account unless only a subset of assets is requested.  The
    * method also supports an optional blockAge attribute which will act as a caching mechanism to reduce
    * compute load.
-   * @param {String} address A contract address to get the balance of.
+   * @access public
+   * @param {string} address A contract address to get the balance of.
    * @param {Array} [assets = node.assets] An array of the assets to return balances for.
-   * @param {Number} [blockAge = 1]  getBalance uses a caching mechanic to reduce node load.  If
+   * @param {number} [blockAge = 1]  getBalance uses a caching mechanic to reduce node load.  If
    * An asset's balance for an account has not been updated withing 'blockAge' blocks, it will retrieve an
    * updated value.  Increasing this number and substantial reduce computer load at the expense
    * of balance discretization.
@@ -116,7 +125,8 @@ class storage {
 
   /**
    * Gets the state information of the requested asset.
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    */
   getAssetState (hash) {
     return new Promise((resolve, reject) => {
@@ -133,7 +143,8 @@ class storage {
 
   /**
    * Returns the requested asset from local storage.
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    */
   getAsset (hash) {
     return this.dataAccess.getAsset(hash)
@@ -143,10 +154,11 @@ class storage {
    * Gets the balance of an asset belonging to a specific address
    * on the blockchain.  This method will also cache the result to the
    * addresses collection.
-   * @param {String} address The address to find the balance of.
-   * @param {String} asset The asset to look up.
-   * @param {Number} [startBlock = 0] the block start start the calculation from.
-   * @param {Number} [balance = 0] the balance at the startBlock.
+   * @access public
+   * @param {string} address The address to find the balance of.
+   * @param {string} asset The asset to look up.
+   * @param {number} [startBlock = 0] the block start start the calculation from.
+   * @param {number} [balance = 0] the balance at the startBlock.
    * @returns Promise.<object> An object containing the asset balance.
    */
   getAssetBalance (address, asset, startBlock = 0, balance = 0) {
@@ -189,8 +201,9 @@ class storage {
   /**
    * Returns list of transactions of an asset belonging to a specific address
    * on the blockchain.
-   * @param {String} address
-   * @param {String} assetHash
+   * @access public
+   * @param {string} address
+   * @param {string} assetHash
    * @returns {Promise.<Array>}
    */
   getAssetTransactions (address, assetHash) {
@@ -232,7 +245,8 @@ class storage {
   /**
    * Calculates and returns the expanded transaction.  This method will also
    * update the expanded transaction in local storage to improve later performance.
-   * @param {String} txid The '0x' formatted transaction ID.
+   * @access public
+   * @param {string} txid The '0x' formatted transaction ID.
    * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
   getExpandedTX (txid) {
@@ -271,7 +285,8 @@ class storage {
 
   /**
    * Returns the JSON formatted transaction from the blockchain.
-   * @param {String} txid A '0x' formatted transaction ID.
+   * @access public
+   * @param {string} txid A '0x' formatted transaction ID.
    * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
   getTX (txid) {
@@ -280,7 +295,8 @@ class storage {
 
   /**
    * Returns the requested block from local storage.
-   * @param {Number} index The block index being requested.
+   * @access public
+   * @param {number} index The block index being requested.
    * @returns {Promise.<object>} A JSON formatted block on the blockchain.
    */
   getBlock (index) {
@@ -289,7 +305,8 @@ class storage {
 
   /**
    * Returns the requested block from local storage.
-   * @param {String} hash The hash of the block being requested.
+   * @access public
+   * @param {string} hash The hash of the block being requested.
    * @returns {Promise.<Object>} A promise returning information of the block
    */
   getBlockByHash (hash) {
@@ -300,6 +317,7 @@ class storage {
    * Gets the block height of the blockchain maintained in local storage.
    * This method also caches the height and index in memory for use when identifying
    * blocks that need to be downloaded.
+   * @access public
    * @returns {Promise.<Number>} The block height
    */
   getBlockCount () {
@@ -318,6 +336,7 @@ class storage {
 
   /**
    * Gets the best block hash on the node
+   * @access public
    * @returns {Promise.<Object>}
    */
   getBestBlockHash () {
@@ -336,6 +355,7 @@ class storage {
   /**
    * Saves a json formated block to storage. This method will also split out the
    * transactions for storage as well as caching them for later use.
+   * @access public
    * @param newBlock {Object} The JSON representation of a block on the blockchain.
    * @returns {Promise.<Object>}
    */
@@ -387,7 +407,8 @@ class storage {
 
   /**
    * Saves the state information of an asset.
-   * @param {String} hash
+   * @access public
+   * @param {string} hash
    * @param {Object} assetState
    */
   saveAssetState (hash, assetState) {
@@ -396,8 +417,9 @@ class storage {
 
   /**
    * Verifies local blockchain integrity over a block range.
-   * @param {String} [start = 0] The start index of the block range to verify.
-   * @param {Number} [end = this.index] The end index of the block range to verify.
+   * @access public
+   * @param {string} [start = 0] The start index of the block range to verify.
+   * @param {number} [end = this.index] The end index of the block range to verify.
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verifyBlocks (start = 0, end = this.index) {
@@ -406,6 +428,7 @@ class storage {
 
   /**
    * Verifies local blockchain's asset integrity.
+   * @access public
    * @returns {Promise.<Array>} An array containing the indices of the invlid assets.
    */
   verifyAssets () {
@@ -414,6 +437,7 @@ class storage {
 
   /**
    * Returns list of all assets in local storage.
+   * @access public
    * @returns {Promise.<Array>}
    */
   getAssetList () {
@@ -422,6 +446,7 @@ class storage {
 
   /**
    * Caches the list of assets to improve performance of asset related operations.
+   * @access public
    */
   updateAssetList () {
     this.dataAccess.getAssetList()
@@ -433,4 +458,4 @@ class storage {
   }
 }
 
-module.exports = storage
+module.exports = Storage
