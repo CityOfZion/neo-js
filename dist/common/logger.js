@@ -20,8 +20,7 @@ class Logger {
 
     // Associate class properties
     Object.assign(this, {
-      // level: loglevel.levels.WARN,
-      level: loglevel.levels.DEBUG,
+      level: loglevel.levels.WARN,
       displayTimestamp: true,
       displayName: true,
       displayLevel: true,
