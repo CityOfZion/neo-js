@@ -92,16 +92,16 @@ class Neo {
    */
   initStorage () {
     if (this.storageMeta) {
-      if (this.storageMeta.model === 'mongoDB') {
-        this.storage = new Storage({ storageMeta: this.storageMeta })
+      this.storage = new Storage({ storageMeta: this.storageMeta })
+      if (this.storage.model === 'mongoDB') {
         this.initEnqueueBlock()
         this.initBlockVerification()
         this.initAssetVerification()
       } else {
-        // TODO: so you want to enable local node but did not provide a valid storage model?
+        this.logger.error('Invalid storage model:', this.storage.storageMeta.model)
       }
     } else {
-      // TODO: what happens when local node is unwanted?
+      this.logger.error('Invalid storageMeta variable.')
     }
   }
 

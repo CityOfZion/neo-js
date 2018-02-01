@@ -10,41 +10,47 @@ const MongodbStorage = require('./storage/mongodb')
  * A storage class for the various storage methods supported by the neo-js.  This class will
  * include high level storage interface methods that will interface with a standard set of methods available
  * on each type of storage.
+ * @param {Object} options
+ * @param {Object} options.storageMeta
+ * @param {string} options.storageMeta.model
+ * @param {Object} options.logger
  */
 class Storage {
-  /**
-   * @param {Object} options
-   * @param {Object} storageMeta
-   * @param {number} blockHeight
-   * @param {number} index
-   * @param {Object} dataAccess
-   * @param {Array.<number>} unlinkedBlocks
-   * @param {Array.<Object>} assets
-   * @param {Object} logger
-   */
   constructor (options = {}) {
     // -- Properties
+    /** @type {number} */
+    this.blockHeight = 0
+    /** @type {number} */
+    this.index = -1
+    /** @type {Object} */
+    this.dataAccess = undefined
+    /** @type {Array} */
+    this.unlinkedBlocks = []
+    /** @type {Array.<Object>} */
+    this.assets = []
     /** @type {Object} */
     this.defaultOptions = {
       storageMeta: {
         model: 'memory'
       },
-      blockHeight: 0,
-      index: -1,
-      dataAccess: undefined,
-      unlinkedBlocks: [],
-      assets: [],
       logger: new Logger('Storage')
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
+    this.initStorage()
+  }
 
+  /**
+   * @private
+   * @returns {void}
+   */
+  initStorage () {
     if (this.storageMeta.model === 'mongoDB') {
       this.dataAccess = new MongodbStorage(this.storageMeta)
       this.initBackgroundTasks()
     } else {
-      // TODO: what to do with no storage model defined?
+      this.logger.error('Invalid storage model:', this.storageMeta.model)
     }
   }
 
