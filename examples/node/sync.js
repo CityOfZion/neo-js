@@ -20,14 +20,16 @@ async function main () {
   // Instantiate a testnet node with local storage
   const options = {
     network: 'testnet',
-    storageMeta: {
+    storageOptions: {
       model: 'mongoDB',
-      connectOnInit: true,
-      connectionString: 'mongodb://localhost/sync_demo3',
-      collectionNames: {
-        blocks: 'b_neo_t_blocks',
-        transactions: 'b_neo_t_transactions',
-        addresses: 'b_neo_t_addresses'
+      dataAccessOptions: {
+        connectOnInit: true,
+        connectionString: 'mongodb://localhost/sync_demo3',
+        collectionNames: {
+          blocks: 'b_neo_t_blocks',
+          transactions: 'b_neo_t_transactions',
+          addresses: 'b_neo_t_addresses'
+        }
       }
     }
   }

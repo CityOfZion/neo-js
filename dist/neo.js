@@ -13,7 +13,7 @@ const Node = require('./node/node')
  * @param {Object} options
  * @param {number} options.workerCount
  * @param {string} options.network
- * @param {Object} options.storageMeta
+ * @param {Object} options.storageOptions
  * @param {Object} options.logger
  */
 class Neo {
@@ -35,7 +35,7 @@ class Neo {
     this.defaultOptions = {
       workerCount: 20,
       network: undefined,
-      storageMeta: undefined,
+      storageOptions: {},
       logger: new Logger('Neo')
     }
 
@@ -91,17 +91,17 @@ class Neo {
    * @returns {void}
    */
   initStorage () {
-    if (this.storageMeta) {
-      this.storage = new Storage({ storageMeta: this.storageMeta })
+    if (this.storageOptions) {
+      this.storage = new Storage(this.storageOptions)
       if (this.storage.model === 'mongoDB') {
         this.initEnqueueBlock()
         this.initBlockVerification()
         this.initAssetVerification()
       } else {
-        this.logger.error('Invalid storage model:', this.storage.storageMeta.model)
+        this.logger.error('Unsupported storage model:', this.storage.model)
       }
     } else {
-      this.logger.error('Invalid storageMeta variable.')
+      this.logger.error('Invalid storageOptions variable.')
     }
   }
 
@@ -178,6 +178,7 @@ class Neo {
     })
 
     // Ping a random node periodically
+    // TODO: apply some sort of priority to ping inactive node less frequent
     setInterval(() => {
       this.pingRandomNode()
     }, 2000)
@@ -201,7 +202,8 @@ class Neo {
         .catch((err) => {
           // If the block request fails, throw it to the back to the queue to try again.
           // timeout prevents inf looping on connections issues etc..
-          this.logger.error(err)
+          this.logger.warn(`Task execution error. Method: [${task.method}]. Continue...`)
+          this.logger.info('Error:', err)
 
           // TODO: need to have the reactive, oppose to hardcode enqueueBlock retry after 2 seconds
           setTimeout(() => {

@@ -11,8 +11,7 @@ const MongodbStorage = require('./storage/mongodb')
  * include high level storage interface methods that will interface with a standard set of methods available
  * on each type of storage.
  * @param {Object} options
- * @param {Object} options.storageMeta
- * @param {string} options.storageMeta.model
+ * @param {string} options.model
  * @param {Object} options.logger
  */
 class Storage {
@@ -30,9 +29,8 @@ class Storage {
     this.assets = []
     /** @type {Object} */
     this.defaultOptions = {
-      storageMeta: {
-        model: 'memory'
-      },
+      model: 'memory',
+      dataAccessOptions: {},
       logger: new Logger('Storage')
     }
 
@@ -46,11 +44,11 @@ class Storage {
    * @returns {void}
    */
   initStorage () {
-    if (this.storageMeta.model === 'mongoDB') {
-      this.dataAccess = new MongodbStorage(this.storageMeta)
+    if (this.model === 'mongoDB') {
+      this.dataAccess = new MongodbStorage(this.dataAccessOptions)
       this.initBackgroundTasks()
     } else {
-      this.logger.error('Invalid storage model:', this.storageMeta.model)
+      this.logger.error('Unsupported storage model:', this.model)
     }
   }
 
@@ -129,7 +127,8 @@ class Storage {
                 resolve({address: address, assets: parts[1].concat(res)})
               })
               .catch((err) => {
-                this.logger.error(err)
+                this.logger.warn('Error getting asset balance. Continue...')
+                this.logger.info('Error:', err)
               })
           }
         })

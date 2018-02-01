@@ -468,7 +468,8 @@ class MongodbStorage {
         this.logger.info('mongoose connected.')
       })
       .catch((err) => {
-        this.logger.error(err)
+        this.logger.error('Error establish MongoDB connection.')
+        this.logger.info('Error:', err)
       })
   }
 

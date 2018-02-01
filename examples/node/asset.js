@@ -27,7 +27,7 @@ async function main () {
   // Instantiate a testnet node with local storage
   const neo = new Neo({
     network: 'testnet',
-    storageMeta: {
+    storageOptions: {
       model: 'mongoDB'
     }
   })
