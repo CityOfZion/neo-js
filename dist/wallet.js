@@ -6,16 +6,18 @@ const HashHelper = require('./common/hash-helper')
 const Logger = require('./common/logger')
 
 /**
- * @class wallet
+ * @class Wallet
  * @description
  * A wallet wrapper class on top of the neon-js light wallet.
  * @param {Object} options
- * @requires neon-js
+ * @param {string} options.network
+ * @param {string} options.neonDbNet
+ * @param {Object} options.logger
  */
 class Wallet {
   constructor (options = {}) {
     Object.assign(this, {
-      network: {},
+      network: undefined,
       neonDbNet: '',
       logger: new Logger('Wallet')
     }, options)
@@ -31,9 +33,9 @@ class Wallet {
 
   /**
    * Get balances of NEO and GAS for an address
-   * @access public
+   * @public
    * @param {string} address - Address to check.
-   * @returns {Promise<Balance>} Balance of address
+   * @returns {Promise.<Object>} Balance of address
    */
   getBalance (address) {
     return neonDB.getBalance(this.neonDbNet, address)
@@ -44,9 +46,9 @@ class Wallet {
 
   /**
    * Get amounts of available (spent) and unavailable claims.
-   * @access public
+   * @public
    * @param {string} address - Address to check.
-   * @returns {Promise<Claim>} An object with available and unavailable GAS amounts.
+   * @returns {Promise.<Object>} An object with available and unavailable GAS amounts.
    */
   getClaims (address) {
     return neonDB.getClaims(this.neonDbNet, address)
@@ -57,9 +59,9 @@ class Wallet {
 
   /**
    * Get transaction history for an account
-   * @access public
+   * @public
    * @param {string} address - Address to check.
-   * @returns {Promise<History>} History
+   * @returns {Promise.<Object>} History
    */
   getTransactionHistory (address) {
     return neonDB.getTransactionHistory(this.neonDbNet, address)
@@ -70,10 +72,10 @@ class Wallet {
 
   /**
    * Get the token balance of Address from Contract
-   * @access public
+   * @public
    * @param {string} scriptHash
    * @param {string} address
-   * @returns {Promise<number>}
+   * @returns {Promise.<Object>}
    */
   getTokenBalance (scriptHash, address) {
     return neonDB.getRPCEndpoint(this.neonDbNet)
@@ -87,12 +89,12 @@ class Wallet {
 
   /**
    * Send an asset to an address
-   * @access public
+   * @public
    * @param {string} toAddress - The destination address.
    * @param {string} from - Private Key or WIF of the sending address.
    * @param {{NEO: number, GAS: number}} assetAmounts - The amount of each asset (NEO and GAS) to send, leave empty for 0.
    * @param {function} [signingFunction] - Optional signing function. Used for external signing.
-   * @returns {Promise<Response>} RPC Response
+   * @returns {Promise.<Object>} RPC Response
    */
   doSendAsset (toAddress, from, assetAmounts, signingFunction) {
     return neonDB.doSendAsset(this.neonDbNet, toAddress, from, assetAmounts, signingFunction)
@@ -103,10 +105,10 @@ class Wallet {
 
   /**
    * Perform a ClaimTransaction for all available GAS based on API
-   * @access public
+   * @public
    * @param {string} privateKey - Private Key or WIF.
    * @param {function} [signingFunction] - Optional async signing function. Used for external signing.
-   * @returns {Promise<Response>} RPC response from sending transaction
+   * @returns {Promise.<Object>} RPC response from sending transaction
    */
   doClaimAllGas (privateKey, signingFunction) {
     return neonDB.doClaimAllGas(this.neonDbNet, privateKey, signingFunction)
@@ -117,12 +119,12 @@ class Wallet {
 
   /**
    * Call mintTokens for RPX
-   * @access public
+   * @public
    * @param {string} scriptHash - Contract scriptHash.
    * @param {string} fromWif - The WIF key of the originating address.
    * @param {number} neo - The amount of neo to send to RPX.
    * @param {number} gasCost - The Gas to send as SC fee.
-   * @returns {Promise<Response>} RPC Response
+   * @returns {Promise.<Object>} RPC Response
    */
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
     return neonDB.doMintTokens(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, neo, gasCost, signingFunction)
@@ -133,7 +135,7 @@ class Wallet {
 
   /**
    * Transfers NEP5 Tokens.
-   * @access public
+   * @public
    * @param {string} net
    * @param {string} scriptHash
    * @param {string} fromWif
@@ -141,7 +143,7 @@ class Wallet {
    * @param {number} transferAmount
    * @param {number} gasCost
    * @param {function} signingFunction
-   * @returns {Promise<Response>} RPC response
+   * @returns {Promise.<Object>} RPC response
    */
   doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
     return nep5.doTransferToken(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)

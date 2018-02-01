@@ -1,6 +1,5 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
-
 const async = require('async')
 const Storage = require('./node/storage')
 const Mesh = require('./node/mesh')
@@ -11,16 +10,28 @@ const Node = require('./node/node')
 
 /**
  * @class Neo
+ * @param {Object} options
+ * @param {number} options.workerCount
+ * @param {string} options.network
+ * @param {Object} options.storageMeta
+ * @param {Object} options.logger
  */
 class Neo {
   constructor (options = {}) {
     // -- Properties
+    /** @type {Object} */
     this.mesh = undefined
+    /** @type {Object} */
     this.wallet = undefined
+    /** @type {Object} */
     this.storage = undefined
+    /** @type {Object} */
     this.queue = undefined
+    /** @type {number} */
     this.maxQueueLength = 10000
+    /** @type {number} */
     this.blockWritePointer = -1
+    /** @type {Object} */
     this.defaultOptions = {
       workerCount: 20,
       network: undefined,
@@ -37,37 +48,23 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initMesh () {
-    /**
-     * check for its network, create nodes accordingly
-     */
     const nodes = this.getNodes()
-
-    /**
-     * mesh essentially baby sits all nodes, exclude local node.
-     * Assume all nodes will have access to RPC
-     * it should be THIS's job to supply the nodes.
-     */
     this.mesh = new Mesh(nodes)
   }
 
   /**
-   * @access private
-   * @returns Array<Node>
+   * @private
+   * @returns Array.<Node>
    */
   getNodes () {
-    /**
-     * previously, mesh was doing this.
-     * we now move the responsibility to THIS.
-     */
-
     let nodes = []
     let endpoints = []
 
-    // TODO: verify network
+    // TODO: validate network
     // fetch endpoint infos base on network type
     if (this.network === 'mainnet') {
       endpoints = profiles.rpc.mainnet.endpoints
@@ -76,7 +73,7 @@ class Neo {
     } else {
       endpoints = this.network.endpoints
     }
-    // TODO: verify result endpoints
+    // TODO: validate result endpoints
     this.logger.debug('endpoints:', endpoints)
 
     endpoints.forEach((endpoint) => {
@@ -90,14 +87,10 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initStorage () {
-    /**
-     * check for storage solution, create local node accordingly.
-     * we only support 1 local node atm.
-     */
     if (this.storageMeta) {
       if (this.storageMeta.model === 'mongoDB') {
         this.storage = new Storage({ storageMeta: this.storageMeta })
@@ -113,7 +106,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initEnqueueBlock () {
@@ -130,7 +123,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initBlockVerification () {
@@ -146,7 +139,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initAssetVerification () {
@@ -163,7 +156,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initWallet () {
@@ -171,7 +164,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   initBackgroundTasks () {
@@ -190,6 +183,15 @@ class Neo {
     }, 2000)
 
     // Initialize an asynchronous event queue for the node to use
+    /**
+     * @param {Object} task
+     * @param {string} task.method
+     * @param {Object} task.attrs
+     * @param {number} task.attrs.index
+     * @param {number} task.attrs.max
+     * @param {number} task.attrs.percent
+     * @param {function} callback
+     */
     this.queue = async.priorityQueue((task, callback) => {
       this.logger.debug('new worker for queue. task:', task)
       this[task.method](task.attrs)
@@ -212,7 +214,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   pingRandomNode () {
@@ -222,7 +224,7 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
    * @returns {void}
    */
   pingNode (node) {
@@ -251,7 +253,11 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
+   * @param {Object} attrs
+   * @param {number} attrs.index
+   * @param {number} attrs.max
+   * @param {number} attrs.percent
    * @returns {void}
    */
   storeBlock (attrs) {
@@ -282,7 +288,9 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
+   * @param {Object} attrs
+   * @param {string} attr.hash
    * @returns {void}
    */
   storeAsset (attrs) {
@@ -302,7 +310,9 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
+   * @param {number} index
+   * @param {priority} priority
    * @returns {void}
    */
   enqueueBlock (index, priority = 5) {
@@ -323,7 +333,9 @@ class Neo {
   }
 
   /**
-   * @access private
+   * @private
+   * @param {string} hash
+   * @param {number} priority
    * @returns {void}
    */
   enqueueAsset (hash, priority = 5) {

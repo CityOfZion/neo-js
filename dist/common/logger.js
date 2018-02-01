@@ -2,18 +2,26 @@ const loglevel = require('loglevel')
 const moment = require('moment')
 
 /**
- * @todo Better edge case handling and error throwing
  * @class Logger
- * @param {String} name
+ * @param {string} name
  * @param {Object} options
+ * @param {string} options.level
+ * @param {boolean} options.displayTimestamp
+ * @param {boolean} options.displayName
+ * @param {boolean} options.displayLevel
+ * @param {string} options.timestampFormat
  */
 class Logger {
   constructor (name, options = {}) {
+    // TODO: refactor formatting with usage of defaultOptions
+    // TODO: support text color setting
+    // TODO: create an enum to store color values
     this.name = name
 
     // Associate class properties
     Object.assign(this, {
-      level: loglevel.levels.WARN,
+      // level: loglevel.levels.WARN,
+      level: loglevel.levels.DEBUG,
       displayTimestamp: true,
       displayName: true,
       displayLevel: true,
@@ -33,15 +41,17 @@ class Logger {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} level
+   * @returns {void}
    */
   setLevel (level) {
     this.logger.setLevel(level)
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {void}
    */
   trace () {
     const args = this.manipulateArguments(arguments, 'trace')
@@ -49,7 +59,8 @@ class Logger {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {void}
    */
   debug () {
     const args = this.manipulateArguments(arguments, 'debug')
@@ -57,7 +68,8 @@ class Logger {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {void}
    */
   info () {
     const args = this.manipulateArguments(arguments, 'info')
@@ -65,7 +77,8 @@ class Logger {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {void}
    */
   warn () {
     const args = this.manipulateArguments(arguments, 'warn')
@@ -73,7 +86,8 @@ class Logger {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {void}
    */
   error () {
     const args = this.manipulateArguments(arguments, 'error')
@@ -81,9 +95,10 @@ class Logger {
   }
 
   /**
-   * @access private
+   * @private
    * @param {Object} argumentsObject
    * @param {string} level
+   * @returns {Array}
    */
   manipulateArguments (argumentsObject, level) {
     let args = Array.prototype.slice.call(argumentsObject)

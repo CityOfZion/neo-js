@@ -1,16 +1,20 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 const _ = require('lodash')
-const profiles = require('../common/profiles')
 const Logger = require('../common/logger')
 
 /**
  * @class Mesh
+ * @param {Array.<Node>} nodes
+ * @param {Object} options
+ * @param {Object} options.logger
  */
 class Mesh {
   constructor (nodes, options = {}) {
     // -- Properties
+    /** @type {Array.<Node>} */
     this.nodes = []
+    /** @type {Object} */
     this.defaultOptions = {
       logger: new Logger('Mesh')
     }
@@ -21,7 +25,8 @@ class Mesh {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {Node}
    */
   getFastestNode () {
     // TODO: make active filter, optional
@@ -33,8 +38,8 @@ class Mesh {
 
   /**
    * Identifies and returns the node with the highest block height.
-   * @access public
-   * @returns {node} The node instance with the greatest blockHeight.
+   * @public
+   * @returns {Node}
    */
   getHighestNode () {
     // TODO: make active filter, optional
@@ -45,7 +50,8 @@ class Mesh {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {Node}
    */
   getRandomNode () {
     // TODO: getRandomNode(isActive)
@@ -55,7 +61,8 @@ class Mesh {
   }
 
   /**
-   * @access public
+   * @public
+   * @returns {Node}
    */
   getNodeWithBlock (index, sort = 'latency') {
     // NOTE: Not been used
@@ -68,9 +75,10 @@ class Mesh {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} method
    * @param {object} params
+   * @returns {*}
    */
   rpc (method, params) {
     // Alias of mesh.getHighestNode().rpc()

@@ -6,13 +6,24 @@ const Logger = require('../../common/logger')
 /**
  * @class MongodbStorage
  * @param {Object} options
+ * @param {boolean} options.connectOnInit
+ * @param {string} options.connectionString
+ * @param {Object} options.collectionNames
+ * @param {string} options.collectionNames.blocks
+ * @param {string} options.collectionNames.transactions
+ * @param {string} options.collectionNames.addresses
+ * @param {Object} options.logger
  */
 class MongodbStorage {
   constructor (options = {}) {
     // -- Properties
+    /** @type {Object} */
     this.blockModel = undefined
+    /** @type {Object} */
     this.transactionModel = undefined
+    /** @type {Object} */
     this.addressModel = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
@@ -39,7 +50,7 @@ class MongodbStorage {
 
   /**
    * @static
-   * @access private
+   * @private
    * @param {Object} block
    * @returns {Object}
    */
@@ -61,9 +72,9 @@ class MongodbStorage {
   }
 
   /**
-   * @todo Use helper function to normalise txid
-   * @access public
+   * @public
    * @param {string} txid
+   * @returns {Promise.<Object>}
    */
   getTX (txid) {
     return new Promise((resolve, reject) => {
@@ -79,7 +90,7 @@ class MongodbStorage {
 
   /**
    * List transactions of a specific wallet.
-   * @access public
+   * @public
    * @param {string} address
    * @returns {Promise.<Object>}
    */
@@ -103,7 +114,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {number} index
    * @returns {Promise.<Object>}
    */
@@ -120,7 +131,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} hash
    * @returns {Promise.<Object>}
    */
@@ -137,7 +148,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @returns {Promise.<Number>}
    */
   getBlockCount () {
@@ -158,7 +169,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @returns {Promise.<String>}
    */
   getBestBlockHash () {
@@ -175,7 +186,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} hash
    * @returns {Promise.<Object>}
    */
@@ -192,7 +203,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @returns {Promise.<Array>}
    */
   getAssetList () {
@@ -208,10 +219,10 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} address
    * @param {string} assetHash
-   * @param {number} startBlock
+   * @param {number} [startBlock = 0]
    * @returns {Promise.<Array>}
    */
   getAssetListByAddress (address, assetHash, startBlock = 0) {
@@ -237,8 +248,9 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {Object} asset
+   * @returns {Promise}
    */
   saveAsset (asset) {
     return new Promise((resolve, reject) => {
@@ -252,8 +264,9 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {Object} block
+   * @returns {Promise}
    */
   saveBlock (block) {
     return new Promise((resolve, reject) => {
@@ -268,9 +281,10 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} hash
    * @param {Object} assetState
+   * @returns {Promise}
    */
   saveAssetState (hash, assetState) {
     return new Promise((resolve, reject) => {
@@ -289,8 +303,9 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {Object} tx
+   * @returns {Promise}
    */
   saveTransaction (tx) {
     return new Promise((resolve, reject) => {
@@ -304,8 +319,9 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {Object} tx
+   * @returns {Promise}
    */
   updateTransaction (tx) {
     return new Promise((resolve, reject) => {
@@ -319,7 +335,7 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} hash
    * @returns {Promise.<Object>}
    */
@@ -336,8 +352,9 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {Object} address
+   * @returns {Promise.<Object>}
    */
   saveAddress (address) {
     return new Promise((resolve, reject) => {
@@ -352,11 +369,12 @@ class MongodbStorage {
   }
 
   /**
-   * @access public
+   * @public
    * @param {string} addressHash
    * @param {string} assetHash
    * @param {number} balance
    * @param {number} index
+   * @returns {Promise.<Object>}
    */
   updateBalance (addressHash, assetHash, balance, index) {
     return new Promise((resolve, reject) => {
@@ -383,7 +401,7 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over a block range.
-   * @access public
+   * @public
    * @param {string} start - The start index of the block range to verify.
    * @param {number} end - The end index of the block range to verify.
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
@@ -417,7 +435,7 @@ class MongodbStorage {
 
   /**
    * Verifies local blockchain integrity over assets.
-   * @access public
+   * @public
    * @returns {Promise.<Array>} An array containing the indices of the invalid assets.
    */
   verifyAssets () {
@@ -439,9 +457,8 @@ class MongodbStorage {
   }
 
   /**
-   * @todo Remove magic connection string
-   * @todo Verify if mongodb server is available/reachable
-   * @access private
+   * @private
+   * @returns {void}
    */
   initConnection () {
     mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
@@ -456,7 +473,8 @@ class MongodbStorage {
   }
 
   /**
-   * @access private
+   * @private
+   * @returns {Object}
    */
   getBlockModel () {
     const schema = new mongoose.Schema({
@@ -482,7 +500,8 @@ class MongodbStorage {
   }
 
   /**
-   * @access private
+   * @private
+   * @returns {Object}
    */
   getTransactionModel () {
     const schema = new mongoose.Schema({
@@ -504,7 +523,8 @@ class MongodbStorage {
   }
 
   /**
-   * @access private
+   * @private
+   * @returns {Object}
    */
   getAddressModel () {
     const schema = new mongoose.Schema({

@@ -51,8 +51,8 @@ async function main () {
     // fetch block from remote node via NodeJs
     const remoteBlock = await rpc.getBlock(randomHeight)
     // logger.info('remoteBlock:', remoteBlock.hash)
-    
-    const isGood = true
+
+    let isGood = true
     if (localBlock.hash !== remoteBlock.hash) {
       isGood = false
     }
