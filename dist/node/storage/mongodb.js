@@ -1,5 +1,6 @@
 /* eslint handle-callback-err: "off" */
 const mongoose = require('mongoose')
+const HashHelper = require('../../common/hash-helper')
 const Logger = require('../../common/logger')
 
 class MongodbStorage {
@@ -40,33 +41,20 @@ class MongodbStorage {
    * @return {Object}
    */
   delintBlock (block) {
-    block.hash = this.hexFix(block.hash)
-    block.previousblockhash = this.hexFix(block.previousblockhash)
-    block.merkleroot = this.hexFix(block.merkleroot)
+    block.hash = HashHelper.normalize(block.hash)
+    block.previousblockhash = HashHelper.normalize(block.previousblockhash)
+    block.merkleroot = HashHelper.normalize(block.merkleroot)
     block.tx.forEach((tx) => {
-      tx.txid = this.hexFix(tx.txid)
+      tx.txid = HashHelper.normalize(tx.txid)
       tx.sys_fee = parseFloat(tx.sys_fee)
       tx.net_fee = parseFloat(tx.net_fee)
 
       tx.vout.forEach((vout) => {
-        vout.asset = this.hexFix(vout.asset)
+        vout.asset = HashHelper.normalize(vout.asset)
         vout.value = parseFloat(vout.value)
       })
     })
     return block
-  }
-
-  /**
-   * @todo Migrate to a helper class
-   * @static
-   * @param {String} hex
-   * @return {String}
-   */
-  hexFix (hex) {
-    if (hex.length === 64) {
-      hex = '0x' + hex
-    }
-    return hex
   }
 
   // Pubic methods
