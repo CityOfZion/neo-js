@@ -1,12 +1,16 @@
 const Logger = require('./logger')
 const logger = new Logger('hash-helper')
 
+/**
+ * @class HashHelper
+ */
 class HashHelper {
   /**
    * Standardize hash value with 0x prefix.
    * @static
+   * @public
    * @param {string} hash
-   * @return {string}
+   * @returns {string}
    */
   static normalize (hash) {
     logger.debug('normalize triggered. hash:', hash)
@@ -21,8 +25,9 @@ class HashHelper {
   /**
    * Reverse hash standardization by omit 0x prefix.
    * @static
+   * @public
    * @param {string} hash
-   * @return {string}
+   * @returns {string}
    */
   static denormalize (hash) {
     logger.debug('normalize triggered. hash:', hash)

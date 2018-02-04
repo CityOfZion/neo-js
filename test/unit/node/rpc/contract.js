@@ -2,11 +2,11 @@
 
 const expect = require('chai').expect
 const TestHelper = require('../../../helpers/test-helper')
-const Profiles = require('../../../helpers/profiles')
+const profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
-const node = TestHelper.getNeoNode()
+const neo = TestHelper.getNeo()
 TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe(`Unit test getContractState()`, () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
+    neo.mesh.rpc('getContractState', profiles.Contracts.RPX_Test)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,9 +25,9 @@ describe(`Unit test getContractState()`, () => {
   })
 
   it("should contain 'hash' property with an expected value.", (done) => {
-    node.mesh.rpc('getContractState', Profiles.Contracts.RPX_Test)
+    neo.mesh.rpc('getContractState', profiles.Contracts.RPX_Test)
       .then((res) => {
-        expect(res.hash).to.be.equal(Profiles.Contracts.RPX_Test)
+        expect(res.hash).to.be.equal(profiles.Contracts.RPX_Test)
         done()
       })
       .catch((err) => {

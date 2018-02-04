@@ -7,7 +7,7 @@
 
 // -- Bootstrap
 
-const Node = require('../../dist/node')
+const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:rpc:basic', { level: Logger.levels.INFO })
 
@@ -17,20 +17,20 @@ async function main () {
   logger.info('== Basic RPC Example ==')
 
   // Instantiate a node that provides access to the testnet mesh
-  const node = new Node({ network: 'testnet' })
+  const neo = new Neo({ network: 'testnet' })
 
   // Verify neoBlockchain properties
-  logger.info('node.domain:', node.domain)
-  logger.info('node.network:', node.network)
-  logger.info('node.mesh.nodes.length:', node.mesh.nodes.length)
+  logger.info('neo.domain:', neo.domain)
+  logger.info('neo.network:', neo.network)
+  logger.info('neo.mesh.nodes.length:', neo.mesh.nodes.length)
   logger.info('list of nodes in the mesh:')
-  node.mesh.nodes.forEach((node, index) => {
+  neo.mesh.nodes.forEach((node, index) => {
     logger.info(`> [${index}] ${node.domain}:${node.port}`)
   })
 
   // Example RPC requests
-  logger.info('getBlockCount:', await node.mesh.rpc('getBlockCount'))
-  logger.info('getBestBlockHash:', await node.mesh.rpc('getBestBlockHash'))
+  logger.info('getBlockCount:', await neo.mesh.rpc('getBlockCount'))
+  logger.info('getBestBlockHash:', await neo.mesh.rpc('getBestBlockHash'))
 
   logger.info('== END ==')
 

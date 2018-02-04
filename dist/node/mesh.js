@@ -1,52 +1,35 @@
 /* eslint handle-callback-err: "off" */
 /* eslint new-cap: "off" */
 const _ = require('lodash')
-const profiles = require('../profiles')
 const Logger = require('../common/logger')
 
 /**
- * @class mesh
- * @description
- * A representation of the external node mesh that this local node instance
- * will interface with.
- * @param {Object} options Configuration parameters for the mesh.
- * @example
- * node = require('@cityofzion/neo-js');
- * const n = node()
- * n.mesh.rpc('getBlock', 1000)
+ * @class Mesh
+ * @param {Array.<Node>} nodes
+ * @param {Object} options
+ * @param {Object} options.logger
  */
-class mesh {
-  constructor (options = {}) {
-    Object.assign(this, {
-      network: undefined, /** {String|Object} the network to connect to. This is either 'testnet' or 'mainnet' or an object defining an Array of endpoints */
-      nodes: [],
-      logger: new Logger('mesh')
-    }, options)
-
-    const node = require('../node')
-    let endpoints
-    if (this.network === 'mainnet') {
-      endpoints = profiles.rpc.mainnet.endpoints
-    } else if (this.network === 'testnet') {
-      endpoints = profiles.rpc.testnet.endpoints
-    } else {
-      endpoints = this.network.endpoints
+class Mesh {
+  constructor (nodes, options = {}) {
+    // -- Properties
+    /** @type {Array.<Node>} */
+    this.nodes = []
+    /** @type {Object} */
+    this.defaultOptions = {
+      logger: new Logger('Mesh')
     }
-    this.logger.debug('endpoints:', endpoints)
 
-    endpoints.forEach((endpoint) => {
-      this.nodes.push(new node({
-        domain: endpoint.domain,
-        port: endpoint.port
-      }))
-    })
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
+    this.nodes = nodes
   }
 
   /**
-   * Identifies and returns the fastest node based on the latency of the last transaction.
-   * @returns {node} The lowest latency node instance.
+   * @public
+   * @returns {Node}
    */
-  fastestNode () {
+  getFastestNode () {
+    // TODO: make active filter, optional
     return _.minBy(
       _.filter(this.nodes, 'active'),
       'latency'
@@ -54,10 +37,12 @@ class mesh {
   }
 
   /**
-   * Identifies and returns the node with the highest blockheight.
-   * @returns {node} The node instance with the greatest blockHeight.
+   * Identifies and returns the node with the highest block height.
+   * @public
+   * @returns {Node}
    */
-  highestNode () {
+  getHighestNode () {
+    // TODO: make active filter, optional
     return _.maxBy(
       _.filter(this.nodes, 'active'),
       'blockHeight'
@@ -65,15 +50,22 @@ class mesh {
   }
 
   /**
-   * Identifies and returns the best node that has a specific block based on an input
-   * criteria.
-   * @param {number} index The index of the requested block.
-   * @param {string} [sort = 'latency'] The attribute to rank nodes by.
-   * @param {Boolean} [allowLocal = true] A flag to indicate whether the local node (in 'full' mode) is
-   * allowed
-   * @returns {node} The best node that has the requested block index.
+   * @public
+   * @returns {Node}
    */
-  nodeWithBlock (index, sort = 'latency') {
+  getRandomNode () {
+    // TODO: getRandomNode(isActive)
+    // This also picks up inactive nodes
+    const targetIndex = parseInt(Math.random() * this.nodes.length)
+    return this.nodes[targetIndex]
+  }
+
+  /**
+   * @public
+   * @returns {Node}
+   */
+  getNodeWithBlock (index, sort = 'latency') {
+    // NOTE: Not been used
     return _.minBy(
       _.filter(this.nodes, ({index: nIndex, active}) => {
         return active && (index <= nIndex)
@@ -83,25 +75,15 @@ class mesh {
   }
 
   /**
-   * Gets a JSON formatted block from the mesh.
-   * @param index {number} The block index being requested.
-   * @param [sort = 'latency'] {String} The method used to identify a node in the mesh.
-   * @returns {Promise.<Object>}
-   */
-  getBlock (index, sort = 'latency') {
-    return (this.nodeWithBlock(index, sort) || this.nodes[0]).rpc.getBlock(index)
-  }
-
-  /**
-   * Executes an rpc method against the highest blockHeight node
-   * in the mesh.
-   * @param method {String} The method to execute.
-   * @param params {Array} An array of input parameters.
-   * @returns {Promise.<*>} The response of the rpc method.
+   * @public
+   * @param {string} method
+   * @param {object} params
+   * @returns {*}
    */
   rpc (method, params) {
-    return (this.highestNode() || this.nodes[0]).rpc[method](params)
+    // Alias of mesh.getHighestNode().rpc()
+    return (this.getHighestNode() || this.nodes[0]).rpc[method](params)
   }
 }
 
-module.exports = mesh
+module.exports = Mesh

@@ -9,7 +9,7 @@
 
 // -- Bootstrap
 
-const Node = require('../../dist/node')
+const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:node:sync-test', { level: Logger.levels.INFO })
 
@@ -21,36 +21,38 @@ async function main () {
   // Instantiate a testnet node with specified local storage (and to a separate database as default of mongodb.js)
   const options = {
     network: 'testnet',
-    storage: {
+    storageOptions: {
       model: 'mongoDB',
-      connectOnInit: true,
-      connectionString: 'mongodb://localhost/sync_demo',
-      collectionNames: {
-        blocks: 'b_neo_t_blocks',
-        transactions: 'b_neo_t_transactions',
-        addresses: 'b_neo_t_addresses'
+      dataAccessOptions: {
+        connectOnInit: true,
+        connectionString: 'mongodb://localhost/sync_demo',
+        collectionNames: {
+          blocks: 'b_neo_t_blocks',
+          transactions: 'b_neo_t_transactions',
+          addresses: 'b_neo_t_addresses'
+        }
       }
     }
   }
-  const node = new Node(options)
+  const neo = new Neo(options)
 
   // Allow it to sync for 30 seconds
   logger.info('Start syncing for 30 seconds...')
   await sleep(30000)
 
   // Report document counts per collection type
-  logger.info('block count:', await node.storage.getBlockCount())
+  logger.info('block count:', await neo.storage.getBlockCount())
 
-  const hash = await node.storage.getBestBlockHash()
+  const hash = await neo.storage.getBestBlockHash()
   logger.info('best block hash:', hash)
 
-  const block = await node.storage.getBlockByHash(hash)
+  const block = await neo.storage.getBlockByHash(hash)
   logger.info('best block:', block)
 
   const txid = block.tx[0].txid
   logger.info('a TX ID of the best block:', txid)
 
-  const transaction = await node.storage.getTX(txid)
+  const transaction = await neo.storage.getTX(txid)
   logger.info('transaction:', transaction)
 
   logger.info('== END ==')

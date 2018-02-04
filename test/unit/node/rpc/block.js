@@ -2,11 +2,11 @@
 
 const expect = require('chai').expect
 const TestHelper = require('../../../helpers/test-helper')
-const Profiles = require('../../../helpers/profiles')
+const profiles = require('../../../helpers/profiles')
 
 // Bootstrapping
 
-const node = TestHelper.getNeoNode()
+const neo = TestHelper.getNeo()
 TestHelper.setMockHttpClient()
 TestHelper.setHttpInterceptors(false)
 
@@ -14,7 +14,7 @@ TestHelper.setHttpInterceptors(false)
 
 describe('Unit test getBlock()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getBlock', Profiles.Blocks.Block_100000.Number)
+    neo.mesh.rpc('getBlock', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -25,7 +25,7 @@ describe('Unit test getBlock()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (done) => {
-    node.mesh.rpc('getBlock', Profiles.Blocks.Block_100000.Number)
+    neo.mesh.rpc('getBlock', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -40,7 +40,7 @@ describe('Unit test getBlock()', () => {
 
 describe('Unit test getBlockByHash()', () => {
   it("should have 'object' as its response data type.", (done) => {
-    node.mesh.rpc('getBlockByHash', Profiles.Blocks.Block_100000.Hash)
+    neo.mesh.rpc('getBlockByHash', profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res).to.be.a('object')
         done()
@@ -51,7 +51,7 @@ describe('Unit test getBlockByHash()', () => {
   })
 
   it("should contains 'confirmations' property with a whole number.", (done) => {
-    node.mesh.rpc('getBlockByHash', Profiles.Blocks.Block_100000.Hash)
+    neo.mesh.rpc('getBlockByHash', profiles.Blocks.Block_100000.Hash)
       .then((res) => {
         expect(res.confirmations).to.be.a('number')
         expect(res.confirmations % 1).to.be.equal(0)
@@ -66,7 +66,7 @@ describe('Unit test getBlockByHash()', () => {
 
 describe('Unit test getBlockHash()', () => {
   it('should have string as its response data type.', (done) => {
-    node.mesh.rpc('getBlockHash', Profiles.Blocks.Block_100000.Number)
+    neo.mesh.rpc('getBlockHash', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const hash = res
         expect(hash).to.be.a('string')
@@ -78,7 +78,7 @@ describe('Unit test getBlockHash()', () => {
   })
 
   it("should be '0x' follow by 64 hex characters in lower-case.", (done) => {
-    node.mesh.rpc('getBlockHash', Profiles.Blocks.Block_100000.Number)
+    neo.mesh.rpc('getBlockHash', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const hash = res
         expect(hash).to.match(/^(0x)[a-f0-9]{64}$/)
@@ -92,7 +92,7 @@ describe('Unit test getBlockHash()', () => {
 
 describe('Unit test getBlockSystemFee()', () => {
   it('should be a whole number as its response.', (done) => {
-    node.mesh.rpc('getBlockSystemFee', Profiles.Blocks.Block_100000.Number)
+    neo.mesh.rpc('getBlockSystemFee', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const fee = res
         expect(fee).to.be.a('number')

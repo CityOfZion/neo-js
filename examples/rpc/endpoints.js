@@ -6,7 +6,7 @@
 
 // -- Bootstrap
 
-const Node = require('../../dist/node')
+const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:rpc:endpoints', { level: Logger.levels.INFO })
 
@@ -18,11 +18,11 @@ async function main () {
   /**
    * Instantiate a node that either connect to 'netnet', 'mainnet' or specified RPC endpoints.
    */
-  // const node = new Node({ network: 'testnet' })
-  // const node = new Node({ network: 'mainnet' })
+  // const neo = new Neo({ network: 'testnet' })
+  // const neo = new Neo({ network: 'mainnet' })
 
   console.log('TestNet:')
-  const testnetNode = new Node({ network: {
+  const testnetNeo = new Neo({ network: {
     endpoints: [
       { domain: 'http://seed1.neo.org', port: 20332 },
       { domain: 'http://seed2.neo.org', port: 20332 },
@@ -38,7 +38,7 @@ async function main () {
   }})
 
   // Test connection by verify block count of every RPC endpoints
-  await Promise.all(testnetNode.mesh.nodes.map(async (node) => {
+  await Promise.all(testnetNeo.mesh.nodes.map(async (node) => {
     try {
       const blockCount = await node.rpc.getBlockCount()
       logger.info(`> ${node.domain}:${node.port} block count:`, blockCount)
@@ -48,7 +48,7 @@ async function main () {
   }))
 
   console.log('MainNet:')
-  const mainnetNode = new Node({ network: {
+  const mainnetNeo = new Neo({ network: {
     endpoints: [
       { domain: 'http://seed1.neo.org', port: 10332 },
       { domain: 'http://seed2.neo.org', port: 10332 },
@@ -64,7 +64,7 @@ async function main () {
   }})
 
   // Test connection by verify block count of every RPC endpoints
-  await Promise.all(mainnetNode.mesh.nodes.map(async (node) => {
+  await Promise.all(mainnetNeo.mesh.nodes.map(async (node) => {
     try {
       const blockCount = await node.rpc.getBlockCount()
       logger.info(`> ${node.domain}:${node.port} block count:`, blockCount)

@@ -1,23 +1,46 @@
 /* eslint handle-callback-err: "off" */
 const axios = require('axios')
+const Logger = require('../common/logger')
 
-module.exports = (node, options) => {
-  const module = {}
+/**
+ * @class Rpc
+ * @param {string} domain
+ * @param {string} port
+ * @param {Object} options
+ * @param {Object} options.logger
+ */
+class Rpc {
+  constructor (domain, port, options) {
+    // -- Properties
+    /** @type {string} */
+    this.domain = undefined
+    /** @type {string} */
+    this.port = undefined
+    /** @type {Object} */
+    this.defaultOptions = {
+      logger: new Logger('Rpc')
+    }
+
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
+    this.domain = domain
+    this.port = port
+  }
 
   /**
-   * Makes an RPC call to the node.*
-   * @param {Object} payload An object defining the request.
-   * EX: {'method': 'getblock', 'params': [666,1], 'id': 0}
-   * @returns {Promise.<Object>} A promise returning the data field of the response.
-   * @example
-   * call({'method': 'getblock', 'params': [666,1], 'id': 0})
+   * @private
+   * @param {Object} payload
+   * @param {string} payload.method
+   * @param {Array} payload.params
+   * @param {string} payload.id
+   * @returns {Promise.<Object>}
    */
-  const call = (payload) => {
-    const t0 = Date.now()
-    node.pendingRequests += 1
+  call (payload) {
+    // const t0 = Date.now()
+    // node.pendingRequests += 1
     return axios({
       method: 'post',
-      url: `${node.domain}:${node.port}`,
+      url: `${this.domain}:${this.port}`,
       data: {
         jsonrpc: '2.0',
         method: payload.method,
@@ -26,53 +49,58 @@ module.exports = (node, options) => {
       },
       timeout: 10000
     }).then((response) => {
-      node.pendingRequests -= 1
-      node.age = Date.now()
-      if (response.data.error) return Promise.reject(response.data.error)
-      node.latency = node.age - t0
-      node.active = true
+      // node.pendingRequests -= 1
+      // node.age = Date.now()
+      if (response.data.error) {
+        return Promise.reject(response.data.error)
+      }
+      // node.latency = node.age - t0
+      // node.active = true
       return response.data.result
     }).catch((err) => {
-      node.pendingRequests -= 1
-      node.age = Date.now()
-      node.active = false
+      // node.pendingRequests -= 1
+      // node.age = Date.now()
+      // node.active = false
       return Promise.reject(err)
     })
   }
 
   /**
    * Gets the NEO and GAS balance of an address.
-   * @param {string} assetId The address to get the balance of.
+   * @public
+   * @param {string} assetId - The address to get the balance of.
    * @returns {Promise.<Object>} A promise containing the address balances.
    */
-  module.getBalance = (assetId) => (
-    call({
+  getBalance (assetId) {
+    return this.call({
       method: 'getbalance',
       params: [],
       id: 0
     })
-  )
+  }
 
   /**
    * Gets the best block hash on the node
+   * @public
    * @example
    * node.rpc.getBestBlockHash()
    * return 0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973
    * @returns {Promise.<Object>}
    */
-  module.getBestBlockHash = () => (
-    call({
+  getBestBlockHash () {
+    return this.call({
       method: 'getbestblockhash',
       params: [],
       id: 0
     })
-  )
+  }
 
   /**
    * Invokes the getblock rpc request to return a block.  This method
    * accepts and optional node to request the block from.  If a node is not selected,
    * the fastest node will be used with failover in an attempt to guarantee a response.
    *
+   * @public
    * @example
    * node.rpc.getBlock(100000)
    *  return {
@@ -109,22 +137,23 @@ module.exports = (node, options) => {
    *      "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
    *    }
    *  }
-   * @param {number} index The index of the block being requested.
+   * @param {number} index - The index of the block being requested.
    * @returns {Promise.<string>} A promise returning the hex contents of the block
    */
-  module.getBlock = (index) => (
-    call({
+  getBlock (index) {
+    return this.call({
       method: 'getblock',
       params: [index, 1],
       id: 0
     })
-  )
+  }
 
   /**
    * Invokes the getblock rpc request to return a block.  This method
    * accepts and optional node to request the block from.  If a node is not selected,
    * the fastest node will be used with failover in an attempt to guarantee a response.
    *
+   * @public
    * @example
    * node.rpc.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
    *  return {
@@ -161,16 +190,16 @@ module.exports = (node, options) => {
    *      "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
    *    }
    *  }
-   * @param {string} hash The hash of the block being requested.
+   * @param {string} hash - The hash of the block being requested.
    * @returns {Promise.<Object>} A promise returning information of the block
    */
-  module.getBlockByHash = (hash) => (
-    call({
+  getBlockByHash (hash) {
+    return this.call({
       method: 'getblock',
       params: [hash, 1],
       id: 0
     })
-  )
+  }
 
   /**
    * Invokes the getblockcount rpc request to return the block height.  This
@@ -178,137 +207,147 @@ module.exports = (node, options) => {
    * node is not provided.  This method will update the blockHeight attribute
    * on the node it is run on.
    *
+   * @public
    * @example
    * node.rpc.getBlockCount()
    * return 1000000
    * @returns {Promise.<number>} A promise returning the block count.
    */
-  module.getBlockCount = () => (
-    call({
+  getBlockCount () {
+    return this.call({
       method: 'getblockcount',
       params: [],
       id: 0
     }).then((result) => {
-      node.blockHeight = result
-      node.index = result - 1
-
+      // node.blockHeight = result
+      // node.index = result - 1
       return result
     })
-  )
+  }
 
   /**
    * Invokes the getblockhash rpc request to return a block's hash.  This method
    * accepts and optional node to request the block from.  If a node is not selected,
    * the fastest node will be used with failover in an attempt to guarantee a response.
    *
-   * @param {number} index The index of the block hash being requested.
+   * @public
+   * @param {number} index - The index of the block hash being requested.
    * @example
    * node.rpc.getBlockHash(100000)
    * return '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'
    * @returns {Promise.<string>} A promise returning the hash of the block
    */
-  module.getBlockHash = (index) => (
-    call({
+  getBlockHash (index) {
+    return this.call({
       method: 'getblockhash',
       params: [index],
       id: 0
     })
-  )
+  }
 
   /**
    * Invokes the getblocksysfee rpc request to return system fee.
    *
-   * @param {number} index The index of the block hash being requested.
+   * @public
+   * @param {number} height - The index of the block hash being requested.
    * @example
    * node.rpc.getBlockSystemFee(100000)
    * return 905
    * @returns {Promise.<number>} The system fee.
    */
-  module.getBlockSystemFee = (height) => (
-    call({
+  getBlockSystemFee (height) {
+    return this.call({
       method: 'getblocksysfee',
       params: [height],
       id: 0
-    }).then((result) => parseInt(result, 10))
-  )
+    }).then((result) => parseInt(result, 10)) // TODO: keep it raw, avoid conversion
+  }
 
   /**
    * Invokes the getconnectioncount rpc request to return the number of connections to
    * the selected node.
    *
+   * @public
    * @example
    * node.rpc.getConnectionCount()
    * return 10
    * @returns {Promise.<number>} A promise returning the number of connections to the node.
    */
-  module.getConnectionCount = () => (
-    call({
+  getConnectionCount () {
+    return this.call({
       method: 'getconnectioncount',
       params: [],
       id: 0
     })
-      .catch((err) => Promise.reject(new Error('Unable to contact the requested node.')))
-  )
+  }
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
-   * @param scriptHash  The hash of the script to invoke.
-   * @param params The params used to invoke the contract.
+   * @param {Object} payload
+   * @param {Object} payload.scriptHash - The hash of the script to invoke.
+   * @param {Object} payload.params - The params used to invoke the contract.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invoke = ({ scriptHash, params }) => (
-    call({
+  invoke (payload) {
+    // { scriptHash, params }
+    return this.call({
       method: 'invoke',
-      params: [scriptHash, params],
+      params: [payload.scriptHash, payload.params],
       id: 0
     }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
-  )
+  }
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
    * Note: This transcation will NOT be published to the blockchain.
-   * @param scriptHash  The hash of the script to invoke.
-   * @param operation Defines the operation to invoke on the contract.
-   * @param params The params used to invoke the contract.
+   * @public
+   * @param {Object} payload
+   * @param {Object} payload.scriptHash - The hash of the script to invoke.
+   * @param {Object} payload.operation - Defines the operation to invoke on the contract.
+   * @param {Object} payload.params - The params used to invoke the contract.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invokeFunction = ({ scriptHash, operation, params }) => (
-    call({
+  invokeFunction (payload) {
+    // { scriptHash, operation, params }
+    return this.call({
       method: 'invokefunction',
-      params: [scriptHash, operation, params],
+      params: [payload.scriptHash, payload.operation, payload.params],
       id: 0
     }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
-  )
+  }
 
   /**
    * Executes a 'test invoke' of a smart contract on the blockchain.
-   * Note: This transcation will NOT be published to the blockchain.
-   * @param script raw script to invoke.
+   * Note: This transaction will NOT be published to the blockchain.
+   * @public
+   * @param script - raw script to invoke.
    * @returns {Promise.<Object>} The invoke response.
    */
-  module.invokeScript = (script) => (
-    call({
+  invokeScript (script) {
+    return this.call({
       method: 'invokescript',
       params: [script],
       id: 0
     }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
-  )
+  }
 
   /**
-   * TBA
+   * @public
+   * @returns {Promise.<Object>} The invoke response.
    */
-  module.getRawMemPool = () => (
-    call({
+  getRawMemPool () {
+    return this.call({
       method: 'getrawmempool',
       params: [],
       id: 0
     }).catch((_err) => Promise.reject(new Error('Unable to contact the requested node.')))
-  )
+  }
 
   /**
    * Polls the node for the raw transaction data associated with an input txid.
-   * @param {string} txid The requested transaction ID.
+   * @public
+   * @param {string} txid - The requested transaction ID.
    * @example
    * node.rpc.getRawTransaction('0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042')
    *  return {
@@ -329,187 +368,140 @@ module.exports = (node, options) => {
    *  }
    * @returns {Promise.<Object>} An object containing the transaction information.
    */
-  module.getRawTransaction = (txid) => (
-    call({
+  getRawTransaction (txid) {
+    // TODO: rename txid
+    return this.call({
       method: 'getrawtransaction',
       params: [txid, 1],
       id: 0
     })
-  )
+  }
 
   /**
    * Polls the node for the raw transaction response associated with an input txid.
-   * @param {string} txid The requested transaction ID.
+   * @public
+   * @param {Object} payload
+   * @param {string} payload.txid - The requested transaction ID.
+   * @param {number} payload.index
    * @returns {Promise.<Object>} An object containing the transaction response.
    */
-  module.getTXOut = ({ txid, index }) => (
-    call({
+  getTXOut (payload) {
+    // TODO: rename txid
+    // { txid, index }
+    return this.call({
       method: 'gettxout',
-      params: [txid, index],
+      params: [payload.txid, payload.index],
       id: 0
     })
-  )
+  }
 
   /**
    * Submits a raw transaction event to the blockchain.
-   * @param {string} hex The hex string representing the raw transaction.
+   * @public
+   * @param {string} hex - The hex string representing the raw transaction.
    * @returns {Promise.<Object>} The transaction response.
    */
-  module.sendRawTransaction = (hex) => (
-    call({
+  sendRawTransaction (hex) {
+    return this.call({
       method: 'sendrawtransaction',
       params: [hex],
       id: 0
     })
-  )
+  }
 
   /**
-   * TBA
+   * @public
+   * @param {Object} payload
+   * @param {string} payload.assetId
+   * @param {string} payload.address
+   * @param {number} payload.value
+   * @returns {Promise.<Object>}
    */
-  module.sendToAddress = ({ assetId, address, value }) => (
-    call({
+  sendToAddress (payload) {
+    // { assetId, address, value }
+    return this.call({
       method: 'sendtoaddress',
-      params: [assetId, address, value],
+      params: [payload.assetId, payload.address, payload.value],
       id: 0
     })
-  )
+  }
 
   /**
-   * TBA
+   * @public
+   * @param {string} hex
+   * @returns {Promise.<Object>}
    */
-  module.submitBlock = (hex) => (
-    call({
+  submitBlock (hex) {
+    return this.call({
       method: 'submitblock',
       params: [hex],
       id: 0
     })
-  )
+  }
 
   /**
-   * Invokes the getaccountstate rpc request to return information of requested account.
-   *
-   * @param {string} address The address of the wallet being requested.
-   * node.rpc.getAccountState('Adii5po62hCCS9s9upsK6bXdWJosjHBt4G')
-   * @example
-   * return {
-   *   "version": 0,
-   *   "script_hash": "0x869575db91de0265118002f26e00fe1d4a89b9f0",
-   *   "frozen": false,
-   *   "votes": [],
-   *   "balances": [{
-   *       "asset": "0x602c79718b16e442de58778e148d0b1084e3b2dffd5de6b7b16cee7969282de7",
-   *       "value": "1488.1"
-   *     },
-   *     {
-   *       "asset": "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b",
-   *       "value": "186"
-   *     }
-   *   ]
-   * }
-   * @returns {Promise.<Object>} An object containing the account information.
+   * @public
+   * @param {string} address
+   * @returns {Promise.<Object>}
    */
-  module.getAccountState = (address) => (
-    call({
+  getAccountState (address) {
+    return this.call({
       method: 'getaccountstate',
       params: [address],
       id: 0
     })
-  )
+  }
 
   /**
-   * Invokes the getassetstate rpc request to return information of requested asset.
-   *
-   * @param {string} assetId The address of the asset being requested.
-   * @example
-   * node..rpc.getAssetState('0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b')
-   * return {
-   *   "version": 0,
-   *   "id": "0xc56f33fc6ecfcd0c225c4ab356fee59390af8560be0e930faebe74a6daff7c9b",
-   *   "type": "GoverningToken",
-   *   "name": [{
-   *     "lang": "zh-CN",
-   *     "name": "\u5C0F\u8681\u80A1"
-   *   }, {
-   *     "lang": "en",
-   *     "name": "AntShare"
-   *   }],
-   *   "amount": "100000000",
-   *   "available": "100000000",
-   *   "precision": 0,
-   *   "owner": "00",
-   *   "admin": "Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt",
-   *   "issuer": "Abf2qMs1pzQb8kYk9RuxtUb9jtRKJVuBJt",
-   *   "expiration": 4000000,
-   *   "frozen": false
-   * }
-   * @returns {Promise.<Object>} An object containing the asset information.
+   * @public
+   * @param {string} asssetId
+   * @returns {Promise.<Object>}
    */
-  module.getAssetState = (assetId) => (
-    call({
+  getAssetState (assetId) {
+    return this.call({
       method: 'getassetstate',
       params: [assetId],
       id: 0
     })
-  )
+  }
 
   /**
-   * Invokes the getcontractstate rpc request to return information of requested contract.
-   *
-   * @param {string} hash - The hash value of the contract been requested.
-   * @example node.rpc.getContractState('0x5b7074e873973a6ed3708862f219a6fbf4d1c411')
-   * return {
-   *   version: 0,
-   *   hash: '0x5b7074e873973a6ed3708862f219a6fbf4d1c411',
-   *   script: '... OMITTED ...',
-   *   parameters: [ 'String', 'Array' ],
-   *   returntype: 'ByteArray',
-   *   storage: true,
-   *   name: 'rpx',
-   *   code_version: '3',
-   *   author: '1',
-   *   email: '1',
-   *   description: '1'
-   * }
-   * @returns {Promise.<Object>} An object containing the contract information.
+   * @public
+   * @param {string} hash
+   * @returns {Promise.<Object>}
    */
-  module.getContractState = (hash) => (
-    call({
+  getContractState (hash) {
+    return this.call({
       method: 'getcontractstate',
       params: [hash],
       id: 0
     })
-  )
+  }
 
   /**
-   * Invokes the validateaddress rpc request to verify a requested address.
-   *
-   * @param {string} address The address of the wallet being requested.
-   * @example
-   * node.rpc.validateAddress('Adii5po62hCCS9s9upsK6bXdWJosjHBt4G')
-   * return {
-   *   address: 'Adii5po62hCCS9s9upsK6bXdWJosjHBt4G',
-   *   isvalid: true
-   * }
-   * @returns {Promise.<Object>} An object containing the validation information of the requested account.
+   * @public
+   * @param {string} address
+   * @returns {Promise.<Object>}
    */
-  module.validateAddress = (address) => (
-    call({
+  validateAddress (address) {
+    return this.call({
       method: 'validateaddress',
       params: [address],
       id: 0
     })
-  )
+  }
 
   /**
-   * TBA
+   * @public
+   * @returns {Promise.<Object>}
    */
-  module.getPeers = () => (
-    call({
+  getPeers () {
+    return this.call({
       method: 'getpeers',
       params: [],
       id: 0
     })
-  )
-
-  return module
+  }
 }
+
+module.exports = Rpc
