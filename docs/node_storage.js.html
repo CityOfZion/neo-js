@@ -1,0 +1,591 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      node/storage.js - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      neo-js
+    </h3>
+
+    <h3>Classes</h3><ul><li id="HashHelper-nav"><a href="HashHelper.html">HashHelper</a><ul class='methods'><li data-type="method" id="HashHelper-denormalize-nav"><a href="HashHelper.html#.denormalize">denormalize</a></li><li data-type="method" id="HashHelper-normalize-nav"><a href="HashHelper.html#.normalize">normalize</a></li></ul></li><li id="Logger-nav"><a href="Logger.html">Logger</a><ul class='methods'><li data-type="method" id="Logger-debug-nav"><a href="Logger.html#debug">debug</a></li><li data-type="method" id="Logger-error-nav"><a href="Logger.html#error">error</a></li><li data-type="method" id="Logger-info-nav"><a href="Logger.html#info">info</a></li><li data-type="method" id="Logger-setLevel-nav"><a href="Logger.html#setLevel">setLevel</a></li><li data-type="method" id="Logger-trace-nav"><a href="Logger.html#trace">trace</a></li><li data-type="method" id="Logger-warn-nav"><a href="Logger.html#warn">warn</a></li></ul></li><li id="Mesh-nav"><a href="Mesh.html">Mesh</a><ul class='methods'><li data-type="method" id="Mesh-getFastestNode-nav"><a href="Mesh.html#getFastestNode">getFastestNode</a></li><li data-type="method" id="Mesh-getHighestNode-nav"><a href="Mesh.html#getHighestNode">getHighestNode</a></li><li data-type="method" id="Mesh-getNodeWithBlock-nav"><a href="Mesh.html#getNodeWithBlock">getNodeWithBlock</a></li><li data-type="method" id="Mesh-getRandomNode-nav"><a href="Mesh.html#getRandomNode">getRandomNode</a></li><li data-type="method" id="Mesh-rpc-nav"><a href="Mesh.html#rpc">rpc</a></li></ul></li><li id="MongodbStorage-nav"><a href="MongodbStorage.html">MongodbStorage</a><ul class='methods'><li data-type="method" id="MongodbStorage-getAddress-nav"><a href="MongodbStorage.html#getAddress">getAddress</a></li><li data-type="method" id="MongodbStorage-getAsset-nav"><a href="MongodbStorage.html#getAsset">getAsset</a></li><li data-type="method" id="MongodbStorage-getAssetList-nav"><a href="MongodbStorage.html#getAssetList">getAssetList</a></li><li data-type="method" id="MongodbStorage-getAssetListByAddress-nav"><a href="MongodbStorage.html#getAssetListByAddress">getAssetListByAddress</a></li><li data-type="method" id="MongodbStorage-getBestBlockHash-nav"><a href="MongodbStorage.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="MongodbStorage-getBlock-nav"><a href="MongodbStorage.html#getBlock">getBlock</a></li><li data-type="method" id="MongodbStorage-getBlockByHash-nav"><a href="MongodbStorage.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="MongodbStorage-getBlockCount-nav"><a href="MongodbStorage.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="MongodbStorage-getTransactions-nav"><a href="MongodbStorage.html#getTransactions">getTransactions</a></li><li data-type="method" id="MongodbStorage-getTX-nav"><a href="MongodbStorage.html#getTX">getTX</a></li><li data-type="method" id="MongodbStorage-saveAddress-nav"><a href="MongodbStorage.html#saveAddress">saveAddress</a></li><li data-type="method" id="MongodbStorage-saveAsset-nav"><a href="MongodbStorage.html#saveAsset">saveAsset</a></li><li data-type="method" id="MongodbStorage-saveAssetState-nav"><a href="MongodbStorage.html#saveAssetState">saveAssetState</a></li><li data-type="method" id="MongodbStorage-saveBlock-nav"><a href="MongodbStorage.html#saveBlock">saveBlock</a></li><li data-type="method" id="MongodbStorage-saveTransaction-nav"><a href="MongodbStorage.html#saveTransaction">saveTransaction</a></li><li data-type="method" id="MongodbStorage-updateBalance-nav"><a href="MongodbStorage.html#updateBalance">updateBalance</a></li><li data-type="method" id="MongodbStorage-updateTransaction-nav"><a href="MongodbStorage.html#updateTransaction">updateTransaction</a></li><li data-type="method" id="MongodbStorage-verifyAssets-nav"><a href="MongodbStorage.html#verifyAssets">verifyAssets</a></li><li data-type="method" id="MongodbStorage-verifyBlocks-nav"><a href="MongodbStorage.html#verifyBlocks">verifyBlocks</a></li></ul></li><li id="Neo-nav"><a href="Neo.html">Neo</a></li><li id="Node-nav"><a href="Node.html">Node</a></li><li id="Rpc-nav"><a href="Rpc.html">Rpc</a><ul class='methods'><li data-type="method" id="Rpc-getAccountState-nav"><a href="Rpc.html#getAccountState">getAccountState</a></li><li data-type="method" id="Rpc-getAssetState-nav"><a href="Rpc.html#getAssetState">getAssetState</a></li><li data-type="method" id="Rpc-getBalance-nav"><a href="Rpc.html#getBalance">getBalance</a></li><li data-type="method" id="Rpc-getBestBlockHash-nav"><a href="Rpc.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="Rpc-getBlock-nav"><a href="Rpc.html#getBlock">getBlock</a></li><li data-type="method" id="Rpc-getBlockByHash-nav"><a href="Rpc.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="Rpc-getBlockCount-nav"><a href="Rpc.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="Rpc-getBlockHash-nav"><a href="Rpc.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="Rpc-getBlockSystemFee-nav"><a href="Rpc.html#getBlockSystemFee">getBlockSystemFee</a></li><li data-type="method" id="Rpc-getConnectionCount-nav"><a href="Rpc.html#getConnectionCount">getConnectionCount</a></li><li data-type="method" id="Rpc-getContractState-nav"><a href="Rpc.html#getContractState">getContractState</a></li><li data-type="method" id="Rpc-getPeers-nav"><a href="Rpc.html#getPeers">getPeers</a></li><li data-type="method" id="Rpc-getRawMemPool-nav"><a href="Rpc.html#getRawMemPool">getRawMemPool</a></li><li data-type="method" id="Rpc-getRawTransaction-nav"><a href="Rpc.html#getRawTransaction">getRawTransaction</a></li><li data-type="method" id="Rpc-getTXOut-nav"><a href="Rpc.html#getTXOut">getTXOut</a></li><li data-type="method" id="Rpc-invoke-nav"><a href="Rpc.html#invoke">invoke</a></li><li data-type="method" id="Rpc-invokeFunction-nav"><a href="Rpc.html#invokeFunction">invokeFunction</a></li><li data-type="method" id="Rpc-invokeScript-nav"><a href="Rpc.html#invokeScript">invokeScript</a></li><li data-type="method" id="Rpc-sendRawTransaction-nav"><a href="Rpc.html#sendRawTransaction">sendRawTransaction</a></li><li data-type="method" id="Rpc-sendToAddress-nav"><a href="Rpc.html#sendToAddress">sendToAddress</a></li><li data-type="method" id="Rpc-submitBlock-nav"><a href="Rpc.html#submitBlock">submitBlock</a></li><li data-type="method" id="Rpc-validateAddress-nav"><a href="Rpc.html#validateAddress">validateAddress</a></li></ul></li><li id="Storage-nav"><a href="Storage.html">Storage</a><ul class='methods'><li data-type="method" id="Storage-getAsset-nav"><a href="Storage.html#getAsset">getAsset</a></li><li data-type="method" id="Storage-getAssetBalance-nav"><a href="Storage.html#getAssetBalance">getAssetBalance</a></li><li data-type="method" id="Storage-getAssetList-nav"><a href="Storage.html#getAssetList">getAssetList</a></li><li data-type="method" id="Storage-getAssetState-nav"><a href="Storage.html#getAssetState">getAssetState</a></li><li data-type="method" id="Storage-getAssetTransactions-nav"><a href="Storage.html#getAssetTransactions">getAssetTransactions</a></li><li data-type="method" id="Storage-getBalance-nav"><a href="Storage.html#getBalance">getBalance</a></li><li data-type="method" id="Storage-getBestBlockHash-nav"><a href="Storage.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="Storage-getBlock-nav"><a href="Storage.html#getBlock">getBlock</a></li><li data-type="method" id="Storage-getBlockByHash-nav"><a href="Storage.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="Storage-getBlockCount-nav"><a href="Storage.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="Storage-getExpandedTX-nav"><a href="Storage.html#getExpandedTX">getExpandedTX</a></li><li data-type="method" id="Storage-getTX-nav"><a href="Storage.html#getTX">getTX</a></li><li data-type="method" id="Storage-saveAssetState-nav"><a href="Storage.html#saveAssetState">saveAssetState</a></li><li data-type="method" id="Storage-saveBlock-nav"><a href="Storage.html#saveBlock">saveBlock</a></li><li data-type="method" id="Storage-updateAssetList-nav"><a href="Storage.html#updateAssetList">updateAssetList</a></li><li data-type="method" id="Storage-verifyAssets-nav"><a href="Storage.html#verifyAssets">verifyAssets</a></li><li data-type="method" id="Storage-verifyBlocks-nav"><a href="Storage.html#verifyBlocks">verifyBlocks</a></li></ul></li><li id="Wallet-nav"><a href="Wallet.html">Wallet</a><ul class='methods'><li data-type="method" id="Wallet-doClaimAllGas-nav"><a href="Wallet.html#doClaimAllGas">doClaimAllGas</a></li><li data-type="method" id="Wallet-doMintTokens-nav"><a href="Wallet.html#doMintTokens">doMintTokens</a></li><li data-type="method" id="Wallet-doSendAsset-nav"><a href="Wallet.html#doSendAsset">doSendAsset</a></li><li data-type="method" id="Wallet-doTransferToken-nav"><a href="Wallet.html#doTransferToken">doTransferToken</a></li><li data-type="method" id="Wallet-getBalance-nav"><a href="Wallet.html#getBalance">getBalance</a></li><li data-type="method" id="Wallet-getClaims-nav"><a href="Wallet.html#getClaims">getClaims</a></li><li data-type="method" id="Wallet-getTokenBalance-nav"><a href="Wallet.html#getTokenBalance">getTokenBalance</a></li><li data-type="method" id="Wallet-getTransactionHistory-nav"><a href="Wallet.html#getTransactionHistory">getTransactionHistory</a></li></ul></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        node/storage.js
+      </h1>
+    
+
+    
+      
+
+<section>
+  <article>
+    <pre class="prettyprint source linenums"><code>/* eslint handle-callback-err: "off" */
+/* eslint new-cap: "off" */
+const _ = require('lodash')
+const Logger = require('../common/logger')
+const MongodbStorage = require('./storage/mongodb')
+
+/**
+ * @class Storage
+ * @description
+ * A storage class for the various storage methods supported by the neo-js.  This class will
+ * include high level storage interface methods that will interface with a standard set of methods available
+ * on each type of storage.
+ * @param {Object} options
+ * @param {string} options.model
+ * @param {Object} options.logger
+ */
+class Storage {
+  constructor (options = {}) {
+    // -- Properties
+    /** @type {number} */
+    this.blockHeight = 0
+    /** @type {number} */
+    this.index = -1
+    /** @type {Object} */
+    this.dataAccess = undefined
+    /** @type {Array} */
+    this.unlinkedBlocks = []
+    /** @type {Array.&lt;Object>} */
+    this.assets = []
+    /** @type {Object} */
+    this.defaultOptions = {
+      model: 'memory',
+      dataAccessOptions: {},
+      logger: new Logger('Storage')
+    }
+
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
+    this.initStorage()
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initStorage () {
+    if (this.model === 'mongoDB') {
+      this.dataAccess = new MongodbStorage(this.dataAccessOptions)
+      this.initBackgroundTasks()
+    } else {
+      this.logger.error('Unsupported storage model:', this.model)
+    }
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initBackgroundTasks () {
+    this.getBlockCount()
+
+    // Periodically update the list of assets available
+    this.updateAssetList()
+    setInterval(() => {
+      this.updateAssetList()
+    }, 10000)
+  }
+
+  /**
+   * Gets the balance of all assets and tokens for an address.  This method will return the
+   * complete balance sheet for an account unless only a subset of assets is requested.  The
+   * method also supports an optional blockAge attribute which will act as a caching mechanism to reduce
+   * compute load.
+   * @public
+   * @param {string} address - A contract address to get the balance of.
+   * @param {Array} [assets = node.assets] - An array of the assets to return balances for.
+   * @param {number} [blockAge = 1] - getBalance uses a caching mechanic to reduce node load.  If
+   * An asset's balance for an account has not been updated withing 'blockAge' blocks, it will retrieve an
+   * updated value.  Increasing this number and substantial reduce computer load at the expense
+   * of balance discretization.
+   * @returns Promise.&lt;Array> An array containing the balances of an address.
+   */
+  getBalance (address, assets = this.assets, blockAge = 1) {
+    // TODO: refactor away usage of assign dynamic data into default input value
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAddress(address)
+        .then((res) => {
+          // If the address is not found in the database, its new...So add it and retry.
+          if (!res) {
+            this.dataAccess.saveAddress({ address: address, type: 'c', assets: [] })
+              .then((res) => {
+                this.getBalance(address)
+                  .then((res) => {
+                    resolve(res)
+                  })
+              })
+              .catch((err) => {
+                reject(err)
+              })
+          } else {
+            // Sort the assets into 'current' and 'needs update'
+            let parts = _.partition(res.assets, (asset) => {
+              return (this.index - asset.index) >= blockAge
+            })
+
+            // If there is an asset list discrepancy, scan for missing assets to update.
+            // This mechanic is used to automatically add new asset support as
+            // an asset it appears in a transaction.
+            if (res.assets.length !== this.assets.length) {
+              let included = _.map(res.assets, 'asset')
+              this.assets.forEach((asset) => {
+                if (included.indexOf(asset.asset) === -1) {
+                  parts[0].push({
+                    asset: asset.asset,
+                    index: -1,
+                    balance: 0
+                  })
+                }
+              })
+            }
+
+            // Update stale balances and resolve
+            Promise.all(parts[0].map((asset) => {
+              return this.getAssetBalance(address, asset.asset, asset.index + 1, asset.balance)
+            }))
+              .then((res) => {
+                resolve({address: address, assets: parts[1].concat(res)})
+              })
+              .catch((err) => {
+                this.logger.warn('Error getting asset balance. Continue...')
+                this.logger.info('Error:', err)
+              })
+          }
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Gets the state information of the requested asset.
+   * @public
+   * @param {string} hash
+   * @returns Promise.&lt;Object>
+   */
+  getAssetState (hash) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAsset(hash)
+        .then((res) => {
+          if (!res) {
+            resolve(undefined)
+          }
+          resolve(res.state)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  /**
+   * Returns the requested asset from local storage.
+   * @public
+   * @param {string} hash
+   * @returns Promise.&lt;Object>
+   */
+  getAsset (hash) {
+    return this.dataAccess.getAsset(hash)
+  }
+
+  /**
+   * Gets the balance of an asset belonging to a specific address
+   * on the blockchain.  This method will also cache the result to the
+   * addresses collection.
+   * @public
+   * @param {string} address - The address to find the balance of.
+   * @param {string} asset - The asset to look up.
+   * @param {number} [startBlock = 0] - the block start start the calculation from.
+   * @param {number} [balance = 0] - the balance at the startBlock.
+   * @returns Promise.&lt;Object> An object containing the asset balance.
+   */
+  getAssetBalance (address, asset, startBlock = 0, balance = 0) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAssetListByAddress(address, asset, startBlock)
+        .then((res) => {
+          Promise.all(_.map(res, 'txid').map(this.getExpandedTX.bind(this)))
+            .then((res) => {
+              // Balancing
+              res.forEach((r) => {
+                r.vout.forEach((output) => {
+                  if ((output.address === address) &amp;&amp; (output.asset === asset)) {
+                    balance += output.value
+                  }
+                })
+                r.vin.forEach((input) => {
+                  if ((input.address === address) &amp;&amp; (input.asset === asset)) {
+                    balance -= input.value
+                  }
+                })
+              })
+
+              // Update the address balances in the collection
+              const result = { asset: asset, balance: balance, index: this.index, type: 'a' }
+              this.dataAccess.updateBalance(address, asset, balance, this.index)
+                .then((res) => {
+                  resolve(result)
+                }) // Not catching errors
+            })
+            .catch((err) => {
+              reject(err)
+            })
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Returns list of transactions of an asset belonging to a specific address
+   * on the blockchain.
+   * @public
+   * @param {string} address
+   * @param {string} assetHash
+   * @returns {Promise.&lt;Array>}
+   */
+  getAssetTransactions (address, assetHash) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getAssetListByAddress(address, assetHash)
+        .then((res) => {
+          const transactions = []
+          res.forEach((txObj, index) => {
+            let subtotal = 0
+
+            txObj.vout.forEach((valueOutObj) => {
+              if ((valueOutObj.address === address) &amp;&amp; (valueOutObj.asset === assetHash)) {
+                subtotal += valueOutObj.value
+              }
+            })
+            txObj.vin.forEach((valueInObj) => {
+              if ((valueInObj.address === address) &amp;&amp; (valueInObj.asset === assetHash)) {
+                subtotal -= valueInObj.value
+              }
+            })
+
+            const transaction = {
+              blockIndex: txObj.blockIndex,
+              // blockTime: undefined,
+              value: subtotal,
+              tx: txObj
+            }
+            transactions.push(transaction)
+          })
+
+          resolve(transactions)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Calculates and returns the expanded transaction.  This method will also
+   * update the expanded transaction in local storage to improve later performance.
+   * @public
+   * @param {string} txid - The '0x' formatted transaction ID.
+   * @returns {Promise.&lt;Object>} A JSON formatted representation of a transaction.
+   */
+  getExpandedTX (txid) {
+    return new Promise((resolve, reject) => {
+      this.getTX(txid)
+        .then((tx) => {
+          if (!tx) {
+            reject(new Error('Could not find the transaction'))
+          }
+
+          // If the tx has already been expanded, return it
+          if (tx.vin.some((entry) => _.has(entry, 'asset'))) {
+            resolve(tx)
+          }
+
+          Promise.all(_.map(tx.vin, 'txid').map(this.getTX.bind(this)))
+            .then((res) => {
+              tx.vin = _.map(res, (r, i) => (r.vout[tx.vin[i].vout]))
+              this.dataAccess.updateTransaction(tx)
+                .then((res) => {
+                  resolve(tx)
+                })
+                .catch((err) => { // Despite error, still resolve anyway
+                  resolve(tx)
+                })
+            })
+            .catch((err) => {
+              this.logger.error('getExpandedTX Promise.all err:', err)
+            })
+        })
+        .catch((err) => {
+          this.logger.error('getExpendedTX getTX err:', err)
+        })
+    })
+  }
+
+  /**
+   * Returns the JSON formatted transaction from the blockchain.
+   * @public
+   * @param {string} txid - A '0x' formatted transaction ID.
+   * @returns {Promise.&lt;Object>} A JSON formatted representation of a transaction.
+   */
+  getTX (txid) {
+    return this.dataAccess.getTX(txid)
+  }
+
+  /**
+   * Returns the requested block from local storage.
+   * @public
+   * @param {number} index - The block index being requested.
+   * @returns {Promise.&lt;Object>} A JSON formatted block on the blockchain.
+   */
+  getBlock (index) {
+    return this.dataAccess.getBlock(index)
+  }
+
+  /**
+   * Returns the requested block from local storage.
+   * @public
+   * @param {string} hash - The hash of the block being requested.
+   * @returns {Promise.&lt;Object>} A promise returning information of the block
+   */
+  getBlockByHash (hash) {
+    return this.dataAccess.getBlockByHash(hash)
+  }
+
+  /**
+   * Gets the block height of the blockchain maintained in local storage.
+   * This method also caches the height and index in memory for use when identifying
+   * blocks that need to be downloaded.
+   * @public
+   * @returns {Promise.&lt;Number>} The block height
+   */
+  getBlockCount () {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getBlockCount()
+        .then((res) => {
+          this.index = res - 1
+          this.blockHeight = res
+          resolve(res)
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Gets the best block hash on the node
+   * @public
+   * @returns {Promise.&lt;Object>}
+   */
+  getBestBlockHash () {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.getBestBlockHash()
+        .then((res) => {
+          if (!res) {
+            resolve(undefined)
+          }
+          resolve(res.hash)
+        })
+        .catch((err) => reject(err))
+    })
+  }
+
+  /**
+   * Saves a json formated block to storage. This method will also split out the
+   * transactions for storage as well as caching them for later use.
+   * @public
+   * @param {Object} newBlock - The JSON representation of a block on the blockchain.
+   * @returns {Promise.&lt;Object>}
+   */
+  saveBlock (newBlock) {
+    return new Promise((resolve, reject) => {
+      this.dataAccess.saveBlock(newBlock)
+        .then((res) => {
+        // Store the raw transaction
+          newBlock.tx.forEach((tx) => {
+            tx.blockIndex = newBlock.index
+            tx.vout.forEach((d) => {
+              if (this.assetsFlat.indexOf(d.asset) === -1) {
+                const newAsset = { address: d.asset, asset: d.asset, type: 'a', assets: [] }
+                this.assetsFlat.push(d.asset)
+                this.assets.push(newAsset)
+                this.dataAccess.saveAddress(newAsset)
+              }
+            })
+          })
+
+          Promise.all(_.map(newBlock.tx).map((tx) => this.dataAccess.saveTransaction(tx)))
+            .then((res) => {
+              // Because we asynchronously sync the blockchain,
+              // we need to keep track of the blocks that have been stored
+              // (higher indices could arrive before the lower ones)
+              // This code maintains the local blockheight by tracking
+              // 'linked' and 'unlinked'(but stored) blocks
+              if (newBlock.index > this.index) {
+                this.unlinkedBlocks.push(newBlock.index)
+                let linkIndex = -1
+                while (true) {
+                  linkIndex = this.unlinkedBlocks.indexOf(this.index + 1)
+                  if (linkIndex !== -1) {
+                    this.unlinkedBlocks.splice(linkIndex, 1)
+                    this.index++
+                    this.blockHeight++
+                  } else break
+                }
+              }
+              resolve(res)
+            })
+            .catch((err) => reject(err))
+        })
+        .catch((err) => {
+          reject(err)
+        })
+    })
+  }
+
+  /**
+   * Saves the state information of an asset.
+   * @public
+   * @param {string} hash
+   * @param {Object} assetState
+   * @returns {void}
+   */
+  saveAssetState (hash, assetState) {
+    return this.dataAccess.saveAssetState(hash, assetState)
+  }
+
+  /**
+   * Verifies local blockchain integrity over a block range.
+   * @public
+   * @param {string} [start = 0] - The start index of the block range to verify.
+   * @param {number} [end = this.index] - The end index of the block range to verify.
+   * @returns {Promise.&lt;Array>} An array containing the indices of the missing blocks.
+   */
+  verifyBlocks (start = 0, end = this.index) {
+    return this.dataAccess.verifyBlocks(start, end)
+  }
+
+  /**
+   * Verifies local blockchain's asset integrity.
+   * @public
+   * @returns {Promise.&lt;Array>} An array containing the indices of the invlid assets.
+   */
+  verifyAssets () {
+    return this.dataAccess.verifyAssets()
+  }
+
+  /**
+   * Returns list of all assets in local storage.
+   * @public
+   * @returns {Promise.&lt;Array>}
+   */
+  getAssetList () {
+    return this.dataAccess.getAssetList()
+  }
+
+  /**
+   * Caches the list of assets to improve performance of asset related operations.
+   * @public
+   * @returns {void}
+   */
+  updateAssetList () {
+    this.dataAccess.getAssetList()
+      .then((res) => {
+        this.assets = res
+        this.assetsFlat = _.map(res, 'asset')
+      })
+      // Not catching errors
+  }
+}
+
+module.exports = Storage
+</code></pre>
+  </article>
+</section>
+
+    
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+  
+</body>
+</html>

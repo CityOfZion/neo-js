@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <title>
-      Home - Documentation
+      Mesh - Documentation
   </title>
 
   <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
@@ -48,14 +48,14 @@
 
   <div class="top-nav-wrapper">
     <ul>
-      <li  class="active" >
+      <li >
         <a href="index.html">
           
-          
-            <svg fill="#0095dd" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
               <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
               <path d="M0 0h24v24H0z" fill="none"/>
             </svg>
+          
           
         </a>
       </li>
@@ -75,100 +75,811 @@
 
   <div id="main">
     
+      <h1 class="page-title">
+        Mesh
+      </h1>
+    
 
     
+
+<section>
+  <header>
+    
+      <h2>
+        
+        Mesh
+        
+      </h2>
+
+      
+    
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#Mesh">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="Mesh">
+      <span class="type-signature"></span>new Mesh<span class="signature">(nodes, options)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
       
 
-
-
-    
+      <th>Type</th>
 
       
 
+      
 
-  <section class="readme">
-    <article>
-      <p align="center">
-  <img 
-    src="http://res.cloudinary.com/vidsy/image/upload/v1503160820/CoZ_Icon_DARKBLUE_200x178px_oq0gxm.png" 
-    width="125px"
-    alt="City of Zion logo">
-</p>
+      <th class="last">Description</th>
+    </tr>
+  </thead>
 
-<p align="center" style="font-size: 32px;">
-  <strong>neo-js</strong>
-</p>
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>nodes</code></td>
+        
 
-<p align="center">
-  A package for running a node on the <b>neo</b> blockchain.
-</p>
-
-<p align="center">
-  <a href="https://travis-ci.org/CityOfZion/neo-js">
-    <img src="https://travis-ci.org/CityOfZion/neo-js.svg?branch=master" alt="Build Status">
-  </a>
-  <a href="https://badge.fury.io/js/%40cityofzion%2Fneo-js">
-    <img src="https://badge.fury.io/js/%40cityofzion%2Fneo-js.svg" alt="npm version">
-  </a>
-</p>
-
-<h2>Overview</h2><p>The <code>neo-js</code> package is designed to interface with the <strong>Neo</strong> blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.</p>
-<p><strong>note:</strong> All blockchain events (Invocation and Deploy) use the RPC calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')</p>
-<h2>A note on local storage</h2><p>Currently this module only support MongoDB for synchronizing the blockchain.  Future storage types are planning including other NoSQL databases, SQL databases, and in-memory solutions.</p>
-<p>This module uses 'lazy caching' to improve performance when using local storage. Blocks are initially downloaded and stored in three collections (blocks, transactions, and addresses) as a result of the sync process. Upon the first request for a specific transaction (as a result of any number of the methods), the transaction will be expanded as <a href="https://github.com/CityOfZion/neon-wallet-db/blob/master/docs/Overview.md">described in Neon wallet architecture</a> and updated in the collection. The next time the block is requested, the expanded transaction will already be available in the collection.</p>
-<p>This mechanic is also used for address balances. Upon requesting an update for an asset balance, the transaction collection is analyzed and the asset balance is stored in an account collection along with the max block height during the calculation. Upon future requests for the asset balance, the asset collection is first queried for previous balance.  The asset balance is then updated using only the new blocks since the previous calculation event.</p>
-<h2>System Recommendations</h2><ul>
-<li>NodeJS 8+</li>
-<li>MongoDB 3.0+</li>
-</ul>
-<h2>Installation</h2><p>Install the package using:</p>
-<pre class="prettyprint source lang-bash"><code>$ npm install --save @cityofzion/neo-js</code></pre><p>Alternatively, to access to the latest available code, you can reference to the git repository directly:</p>
-<pre class="prettyprint source lang-bash"><code>$ npm install --save CityOfZion/neo-js#develop</code></pre><p><strong>note:</strong> <code>neo-js</code> requires that MongoDB server is installed to run the instance as a full node.
-Installation instructions can be found in <a href="https://docs.mongodb.com/manual/installation/">MongoDB installation manual</a>.</p>
-<h2>Quick Start</h2><pre class="prettyprint source lang-js"><code>const Node = require('@cityofzion/neo-js')</code></pre><p>To create a new blockchain instance:</p>
-<pre class="prettyprint source lang-js"><code>// create the local node instance that will interface with the rpc methods
-const nodeT = new Node({ network: 'testnet' }) //on testnet
-const nodeM = new Node({ network: 'mainnet' }) //on mainnet
-
-nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
-nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet</code></pre><p>This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:</p>
-<pre class="prettyprint source lang-js"><code>const options = {
-  network: 'testnet',
-  storage: {
-    model: 'mongoDB',
-    collectionNames: {
-      blocks: 'b_neo_t_blocks',
-      transactions: 'b_neo_t_transactions',
-      addresses: 'b_neo_t_addresses'
-    }
-  }
-}
-
-// create the local node instance and get the local block count after 5 seconds.
-const node = new Node(options)
-
-setTimeout(() => {
-  node.storage.getBlockCount()
-    .then( (res) => console.log(res) )
-}, 5000)</code></pre><h2>Documentation</h2><p>Documentation (incomplete) for the project can be found at:</p>
-<ul>
-<li>http://cityofzion.io/neo-js/</li>
-</ul>
-<p>Self-documented code examples are available as part of the project source code:</p>
-<ul>
-<li>https://github.com/CityOfZion/neo-js/blob/master/examples</li>
-</ul>
-<h2>Contribution</h2><p><code>neo-js</code> always encourages community code contribution. Before contributing please read the <a href="https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md">contributor guidelines</a> and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork <code>neo-js</code>, commit your changes and submit a pull request.</p>
-<p>By contributing to <code>neo-js</code>, you agree that your contributions will be licensed under its MIT license.</p>
-<h2>License</h2><ul>
-<li>Open-source <a href="https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md">MIT</a>.</li>
-<li>Main author is <a href="https://github.com/lllwvlvwlll">@lllwvlvwlll</a>.</li>
-</ul>
-    </article>
-  </section>
-
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Array.&lt;<a href="Node.html">Node</a>>
+    </span>
 
     
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>logger</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line6">line 6</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+        
+        
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getFastestNode">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getFastestNode">
+      <span class="type-signature"></span>getFastestNode<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Node.html">Node</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line31">line 31</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getHighestNode">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getHighestNode">
+      <span class="type-signature"></span>getHighestNode<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Node.html">Node</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Identifies and returns the node with the highest block height.
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line44">line 44</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getNodeWithBlock">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getNodeWithBlock">
+      <span class="type-signature"></span>getNodeWithBlock<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Node.html">Node</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line67">line 67</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getRandomNode">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getRandomNode">
+      <span class="type-signature"></span>getRandomNode<span class="signature">()</span><span class="type-signature"> &rarr; {<a href="Node.html">Node</a>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line56">line 56</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#rpc">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="rpc">
+      <span class="type-signature"></span>rpc<span class="signature">(method, params)</span><span class="type-signature"> &rarr; {*}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>method</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>params</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_mesh.js.html">node/mesh.js</a>, <a href="node_mesh.js.html#line83">line 83</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
 
 
   </div>

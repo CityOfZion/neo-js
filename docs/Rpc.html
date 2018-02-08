@@ -1,0 +1,3910 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>
+      Rpc - Documentation
+  </title>
+
+  <link href="https://www.braintreepayments.com/images/favicon-ccda0b14.png" rel="icon" type="image/png">
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.7.0/highlight.min.js"></script>
+  <script>hljs.initHighlightingOnLoad();</script>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+
+  <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+  <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+
+  
+
+  <!-- start Mixpanel -->
+  <script type="text/javascript">(function(e,a){if(!a.__SV){var b=window;try{var c,l,i,j=b.location,g=j.hash;c=function(a,b){return(l=a.match(RegExp(b+"=([^&]*)")))?l[1]:null};g&&c(g,"state")&&(i=JSON.parse(decodeURIComponent(c(g,"state"))),"mpeditor"===i.action&&(b.sessionStorage.setItem("_mpcehash",g),history.replaceState(i.desiredHash||"",e.title,j.pathname+j.search)))}catch(m){}var k,h;window.mixpanel=a;a._i=[];a.init=function(b,c,f){function e(b,a){var c=a.split(".");2==c.length&&(b=b[c[0]],a=c[1]);b[a]=function(){b.push([a].concat(Array.prototype.slice.call(arguments,
+  0)))}}var d=a;"undefined"!==typeof f?d=a[f]=[]:f="mixpanel";d.people=d.people||[];d.toString=function(b){var a="mixpanel";"mixpanel"!==f&&(a+="."+f);b||(a+=" (stub)");return a};d.people.toString=function(){return d.toString(1)+".people (stub)"};k="disable time_event track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config reset people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+  for(h=0;h<k.length;h++)e(d,k[h]);a._i.push([b,c,f])};a.__SV=1.2;b=e.createElement("script");b.type="text/javascript";b.async=!0;b.src="undefined"!==typeof MIXPANEL_CUSTOM_LIB_URL?MIXPANEL_CUSTOM_LIB_URL:"file:"===e.location.protocol&&"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js".match(/^\/\//)?"https://cdn.mxpnl.com/libs/mixpanel-2-latest.min.js":"//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";c=e.getElementsByTagName("script")[0];c.parentNode.insertBefore(b,c)}})(document,window.mixpanel||[]);
+  mixpanel.init("1919205b2da72e4da3b9b6639b444d59");</script>
+  <!-- end Mixpanel -->
+</head>
+
+<body>
+  <svg style="display: none;">
+    <defs>
+      <symbol id="linkIcon" fill="#706d77" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 0h24v24H0z" fill="none"/>
+          <path d="M3.9 12c0-1.71 1.39-3.1 3.1-3.1h4V7H7c-2.76 0-5 2.24-5 5s2.24 5 5 5h4v-1.9H7c-1.71 0-3.1-1.39-3.1-3.1zM8 13h8v-2H8v2zm9-6h-4v1.9h4c1.71 0 3.1 1.39 3.1 3.1s-1.39 3.1-3.1 3.1h-4V17h4c2.76 0 5-2.24 5-5s-2.24-5-5-5z"/>
+      </symbol>
+    </defs>
+  </svg>
+
+  <input type="checkbox" id="nav-trigger" class="nav-trigger" />
+  <label for="nav-trigger" class="navicon-button x">
+    <div class="navicon"></div>
+  </label>
+
+  <label for="nav-trigger" class="overlay"></label>
+
+  <div class="top-nav-wrapper">
+    <ul>
+      <li >
+        <a href="index.html">
+          
+            <svg fill="#6D6D6D" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+              <path d="M0 0h24v24H0z" fill="none"/>
+            </svg>
+          
+          
+        </a>
+      </li>
+
+      
+
+    </ul>
+  </div>
+
+  <nav>
+    <h3 class="reference-title">
+      neo-js
+    </h3>
+
+    <h3>Classes</h3><ul><li id="HashHelper-nav"><a href="HashHelper.html">HashHelper</a><ul class='methods'><li data-type="method" id="HashHelper-denormalize-nav"><a href="HashHelper.html#.denormalize">denormalize</a></li><li data-type="method" id="HashHelper-normalize-nav"><a href="HashHelper.html#.normalize">normalize</a></li></ul></li><li id="Logger-nav"><a href="Logger.html">Logger</a><ul class='methods'><li data-type="method" id="Logger-debug-nav"><a href="Logger.html#debug">debug</a></li><li data-type="method" id="Logger-error-nav"><a href="Logger.html#error">error</a></li><li data-type="method" id="Logger-info-nav"><a href="Logger.html#info">info</a></li><li data-type="method" id="Logger-setLevel-nav"><a href="Logger.html#setLevel">setLevel</a></li><li data-type="method" id="Logger-trace-nav"><a href="Logger.html#trace">trace</a></li><li data-type="method" id="Logger-warn-nav"><a href="Logger.html#warn">warn</a></li></ul></li><li id="Mesh-nav"><a href="Mesh.html">Mesh</a><ul class='methods'><li data-type="method" id="Mesh-getFastestNode-nav"><a href="Mesh.html#getFastestNode">getFastestNode</a></li><li data-type="method" id="Mesh-getHighestNode-nav"><a href="Mesh.html#getHighestNode">getHighestNode</a></li><li data-type="method" id="Mesh-getNodeWithBlock-nav"><a href="Mesh.html#getNodeWithBlock">getNodeWithBlock</a></li><li data-type="method" id="Mesh-getRandomNode-nav"><a href="Mesh.html#getRandomNode">getRandomNode</a></li><li data-type="method" id="Mesh-rpc-nav"><a href="Mesh.html#rpc">rpc</a></li></ul></li><li id="MongodbStorage-nav"><a href="MongodbStorage.html">MongodbStorage</a><ul class='methods'><li data-type="method" id="MongodbStorage-getAddress-nav"><a href="MongodbStorage.html#getAddress">getAddress</a></li><li data-type="method" id="MongodbStorage-getAsset-nav"><a href="MongodbStorage.html#getAsset">getAsset</a></li><li data-type="method" id="MongodbStorage-getAssetList-nav"><a href="MongodbStorage.html#getAssetList">getAssetList</a></li><li data-type="method" id="MongodbStorage-getAssetListByAddress-nav"><a href="MongodbStorage.html#getAssetListByAddress">getAssetListByAddress</a></li><li data-type="method" id="MongodbStorage-getBestBlockHash-nav"><a href="MongodbStorage.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="MongodbStorage-getBlock-nav"><a href="MongodbStorage.html#getBlock">getBlock</a></li><li data-type="method" id="MongodbStorage-getBlockByHash-nav"><a href="MongodbStorage.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="MongodbStorage-getBlockCount-nav"><a href="MongodbStorage.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="MongodbStorage-getTransactions-nav"><a href="MongodbStorage.html#getTransactions">getTransactions</a></li><li data-type="method" id="MongodbStorage-getTX-nav"><a href="MongodbStorage.html#getTX">getTX</a></li><li data-type="method" id="MongodbStorage-saveAddress-nav"><a href="MongodbStorage.html#saveAddress">saveAddress</a></li><li data-type="method" id="MongodbStorage-saveAsset-nav"><a href="MongodbStorage.html#saveAsset">saveAsset</a></li><li data-type="method" id="MongodbStorage-saveAssetState-nav"><a href="MongodbStorage.html#saveAssetState">saveAssetState</a></li><li data-type="method" id="MongodbStorage-saveBlock-nav"><a href="MongodbStorage.html#saveBlock">saveBlock</a></li><li data-type="method" id="MongodbStorage-saveTransaction-nav"><a href="MongodbStorage.html#saveTransaction">saveTransaction</a></li><li data-type="method" id="MongodbStorage-updateBalance-nav"><a href="MongodbStorage.html#updateBalance">updateBalance</a></li><li data-type="method" id="MongodbStorage-updateTransaction-nav"><a href="MongodbStorage.html#updateTransaction">updateTransaction</a></li><li data-type="method" id="MongodbStorage-verifyAssets-nav"><a href="MongodbStorage.html#verifyAssets">verifyAssets</a></li><li data-type="method" id="MongodbStorage-verifyBlocks-nav"><a href="MongodbStorage.html#verifyBlocks">verifyBlocks</a></li></ul></li><li id="Neo-nav"><a href="Neo.html">Neo</a></li><li id="Node-nav"><a href="Node.html">Node</a></li><li id="Rpc-nav"><a href="Rpc.html">Rpc</a><ul class='methods'><li data-type="method" id="Rpc-getAccountState-nav"><a href="Rpc.html#getAccountState">getAccountState</a></li><li data-type="method" id="Rpc-getAssetState-nav"><a href="Rpc.html#getAssetState">getAssetState</a></li><li data-type="method" id="Rpc-getBalance-nav"><a href="Rpc.html#getBalance">getBalance</a></li><li data-type="method" id="Rpc-getBestBlockHash-nav"><a href="Rpc.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="Rpc-getBlock-nav"><a href="Rpc.html#getBlock">getBlock</a></li><li data-type="method" id="Rpc-getBlockByHash-nav"><a href="Rpc.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="Rpc-getBlockCount-nav"><a href="Rpc.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="Rpc-getBlockHash-nav"><a href="Rpc.html#getBlockHash">getBlockHash</a></li><li data-type="method" id="Rpc-getBlockSystemFee-nav"><a href="Rpc.html#getBlockSystemFee">getBlockSystemFee</a></li><li data-type="method" id="Rpc-getConnectionCount-nav"><a href="Rpc.html#getConnectionCount">getConnectionCount</a></li><li data-type="method" id="Rpc-getContractState-nav"><a href="Rpc.html#getContractState">getContractState</a></li><li data-type="method" id="Rpc-getPeers-nav"><a href="Rpc.html#getPeers">getPeers</a></li><li data-type="method" id="Rpc-getRawMemPool-nav"><a href="Rpc.html#getRawMemPool">getRawMemPool</a></li><li data-type="method" id="Rpc-getRawTransaction-nav"><a href="Rpc.html#getRawTransaction">getRawTransaction</a></li><li data-type="method" id="Rpc-getTXOut-nav"><a href="Rpc.html#getTXOut">getTXOut</a></li><li data-type="method" id="Rpc-invoke-nav"><a href="Rpc.html#invoke">invoke</a></li><li data-type="method" id="Rpc-invokeFunction-nav"><a href="Rpc.html#invokeFunction">invokeFunction</a></li><li data-type="method" id="Rpc-invokeScript-nav"><a href="Rpc.html#invokeScript">invokeScript</a></li><li data-type="method" id="Rpc-sendRawTransaction-nav"><a href="Rpc.html#sendRawTransaction">sendRawTransaction</a></li><li data-type="method" id="Rpc-sendToAddress-nav"><a href="Rpc.html#sendToAddress">sendToAddress</a></li><li data-type="method" id="Rpc-submitBlock-nav"><a href="Rpc.html#submitBlock">submitBlock</a></li><li data-type="method" id="Rpc-validateAddress-nav"><a href="Rpc.html#validateAddress">validateAddress</a></li></ul></li><li id="Storage-nav"><a href="Storage.html">Storage</a><ul class='methods'><li data-type="method" id="Storage-getAsset-nav"><a href="Storage.html#getAsset">getAsset</a></li><li data-type="method" id="Storage-getAssetBalance-nav"><a href="Storage.html#getAssetBalance">getAssetBalance</a></li><li data-type="method" id="Storage-getAssetList-nav"><a href="Storage.html#getAssetList">getAssetList</a></li><li data-type="method" id="Storage-getAssetState-nav"><a href="Storage.html#getAssetState">getAssetState</a></li><li data-type="method" id="Storage-getAssetTransactions-nav"><a href="Storage.html#getAssetTransactions">getAssetTransactions</a></li><li data-type="method" id="Storage-getBalance-nav"><a href="Storage.html#getBalance">getBalance</a></li><li data-type="method" id="Storage-getBestBlockHash-nav"><a href="Storage.html#getBestBlockHash">getBestBlockHash</a></li><li data-type="method" id="Storage-getBlock-nav"><a href="Storage.html#getBlock">getBlock</a></li><li data-type="method" id="Storage-getBlockByHash-nav"><a href="Storage.html#getBlockByHash">getBlockByHash</a></li><li data-type="method" id="Storage-getBlockCount-nav"><a href="Storage.html#getBlockCount">getBlockCount</a></li><li data-type="method" id="Storage-getExpandedTX-nav"><a href="Storage.html#getExpandedTX">getExpandedTX</a></li><li data-type="method" id="Storage-getTX-nav"><a href="Storage.html#getTX">getTX</a></li><li data-type="method" id="Storage-saveAssetState-nav"><a href="Storage.html#saveAssetState">saveAssetState</a></li><li data-type="method" id="Storage-saveBlock-nav"><a href="Storage.html#saveBlock">saveBlock</a></li><li data-type="method" id="Storage-updateAssetList-nav"><a href="Storage.html#updateAssetList">updateAssetList</a></li><li data-type="method" id="Storage-verifyAssets-nav"><a href="Storage.html#verifyAssets">verifyAssets</a></li><li data-type="method" id="Storage-verifyBlocks-nav"><a href="Storage.html#verifyBlocks">verifyBlocks</a></li></ul></li><li id="Wallet-nav"><a href="Wallet.html">Wallet</a><ul class='methods'><li data-type="method" id="Wallet-doClaimAllGas-nav"><a href="Wallet.html#doClaimAllGas">doClaimAllGas</a></li><li data-type="method" id="Wallet-doMintTokens-nav"><a href="Wallet.html#doMintTokens">doMintTokens</a></li><li data-type="method" id="Wallet-doSendAsset-nav"><a href="Wallet.html#doSendAsset">doSendAsset</a></li><li data-type="method" id="Wallet-doTransferToken-nav"><a href="Wallet.html#doTransferToken">doTransferToken</a></li><li data-type="method" id="Wallet-getBalance-nav"><a href="Wallet.html#getBalance">getBalance</a></li><li data-type="method" id="Wallet-getClaims-nav"><a href="Wallet.html#getClaims">getClaims</a></li><li data-type="method" id="Wallet-getTokenBalance-nav"><a href="Wallet.html#getTokenBalance">getTokenBalance</a></li><li data-type="method" id="Wallet-getTransactionHistory-nav"><a href="Wallet.html#getTransactionHistory">getTransactionHistory</a></li></ul></li></ul>
+  </nav>
+
+  <div id="main">
+    
+      <h1 class="page-title">
+        Rpc
+      </h1>
+    
+
+    
+
+<section>
+  <header>
+    
+      <h2>
+        
+        Rpc
+        
+      </h2>
+
+      
+    
+  </header>
+
+  <article>
+    <div class="container-overview">
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#Rpc">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="Rpc">
+      <span class="type-signature"></span>new Rpc<span class="signature">(domain, port, options)</span><span class="type-signature"></span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>domain</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>port</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>options</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>logger</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line5">line 5</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    </div>
+
+    
+
+    
+
+    
+
+     
+
+    
+
+    
+        <h3 class="subsection-title">Members</h3>
+
+        
+        
+        
+        
+    
+
+    
+      <h3 class="subsection-title">Methods</h3>
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getAccountState">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getAccountState">
+      <span class="type-signature"></span>getAccountState<span class="signature">(address)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>address</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line447">line 447</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getAssetState">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getAssetState">
+      <span class="type-signature"></span>getAssetState<span class="signature">(asssetId)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>asssetId</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line460">line 460</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBalance">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBalance">
+      <span class="type-signature"></span>getBalance<span class="signature">(assetId)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Gets the NEO and GAS balance of an address.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>assetId</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The address to get the balance of.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line74">line 74</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBestBlockHash">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBestBlockHash">
+      <span class="type-signature"></span>getBestBlockHash<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Gets the best block hash on the node
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line90">line 90</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBestBlockHash-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBestBlockHash-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBestBlockHash()
+return 0x051b5bf812db0536e488670b26abf3a45a5e1a400595031cf9a57416bea0b973</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlock">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlock">
+      <span class="type-signature"></span>getBlock<span class="signature">(index)</span><span class="type-signature"> &rarr; {Promise.&lt;string>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getblock rpc request to return a block.  This method
+accepts and optional node to request the block from.  If a node is not selected,
+the fastest node will be used with failover in an attempt to guarantee a response.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>index</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The index of the block being requested.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line143">line 143</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBlock-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBlock-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBlock(100000)
+ return {
+   "jsonrpc": "2.0",
+   "id": 0,
+   "result": {
+     "hash": "0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122",
+     "size": 686,
+     "version": 0,
+     "previousblockhash": "0xdea902d1ddb8bbd3000d1cbc96a5a69b2170a5f993cce23eb5bb955920f43454",
+     "merkleroot": "0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042",
+     "time": 1496454840,
+     "index": 100000,
+     "nonce": "40fcadce5e6f395a",
+     "nextconsensus": "AdyQbbn6ENjqWDa5JNYMwN3ikNcA4JeZdk",
+     "script": {
+       "invocation": "400190144d56bf951badc561395712a86e305b373592ff7ee559d6db0934adb6e116247a8ccc5d42858e9201beedbe904adabe7fd250bc9d1814e8d3ed1b48293d408b78d73679bc45c085ec9c0423ba79889710101918170cd48ebea16e7befd555aa23ee0c256fcd3228f614ba5b607e077dffaf5614e9f7ce78a3c5d60a92baba40170495d99bc2665277d5512eddde13cea37bf74b5c265a3e741783c0837e7f5909a6383780cb5ff03af04e4085ede121a7f94d1c0ddc371cae5e8b968f18f8d440d36e5b7dcfe49894f12cf50476098fb5423ffd36154cee652cdf1cee50fda9240ca6a6cf3cf824457afa45f07661a8c35b6bc0e7f334a903c99b5683b5bf53ce40cc0ad387dedff608e4c032b598e0a54668d9ec2c46e207ea294c76844a3ff951dca324148eca3dc6938402fb2fe5006fbc551f4f1a09d6366c126f787a06c063",
+       "verification": "55210209e7fd41dfb5c2f8dc72eb30358ac100ea8c72da18847befe06eade68cebfcb9210327da12b5c40200e9f65569476bbff2218da4f32548ff43b6387ec1416a231ee821034ff5ceeac41acf22cd5ed2da17a6df4dd8358fcb2bfb1a43208ad0feaab2746b21026ce35b29147ad09e4afe4ec4a7319095f08198fa8babbe3c56e970b143528d2221038dddc06ce687677a53d54f096d2591ba2302068cf123c1f2d75c2dddc542557921039dafd8571a641058ccc832c5e2111ea39b09c0bde36050914384f7a48bce9bf92102d02b1873a0863cd042cc717da31cea0d7cf9db32b74d4c72c01b0011503e2e2257ae"
+     },
+     "tx": [{
+       "txid": "0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042",
+       "size": 10,
+       "type": "MinerTransaction",
+       "version": 0,
+       "attributes": [],
+       "vin": [],
+       "vout": [],
+       "sys_fee": "0",
+       "net_fee": "0",
+       "scripts": [],
+       "nonce": 1584347482
+     }],
+     "confirmations": 510871,
+     "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
+   }
+ }</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlockByHash">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlockByHash">
+      <span class="type-signature"></span>getBlockByHash<span class="signature">(hash)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getblock rpc request to return a block.  This method
+accepts and optional node to request the block from.  If a node is not selected,
+the fastest node will be used with failover in an attempt to guarantee a response.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>hash</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The hash of the block being requested.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line196">line 196</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBlockByHash-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBlockByHash-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBlockByHash('0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122')
+ return {
+   "jsonrpc": "2.0",
+   "id": 0,
+   "result": {
+     "hash": "0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122",
+     "size": 686,
+     "version": 0,
+     "previousblockhash": "0xdea902d1ddb8bbd3000d1cbc96a5a69b2170a5f993cce23eb5bb955920f43454",
+     "merkleroot": "0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042",
+     "time": 1496454840,
+     "index": 100000,
+     "nonce": "40fcadce5e6f395a",
+     "nextconsensus": "AdyQbbn6ENjqWDa5JNYMwN3ikNcA4JeZdk",
+     "script": {
+       "invocation": "400190144d56bf951badc561395712a86e305b373592ff7ee559d6db0934adb6e116247a8ccc5d42858e9201beedbe904adabe7fd250bc9d1814e8d3ed1b48293d408b78d73679bc45c085ec9c0423ba79889710101918170cd48ebea16e7befd555aa23ee0c256fcd3228f614ba5b607e077dffaf5614e9f7ce78a3c5d60a92baba40170495d99bc2665277d5512eddde13cea37bf74b5c265a3e741783c0837e7f5909a6383780cb5ff03af04e4085ede121a7f94d1c0ddc371cae5e8b968f18f8d440d36e5b7dcfe49894f12cf50476098fb5423ffd36154cee652cdf1cee50fda9240ca6a6cf3cf824457afa45f07661a8c35b6bc0e7f334a903c99b5683b5bf53ce40cc0ad387dedff608e4c032b598e0a54668d9ec2c46e207ea294c76844a3ff951dca324148eca3dc6938402fb2fe5006fbc551f4f1a09d6366c126f787a06c063",
+       "verification": "55210209e7fd41dfb5c2f8dc72eb30358ac100ea8c72da18847befe06eade68cebfcb9210327da12b5c40200e9f65569476bbff2218da4f32548ff43b6387ec1416a231ee821034ff5ceeac41acf22cd5ed2da17a6df4dd8358fcb2bfb1a43208ad0feaab2746b21026ce35b29147ad09e4afe4ec4a7319095f08198fa8babbe3c56e970b143528d2221038dddc06ce687677a53d54f096d2591ba2302068cf123c1f2d75c2dddc542557921039dafd8571a641058ccc832c5e2111ea39b09c0bde36050914384f7a48bce9bf92102d02b1873a0863cd042cc717da31cea0d7cf9db32b74d4c72c01b0011503e2e2257ae"
+     },
+     "tx": [{
+       "txid": "0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042",
+       "size": 10,
+       "type": "MinerTransaction",
+       "version": 0,
+       "attributes": [],
+       "vin": [],
+       "vout": [],
+       "sys_fee": "0",
+       "net_fee": "0",
+       "scripts": [],
+       "nonce": 1584347482
+     }],
+     "confirmations": 510871,
+     "nextblockhash": "0xc8880a1a91915b3d7d48265d1bafd8fe120e1571c02924ee4ca005d03e348ecb"
+   }
+ }</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlockCount">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlockCount">
+      <span class="type-signature"></span>getBlockCount<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;number>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getblockcount rpc request to return the block height.  This
+method will request the block height from the fastest active node with failover if a
+node is not provided.  This method will update the blockHeight attribute
+on the node it is run on.
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line216">line 216</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBlockCount-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBlockCount-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBlockCount()
+return 1000000</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlockHash">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlockHash">
+      <span class="type-signature"></span>getBlockHash<span class="signature">(index)</span><span class="type-signature"> &rarr; {Promise.&lt;string>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getblockhash rpc request to return a block's hash.  This method
+accepts and optional node to request the block from.  If a node is not selected,
+the fastest node will be used with failover in an attempt to guarantee a response.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>index</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The index of the block hash being requested.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line240">line 240</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBlockHash-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBlockHash-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBlockHash(100000)
+return '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122'</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getBlockSystemFee">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getBlockSystemFee">
+      <span class="type-signature"></span>getBlockSystemFee<span class="signature">(height)</span><span class="type-signature"> &rarr; {Promise.&lt;number>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getblocksysfee rpc request to return system fee.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>height</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The index of the block hash being requested.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line258">line 258</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getBlockSystemFee-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getBlockSystemFee-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getBlockSystemFee(100000)
+return 905</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getConnectionCount">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getConnectionCount">
+      <span class="type-signature"></span>getConnectionCount<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;number>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Invokes the getconnectioncount rpc request to return the number of connections to
+the selected node.
+  </div>
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line276">line 276</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getConnectionCount-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getConnectionCount-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getConnectionCount()
+return 10</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getContractState">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getContractState">
+      <span class="type-signature"></span>getContractState<span class="signature">(hash)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>hash</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line473">line 473</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getPeers">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getPeers">
+      <span class="type-signature"></span>getPeers<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line498">line 498</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getRawMemPool">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getRawMemPool">
+      <span class="type-signature"></span>getRawMemPool<span class="signature">()</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line339">line 339</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getRawTransaction">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getRawTransaction">
+      <span class="type-signature"></span>getRawTransaction<span class="signature">(txid)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Polls the node for the raw transaction data associated with an input txid.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>txid</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The requested transaction ID.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line371">line 371</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <div class="example-container">
+    <a class="link-icon" href="#getRawTransaction-examples">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h5 id="getRawTransaction-examples">Example</h5>
+    
+
+  <pre class="prettyprint"><code>node.rpc.getRawTransaction('0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042')
+ return {
+   'txid': '0x40c2a24c32271210b1aa1e89c938494312d4b1dd0315ee8dad2a52b4e66d8042',
+   'size': 10,
+   'type': 'MinerTransaction',
+   'version': 0,
+   'attributes': [],
+   'vin': [],
+   'vout': [],
+   'sys_fee': '0',
+   'net_fee': '0',
+   'scripts': [],
+   'nonce': 1584347482,
+   'blockhash': '0xd60d44b5bcbb84d732fcfc31397b81c4e21c7300b9627f890b0f75c863f0c122',
+   'confirmations': 511280,
+   'blocktime': 1496454840
+ }</code></pre>
+
+
+  </div>
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#getTXOut">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="getTXOut">
+      <span class="type-signature"></span>getTXOut<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Polls the node for the raw transaction response associated with an input txid.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>txid</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The requested transaction ID.
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>index</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line388">line 388</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#invoke">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="invoke">
+      <span class="type-signature"></span>invoke<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Executes a 'test invoke' of a smart contract on the blockchain.
+Note: This transcation will NOT be published to the blockchain.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>scriptHash</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The hash of the script to invoke.
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>params</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The params used to invoke the contract.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line292">line 292</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#invokeFunction">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="invokeFunction">
+      <span class="type-signature"></span>invokeFunction<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Executes a 'test invoke' of a smart contract on the blockchain.
+Note: This transcation will NOT be published to the blockchain.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>scriptHash</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The hash of the script to invoke.
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>operation</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          Defines the operation to invoke on the contract.
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>params</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The params used to invoke the contract.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line311">line 311</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#invokeScript">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="invokeScript">
+      <span class="type-signature"></span>invokeScript<span class="signature">(script)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Executes a 'test invoke' of a smart contract on the blockchain.
+Note: This transaction will NOT be published to the blockchain.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>script</code></td>
+        
+
+        <td class="type">
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          raw script to invoke.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line327">line 327</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#sendRawTransaction">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="sendRawTransaction">
+      <span class="type-signature"></span>sendRawTransaction<span class="signature">(hex)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+  <div class="description">
+    Submits a raw transaction event to the blockchain.
+  </div>
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>hex</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          The hex string representing the raw transaction.
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line404">line 404</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#sendToAddress">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="sendToAddress">
+      <span class="type-signature"></span>sendToAddress<span class="signature">(payload)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>payload</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      Object
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+            <h6>Properties</h6>
+            
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>assetId</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>address</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+      <tr>
+        
+          <td class="name"><code>value</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      number
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line420">line 420</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#submitBlock">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="submitBlock">
+      <span class="type-signature"></span>submitBlock<span class="signature">(hex)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>hex</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line434">line 434</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+        
+
+
+  
+
+  <span class='name-container'>
+    <a class="link-icon" href="#validateAddress">
+      <svg height="20" width="20" style="fill: black;">
+        <use xlink:href="#linkIcon"></use>
+      </svg>
+    </a>
+    <h4 class="name" id="validateAddress">
+      <span class="type-signature"></span>validateAddress<span class="signature">(address)</span><span class="type-signature"> &rarr; {Promise.&lt;Object>}</span>
+    </h4>
+  </span>
+
+  
+
+
+
+
+
+
+
+
+
+  <h5>Parameters:</h5>
+  
+
+<table class="params">
+  <thead>
+    <tr>
+      
+        <th>Name</th>
+      
+
+      <th>Type</th>
+
+      
+
+      
+
+      <th class="last">Description</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    
+      <tr>
+        
+          <td class="name"><code>address</code></td>
+        
+
+        <td class="type">
+          
+            
+    <span class="param-type">
+      string
+    </span>
+
+    
+
+
+          
+        </td>
+
+        
+
+        
+
+        <td class="description last">
+          
+          
+        </td>
+      </tr>
+
+    
+  </tbody>
+</table>
+
+
+
+
+
+<dl class="details">
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source">
+      <ul class="dummy">
+        <li>
+          <a href="node_rpc.js.html">node/rpc.js</a>, <a href="node_rpc.js.html#line486">line 486</a>
+        </li>
+      </ul>
+    </dd>
+  
+
+  
+
+  
+
+  
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+      
+    
+
+    
+
+    
+  </article>
+</section>
+
+
+
+
+  </div>
+
+  <br class="clear">
+
+  <footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a>
+  </footer>
+
+  <script src="scripts/linenumber.js"></script>
+  <script src="scripts/pagelocation.js"></script>
+
+  
+  
+</body>
+</html>
