@@ -8,6 +8,7 @@ const Logger = require('../common/logger')
  * @param {string} port
  * @param {Object} options
  * @param {Object} options.logger
+ * @param {Object} options.loggerOptions
  */
 class Rpc {
   constructor (domain, port, options) {
@@ -18,13 +19,23 @@ class Rpc {
     this.port = undefined
     /** @type {Object} */
     this.defaultOptions = {
-      logger: new Logger('Rpc')
+      logger: undefined,
+      loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
     this.domain = domain
     this.port = port
+    this.initLogger()
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initLogger () {
+    this.logger = new Logger('Rpc', this.loggerOptions)
   }
 
   /**

@@ -13,14 +13,22 @@ const Logger = require('./common/logger')
  * @param {string} options.network
  * @param {string} options.neonDbNet
  * @param {Object} options.logger
+ * @param {Object} options.loggerOptions
  */
 class Wallet {
   constructor (options = {}) {
-    Object.assign(this, {
-      network: undefined,
+    // -- Properties
+    /** @type {Object} */
+    this.defaultOptions = {
+      network: '',
       neonDbNet: '',
-      logger: new Logger('Wallet')
-    }, options)
+      logger: undefined,
+      loggerOptions: {}
+    }
+
+    // -- Bootstrap
+    Object.assign(this, this.defaultOptions, options)
+    this.initLogger()
 
     if (this.neonDbNet === '') {
       if (this.network === 'mainnet') {
@@ -29,6 +37,14 @@ class Wallet {
         this.neonDbNet = 'TestNet'
       }
     }
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initLogger () {
+    this.logger = new Logger('Wallet', this.loggerOptions)
   }
 
   /**
