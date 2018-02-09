@@ -1,0 +1,15 @@
+{
+  "opts": {
+    "template": "./node_modules/@freshes/jsdoc-template",
+    "encoding": "utf8",
+    "recurse": true,
+    "readme": "./README.md"
+  },
+  "templates": {
+    "referenceTitle": "neo-js",
+    "cleverLinks": false,
+    "monospaceLinks": true,
+    "useLongnameInNav": false,
+    "showInheritedInNav": true
+  }
+}

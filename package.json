@@ -9,7 +9,7 @@
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*",
     "test:integration": "./node_modules/.bin/mocha -b ./test/integration/**/*",
     "coverage": "./node_modules/.bin/nyc npm test",
-    "build:docs": "./node_modules/.bin/documentation build dist/** -f html -o ./docs",
+    "build:docs": "rm -rf ./docs && ./node_modules/.bin/jsdoc -d ./docs -c ./.jsdoc.conf.json ./dist",
     "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
     "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
   },
@@ -38,9 +38,9 @@
     "mongoose": "~4.11.3"
   },
   "devDependencies": {
+    "@freshes/jsdoc-template": "^1.0.0",
     "axios-mock-adapter": "^1.9.0",
     "chai": "^4.1.2",
-    "documentation": "^5.3.5",
     "eslint": "^4.9.0",
     "eslint-config-standard": "^10.2.1",
     "eslint-plugin-import": "^2.8.0",
@@ -48,6 +48,7 @@
     "eslint-plugin-promise": "^3.6.0",
     "eslint-plugin-standard": "^3.0.1",
     "husky": "^0.14.3",
+    "jsdoc": "^3.5.5",
     "mocha": "^3.5.3",
     "nyc": "^11.2.1",
     "sinon": "^4.1.3"

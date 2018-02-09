@@ -5,7 +5,9 @@
     alt="City of Zion logo">
 </p>
 
-<h1 align="center">neo-js</h1>
+<p align="center" style="font-size: 32px;">
+  <strong>neo-js</strong>
+</p>
 
 <p align="center">
   A package for running a node on the <b>neo</b> blockchain.
@@ -109,11 +111,11 @@ Self-documented code examples are available as part of the project source code:
 
 ## Contribution
 
-`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
+`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
 
 By contributing to `neo-js`, you agree that your contributions will be licensed under its MIT license.
 
 ## License
 
-* Open-source [MIT](LICENSE.md).
+* Open-source [MIT](https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md).
 * Main author is [@lllwvlvwlll](https://github.com/lllwvlvwlll).
