@@ -8,6 +8,7 @@ const Logger = require('../common/logger')
  * @param {Array.<Node>} nodes
  * @param {Object} options
  * @param {Object} options.logger
+ * @param {Object} options.loggerOptions
  */
 class Mesh {
   constructor (nodes, options = {}) {
@@ -16,12 +17,22 @@ class Mesh {
     this.nodes = []
     /** @type {Object} */
     this.defaultOptions = {
-      logger: new Logger('Mesh')
+      logger: undefined,
+      loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
     this.nodes = nodes
+    this.initLogger()
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initLogger () {
+    this.logger = new Logger('Mesh', this.loggerOptions)
   }
 
   /**

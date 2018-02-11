@@ -94,6 +94,12 @@ const Rpc = require('./rpc')
 
 /**
  * @class Node
+ * @param {Object} options
+ * @param {string} options.domain
+ * @param {number} options.port
+ * @param {Object} options.logger
+ * @param {Object} options.rpcOptions
+ * @param {Object} options.loggerOptions
  */
 class Node {
   constructor (options = {}) {
@@ -116,12 +122,31 @@ class Node {
     this.defaultOptions = {
       domain: undefined,
       port: undefined,
-      logger: new Logger('Node')
+      logger: undefined,
+      rpcOptions: {},
+      loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.rpc = new Rpc(this.domain, this.port)
+    this.initLogger()
+    this.initRpc()
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initLogger () {
+    this.logger = new Logger('Node', this.loggerOptions)
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initRpc () {
+    this.rpc = new Rpc(this.domain, this.port, this.rpcOptions)
   }
 }
 

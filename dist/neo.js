@@ -13,8 +13,12 @@ const Node = require('./node/node')
  * @param {Object} options
  * @param {number} options.workerCount
  * @param {string} options.network
- * @param {Object} options.storageOptions
  * @param {Object} options.logger
+ * @param {Object} options.meshOptions
+ * @param {Object} options.nodeOptions
+ * @param {Object} options.storageOptions
+ * @param {Object} options.walletOptions
+ * @param {object} options.loggerOptions
  */
 class Neo {
   constructor (options = {}) {
@@ -35,12 +39,17 @@ class Neo {
     this.defaultOptions = {
       workerCount: 20,
       network: undefined,
+      logger: undefined,
+      meshOptions: {},
+      nodeOptions: {},
       storageOptions: {},
-      logger: new Logger('Neo')
+      walletOptions: {},
+      loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
+    this.initLogger()
     this.initMesh()
     this.initStorage()
     this.initWallet()
@@ -51,9 +60,17 @@ class Neo {
    * @private
    * @returns {void}
    */
+  initLogger () {
+    this.logger = new Logger('Neo', this.loggerOptions)
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
   initMesh () {
     const nodes = this.getNodes()
-    this.mesh = new Mesh(nodes)
+    this.mesh = new Mesh(nodes, this.meshOptions)
   }
 
   /**
@@ -77,10 +94,8 @@ class Neo {
     this.logger.debug('endpoints:', endpoints)
 
     endpoints.forEach((endpoint) => {
-      nodes.push(new Node({
-        domain: endpoint.domain,
-        port: endpoint.port
-      }))
+      const options = Object.assign(this.nodeOptions, { domain: endpoint.domain, port: endpoint.port })
+      nodes.push(new Node(options))
     })
 
     return nodes
@@ -160,7 +175,8 @@ class Neo {
    * @returns {void}
    */
   initWallet () {
-    this.wallet = new Wallet({ network: this.network })
+    const options = Object.assign(this.walletOptions, { network: this.network })
+    this.wallet = new Wallet(options)
   }
 
   /**

@@ -13,6 +13,7 @@ const Logger = require('../../common/logger')
  * @param {string} options.collectionNames.transactions
  * @param {string} options.collectionNames.addresses
  * @param {Object} options.logger
+ * @param {Object} options.loggerOptions
  */
 class MongodbStorage {
   constructor (options = {}) {
@@ -32,11 +33,13 @@ class MongodbStorage {
         transactions: 'b_neo_t_transactions',
         addresses: 'b_neo_t_addresses'
       },
-      logger: new Logger('MongodbStorage')
+      logger: undefined,
+      loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
+    this.initLogger()
     this.logger.debug('constructor triggered.')
     this.blockModel = this.getBlockModel()
     this.transactionModel = this.getTransactionModel()
@@ -46,6 +49,14 @@ class MongodbStorage {
     if (this.connectOnInit) {
       this.initConnection()
     }
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initLogger () {
+    this.logger = new Logger('MongodbStorage', this.loggerOptions)
   }
 
   /**
