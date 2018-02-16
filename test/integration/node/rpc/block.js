@@ -91,12 +91,11 @@ describe(`${describeBadge} getBlockHash()`, () => {
 })
 
 describe(`${describeBadge} getBlockSystemFee()`, () => {
-  it('should be a whole number as its response.', (done) => {
+  it('should be a string as its response.', (done) => {
     neo.mesh.rpc('getBlockSystemFee', profiles.Blocks.Block_100000.Number)
       .then((res) => {
         const fee = res
-        expect(fee).to.be.a('number')
-        expect(fee % 1).to.be.equal(0)
+        expect(fee).to.be.a('string')
         done()
       })
       .catch((err) => {
