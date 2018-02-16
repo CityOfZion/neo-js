@@ -40,8 +40,12 @@ async function main () {
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(testnetNeo.mesh.nodes.map(async (node) => {
     try {
+      let version = 'unknown'
+      try {
+        version = (await node.rpc.getVersion()).useragent
+      } catch (ex) {}
       const blockCount = await node.rpc.getBlockCount()
-      logger.info(`> ${node.domain}:${node.port} block count:`, blockCount)
+      logger.info(`> ${node.domain}:${node.port} version: [${version}] height: [${blockCount}]`)
     } catch (ex) {
       logger.info(`> ${node.domain}:${node.port} error:`, ex.message)
     }
@@ -66,8 +70,12 @@ async function main () {
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(mainnetNeo.mesh.nodes.map(async (node) => {
     try {
+      let version = 'legacy version'
+      try {
+        version = (await node.rpc.getVersion()).useragent
+      } catch (ex) { }
       const blockCount = await node.rpc.getBlockCount()
-      logger.info(`> ${node.domain}:${node.port} block count:`, blockCount)
+      logger.info(`> ${node.domain}:${node.port} version: [${version}] height: [${blockCount}]`)
     } catch (ex) {
       logger.info(`> ${node.domain}:${node.port} error:`, ex.message)
     }
