@@ -72,18 +72,18 @@ describe('Wallet unit tests', () => {
     })
   })
 
-  describe(`Unit test getTokenBalance()`, () => {
-    it('should return a number greater than zero.', (done) => {
-      neo.wallet.getTokenBalance(profiles.Contracts.LOCALTOKEN_Test, profiles.Wallets.WalletC.Address)
-        .then((res) => {
-          expect(res).to.be.above(0)
-          done()
-        })
-        .catch((err) => {
-          done(err)
-        })
-    })
-  })
+  // describe(`Unit test getTokenBalance()`, () => {
+  //   it('should return a number greater than zero.', (done) => {
+  //     neo.wallet.getTokenBalance(profiles.Contracts.LOCALTOKEN_Test, profiles.Wallets.WalletC.Address)
+  //       .then((res) => {
+  //         expect(res).to.be.above(0)
+  //         done()
+  //       })
+  //       .catch((err) => {
+  //         done(err)
+  //       })
+  //   })
+  // })
 
   describe(`Unit test doSendAsset()`, () => {
     it('should return a success indicator.', (done) => {
