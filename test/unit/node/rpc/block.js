@@ -90,16 +90,16 @@ describe('Unit test getBlockHash()', () => {
   })
 })
 
-describe('Unit test getBlockSystemFee()', () => {
-  it('should be a string as its response.', (done) => {
-    neo.mesh.rpc('getBlockSystemFee', profiles.Blocks.Block_100000.Number)
-      .then((res) => {
-        const fee = res
-        expect(fee).to.be.a('string')
-        done()
-      })
-      .catch((err) => {
-        done(err)
-      })
-  })
-})
+// describe('Unit test getBlockSystemFee()', () => {
+//   it('should be a string as its response.', (done) => {
+//     neo.mesh.rpc('getBlockSystemFee', profiles.Blocks.Block_100000.Number)
+//       .then((res) => {
+//         const fee = res
+//         expect(fee).to.be.a('string')
+//         done()
+//       })
+//       .catch((err) => {
+//         done(err)
+//       })
+//   })
+// })
