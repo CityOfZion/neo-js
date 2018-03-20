@@ -78,6 +78,7 @@ class Neo {
    * @returns Array.<Node>
    */
   getNodes () {
+    this.logger.debug('getNodes triggered. this.network:', this.network)
     let nodes = []
     let endpoints = []
 
@@ -108,6 +109,7 @@ class Neo {
   initStorage () {
     if (this.storageOptions) {
       this.storage = new Storage(this.storageOptions)
+      this.logger.info('storage setup complete. storage.model:', this.storage.model)
       if (this.storage.model === 'mongoDB') {
         this.initEnqueueBlock()
         this.initBlockVerification()
@@ -125,6 +127,7 @@ class Neo {
    * @returns {void}
    */
   initEnqueueBlock () {
+    this.logger.debug('initEnqueueBlock triggered.')
     this.storage.getBlockCount()
       .then(() => {
         this.blockWritePointer = this.storage.index
@@ -142,6 +145,7 @@ class Neo {
    * @returns {void}
    */
   initBlockVerification () {
+    this.logger.debug('initBlockVerification triggered.')
     setInterval(() => {
       this.storage.verifyBlocks()
         .then((res) => {
@@ -158,6 +162,7 @@ class Neo {
    * @returns {void}
    */
   initAssetVerification () {
+    this.logger.debug('initAssetVerification triggered.')
     setInterval(() => {
       // check for asset state
       this.storage.verifyAssets()
@@ -175,6 +180,7 @@ class Neo {
    * @returns {void}
    */
   initWallet () {
+    this.logger.debug('initWallet triggered.')
     const options = Object.assign(this.walletOptions, { network: this.network })
     this.wallet = new Wallet(options)
   }
@@ -184,6 +190,7 @@ class Neo {
    * @returns {void}
    */
   initBackgroundTasks () {
+    this.logger.debug('initBackgroundTasks triggered.')
     /**
      * This is where you line up your schedule tickers to do all sort of tasks.
      */
@@ -247,7 +254,6 @@ class Neo {
    */
   pingNode (node) {
     this.logger.debug('pingNode triggered.', `node: [${node.domain}:${node.port}]`)
-
     const t0 = Date.now()
     node.pendingRequests += 1
     node.rpc.getBlockCount()
@@ -312,6 +318,7 @@ class Neo {
    * @returns {void}
    */
   storeAsset (attrs) {
+    this.logger.debug('storeAsset triggered. attrs:', attrs)
     return new Promise((resolve, reject) => {
       this.mesh.rpc('getAssetState', attrs.hash)
         .then((res) => {
@@ -334,12 +341,13 @@ class Neo {
    * @returns {void}
    */
   enqueueBlock (index, priority = 5) {
-    // if the block height is above the current height,
-    // increment the write pointer.
+    this.logger.debug('enqueueBlock triggered. index:', index, 'priority:', priority)
+    // if the block height is above the current height, increment the write pointer.
     if (index > this.blockWritePointer) {
       this.blockWritePointer = index
     }
-    // enqueue the block.
+
+    // enqueue the block
     this.queue.push({
       method: 'storeBlock',
       attrs: {
@@ -357,6 +365,7 @@ class Neo {
    * @returns {void}
    */
   enqueueAsset (hash, priority = 5) {
+    this.logger.debug('enqueueAsset triggered. hash:', hash, 'priority:', priority)
     this.queue.push({
       method: 'storeAsset',
       attrs: {

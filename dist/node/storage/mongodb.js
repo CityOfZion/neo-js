@@ -66,6 +66,7 @@ class MongodbStorage {
    * @returns {Object}
    */
   delintBlock (block) {
+    this.logger.debug('delintBlock triggered.')
     block.hash = HashHelper.normalize(block.hash)
     block.previousblockhash = HashHelper.normalize(block.previousblockhash)
     block.merkleroot = HashHelper.normalize(block.merkleroot)
@@ -88,10 +89,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getTX (txid) {
+    this.logger.debug('getTX triggered. txid:', txid)
     return new Promise((resolve, reject) => {
       this.transactionModel.findOne({ txid })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('transactionModel.findOne() execution failed. txid:', txid)
             reject(err)
           }
           resolve(res)
@@ -106,6 +109,7 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getTransactions (address) {
+    this.logger.debug('getTransactions triggered. address:', address)
     return new Promise((resolve, reject) => {
       this.transactionModel.find({
         'vout.address': address,
@@ -117,6 +121,7 @@ class MongodbStorage {
       })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('transactionModel.find() execution failed. address:', address)
             reject(err)
           }
           resolve(res)
@@ -130,10 +135,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getBlock (index) {
+    this.logger.debug('getBlock triggered. index:', index)
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ index })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('blockModel.findOne() execution failed. index:', index)
             reject(err)
           }
           resolve(res)
@@ -147,10 +154,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getBlockByHash (hash) {
+    this.logger.debug('getBlockByHash triggered. hash:', hash)
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({ hash })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('blockModel.findOne() execution failed. hash:', hash)
             reject(err)
           }
           resolve(res)
@@ -163,14 +172,17 @@ class MongodbStorage {
    * @returns {Promise.<Number>}
    */
   getBlockCount () {
+    this.logger.debug('getBlockCount triggered.')
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'index')
         .sort({ index: -1 })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('blockModel.findOne() execution failed.')
             reject(err)
           }
           if (!res) {
+            this.logger.info('blockModel.findOne() executed by without response data.')
             res = { index: -1 }
           }
           const height = res.index + 1
@@ -184,11 +196,13 @@ class MongodbStorage {
    * @returns {Promise.<String>}
    */
   getBestBlockHash () {
+    this.logger.debug('getBestBlockHash triggered.')
     return new Promise((resolve, reject) => {
       this.blockModel.findOne({}, 'hash')
         .sort({ index: -1 })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('blockModel.findOne() execution failed.')
             reject(err)
           }
           resolve(res)
@@ -202,10 +216,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getAsset (hash) {
+    this.logger.debug('getAsset triggered. hash:', hash)
     return new Promise((resolve, reject) => {
       this.addressModel.findOne({ type: 'a', address: hash })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('addressModel.findOne() execution failed. hash:', hash)
             reject(err)
           }
           resolve(res)
@@ -218,10 +234,12 @@ class MongodbStorage {
    * @returns {Promise.<Array>}
    */
   getAssetList () {
+    this.logger.debug('getAssetList triggered.')
     return new Promise((resolve, reject) => {
       this.addressModel.find({ type: 'a' })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('addressModel.find() execution failed.')
             reject(err)
           }
           resolve(res)
@@ -237,6 +255,7 @@ class MongodbStorage {
    * @returns {Promise.<Array>}
    */
   getAssetListByAddress (address, assetHash, startBlock = 0) {
+    this.logger.debug('getAssetListByAddress triggered. address:', address, 'assetHash:', assetHash, 'startBlock:', startBlock)
     return new Promise((resolve, reject) => {
       this.transactionModel.find({
         'vout.address': address,
@@ -251,6 +270,7 @@ class MongodbStorage {
         .sort('blockIndex')
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('transactionModel.find() execution failed. address:', address)
             reject(err)
           }
           resolve(res)
@@ -264,9 +284,11 @@ class MongodbStorage {
    * @returns {Promise}
    */
   saveAsset (asset) {
+    this.logger.debug('saveAsset triggered.')
     return new Promise((resolve, reject) => {
       this.addressModel(asset).save((err) => {
         if (err) {
+          this.logger.warn('addressModel().save() execution failed.')
           reject(err)
         }
         resolve()
@@ -280,10 +302,12 @@ class MongodbStorage {
    * @returns {Promise}
    */
   saveBlock (block) {
+    this.logger.debug('saveBlock triggered.')
     return new Promise((resolve, reject) => {
       block = this.delintBlock(block)
       this.blockModel(block).save((err) => {
         if (err) {
+          this.logger.warn('blockModel().save() execution failed.')
           reject(err)
         }
         resolve()
@@ -298,18 +322,23 @@ class MongodbStorage {
    * @returns {Promise}
    */
   saveAssetState (hash, assetState) {
+    this.logger.debug('saveAssetState triggered.')
     return new Promise((resolve, reject) => {
       this.getAsset(hash)
         .then((res) => {
           res.state = assetState
           this.addressModel(res).save((err) => {
             if (err) {
+              this.logger.warn('addressModel().save() execution failed.')
               reject(err)
             }
             resolve()
           })
         })
-        .catch((err) => reject(err))
+        .catch((err) => {
+          this.logger.warn('getAsset() execution failed. hash:', hash)
+          reject(err)
+        })
     })
   }
 
@@ -319,9 +348,11 @@ class MongodbStorage {
    * @returns {Promise}
    */
   saveTransaction (tx) {
+    this.logger.debug('saveTransaction triggered.')
     return new Promise((resolve, reject) => {
       this.transactionModel(tx).save((err) => {
         if (err) {
+          this.logger.warn('transactionModel().save() execution failed.')
           reject(err)
         }
         resolve()
@@ -335,9 +366,11 @@ class MongodbStorage {
    * @returns {Promise}
    */
   updateTransaction (tx) {
+    this.logger.debug('updateTransaction triggered.')
     return new Promise((resolve, reject) => {
-      this.transactionModel.update({txid: tx.txid}, tx, (err) => {
+      this.transactionModel.update({ txid: tx.txid }, tx, (err) => {
         if (err) {
+          this.logger.warn('transactionModel().update() execution failed.')
           reject(err)
         }
         resolve()
@@ -351,10 +384,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   getAddress (hash) {
+    this.logger.debug('getAddress triggered. hash:', hash)
     return new Promise((resolve, reject) => {
       this.addressModel.findOne({ address: hash })
         .exec((err, res) => {
           if (err) {
+            this.logger.warn('addressModel.findOne() execution failed. hash:', hash)
             reject(err)
           }
           resolve(res)
@@ -368,10 +403,12 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   saveAddress (address) {
+    this.logger.debug('saveAddress triggered.')
     return new Promise((resolve, reject) => {
       this.addressModel(address)
         .save((err, res) => {
           if (err) {
+            this.logger.warn('addressModel().save() execution failed.')
             reject(err)
           }
           resolve(res)
@@ -388,12 +425,14 @@ class MongodbStorage {
    * @returns {Promise.<Object>}
    */
   updateBalance (addressHash, assetHash, balance, index) {
+    this.logger.debug('updateBalance triggered. addressHash:', addressHash, 'assetHash:', assetHash, 'balance:', balance, 'index:', index)
     return new Promise((resolve, reject) => {
       this.addressModel.update({ address: addressHash, 'assets.asset': assetHash }, {
         'assets.$.balance': balance,
         'assets.$.index': index
       }).exec((err, res) => {
         if (err) {
+          this.logger.warn('addressModel.update() execution failed.')
           reject(err)
         }
 
@@ -401,6 +440,9 @@ class MongodbStorage {
           const result = { asset: assetHash, balance: balance, index: index, type: 'a' }
           this.addressModel.update({ address: addressHash }, { $push: {assets: result} })
             .exec((err, res) => { // Resolve anyway
+              if (err) {
+                this.logger.info('addressModel.update() execution failed. continue anyway...')
+              }
               resolve(res)
             })
         } else {
@@ -418,6 +460,7 @@ class MongodbStorage {
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verifyBlocks (start, end) {
+    this.logger.debug('verifyBlocks triggered. start:', start, 'end:', end)
     return new Promise((resolve, reject) => {
       let missing = []
       let pointer = start - 1
@@ -425,7 +468,7 @@ class MongodbStorage {
       this.logger.info('Blockchain Verification: Scanning')
 
       let stream = this.blockModel
-        .find({index: {$gte: start, $lte: end}}, 'index').sort('index')
+        .find({ index: { $gte: start, $lte: end } }, 'index').sort('index')
         .cursor()
 
       stream.on('data', (d) => {
@@ -450,6 +493,7 @@ class MongodbStorage {
    * @returns {Promise.<Array>} An array containing the indices of the invalid assets.
    */
   verifyAssets () {
+    this.logger.debug('verifyAssets triggered.')
     return new Promise((resolve, reject) => {
       let missing = []
       let stream = this.addressModel
@@ -472,6 +516,7 @@ class MongodbStorage {
    * @returns {void}
    */
   initConnection () {
+    this.logger.debug('initConnection triggered.')
     mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
       connection.onOpen()
     })
