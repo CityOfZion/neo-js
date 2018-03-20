@@ -20,8 +20,19 @@ async function main () {
   // Instantiate a testnet node with local storage
   const options = {
     network: 'testnet',
+    loggerOptions: {
+      level: 'debug'
+    },
+    meshOptions: {
+      loggerOptions: {
+        level: 'debug'
+      }
+    },
     storageOptions: {
       model: 'mongoDB',
+      loggerOptions: {
+        level: 'debug'
+      },
       dataAccessOptions: {
         connectOnInit: true,
         connectionString: 'mongodb://localhost/sync_demo3',
@@ -29,6 +40,9 @@ async function main () {
           blocks: 'b_neo_t_blocks',
           transactions: 'b_neo_t_transactions',
           addresses: 'b_neo_t_addresses'
+        },
+        loggerOptions: {
+          level: 'debug'
         }
       }
     }
