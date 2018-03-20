@@ -40,7 +40,6 @@ class MongodbStorage {
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
     this.initLogger()
-    this.logger.debug('constructor triggered.')
     this.blockModel = this.getBlockModel()
     this.transactionModel = this.getTransactionModel()
     this.addressModel = this.getAddressModel()
