@@ -12,7 +12,6 @@ const MongodbStorage = require('./storage/mongodb')
  * on each type of storage.
  * @param {Object} options
  * @param {string} options.model
- * @param {Object} options.logger
  * @param {Object} options.dataAccessOptions
  * @param {Object} options.loggerOptions
  */
@@ -30,9 +29,10 @@ class Storage {
     /** @type {Array.<Object>} */
     this.assets = []
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       model: 'memory',
-      logger: undefined,
       dataAccessOptions: {},
       loggerOptions: {}
     }

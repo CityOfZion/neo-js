@@ -12,17 +12,17 @@ const Logger = require('./common/logger')
  * @param {Object} options
  * @param {string} options.network
  * @param {string} options.neonDbNet
- * @param {Object} options.logger
  * @param {Object} options.loggerOptions
  */
 class Wallet {
   constructor (options = {}) {
     // -- Properties
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       network: '',
       neonDbNet: '',
-      logger: undefined,
       loggerOptions: {}
     }
 

@@ -9,7 +9,6 @@ const Logger = require('../common/logger')
  * @param {string} domain
  * @param {string} port
  * @param {Object} options
- * @param {Object} options.logger
  * @param {Object} options.loggerOptions
  */
 class Rpc {
@@ -22,8 +21,9 @@ class Rpc {
     /** @type {Object} */
     this.neonRpc = undefined
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
-      logger: undefined,
       loggerOptions: {}
     }
 

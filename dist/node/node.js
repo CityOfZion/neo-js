@@ -8,7 +8,6 @@ const Rpc = require('./rpc')
  * @param {Object} options
  * @param {string} options.domain
  * @param {number} options.port
- * @param {Object} options.logger
  * @param {Object} options.rpcOptions
  * @param {Object} options.loggerOptions
  */
@@ -30,10 +29,11 @@ class Node {
     /** @type {Object} */
     this.rpc = undefined
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       domain: undefined,
       port: undefined,
-      logger: undefined,
       rpcOptions: {},
       loggerOptions: {}
     }

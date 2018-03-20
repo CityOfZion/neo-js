@@ -12,7 +12,6 @@ const Logger = require('../../common/logger')
  * @param {string} options.collectionNames.blocks
  * @param {string} options.collectionNames.transactions
  * @param {string} options.collectionNames.addresses
- * @param {Object} options.logger
  * @param {Object} options.loggerOptions
  */
 class MongodbStorage {
@@ -25,6 +24,8 @@ class MongodbStorage {
     /** @type {Object} */
     this.addressModel = undefined
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
@@ -33,7 +34,6 @@ class MongodbStorage {
         transactions: 'b_neo_t_transactions',
         addresses: 'b_neo_t_addresses'
       },
-      logger: undefined,
       loggerOptions: {}
     }
 
