@@ -69,6 +69,7 @@ class Storage {
    * @returns {void}
    */
   initBackgroundTasks () {
+    this.logger.debug('initBackgroundTasks triggered.')
     this.getBlockCount()
 
     // Periodically update the list of assets available
@@ -93,12 +94,14 @@ class Storage {
    * @returns Promise.<Array> An array containing the balances of an address.
    */
   getBalance (address, assets = this.assets, blockAge = 1) {
+    this.logger.debug('getBalance triggered. address:', address, 'assets:', assets, 'blockAge:', blockAge)
     // TODO: refactor away usage of assign dynamic data into default input value
     return new Promise((resolve, reject) => {
       this.dataAccess.getAddress(address)
         .then((res) => {
           // If the address is not found in the database, its new...So add it and retry.
           if (!res) {
+            this.logger.info('address not found from dataAccess.getAddress(), process to saving it... address:', address)
             this.dataAccess.saveAddress({ address: address, type: 'c', assets: [] })
               .then((res) => {
                 this.getBalance(address)
@@ -110,6 +113,7 @@ class Storage {
                 reject(err)
               })
           } else {
+            this.logger.info('address found from dataAccess.getAddress(). address:', address)
             // Sort the assets into 'current' and 'needs update'
             let parts = _.partition(res.assets, (asset) => {
               return (this.index - asset.index) >= blockAge
@@ -145,6 +149,7 @@ class Storage {
           }
         })
         .catch((err) => {
+          this.logger.warn('dataAccess.getAddress() execution failed. address:', address)
           reject(err)
         })
     })
@@ -157,15 +162,20 @@ class Storage {
    * @returns Promise.<Object>
    */
   getAssetState (hash) {
+    this.logger.debug('getAssetState triggered. hash:', hash)
     return new Promise((resolve, reject) => {
       this.dataAccess.getAsset(hash)
         .then((res) => {
           if (!res) {
+            this.logger.info('dataAccess.getAsset() executed but without response data. hash:', hash)
             resolve(undefined)
           }
           resolve(res.state)
         })
-        .catch((err) => reject(err))
+        .catch((err) => {
+          this.logger.warn('dataAccess.getAsset() execution failed. hash:', hash)
+          reject(err)
+        })
     })
   }
 
@@ -176,6 +186,7 @@ class Storage {
    * @returns Promise.<Object>
    */
   getAsset (hash) {
+    this.logger.debug('getAsset triggered. hash:', hash)
     return this.dataAccess.getAsset(hash)
   }
 
@@ -191,6 +202,7 @@ class Storage {
    * @returns Promise.<Object> An object containing the asset balance.
    */
   getAssetBalance (address, asset, startBlock = 0, balance = 0) {
+    this.logger.debug('getAssetBalance triggered. address:', address, 'asset:', asset, 'startBlock:', startBlock, 'balance:', balance)
     return new Promise((resolve, reject) => {
       this.dataAccess.getAssetListByAddress(address, asset, startBlock)
         .then((res) => {
@@ -222,6 +234,7 @@ class Storage {
             })
         })
         .catch((err) => {
+          this.logger.warn('dataAccess.getAssetListByAddress() execution failed. address:', address, 'asset:', asset, 'startBlock:', startBlock)
           reject(err)
         })
     })
@@ -236,6 +249,7 @@ class Storage {
    * @returns {Promise.<Array>}
    */
   getAssetTransactions (address, assetHash) {
+    this.logger.debug('getAssetTransactions triggered. address:', address, 'assetHash:', assetHash)
     return new Promise((resolve, reject) => {
       this.dataAccess.getAssetListByAddress(address, assetHash)
         .then((res) => {
@@ -266,6 +280,7 @@ class Storage {
           resolve(transactions)
         })
         .catch((err) => {
+          this.logger.warn('dataAccess.getAssetListByAddress() execution failed. address:', address, 'assetHash:', assetHash)
           reject(err)
         })
     })
@@ -279,6 +294,7 @@ class Storage {
    * @returns {Promise.<Object>} A JSON formatted representation of a transaction.
    */
   getExpandedTX (txid) {
+    this.logger.debug('getExpandedTX triggered. txid:', txid)
     return new Promise((resolve, reject) => {
       this.getTX(txid)
         .then((tx) => {
@@ -307,7 +323,8 @@ class Storage {
             })
         })
         .catch((err) => {
-          this.logger.error('getExpendedTX getTX err:', err)
+          this.logger.warn('getTX() execution failed. txid:', txid)
+          reject(err)
         })
     })
   }
@@ -319,6 +336,7 @@ class Storage {
    * @returns {Promise.<Object>} A JSON formatted representation of a transaction.
    */
   getTX (txid) {
+    this.logger.debug('getTX triggered. txid:', txid)
     return this.dataAccess.getTX(txid)
   }
 
@@ -329,6 +347,7 @@ class Storage {
    * @returns {Promise.<Object>} A JSON formatted block on the blockchain.
    */
   getBlock (index) {
+    this.logger.debug('getBlock triggered. index:', index)
     return this.dataAccess.getBlock(index)
   }
 
@@ -339,6 +358,7 @@ class Storage {
    * @returns {Promise.<Object>} A promise returning information of the block
    */
   getBlockByHash (hash) {
+    this.logger.debug('getBlockByHash triggered. hash:', hash)
     return this.dataAccess.getBlockByHash(hash)
   }
 
@@ -350,6 +370,7 @@ class Storage {
    * @returns {Promise.<Number>} The block height
    */
   getBlockCount () {
+    this.logger.debug('getBlockCount triggered.')
     return new Promise((resolve, reject) => {
       this.dataAccess.getBlockCount()
         .then((res) => {
@@ -358,6 +379,7 @@ class Storage {
           resolve(res)
         })
         .catch((err) => {
+          this.logger.warn('dataAccess.getBlockCount() execution failed.')
           reject(err)
         })
     })
@@ -369,15 +391,20 @@ class Storage {
    * @returns {Promise.<Object>}
    */
   getBestBlockHash () {
+    this.logger.debug('getBestBlockHash triggered.')
     return new Promise((resolve, reject) => {
       this.dataAccess.getBestBlockHash()
         .then((res) => {
           if (!res) {
+            this.logger.info('dataAccess.getBestBlockHash() executed but without response data.')
             resolve(undefined)
           }
           resolve(res.hash)
         })
-        .catch((err) => reject(err))
+        .catch((err) => {
+          this.logger.warn('dataAccess.getBestBlockHash() execution failed.')
+          reject(err)
+        })
     })
   }
 
@@ -389,6 +416,7 @@ class Storage {
    * @returns {Promise.<Object>}
    */
   saveBlock (newBlock) {
+    this.logger.debug('saveBlock triggered.')
     return new Promise((resolve, reject) => {
       this.dataAccess.saveBlock(newBlock)
         .then((res) => {
@@ -429,6 +457,7 @@ class Storage {
             .catch((err) => reject(err))
         })
         .catch((err) => {
+          this.logger.warn('dataAccess.saveBlock() execution failed.')
           reject(err)
         })
     })
@@ -442,6 +471,7 @@ class Storage {
    * @returns {void}
    */
   saveAssetState (hash, assetState) {
+    this.logger.debug('saveAssetState triggered. hash:', hash, 'assetState:', assetState)
     return this.dataAccess.saveAssetState(hash, assetState)
   }
 
@@ -453,6 +483,8 @@ class Storage {
    * @returns {Promise.<Array>} An array containing the indices of the missing blocks.
    */
   verifyBlocks (start = 0, end = this.index) {
+    this.logger.debug('verifyBlocks triggered. start:', start, 'end:', end)
+    // TODO: eliminate usage of dynamic default value
     return this.dataAccess.verifyBlocks(start, end)
   }
 
@@ -462,6 +494,7 @@ class Storage {
    * @returns {Promise.<Array>} An array containing the indices of the invlid assets.
    */
   verifyAssets () {
+    this.logger.debug('verifyAssets triggered.')
     return this.dataAccess.verifyAssets()
   }
 
@@ -471,6 +504,7 @@ class Storage {
    * @returns {Promise.<Array>}
    */
   getAssetList () {
+    this.logger.debug('getAssetList triggered.')
     return this.dataAccess.getAssetList()
   }
 
@@ -480,12 +514,15 @@ class Storage {
    * @returns {void}
    */
   updateAssetList () {
+    this.logger.debug('updateAssetList triggered.')
     this.dataAccess.getAssetList()
       .then((res) => {
         this.assets = res
         this.assetsFlat = _.map(res, 'asset')
       })
-      // Not catching errors
+      .catch((err) => {
+        this.logger.warn('dataAccess.getAssetList() execution failed. continue anyway...')
+      })
   }
 }
 

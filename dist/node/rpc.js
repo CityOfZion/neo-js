@@ -69,6 +69,7 @@ class Rpc {
    * @returns {Promise.<Object>}
    */
   call (payload) {
+    this.logger.debug('call triggered. payload:', payload)
     // const t0 = Date.now()
     // node.pendingRequests += 1
     return axios({
@@ -105,6 +106,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getBalance (assetId) {
+    this.logger.debug('getBalance triggered. assetId:', assetId)
     return this.neonRpc.getBalance(assetId)
   }
 
@@ -114,6 +116,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getBestBlockHash () {
+    this.logger.debug('getBestBlockHash triggered.')
     return this.neonRpc.getBestBlockHash()
   }
 
@@ -125,6 +128,7 @@ class Rpc {
    * @returns {Promise.<object>} A promise returning information of the block
    */
   getBlock (index, verbose = 1) {
+    this.logger.debug('getBlock triggered. index:', index, 'verbose:', verbose)
     return this.neonRpc.getBlock(index, verbose)
   }
 
@@ -136,6 +140,7 @@ class Rpc {
    * @returns {Promise.<object>} A promise returning information of the block
    */
   getBlockByHash (hash, verbose = 1) {
+    this.logger.debug('getBlockByHash triggered. hash:', hash, 'verbose:', verbose)
     return this.neonRpc.getBlock(hash, verbose)
   }
 
@@ -145,6 +150,7 @@ class Rpc {
    * @returns {Promise.<number>} A promise returning the block count.
    */
   getBlockCount () {
+    this.logger.debug('getBlockCount triggered.')
     return this.neonRpc.getBlockCount()
   }
 
@@ -155,6 +161,7 @@ class Rpc {
    * @returns {Promise.<string>} A promise returning the hash of the block
    */
   getBlockHash (index) {
+    this.logger.debug('getBlockHash triggered. index:', index)
     return this.call({
       method: 'getblockhash',
       params: [index],
@@ -169,6 +176,7 @@ class Rpc {
    * @returns {Promise.<string>} The system fee.
    */
   getBlockSystemFee (index) {
+    this.logger.debug('getBlockSystemFee triggered. index:', index)
     return this.neonRpc.getBlockSysFee(index)
   }
 
@@ -178,6 +186,7 @@ class Rpc {
    * @returns {Promise.<number>}
    */
   getConnectionCount () {
+    this.logger.debug('getConnectionCount triggered.')
     return this.neonRpc.getConnectionCount()
   }
 
@@ -187,6 +196,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getVersion () {
+    this.logger.debug('getVersion triggered.')
     // NOTE: rpc.getVersion() will try to parse the user agent to version value, while Query's version will retain it's raw form
     return new Promise((resolve, reject) => {
       Query.getVersion()
@@ -207,6 +217,7 @@ class Rpc {
    * @returns {Promise.<object>} The invoke response.
    */
   invoke (payload) {
+    this.logger.debug('invoke triggered. payload:', payload)
     return this.neonRpc.invoke(payload.scriptHash, payload.params)
   }
 
@@ -220,6 +231,7 @@ class Rpc {
    * @returns {Promise.<object>} The invoke response.
    */
   invokeFunction (payload) {
+    this.logger.debug('invokeFunction triggered. payload:', payload)
     return this.neonRpc.invokeFunction(payload.scriptHash, payload.operation, payload.params)
   }
 
@@ -230,6 +242,7 @@ class Rpc {
    * @returns {Promise.<object>} The invoke response.
    */
   invokeScript (script) {
+    this.logger.debug('invokeScript triggered. script:', script)
     return this.neonRpc.invokeScript(script)
   }
 
@@ -239,6 +252,7 @@ class Rpc {
    * @returns {Promise.<string[]>}
    */
   getRawMemPool () {
+    this.logger.debug('getRawMemPool triggered.')
     return this.neonRpc.getRawMemPool()
   }
 
@@ -251,6 +265,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getRawTransaction (txid, verbose = 1) {
+    this.logger.debug('getRawTransaction triggered. txid:', txid, 'verbose:', verbose)
     return this.neonRpc.getRawTransaction(txid, verbose)
   }
 
@@ -263,6 +278,7 @@ class Rpc {
    * @returns {Promise.<object>} An object containing the transaction response.
    */
   getTXOut (payload) {
+    this.logger.debug('getTXOut triggered. payload:', payload)
     return this.neonRpc.getTxOut(payload.txid, payload.index)
   }
 
@@ -273,6 +289,7 @@ class Rpc {
    * @return {Promise.<boolean>}
    */
   sendRawTransaction (transaction) {
+    this.logger.debug('sendRawTransaction triggered. transaction:', transaction)
     return this.neonRpc.sendRawTransaction(transaction)
   }
 
@@ -285,6 +302,7 @@ class Rpc {
    * @returns {Promise.<Object>}
    */
   sendToAddress (payload) {
+    this.logger.debug('sendToAddress triggered. payload:', payload)
     return this.call({
       method: 'sendtoaddress',
       params: [payload.assetId, payload.address, payload.value],
@@ -299,6 +317,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   submitBlock (block) {
+    this.logger.debug('submitBlock triggered. block:', block)
     return this.neonRpc.submitBlock(block)
   }
 
@@ -309,6 +328,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getAccountState (address) {
+    this.logger.debug('getAccountState triggered. address:', address)
     return this.neonRpc.getAccountState(address)
   }
 
@@ -318,6 +338,7 @@ class Rpc {
    * @returns {Promise.<Object>}
    */
   getAssetState (assetId) {
+    this.logger.debug('getAssetState triggered. assetId:', assetId)
     return this.neonRpc.getAssetState(assetId)
   }
 
@@ -328,6 +349,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getContractState (scriptHash) {
+    this.logger.debug('getContractState triggered. scriptHash:', scriptHash)
     return this.neonRpc.getContractState(scriptHash)
   }
 
@@ -338,6 +360,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   validateAddress (address) {
+    this.logger.debug('validateAddress triggered. address:', address)
     // NOTE: Neon's rpc.validateAddress() will try to obtain value of result property, while Query's version will retain it's raw form
     return new Promise((resolve, reject) => {
       Query.validateAddress(address)
@@ -355,6 +378,7 @@ class Rpc {
    * @returns {Promise.<object>}
    */
   getPeers () {
+    this.logger.debug('getPeers triggered.')
     return this.neonRpc.getPeers()
   }
 }
