@@ -54,6 +54,7 @@ class Wallet {
    * @returns {Promise.<Object>} Balance of address
    */
   getBalance (address) {
+    this.logger.debug('getBalance triggered. address:', address)
     return neonDB.getBalance(this.neonDbNet, address)
       .catch((err) => {
         this.logger.error('getBalance err:', err)
@@ -67,6 +68,7 @@ class Wallet {
    * @returns {Promise.<Object>} An object with available and unavailable GAS amounts.
    */
   getClaims (address) {
+    this.logger.debug('getClaims triggered. address:', address)
     return neonDB.getClaims(this.neonDbNet, address)
       .catch((err) => {
         this.logger.error('getClaims err:', err)
@@ -80,6 +82,7 @@ class Wallet {
    * @returns {Promise.<Object>} History
    */
   getTransactionHistory (address) {
+    this.logger.debug('getTransactionHistory triggered. address:', address)
     return neonDB.getTransactionHistory(this.neonDbNet, address)
       .catch((err) => {
         this.logger.error('transactionHistory err:', err)
@@ -94,6 +97,7 @@ class Wallet {
    * @returns {Promise.<Object>}
    */
   getTokenBalance (scriptHash, address) {
+    this.logger.debug('getTokenBalance triggered. scriptHash:', scriptHash, 'address:', address)
     return neonDB.getRPCEndpoint(this.neonDbNet)
       .then((endpoint) => {
         return nep5.getTokenBalance(endpoint, HashHelper.denormalize(scriptHash), address)
@@ -113,6 +117,7 @@ class Wallet {
    * @returns {Promise.<Object>} RPC Response
    */
   doSendAsset (toAddress, from, assetAmounts, signingFunction) {
+    this.logger.debug('doSendAsset triggered. toAddress:', toAddress, 'from:', from, 'assetAmounts:', assetAmounts, 'signingFunction:', signingFunction)
     return neonDB.doSendAsset(this.neonDbNet, toAddress, from, assetAmounts, signingFunction)
       .catch((err) => {
         this.logger.error('sendAsset err:', err)
@@ -127,6 +132,7 @@ class Wallet {
    * @returns {Promise.<Object>} RPC response from sending transaction
    */
   doClaimAllGas (privateKey, signingFunction) {
+    this.logger.debug('doClaimAllGas triggered. privateKey:', privateKey, 'signingFunction:', signingFunction)
     return neonDB.doClaimAllGas(this.neonDbNet, privateKey, signingFunction)
       .catch((err) => {
         this.logger.error('claimAllGas err:', err)
@@ -143,6 +149,7 @@ class Wallet {
    * @returns {Promise.<Object>} RPC Response
    */
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
+    this.logger.debug('doMintTokens triggered. scriptHash:', scriptHash, 'fromWif:', fromWif, 'neo:', neo, 'gasCost:', gasCost, 'signingFunction:', signingFunction)
     return neonDB.doMintTokens(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, neo, gasCost, signingFunction)
       .catch((err) => {
         this.logger.error('mintTokens err:', err)
@@ -162,6 +169,7 @@ class Wallet {
    * @returns {Promise.<Object>} RPC response
    */
   doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
+    this.logger.debug('doTransferToken triggered. scriptHash:', scriptHash, 'fromWif:', fromWif, 'toAddress:', toAddress, 'transferAmount:', transferAmount, 'gasCost:', gasCost, 'signingFunction:', signingFunction)
     return nep5.doTransferToken(this.neonDbNet, HashHelper.denormalize(scriptHash), fromWif, toAddress, transferAmount, gasCost, signingFunction)
       .catch((err) => {
         this.logger.error('doTransferToken err:', err)

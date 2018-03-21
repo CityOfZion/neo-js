@@ -40,6 +40,7 @@ class Mesh {
    * @returns {Node}
    */
   getFastestNode () {
+    this.logger.debug('getFastestNode triggered.')
     // TODO: make active filter, optional
     return _.minBy(
       _.filter(this.nodes, 'active'),
@@ -53,6 +54,7 @@ class Mesh {
    * @returns {Node}
    */
   getHighestNode () {
+    this.logger.debug('getHighestNode triggered.')
     // TODO: make active filter, optional
     return _.maxBy(
       _.filter(this.nodes, 'active'),
@@ -65,6 +67,7 @@ class Mesh {
    * @returns {Node}
    */
   getRandomNode () {
+    this.logger.debug('getRandomNode triggered.')
     // TODO: getRandomNode(isActive)
     // This also picks up inactive nodes
     const targetIndex = parseInt(Math.random() * this.nodes.length)
@@ -76,6 +79,7 @@ class Mesh {
    * @returns {Node}
    */
   getNodeWithBlock (index, sort = 'latency') {
+    this.logger.debug('getNodeWithBlock triggered. index:', index, 'sort:', sort)
     // NOTE: Not been used
     return _.minBy(
       _.filter(this.nodes, ({index: nIndex, active}) => {
@@ -92,6 +96,7 @@ class Mesh {
    * @returns {*}
    */
   rpc (method, params) {
+    this.logger.debug('rpc triggered. method:', method, 'params:', params)
     // Alias of mesh.getHighestNode().rpc()
     return (this.getHighestNode() || this.nodes[0]).rpc[method](params)
   }
