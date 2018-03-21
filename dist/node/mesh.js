@@ -24,14 +24,6 @@ class Mesh {
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
     this.nodes = nodes
-    this.initLogger()
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
     this.logger = new Logger('Mesh', this.loggerOptions)
   }
 

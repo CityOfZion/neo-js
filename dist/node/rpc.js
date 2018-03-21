@@ -31,16 +31,8 @@ class Rpc {
     Object.assign(this, this.defaultOptions, options)
     this.domain = domain
     this.port = port
-    this.initNeonRpc()
-    this.initLogger()
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
     this.logger = new Logger('Rpc', this.loggerOptions)
+    this.initNeonRpc()
   }
 
   /**

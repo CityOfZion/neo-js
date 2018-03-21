@@ -39,16 +39,8 @@ class Storage {
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.initLogger()
-    this.initStorage()
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
     this.logger = new Logger('Storage', this.loggerOptions)
+    this.initStorage()
   }
 
   /**

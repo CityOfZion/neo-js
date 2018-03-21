@@ -49,19 +49,11 @@ class Neo {
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.initLogger()
+    this.logger = new Logger('Neo', this.loggerOptions)
     this.initMesh()
     this.initStorage()
     this.initWallet()
     this.initBackgroundTasks()
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
-    this.logger = new Logger('Neo', this.loggerOptions)
   }
 
   /**

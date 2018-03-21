@@ -28,8 +28,15 @@ class Wallet {
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.initLogger()
+    this.logger = new Logger('Wallet', this.loggerOptions)
+    this.initNeonDbNet()
+  }
 
+  /**
+   * @private
+   * @returns {void}
+   */
+  initNeonDbNet () {
     if (this.neonDbNet === '') {
       if (this.network === 'mainnet') {
         this.neonDbNet = 'MainNet'
@@ -37,14 +44,6 @@ class Wallet {
         this.neonDbNet = 'TestNet'
       }
     }
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
-    this.logger = new Logger('Wallet', this.loggerOptions)
   }
 
   /**
