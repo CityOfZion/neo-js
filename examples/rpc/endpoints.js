@@ -22,20 +22,7 @@ async function main () {
   // const neo = new Neo({ network: 'mainnet' })
 
   console.log('TestNet:')
-  const testnetNeo = new Neo({ network: {
-    endpoints: [
-      { domain: 'http://seed1.neo.org', port: 20332 },
-      { domain: 'http://seed2.neo.org', port: 20332 },
-      { domain: 'http://seed3.neo.org', port: 20332 },
-      { domain: 'http://seed4.neo.org', port: 20332 },
-      { domain: 'http://seed5.neo.org', port: 20332 },
-      { domain: 'http://test1.cityofzion.io', port: 8880 },
-      { domain: 'http://test2.cityofzion.io', port: 8880 },
-      { domain: 'http://test3.cityofzion.io', port: 8880 },
-      { domain: 'http://test4.cityofzion.io', port: 8880 },
-      { domain: 'http://test5.cityofzion.io', port: 8880 }
-    ]
-  }})
+  const testnetNeo = new Neo({ network: 'testnet' })
 
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(testnetNeo.mesh.nodes.map(async (node) => {
@@ -52,20 +39,7 @@ async function main () {
   }))
 
   console.log('MainNet:')
-  const mainnetNeo = new Neo({ network: {
-    endpoints: [
-      { domain: 'http://seed1.neo.org', port: 10332 },
-      { domain: 'http://seed2.neo.org', port: 10332 },
-      { domain: 'http://seed3.neo.org', port: 10332 },
-      { domain: 'http://seed4.neo.org', port: 10332 },
-      { domain: 'http://seed5.neo.org', port: 10332 },
-      { domain: 'http://seed1.cityofzion.io', port: 8080 },
-      { domain: 'http://seed2.cityofzion.io', port: 8080 },
-      { domain: 'http://seed3.cityofzion.io', port: 8080 },
-      { domain: 'http://seed4.cityofzion.io', port: 8080 },
-      { domain: 'http://seed5.cityofzion.io', port: 8080 }
-    ]
-  }})
+  const mainnetNeo = new Neo({ network: 'mainnet' })
 
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(mainnetNeo.mesh.nodes.map(async (node) => {
