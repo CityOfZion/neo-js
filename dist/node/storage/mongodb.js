@@ -12,7 +12,6 @@ const Logger = require('../../common/logger')
  * @param {string} options.collectionNames.blocks
  * @param {string} options.collectionNames.transactions
  * @param {string} options.collectionNames.addresses
- * @param {Object} options.logger
  * @param {Object} options.loggerOptions
  */
 class MongodbStorage {
@@ -25,6 +24,8 @@ class MongodbStorage {
     /** @type {Object} */
     this.addressModel = undefined
     /** @type {Object} */
+    this.logger = undefined
+    /** @type {Object} */
     this.defaultOptions = {
       connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
@@ -33,30 +34,38 @@ class MongodbStorage {
         transactions: 'b_neo_t_transactions',
         addresses: 'b_neo_t_addresses'
       },
-      logger: undefined,
       loggerOptions: {}
     }
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.initLogger()
-    this.logger.debug('constructor triggered.')
+    this.logger = new Logger('MongodbStorage', this.loggerOptions)
     this.blockModel = this.getBlockModel()
     this.transactionModel = this.getTransactionModel()
     this.addressModel = this.getAddressModel()
 
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
-    if (this.connectOnInit) {
-      this.initConnection()
-    }
+    this.initConnection()
   }
 
   /**
    * @private
    * @returns {void}
    */
-  initLogger () {
-    this.logger = new Logger('MongodbStorage', this.loggerOptions)
+  initConnection () {
+    this.logger.debug('initConnection triggered.')
+    if (this.connectOnInit) {
+      mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
+        connection.onOpen()
+      })
+        .then(() => {
+          this.logger.info('mongoose connected.')
+        })
+        .catch((err) => {
+          this.logger.error('Error establish MongoDB connection.')
+          this.logger.info('Error:', err)
+        })
+    }
   }
 
   /**
@@ -509,24 +518,6 @@ class MongodbStorage {
         resolve(missing)
       })
     })
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initConnection () {
-    this.logger.debug('initConnection triggered.')
-    mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
-      connection.onOpen()
-    })
-      .then(() => {
-        this.logger.info('mongoose connected.')
-      })
-      .catch((err) => {
-        this.logger.error('Error establish MongoDB connection.')
-        this.logger.info('Error:', err)
-      })
   }
 
   /**

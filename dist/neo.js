@@ -13,7 +13,6 @@ const Node = require('./node/node')
  * @param {Object} options
  * @param {number} options.workerCount
  * @param {string} options.network
- * @param {Object} options.logger
  * @param {Object} options.meshOptions
  * @param {Object} options.nodeOptions
  * @param {Object} options.storageOptions
@@ -31,6 +30,8 @@ class Neo {
     this.storage = undefined
     /** @type {Object} */
     this.queue = undefined
+    /** @type {Object} */
+    this.logger = undefined
     /** @type {number} */
     this.maxQueueLength = 10000
     /** @type {number} */
@@ -39,7 +40,6 @@ class Neo {
     this.defaultOptions = {
       workerCount: 20,
       network: undefined,
-      logger: undefined,
       meshOptions: {},
       nodeOptions: {},
       storageOptions: {},
@@ -49,19 +49,11 @@ class Neo {
 
     // -- Bootstrap
     Object.assign(this, this.defaultOptions, options)
-    this.initLogger()
+    this.logger = new Logger('Neo', this.loggerOptions)
     this.initMesh()
     this.initStorage()
     this.initWallet()
     this.initBackgroundTasks()
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initLogger () {
-    this.logger = new Logger('Neo', this.loggerOptions)
   }
 
   /**
