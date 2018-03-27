@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 /**
- * Basic RPC Example
+ * Basic Testnet RPC Test
+ *
  * A simple example to get started with neo-js's RPC client.
  */
 
@@ -9,24 +10,19 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:rpc:basic', { level: Logger.levels.INFO })
+const logger = new Logger('examples:rpc-testnet', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  logger.info('== Basic RPC Example ==')
+  logger.info('== Basic Testnet RPC Test ==')
 
   // Instantiate a node that provides access to the testnet mesh
-  const neo = new Neo({ network: 'testnet' })
+  const NETWORK = 'testnet'
+  const neo = new Neo({ network: NETWORK })
 
-  // Verify neoBlockchain properties
-  logger.info('neo.domain:', neo.domain)
-  logger.info('neo.network:', neo.network)
+  // Verify neo blockchain properties
   logger.info('neo.mesh.nodes.length:', neo.mesh.nodes.length)
-  logger.info('list of nodes in the mesh:')
-  neo.mesh.nodes.forEach((node, index) => {
-    logger.info(`> [${index}] ${node.domain}:${node.port}`)
-  })
 
   // Example RPC requests
   logger.info('getBlockCount:', await neo.mesh.rpc('getBlockCount'))
@@ -34,10 +30,14 @@ async function main () {
 
   logger.info('== END ==')
 
-  // neoBlockchain process in the background. Explicit exit call is used.
+  // neo blockchain process in the background. Explicit exit call is used.
   process.exit()
 }
 
 // -- Execute
+
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
 main()

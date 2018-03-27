@@ -17,12 +17,12 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:node:asset', { level: Logger.levels.INFO })
+const logger = new Logger('examples:asset', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  logger.info('== Test Syncing Example ==')
+  logger.info('== Asset-related Usage Example ==')
 
   // Instantiate a testnet node with local storage
   const neo = new Neo({

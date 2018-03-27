@@ -1,19 +1,21 @@
 #!/usr/bin/env node
 
 /**
- * Verify every available RPC endpoints
+ * RPC Endpoint Connectivity Report
+ *
+ * Verify every available RPC endpoints.
  */
 
 // -- Bootstrap
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:rpc:endpoints', { level: Logger.levels.INFO })
+const logger = new Logger('examples:rpc-endpoints', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  logger.info('== Basic RPC Example ==')
+  logger.info('== RPC Endpoint Connectivity Report ==')
 
   /**
    * Instantiate a node that either connect to 'netnet', 'mainnet' or specified RPC endpoints.
@@ -22,7 +24,17 @@ async function main () {
   // const neo = new Neo({ network: 'mainnet' })
 
   console.log('TestNet:')
-  const testnetNeo = new Neo({ network: 'testnet' })
+  const testnetNeo = new Neo({
+    network: 'testnet',
+    loggerOptions: {
+      level: Logger.levels.SILENT
+    },
+    storageOptions: {
+      loggerOptions: {
+        level: Logger.levels.SILENT
+      }
+    }
+  })
 
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(testnetNeo.mesh.nodes.map(async (node) => {
@@ -39,7 +51,17 @@ async function main () {
   }))
 
   console.log('MainNet:')
-  const mainnetNeo = new Neo({ network: 'mainnet' })
+  const mainnetNeo = new Neo({
+    network: 'mainnet',
+    loggerOptions: {
+      level: Logger.levels.SILENT
+    },
+    storageOptions: {
+      loggerOptions: {
+        level: Logger.levels.SILENT
+      }
+    }
+  })
 
   // Test connection by verify block count of every RPC endpoints
   await Promise.all(mainnetNeo.mesh.nodes.map(async (node) => {
