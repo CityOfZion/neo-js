@@ -10,7 +10,8 @@
     "test:integration": "./node_modules/.bin/mocha -b ./test/integration/**/*",
     "coverage": "./node_modules/.bin/nyc npm test",
     "build:docs": "rm -rf ./docs && ./node_modules/.bin/jsdoc -d ./docs -c ./.jsdoc.conf.json ./dist",
-    "rebuild": "rm -rf ./node_modules && rm -f ./package-lock.json && npm install",
+    "rebuild": "rm -rf ./node_modules && npm install",
+    "rebuild:hard": "rm -f ./package-lock.json && rm -rf ./node_modules && npm install",
     "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
   },
   "repository": {
