@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Syncing Test Run Example
+ * Sync Test against Testnet
  *
  * An example usage to have a running node instance syncing in the background while
  * perform user tasks at foreground. Please make sure there is a local MongoDB server running.
@@ -11,12 +11,12 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:node:sync-test', { level: Logger.levels.INFO })
+const logger = new Logger('examples:sync-testnet', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  logger.info('== Test Syncing Example ==')
+  logger.info('== Sync Test against Testnet ==')
 
   // Instantiate a testnet node with specified local storage (and to a separate database as default of mongodb.js)
   const options = {

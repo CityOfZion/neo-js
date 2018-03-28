@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Blockchain Syncing Example
+ * Syncing for Privnet
  *
  * An actual syncing usage to populate local running MongoDB server.
  */
@@ -10,16 +10,25 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:node:sync', { level: Logger.levels.INFO })
+const logger = new Logger('examples:sync:privnet', { level: Logger.levels.INFO })
 
 // -- Chain of command
 
 async function main () {
-  logger.info('== Test Syncing Example ==')
+  logger.info('== Syncing for Privnet ==')
 
-  // Instantiate a testnet node with local storage
+  const NETWORK = {
+    network: 'privnet',
+    endpoints: [
+      { domain: 'http://127.0.0.1', port: 30333 },
+      { domain: 'http://127.0.0.1', port: 30334 },
+      { domain: 'http://127.0.0.1', port: 30335 },
+      { domain: 'http://127.0.0.1', port: 30336 }
+    ]
+  }
+  const DB_CONNECTION_STRING = 'mongodb://localhost/testnet'
   const options = {
-    network: 'testnet',
+    network: NETWORK,
     loggerOptions: {
       level: 'debug'
     },
@@ -35,11 +44,11 @@ async function main () {
       },
       dataAccessOptions: {
         connectOnInit: true,
-        connectionString: 'mongodb://localhost/sync_demo3',
+        connectionString: DB_CONNECTION_STRING,
         collectionNames: {
-          blocks: 'b_neo_t_blocks',
-          transactions: 'b_neo_t_transactions',
-          addresses: 'b_neo_t_addresses'
+          blocks: 'b_neo_p_blocks',
+          transactions: 'b_neo_p_transactions',
+          addresses: 'b_neo_p_addresses'
         },
         loggerOptions: {
           level: 'debug'

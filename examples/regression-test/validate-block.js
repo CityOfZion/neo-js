@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * Blockchain Syncing Example
- *
- * An actual syncing usage to populate local running MongoDB server.
+ * Regression Test - Block Validation
  */
 
 // -- Bootstrap
@@ -16,16 +14,18 @@ const Neon = require('@cityofzion/neon-js')
 // -- Chain of command
 
 async function main () {
-  logger.info('== Regression Test on local node ==')
+  logger.info('== Regression Test - Block Validation ==')
 
-  // Instantiate a testnet node with local storage
+  // Instantiate a node with local storage
+  const NETWORK = 'testnet'
+  const DB_CONNECTION_STRING = 'mongodb://localhost/testnet'
   const options = {
-    network: 'testnet',
+    network: NETWORK,
     storageOptions: {
       model: 'mongoDB',
       dataAccessOptions: {
         connectOnInit: true,
-        connectionString: 'mongodb://localhost/sync_demo3',
+        connectionString: DB_CONNECTION_STRING,
         collectionNames: {
           blocks: 'b_neo_t_blocks',
           transactions: 'b_neo_t_transactions',
@@ -42,15 +42,18 @@ async function main () {
 
   // Keep looking and cherrypick blocks, and examine them
   setInterval(async () => {
-    // fetch local node height
+    // Fetch local node height
     const localBlockHeight = await neo.storage.getBlockCount()
-    // generate random number in between
+
+    // Generate random number in between
     const randomHeight = parseInt(Math.random() * localBlockHeight)
     // logger.info('localBlockHeight:', localBlockHeight, 'randomHeight:', randomHeight)
-    // fetch block from local node
+
+    // Fetch block from local node
     const localBlock = await neo.storage.getBlock(randomHeight)
     // logger.info('localBlock:', localBlock.hash)
-    // fetch block from remote node via NodeJs
+
+    // Fetch block from remote node via NodeJs
     const remoteBlock = await rpc.getBlock(randomHeight)
     // logger.info('remoteBlock:', remoteBlock.hash)
 
