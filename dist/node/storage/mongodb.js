@@ -55,15 +55,19 @@ class MongodbStorage {
   initConnection () {
     this.logger.debug('initConnection triggered.')
     if (this.connectOnInit) {
-      mongoose.connect(this.connectionString, { useMongoClient: true }, (ignore, connection) => {
-        connection.onOpen()
+      mongoose.connect(this.connectionString, { useMongoClient: true }, (error, connection) => {
+        if (!connection) {
+          this.logger.error('Unable to established connection. error:', error)
+        } else {
+          connection.onOpen()
+        }
       })
         .then(() => {
           this.logger.info('mongoose connected.')
         })
         .catch((err) => {
           this.logger.error('Error establish MongoDB connection.')
-          this.logger.info('Error:', err)
+          throw new Error(err.message)
         })
     }
   }
