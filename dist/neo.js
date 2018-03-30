@@ -7,6 +7,7 @@ const Wallet = require('./wallet')
 const Logger = require('./common/logger')
 const profiles = require('./common/profiles')
 const Node = require('./node/node')
+const ValidationHelper = require('./common/validation-helper')
 const packageJson = require('../package.json')
 
 /**
@@ -142,12 +143,26 @@ class Neo {
       .then(() => {
         this.blockWritePointer = this.storage.index
         // enqueue blocks for download
-        setInterval(() => {
-          while ((this.blockWritePointer < this.mesh.getHighestNode().index) && (this.queue.length() < this.maxQueueLength)) {
-            this.enqueueBlock(this.blockWritePointer + 1)
-          }
-        }, 2000)
+        setInterval(this.doEnqueueBlock, 2000)
       })
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  doEnqueueBlock () {
+    this.logger.debug('doEnqueueBlock triggered.')
+    const node = this.mesh.getHighestNode()
+    if (ValidationHelper.isValidNode(node)) {
+      while ((this.blockWritePointer < node.index) && (this.queue.length() < this.maxQueueLength)) {
+        this.enqueueBlock(this.blockWritePointer + 1)
+      }
+    } else {
+      // Error
+      this.logger.error('Unable to find a valid node.')
+      // throw new Error('Unable to find a valid node.')
+    }
   }
 
   /**
@@ -357,13 +372,16 @@ class Neo {
       this.blockWritePointer = index
     }
 
+    const node = this.mesh.getHighestNode() // TODO: validate
+    const max = node.index || index
+
     // enqueue the block
     this.queue.push({
       method: 'storeBlock',
       attrs: {
         index: index,
-        max: this.mesh.getHighestNode().index || index,
-        percent: (index) / (this.mesh.getHighestNode().index || index) * 100
+        max: max,
+        percent: (index / max * 100)
       }
     }, priority)
   }
