@@ -7,6 +7,7 @@ const Wallet = require('./wallet')
 const Logger = require('./common/logger')
 const profiles = require('./common/profiles')
 const Node = require('./node/node')
+const packageJson = require('../package.json')
 
 /**
  * @class Neo
@@ -54,6 +55,23 @@ class Neo {
     this.initStorage()
     this.initWallet()
     this.initBackgroundTasks()
+  }
+
+  /**
+   * @static
+   * @public
+   * @returns {string}
+   */
+  static get VERSION () {
+    return packageJson.version
+  }
+
+  /**
+   * @public
+   * @returns {string}
+   */
+  get VERSION () {
+    return packageJson.version
   }
 
   /**
