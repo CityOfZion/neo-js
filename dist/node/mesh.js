@@ -2,6 +2,7 @@
 /* eslint new-cap: "off" */
 const _ = require('lodash')
 const Logger = require('../common/logger')
+const ValidationHelper = require('../common/validation-helper')
 
 /**
  * @class Mesh
@@ -89,8 +90,14 @@ class Mesh {
    */
   rpc (method, params) {
     this.logger.debug('rpc triggered. method:', method, 'params:', params)
-    // Alias of mesh.getHighestNode().rpc()
-    return (this.getHighestNode() || this.nodes[0]).rpc[method](params)
+    const node = (this.getHighestNode() || this.nodes[0])
+    if (ValidationHelper.isValidNode(node)) {
+      return node.rpc[method](params)
+    }
+
+    // Error
+    this.logger.error('Unable to find a valid node.')
+    throw new Error('Unable to find a valid node.')
   }
 }
 
