@@ -143,7 +143,9 @@ class Neo {
       .then(() => {
         this.blockWritePointer = this.storage.index
         // enqueue blocks for download
-        setInterval(this.doEnqueueBlock, 2000)
+        setInterval(() => {
+          this.doEnqueueBlock()
+        }, 2000)
       })
   }
 
