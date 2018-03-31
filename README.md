@@ -80,22 +80,17 @@ This will create a new node instance and configure it to sync the blockchain to 
 ```js
 const options = {
   network: 'testnet',
-  storage: {
-    model: 'mongoDB',
-    collectionNames: {
-      blocks: 'b_neo_t_blocks',
-      transactions: 'b_neo_t_transactions',
-      addresses: 'b_neo_t_addresses'
-    }
+  storageOptions: {
+    model: 'mongoDB'
   }
 }
 
-// create the local node instance and get the local block count after 5 seconds.
-const node = new Node(options)
+// create a neo instance and get the block count after 5 seconds.
+const neo = new Neo(options)
 
 setTimeout(() => {
-  node.storage.getBlockCount()
-    .then( (res) => console.log(res) )
+  neo.storage.getBlockCount()
+    .then((res) => console.log('Block count:', res))
 }, 5000)
 ```
 
