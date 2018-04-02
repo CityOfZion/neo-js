@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint camelcase: "off" */
-
 /**
  * Asset-related Usage Example
  *
@@ -32,7 +30,7 @@ async function main () {
     }
   })
 
-  const address_AUX = 'AUXdujLmR79gzZXQAaVQXCAeseYc7edc9Q'
+  const address_AUX = 'AUXdujLmR79gzZXQAaVQXCAeseYc7edc9Q' // eslint-disable-line camelcase
   const kacHash = '0xb426d50907c2b1ff91a8d5c8f1da3bea77e79ada05885719130d99cabae697c0'
 
   // -- Example usages of asset related usages

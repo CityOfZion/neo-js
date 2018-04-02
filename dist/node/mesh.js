@@ -1,5 +1,3 @@
-/* eslint handle-callback-err: "off" */
-/* eslint new-cap: "off" */
 const _ = require('lodash')
 const Logger = require('../common/logger')
 const ValidationHelper = require('../common/validation-helper')

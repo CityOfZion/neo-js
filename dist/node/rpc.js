@@ -1,4 +1,3 @@
-/* eslint handle-callback-err: "off" */
 const axios = require('axios')
 const Neon = require('@cityofzion/neon-js')
 const Query = Neon.rpc.Query

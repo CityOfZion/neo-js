@@ -1,5 +1,3 @@
-/* eslint handle-callback-err: "off" */
-/* eslint new-cap: "off" */
 const neonDB = require('@cityofzion/neon-js').api.neonDB
 const nep5 = require('@cityofzion/neon-js').api.nep5
 const HashHelper = require('./common/hash-helper')

@@ -1,5 +1,5 @@
 /* global describe it */
-/* eslint no-unused-expressions: "off" */
+
 const expect = require('chai').expect
 const TestHelper = require('../../../helpers/test-helper')
 const profiles = require('../../../helpers/profiles')
@@ -29,7 +29,7 @@ describe(`${describeBadge} getTXOut()`, () => {
   it("should have 'object' as its response data type.", (done) => {
     neo.mesh.rpc('getTXOut', { txid: profiles.Blocks.Block_100000.Transactions[0].Hash, index: 0 })
       .then((res) => {
-        expect(res).to.be.null
+        expect(res).to.be.equal(null)
         done()
       })
       .catch((err) => {
