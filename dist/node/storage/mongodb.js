@@ -1,4 +1,3 @@
-/* eslint handle-callback-err: "off" */
 const mongoose = require('mongoose')
 const HashHelper = require('../../common/hash-helper')
 const Logger = require('../../common/logger')

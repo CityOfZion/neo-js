@@ -1,5 +1,4 @@
 /* eslint handle-callback-err: "off" */
-/* eslint new-cap: "off" */
 const async = require('async')
 const Storage = require('./node/storage')
 const Mesh = require('./node/mesh')

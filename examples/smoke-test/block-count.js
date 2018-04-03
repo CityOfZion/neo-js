@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-/* eslint camelcase: "off" */
-
 /**
  * Get Block Count Example
  *

@@ -1,5 +1,3 @@
-/* eslint handle-callback-err: "off" */
-/* eslint new-cap: "off" */
 const Logger = require('../common/logger')
 const Rpc = require('./rpc')
 
