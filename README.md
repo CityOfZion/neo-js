@@ -67,12 +67,18 @@ const Node = require('@cityofzion/neo-js')
 To create a new blockchain instance:
 
 ```js
-// create the local node instance that will interface with the rpc methods
-const nodeT = new Node({ network: 'testnet' }) //on testnet
-const nodeM = new Node({ network: 'mainnet' }) //on mainnet
 
-nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
-nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet
+// Create a neo instances to interface with RPC methods
+const testnetNeo = new Neo({ network: 'testnet' })
+const mainnetNeo = new Neo({ network: 'mainnet' })
+
+// Get block info after 5 seconds delay
+setTimeout(() => {
+  testnetNeo.mesh.rpc('getBlock', 1000)
+    .then((res) => console.log('Testnet getBlock(1000).hash:', res.hash))
+  mainnetNeo.mesh.rpc('getBlock', 1000)
+    .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
+}, 5000)
 ```
 
 This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:
@@ -85,9 +91,10 @@ const options = {
   }
 }
 
-// create a neo instance and get the block count after 5 seconds.
+// Create a neo instance
 const neo = new Neo(options)
 
+// Get block count after 5 seconds delay
 setTimeout(() => {
   neo.storage.getBlockCount()
     .then((res) => console.log('Block count:', res))
