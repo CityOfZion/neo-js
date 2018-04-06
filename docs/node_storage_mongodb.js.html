@@ -87,7 +87,7 @@
 
 <section>
   <article>
-    <pre class="prettyprint source linenums"><code>/* eslint handle-callback-err: "off" */
+    <pre class="prettyprint source linenums"><code>const EventEmitter = require('events')
 const mongoose = require('mongoose')
 const HashHelper = require('../../common/hash-helper')
 const Logger = require('../../common/logger')
@@ -103,8 +103,13 @@ const Logger = require('../../common/logger')
  * @param {string} options.collectionNames.addresses
  * @param {Object} options.loggerOptions
  */
-class MongodbStorage {
+class MongodbStorage extends EventEmitter {
+  /**
+   * @fires MongodbStorage#constructor:complete
+   */
   constructor (options = {}) {
+    super()
+
     // -- Properties
     /** @type {Object} */
     this.blockModel = undefined
@@ -135,6 +140,11 @@ class MongodbStorage {
 
     mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
     this.initConnection()
+    /**
+     * @event MongodbStorage#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**
