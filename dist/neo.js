@@ -482,19 +482,6 @@ class Neo extends EventEmitter {
       }
     }, priority)
   }
-
-  /**
-   * @public
-   * @returns {void}
-   */
-  release () {
-    this.logger.debug('release triggered.')
-    this.mesh = undefined
-    this.wallet = undefined
-    this.storage = undefined
-    this.queue = undefined
-    this.logger = undefined
-  }
 }
 
 module.exports = Neo
