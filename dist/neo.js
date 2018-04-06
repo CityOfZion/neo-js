@@ -1,4 +1,5 @@
 /* eslint handle-callback-err: "off" */
+const EventEmitter = require('events')
 const async = require('async')
 const Storage = require('./node/storage')
 const Mesh = require('./node/mesh')
@@ -11,6 +12,7 @@ const packageJson = require('../package.json')
 
 /**
  * @class Neo
+ * @augments EventEmitter
  * @param {Object} options
  * @param {number} options.workerCount
  * @param {string} options.network
@@ -20,8 +22,13 @@ const packageJson = require('../package.json')
  * @param {Object} options.walletOptions
  * @param {object} options.loggerOptions
  */
-class Neo {
+class Neo extends EventEmitter {
+  /**
+   * @fires Neo#constructor:complete
+   */
   constructor (options = {}) {
+    super()
+
     // -- Properties
     /** @type {Object} */
     this.mesh = undefined
@@ -55,6 +62,11 @@ class Neo {
     this.initStorage()
     this.initWallet()
     this.initBackgroundTasks()
+    /**
+     * @event Neo#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**
@@ -309,9 +321,17 @@ class Neo {
    * @param {number} attrs.max
    * @param {number} attrs.percent
    * @returns {void}
+   * @fires Neo#storeBlock:init
+   * @fires Neo#storeBlock:complete
    */
   storeBlock (attrs) {
     this.logger.debug('storeBlock triggered. attrs:', attrs)
+    /**
+     * @event Neo#storeBlock:init
+     * @type {object}
+     * @property {number} index
+     */
+    this.emit('storeBlock:init', { index: attrs.index })
     return new Promise((resolve, reject) => {
       // const targetNode = this.mesh.getNodeWithBlock(attrs.index)
       // targetNode.rpc.getBlock(attrs.index)
@@ -320,18 +340,39 @@ class Neo {
           // inject the block into the database and save.
           this.storage.saveBlock(res)
             .then(() => {
-              // TODO: move below out to be reactive
-              // Consider logging a status update... communication is important
-              if ((attrs.index % this.logPeriod === 0) || (attrs.index === this.mesh.getHighestNode().index)) {
-                this.logger.info(attrs)
-              }
+              // // TODO: move below out to be reactive
+              // // Consider logging a status update... communication is important
+              // if ((attrs.index % this.logPeriod === 0) || (attrs.index === this.mesh.getHighestNode().index)) {
+              //   this.logger.info(attrs)
+              // }
+              /**
+               * @event Neo#storeBlock:complete
+               * @type {object}
+               * @property {number} index
+               * @property {boolean} isSuccess
+               */
+              this.emit('storeBlock:complete', { index: attrs.index, isSuccess: true })
               resolve()
             })
             .catch((err) => {
+              /**
+               * @event Neo#storeBlock:complete
+               * @type {object}
+               * @property {number} index
+               * @property {boolean} isSuccess
+               */
+              this.emit('storeBlock:complete', { index: attrs.index, isSuccess: false })
               resolve(err)
             })
         })
         .catch((err) => {
+          /**
+           * @event Neo#storeBlock:complete
+           * @type {object}
+           * @property {number} index
+           * @property {boolean} isSuccess
+           */
+          this.emit('storeBlock:complete', { index: attrs.index, isSuccess: false })
           reject(err)
         })
     })
@@ -342,19 +383,50 @@ class Neo {
    * @param {Object} attrs
    * @param {string} attr.hash
    * @returns {void}
+   * @fires Neo#storeAsset:init
+   * @fires Neo#storeAsset:complete
    */
   storeAsset (attrs) {
     this.logger.debug('storeAsset triggered. attrs:', attrs)
+    /**
+     * @event Neo#storeAsset:int
+     * @type {object}
+     * @property {string} hash
+     */
+    this.emit('storeAsset:init', { hash: attrs.hash })
     return new Promise((resolve, reject) => {
       this.mesh.rpc('getAssetState', attrs.hash)
         .then((res) => {
           this.storage.saveAssetState(attrs.hash, res)
             .then((res) => {
+              /**
+               * @event Neo#storeAsset:complete
+               * @type {object}
+               * @property {string} hash
+               * @property {boolean} isSuccess
+               */
+              this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: true })
               resolve(res)
             })
-            .catch((err) => reject(err))
+            .catch((err) => {
+              /**
+               * @event Neo#storeAsset:complete
+               * @type {object}
+               * @property {string} hash
+               * @property {boolean} isSuccess
+               */
+              this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: false })
+              reject(err)
+            })
         })
         .catch((err) => {
+          /**
+           * @event Neo#storeAsset:complete
+           * @type {object}
+           * @property {string} hash
+           * @property {boolean} isSuccess
+           */
+          this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: false })
           reject(err)
         })
     })
@@ -365,9 +437,17 @@ class Neo {
    * @param {number} index
    * @param {priority} priority
    * @returns {void}
+   * @fires Neo#enqueueBlock:init
    */
   enqueueBlock (index, priority = 5) {
     this.logger.debug('enqueueBlock triggered. index:', index, 'priority:', priority)
+    /**
+     * @event Neo#enqueueBlock:init
+     * @type {object}
+     * @property {number} index
+     * @property {priority} priority
+     */
+    this.emit('enqueueBlock:init', { index, priority })
     // if the block height is above the current height, increment the write pointer.
     if (index > this.blockWritePointer) {
       this.blockWritePointer = index
@@ -401,6 +481,19 @@ class Neo {
         hash
       }
     }, priority)
+  }
+
+  /**
+   * @public
+   * @returns {void}
+   */
+  release () {
+    this.logger.debug('release triggered.')
+    this.mesh = undefined
+    this.wallet = undefined
+    this.storage = undefined
+    this.queue = undefined
+    this.logger = undefined
   }
 }
 

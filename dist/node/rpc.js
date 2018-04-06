@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const axios = require('axios')
 const Neon = require('@cityofzion/neon-js')
 const Query = Neon.rpc.Query
@@ -10,8 +11,13 @@ const Logger = require('../common/logger')
  * @param {Object} options
  * @param {Object} options.loggerOptions
  */
-class Rpc {
+class Rpc extends EventEmitter {
+  /**
+   * @fires Rpc#constructor:complete
+   */
   constructor (domain, port, options) {
+    super()
+
     // -- Properties
     /** @type {string} */
     this.domain = undefined
@@ -32,6 +38,11 @@ class Rpc {
     this.port = port
     this.logger = new Logger('Rpc', this.loggerOptions)
     this.initNeonRpc()
+    /**
+     * @event Rpc#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**
@@ -58,9 +69,20 @@ class Rpc {
    * @param {Array} payload.params
    * @param {string} payload.id
    * @returns {Promise.<Object>}
+   * @fires Rpc#call:init
+   * @fires Rpc#call:complete
    */
   call (payload) {
     this.logger.debug('call triggered. payload:', payload)
+    /**
+     * @event Rpc#call:init
+     * @type {object}
+     * @property {object} payload
+     * @property {string} payload.method
+     * @property {string[]} payload.params
+     * @property {string} payload.id
+     */
+    this.emit('call:init', { payload })
     // const t0 = Date.now()
     // node.pendingRequests += 1
     return axios({
@@ -77,15 +99,33 @@ class Rpc {
       // node.pendingRequests -= 1
       // node.age = Date.now()
       if (response.data.error) {
+        /**
+         * @event Rpc#call:complete
+         * @type {object}
+         * @property {boolean} isSuccess
+         */
+        this.emit('call:complete', { isSuccess: false })
         return Promise.reject(response.data.error)
       }
       // node.latency = node.age - t0
       // node.active = true
+      /**
+       * @event Rpc#call:complete
+       * @type {object}
+       * @property {boolean} isSuccess
+       */
+      this.emit('call:complete', { isSuccess: true })
       return response.data.result
     }).catch((err) => {
       // node.pendingRequests -= 1
       // node.age = Date.now()
       // node.active = false
+      /**
+       * @event Rpc#call:complete
+       * @type {object}
+       * @property {boolean} isSuccess
+       */
+      this.emit('call:complete', { isSuccess: false })
       return Promise.reject(err)
     })
   }

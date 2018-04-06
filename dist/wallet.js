@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const neonDB = require('@cityofzion/neon-js').api.neonDB
 const nep5 = require('@cityofzion/neon-js').api.nep5
 const HashHelper = require('./common/hash-helper')
@@ -12,8 +13,13 @@ const Logger = require('./common/logger')
  * @param {string} options.neonDbNet
  * @param {Object} options.loggerOptions
  */
-class Wallet {
+class Wallet extends EventEmitter {
+  /**
+   * @fires Wallet#constructor:complete
+   */
   constructor (options = {}) {
+    super()
+
     // -- Properties
     /** @type {Object} */
     this.logger = undefined
@@ -28,6 +34,11 @@ class Wallet {
     Object.assign(this, this.defaultOptions, options)
     this.logger = new Logger('Wallet', this.loggerOptions)
     this.initNeonDbNet()
+    /**
+     * @event Wallet#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**
