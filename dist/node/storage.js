@@ -1,4 +1,5 @@
 /* eslint handle-callback-err: "off" */
+const EventEmitter = require('events')
 const _ = require('lodash')
 const Logger = require('../common/logger')
 const MongodbStorage = require('./storage/mongodb')
@@ -14,8 +15,13 @@ const MongodbStorage = require('./storage/mongodb')
  * @param {Object} options.dataAccessOptions
  * @param {Object} options.loggerOptions
  */
-class Storage {
+class Storage extends EventEmitter {
+  /**
+   * @fires Storage#constructor:complete
+   */
   constructor (options = {}) {
+    super()
+
     // -- Properties
     /** @type {number} */
     this.blockHeight = 0
@@ -40,6 +46,11 @@ class Storage {
     Object.assign(this, this.defaultOptions, options)
     this.logger = new Logger('Storage', this.loggerOptions)
     this.initStorage()
+    /**
+     * @event Storage#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**

@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const Logger = require('../common/logger')
 const Rpc = require('./rpc')
 
@@ -9,8 +10,13 @@ const Rpc = require('./rpc')
  * @param {Object} options.rpcOptions
  * @param {Object} options.loggerOptions
  */
-class Node {
+class Node extends EventEmitter {
+  /**
+   * @fires Node#constructor:complete
+   */
   constructor (options = {}) {
+    super()
+
     // -- Properties
     /** @type {boolean} */
     this.active = true // TODO: rename to isActive
@@ -40,6 +46,11 @@ class Node {
     Object.assign(this, this.defaultOptions, options)
     this.initLogger()
     this.initRpc()
+    /**
+     * @event Node#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**

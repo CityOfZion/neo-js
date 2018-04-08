@@ -126,30 +126,32 @@
 <pre class="prettyprint source lang-bash"><code>$ npm install --save CityOfZion/neo-js#develop</code></pre><p><strong>note:</strong> <code>neo-js</code> requires that MongoDB server is installed to run the instance as a full node.
 Installation instructions can be found in <a href="https://docs.mongodb.com/manual/installation/">MongoDB installation manual</a>.</p>
 <h2>Quick Start</h2><pre class="prettyprint source lang-js"><code>const Node = require('@cityofzion/neo-js')</code></pre><p>To create a new blockchain instance:</p>
-<pre class="prettyprint source lang-js"><code>// create the local node instance that will interface with the rpc methods
-const nodeT = new Node({ network: 'testnet' }) //on testnet
-const nodeM = new Node({ network: 'mainnet' }) //on mainnet
+<pre class="prettyprint source lang-js"><code>
+// Create a neo instances to interface with RPC methods
+const testnetNeo = new Neo({ network: 'testnet' })
+const mainnetNeo = new Neo({ network: 'mainnet' })
 
-nodeT.mesh.rpc('getBlock', 1000) //get block 1000 from testnet
-nodeM.mesh.rpc('getBlock', 1000) //get block 1000 from mainnet</code></pre><p>This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:</p>
+// Get block info after 5 seconds delay
+setTimeout(() => {
+  testnetNeo.mesh.rpc('getBlock', 1000)
+    .then((res) => console.log('Testnet getBlock(1000).hash:', res.hash))
+  mainnetNeo.mesh.rpc('getBlock', 1000)
+    .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
+}, 5000)</code></pre><p>This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:</p>
 <pre class="prettyprint source lang-js"><code>const options = {
   network: 'testnet',
-  storage: {
-    model: 'mongoDB',
-    collectionNames: {
-      blocks: 'b_neo_t_blocks',
-      transactions: 'b_neo_t_transactions',
-      addresses: 'b_neo_t_addresses'
-    }
+  storageOptions: {
+    model: 'mongoDB'
   }
 }
 
-// create the local node instance and get the local block count after 5 seconds.
-const node = new Node(options)
+// Create a neo instance
+const neo = new Neo(options)
 
+// Get block count after 5 seconds delay
 setTimeout(() => {
-  node.storage.getBlockCount()
-    .then( (res) => console.log(res) )
+  neo.storage.getBlockCount()
+    .then((res) => console.log('Block count:', res))
 }, 5000)</code></pre><h2>Documentation</h2><p>Documentation (incomplete) for the project can be found at:</p>
 <ul>
 <li>http://cityofzion.io/neo-js/</li>

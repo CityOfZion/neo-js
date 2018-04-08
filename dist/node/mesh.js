@@ -1,3 +1,4 @@
+const EventEmitter = require('events')
 const _ = require('lodash')
 const Logger = require('../common/logger')
 const ValidationHelper = require('../common/validation-helper')
@@ -8,8 +9,13 @@ const ValidationHelper = require('../common/validation-helper')
  * @param {Object} options
  * @param {Object} options.loggerOptions
  */
-class Mesh {
+class Mesh extends EventEmitter {
+  /**
+   * @fires Mesh#constructor:complete
+   */
   constructor (nodes, options = {}) {
+    super()
+
     // -- Properties
     /** @type {Array.<Node>} */
     this.nodes = []
@@ -24,6 +30,11 @@ class Mesh {
     Object.assign(this, this.defaultOptions, options)
     this.nodes = nodes
     this.logger = new Logger('Mesh', this.loggerOptions)
+    /**
+     * @event Mesh#constructor:complete
+     * @type {object}
+     */
+    this.emit('constructor:complete')
   }
 
   /**
@@ -85,9 +96,17 @@ class Mesh {
    * @param {string} method
    * @param {object} params
    * @returns {*}
+   * @fires Mesh#rpc:init
    */
   rpc (method, params) {
     this.logger.debug('rpc triggered. method:', method, 'params:', params)
+    /**
+     * @event Mesh#rpc:init
+     * @type {object}
+     * @property {string} method
+     * @property {object} params
+     */
+    this.emit('rpc:init', { method, params })
     const node = (this.getHighestNode() || this.nodes[0])
     if (ValidationHelper.isValidNode(node)) {
       return node.rpc[method](params)
