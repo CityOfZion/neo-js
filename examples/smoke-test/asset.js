@@ -15,11 +15,15 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:asset', { level: Logger.levels.INFO })
+const logger = new Logger('examples:asset', { level: 'info' })
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   logger.info('== Asset-related Usage Example ==')
 
   // Instantiate a testnet node with local storage
@@ -113,12 +117,4 @@ async function main () {
 
   logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

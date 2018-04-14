@@ -9,9 +9,9 @@
 
 const Logger = require('../../dist/common/logger')
 
-// -- Chain of command
+// -- Implementation
 
-async function main () {
+;(async () => {
   console.log('== Basic Logger Example ==')
 
   const logger1 = new Logger('example-1')
@@ -26,8 +26,4 @@ async function main () {
 
   const logger3 = new Logger('example-3', { level: Logger.levels.DEBUG })
   logger3.debug('You can also set log level via its type safe value.')
-}
-
-// -- Execute
-
-main()
+})()

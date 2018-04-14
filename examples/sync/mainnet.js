@@ -8,32 +8,27 @@
 
 // -- Bootstrap
 
+const moment = require('moment')
+const math = require('mathjs')
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:sync:mainnet', { level: Logger.levels.INFO })
+const logger = new Logger('examples:sync:mainnet', { level: 'info' })
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   logger.info('== Syncing for Mainnet ==')
 
   const NETWORK = 'mainnet'
   const DB_CONNECTION_STRING = 'mongodb://localhost/mainnet'
   const options = {
     network: NETWORK,
-    loggerOptions: {
-      level: 'debug'
-    },
-    meshOptions: {
-      loggerOptions: {
-        level: 'debug'
-      }
-    },
     storageOptions: {
       model: 'mongoDB',
-      loggerOptions: {
-        level: 'debug'
-      },
       dataAccessOptions: {
         connectOnInit: true,
         connectionString: DB_CONNECTION_STRING,
@@ -41,9 +36,6 @@ async function main () {
           blocks: 'b_neo_m_blocks',
           transactions: 'b_neo_m_transactions',
           addresses: 'b_neo_m_addresses'
-        },
-        loggerOptions: {
-          level: 'debug'
         }
       }
     }
@@ -53,25 +45,41 @@ async function main () {
   const neo = new Neo(options)
   logger.info('neo.network:', neo.network)
 
-  // Check for current syncing progress every 30 seconds
-  logger.info(`Start syncing...`)
-  setInterval(async () => {
-    logger.info(`current block count:`, await neo.storage.getBlockCount())
-  }, 30000)
-
-  // Check rankings
+  // Check nodes rankings
   setInterval(() => {
     const fastestNode = neo.mesh.getFastestNode()
     logger.info(`Fastest node: [${fastestNode.domain}:${fastestNode.port}] @ ${fastestNode.latency}`)
     const highestNode = neo.mesh.getHighestNode()
     logger.info(`Highest node: [${highestNode.domain}:${highestNode.port}] @ ${highestNode.blockHeight}`)
-  }, 10000)
-}
+  }, 30000)
 
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+  // Live Report
+  const report = {
+    success: [],
+    failed: [],
+    max: undefined,
+    startDate: moment()
+  }
+  neo.on('storeBlock:complete', (payload) => {
+    report.max = payload.max // Keep updating property in case it changes
+    if (payload.isSuccess) {
+      report.success.push({
+        index: payload.index,
+        date: moment()
+      })
+    } else {
+      report.failed.push({
+        index: payload.index,
+        date: moment()
+      })
+    }
+  })
+  setInterval(() => { // Generate report every 5 seconds
+    const msElapsed = moment().diff(report.startDate)
+    const successBlockCount = report.success.length
+    const highestBlock = report.success[report.success.length - 1].index // This is an guesstimate
+    const completionPercentage = math.round((highestBlock / report.max * 100), 4)
+    const BlockCountPerMinute = math.round((successBlockCount / msElapsed * 1000 * 60), 0)
+    logger.info(`Blocks synced: ${successBlockCount} (${completionPercentage}% complete) - ${BlockCountPerMinute} blocks/minute`)
+  }, 5000)
+})()

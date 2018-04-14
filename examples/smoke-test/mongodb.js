@@ -12,9 +12,13 @@ const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:mongodb', { level: Logger.levels.INFO })
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   logger.info('== MongoDB Connectivity Test ==')
   const neo = await new Neo({ // eslint-disable-line no-unused-vars
     network: 'testnet',
@@ -34,12 +38,4 @@ async function main () {
    * If MongoDB connection works, you should see an 'info' log from MongodbStorage:
    * 'mongoose connected.'
    */
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

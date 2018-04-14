@@ -13,9 +13,19 @@ const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:sync-testnet', { level: Logger.levels.INFO })
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Helper methods
+
+function sleep (ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+// -- Implementation
+
+;(async () => {
   logger.info('== Sync Test against Testnet ==')
 
   // Instantiate a testnet node with specified local storage (and to a separate database as default of mongodb.js)
@@ -36,9 +46,9 @@ async function main () {
   }
   const neo = new Neo(options)
 
-  // Allow it to sync for 30 seconds
-  logger.info('Start syncing for 30 seconds...')
-  await sleep(30000)
+  // Allow it to sync for 15 seconds
+  logger.info('Start syncing for 15 seconds...')
+  await sleep(15000)
 
   // Report document counts per collection type
   logger.info('block count:', await neo.storage.getBlockCount())
@@ -57,18 +67,4 @@ async function main () {
 
   logger.info('== END ==')
   process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
-}
-
-// -- Helper methods
-
-function sleep (ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

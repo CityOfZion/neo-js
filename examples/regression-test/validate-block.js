@@ -11,9 +11,13 @@ const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:node:sync', { level: Logger.levels.INFO })
 const Neon = require('@cityofzion/neon-js')
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   logger.info('== Regression Test - Block Validation ==')
 
   // Instantiate a node with local storage
@@ -72,12 +76,4 @@ async function main () {
       logger.info(`block #${randomHeight} is inconsistent with RPC !!!`)
     }
   }, 2000)
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

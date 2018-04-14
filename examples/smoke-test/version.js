@@ -10,13 +10,15 @@ const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:asset', { level: Logger.levels.INFO })
 
-// -- Chain of command
+// -- Implementation
 
-async function main () {
+;(async () => {
   logger.info('== Get Version Example ==')
 
+  // Fetch Neo class version without instantiating it
   logger.info('Neo Class Version:', Neo.VERSION)
 
+  // Instantiate
   const neo = new Neo({
     network: 'testnet',
     loggerOptions: {
@@ -28,12 +30,9 @@ async function main () {
       }
     }
   })
+  // Fetch Neo version from its instance
   logger.info('Neo Instance Version:', neo.VERSION)
 
   logger.info('== END ==')
-  process.exit() // neoBlockchain process in the background. Explicit exit call is needed.
-}
-
-// -- Execute
-
-main()
+  process.exit() // neo process in the background. Explicit exit call is needed.
+})()

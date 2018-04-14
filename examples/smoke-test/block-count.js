@@ -10,9 +10,13 @@
 
 const Neo = require('../../dist/neo')
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   console.log('== Get Block Count Example ==')
 
   const options = {
@@ -21,19 +25,15 @@ async function main () {
       model: 'mongoDB'
     }
   }
-
   const neo = new Neo(options)
 
+  console.log('Wait for 5 seconds...')
   setTimeout(() => {
     neo.storage.getBlockCount()
-      .then((res) => console.log('Block count:', res))
+      .then((res) => {
+        console.log('Block count:', res)
+        console.log('== END ==')
+        process.exit()
+      })
   }, 5000)
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()
