@@ -251,7 +251,6 @@ class Neo extends EventEmitter {
      * @param {Object} task.attrs
      * @param {number} task.attrs.index
      * @param {number} task.attrs.max
-     * @param {number} task.attrs.percent
      * @param {function} callback
      */
     this.queue = async.priorityQueue((task, callback) => {
@@ -319,7 +318,6 @@ class Neo extends EventEmitter {
    * @param {Object} attrs
    * @param {number} attrs.index
    * @param {number} attrs.max
-   * @param {number} attrs.percent
    * @returns {void}
    * @fires Neo#storeBlock:init
    * @fires Neo#storeBlock:complete
@@ -349,9 +347,10 @@ class Neo extends EventEmitter {
                * @event Neo#storeBlock:complete
                * @type {object}
                * @property {number} index
+               * @property {number} max
                * @property {boolean} isSuccess
                */
-              this.emit('storeBlock:complete', { index: attrs.index, isSuccess: true })
+              this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: true })
               resolve()
             })
             .catch((err) => {
@@ -359,9 +358,10 @@ class Neo extends EventEmitter {
                * @event Neo#storeBlock:complete
                * @type {object}
                * @property {number} index
+               * @property {number} max
                * @property {boolean} isSuccess
                */
-              this.emit('storeBlock:complete', { index: attrs.index, isSuccess: false })
+              this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: false })
               resolve(err)
             })
         })
@@ -370,9 +370,10 @@ class Neo extends EventEmitter {
            * @event Neo#storeBlock:complete
            * @type {object}
            * @property {number} index
+           * @property {number} max
            * @property {boolean} isSuccess
            */
-          this.emit('storeBlock:complete', { index: attrs.index, isSuccess: false })
+          this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: false })
           reject(err)
         })
     })
@@ -461,8 +462,7 @@ class Neo extends EventEmitter {
       method: 'storeBlock',
       attrs: {
         index: index,
-        max: max,
-        percent: (index / max * 100)
+        max: max
       }
     }, priority)
   }
