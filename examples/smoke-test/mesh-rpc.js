@@ -10,9 +10,13 @@
 
 const Neo = require('../../dist/neo')
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   console.log('== Get Block Count Example ==')
 
   const testnetNeo = new Neo({ network: 'testnet' })
@@ -24,12 +28,4 @@ async function main () {
     mainnetNeo.mesh.rpc('getBlock', 1000)
       .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
   }, 5000)
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

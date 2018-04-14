@@ -12,9 +12,13 @@ const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
 const logger = new Logger('examples:rpc-privnet', { level: Logger.levels.INFO })
 
-// -- Chain of command
+process.on('unhandledRejection', (reason, p) => {
+  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+})
 
-async function main () {
+// -- Implementation
+
+;(async () => {
   logger.info('== Basic Privnet RPC Test ==')
 
   // Instantiate a node that provides access to the testnet mesh
@@ -40,12 +44,4 @@ async function main () {
 
   // neo blockchain process in the background. Explicit exit call is used.
   process.exit()
-}
-
-// -- Execute
-
-process.on('unhandledRejection', (reason, p) => {
-  logger.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
-})
-
-main()
+})()

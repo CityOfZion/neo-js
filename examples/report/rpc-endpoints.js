@@ -10,19 +10,16 @@
 
 const Neo = require('../../dist/neo')
 const Logger = require('../../dist/common/logger')
-const logger = new Logger('examples:rpc-endpoints', { level: Logger.levels.INFO })
+const logger = new Logger('examples:rpc-endpoints', { level: 'info' })
 
-// -- Chain of command
+// -- Implementation
 
-async function main () {
+;(async () => {
   logger.info('== RPC Endpoint Connectivity Report ==')
 
   /**
    * Instantiate a node that either connect to 'netnet', 'mainnet' or specified RPC endpoints.
    */
-  // const neo = new Neo({ network: 'testnet' })
-  // const neo = new Neo({ network: 'mainnet' })
-
   console.log('TestNet:')
   const testnetNeo = new Neo({
     network: 'testnet',
@@ -81,8 +78,4 @@ async function main () {
 
   // neoBlockchain process in the background. Explicit exit call is used.
   process.exit()
-}
-
-// -- Execute
-
-main()
+})()
