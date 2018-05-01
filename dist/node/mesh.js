@@ -19,10 +19,13 @@ class Mesh extends EventEmitter {
     // -- Properties
     /** @type {Array.<Node>} */
     this.nodes = []
+    /** @type {boolean} */
+    this.isReady = false
     /** @type {Object} */
     this.logger = undefined
     /** @type {Object} */
     this.defaultOptions = {
+      minActiveNodesRequired: 2,
       loggerOptions: {}
     }
 
@@ -30,11 +33,46 @@ class Mesh extends EventEmitter {
     Object.assign(this, this.defaultOptions, options)
     this.nodes = nodes
     this.logger = new Logger('Mesh', this.loggerOptions)
+    this.initReadyState()
+
     /**
      * @event Mesh#constructor:complete
      * @type {object}
      */
     this.emit('constructor:complete')
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initReadyState () {
+    this.logger.debug('initReadyState triggered.')
+    this.nodes.forEach((node) => {
+      node.ping().then(() => {
+        this.checkNodesReady()
+      })
+    })
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   * @fires Mesh#ready
+   */
+  checkNodesReady () {
+    this.logger.debug('checkNodesReady triggered.')
+    const activeNodes = this.nodes.filter((n) => (n.age !== undefined && n.active === true))
+    if (activeNodes.length >= this.minActiveNodesRequired) {
+      if (!this.isReady) { // First signal that mesh is considered as 'ready' state
+        this.isReady = true
+        /**
+         * @event Mesh#ready
+         * @type {object}
+         */
+        this.emit('ready')
+      }
+    }
   }
 
   /**

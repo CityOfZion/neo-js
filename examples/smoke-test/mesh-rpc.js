@@ -22,10 +22,13 @@ process.on('unhandledRejection', (reason, p) => {
   const testnetNeo = new Neo({ network: 'testnet' })
   const mainnetNeo = new Neo({ network: 'mainnet' })
 
-  setTimeout(() => {
+  testnetNeo.mesh.on('ready', () => {
     testnetNeo.mesh.rpc('getBlock', 1000)
       .then((res) => console.log('Testnet getBlock(1000).hash:', res.hash))
+  })
+
+  mainnetNeo.mesh.on('ready', () => {
     mainnetNeo.mesh.rpc('getBlock', 1000)
       .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
-  }, 5000)
+  })
 })()

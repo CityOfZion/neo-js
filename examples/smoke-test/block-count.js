@@ -27,13 +27,10 @@ process.on('unhandledRejection', (reason, p) => {
   }
   const neo = new Neo(options)
 
-  console.log('Wait for 5 seconds...')
-  setTimeout(() => {
-    neo.storage.getBlockCount()
-      .then((res) => {
-        console.log('Block count:', res)
-        console.log('== END ==')
-        process.exit()
-      })
-  }, 5000)
+  neo.storage.getBlockCount()
+    .then((res) => {
+      console.log('Block count:', res)
+      console.log('== END ==')
+      process.exit()
+    })
 })()
