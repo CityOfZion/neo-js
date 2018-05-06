@@ -68,7 +68,7 @@ class Rpc extends EventEmitter {
    * @param {string} payload.method
    * @param {Array} payload.params
    * @param {string} payload.id
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    * @fires Rpc#call:init
    * @fires Rpc#call:complete
    */
@@ -330,7 +330,7 @@ class Rpc extends EventEmitter {
    * @param {string} payload.assetId
    * @param {string} payload.address
    * @param {number} payload.value
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   sendToAddress (payload) {
     this.logger.debug('sendToAddress triggered. payload:', payload)
@@ -366,7 +366,7 @@ class Rpc extends EventEmitter {
   /**
    * @public
    * @param {string} assetId
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getAssetState (assetId) {
     this.logger.debug('getAssetState triggered. assetId:', assetId)

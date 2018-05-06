@@ -59,7 +59,7 @@ class Wallet extends EventEmitter {
    * Get balances of NEO and GAS for an address
    * @public
    * @param {string} address - Address to check.
-   * @returns {Promise.<Object>} Balance of address
+   * @returns {Promise.<object>} Balance of address
    */
   getBalance (address) {
     this.logger.debug('getBalance triggered. address:', address)
@@ -73,7 +73,7 @@ class Wallet extends EventEmitter {
    * Get amounts of available (spent) and unavailable claims.
    * @public
    * @param {string} address - Address to check.
-   * @returns {Promise.<Object>} An object with available and unavailable GAS amounts.
+   * @returns {Promise.<object>} An object with available and unavailable GAS amounts.
    */
   getClaims (address) {
     this.logger.debug('getClaims triggered. address:', address)
@@ -87,7 +87,7 @@ class Wallet extends EventEmitter {
    * Get transaction history for an account
    * @public
    * @param {string} address - Address to check.
-   * @returns {Promise.<Object>} History
+   * @returns {Promise.<object>} History
    */
   getTransactionHistory (address) {
     this.logger.debug('getTransactionHistory triggered. address:', address)
@@ -102,7 +102,7 @@ class Wallet extends EventEmitter {
    * @public
    * @param {string} scriptHash
    * @param {string} address
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getTokenBalance (scriptHash, address) {
     this.logger.debug('getTokenBalance triggered. scriptHash:', scriptHash, 'address:', address)
@@ -122,7 +122,7 @@ class Wallet extends EventEmitter {
    * @param {string} from - Private Key or WIF of the sending address.
    * @param {{NEO: number, GAS: number}} assetAmounts - The amount of each asset (NEO and GAS) to send, leave empty for 0.
    * @param {function} [signingFunction] - Optional signing function. Used for external signing.
-   * @returns {Promise.<Object>} RPC Response
+   * @returns {Promise.<object>} RPC Response
    */
   doSendAsset (toAddress, from, assetAmounts, signingFunction) {
     this.logger.debug('doSendAsset triggered. toAddress:', toAddress, 'from:', from, 'assetAmounts:', assetAmounts, 'signingFunction:', signingFunction)
@@ -137,7 +137,7 @@ class Wallet extends EventEmitter {
    * @public
    * @param {string} privateKey - Private Key or WIF.
    * @param {function} [signingFunction] - Optional async signing function. Used for external signing.
-   * @returns {Promise.<Object>} RPC response from sending transaction
+   * @returns {Promise.<object>} RPC response from sending transaction
    */
   doClaimAllGas (privateKey, signingFunction) {
     this.logger.debug('doClaimAllGas triggered. privateKey:', privateKey, 'signingFunction:', signingFunction)
@@ -154,7 +154,7 @@ class Wallet extends EventEmitter {
    * @param {string} fromWif - The WIF key of the originating address.
    * @param {number} neo - The amount of neo to send to RPX.
    * @param {number} gasCost - The Gas to send as SC fee.
-   * @returns {Promise.<Object>} RPC Response
+   * @returns {Promise.<object>} RPC Response
    */
   doMintTokens (scriptHash, fromWif, neo, gasCost, signingFunction) {
     this.logger.debug('doMintTokens triggered. scriptHash:', scriptHash, 'fromWif:', fromWif, 'neo:', neo, 'gasCost:', gasCost, 'signingFunction:', signingFunction)
@@ -174,7 +174,7 @@ class Wallet extends EventEmitter {
    * @param {number} transferAmount
    * @param {number} gasCost
    * @param {function} signingFunction
-   * @returns {Promise.<Object>} RPC response
+   * @returns {Promise.<object>} RPC response
    */
   doTransferToken (scriptHash, fromWif, toAddress, transferAmount, gasCost = 0, signingFunction = null) {
     this.logger.debug('doTransferToken triggered. scriptHash:', scriptHash, 'fromWif:', fromWif, 'toAddress:', toAddress, 'transferAmount:', transferAmount, 'gasCost:', gasCost, 'signingFunction:', signingFunction)

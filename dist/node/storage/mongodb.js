@@ -109,7 +109,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} txid
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getTX (txid) {
     this.logger.debug('getTX triggered. txid:', txid)
@@ -129,7 +129,7 @@ class MongodbStorage extends EventEmitter {
    * List transactions of a specific wallet.
    * @public
    * @param {string} address
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getTransactions (address) {
     this.logger.debug('getTransactions triggered. address:', address)
@@ -155,7 +155,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {number} index
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getBlock (index) {
     this.logger.debug('getBlock triggered. index:', index)
@@ -174,7 +174,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getBlockByHash (hash) {
     this.logger.debug('getBlockByHash triggered. hash:', hash)
@@ -236,7 +236,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getAsset (hash) {
     this.logger.debug('getAsset triggered. hash:', hash)
@@ -404,7 +404,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getAddress (hash) {
     this.logger.debug('getAddress triggered. hash:', hash)
@@ -423,7 +423,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {object} address
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   saveAddress (address) {
     this.logger.debug('saveAddress triggered.')
@@ -445,7 +445,7 @@ class MongodbStorage extends EventEmitter {
    * @param {string} assetHash
    * @param {number} balance
    * @param {number} index
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   updateBalance (addressHash, assetHash, balance, index) {
     this.logger.debug('updateBalance triggered. addressHash:', addressHash, 'assetHash:', assetHash, 'balance:', balance, 'index:', index)
