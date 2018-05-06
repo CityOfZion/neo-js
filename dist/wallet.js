@@ -8,10 +8,10 @@ const Logger = require('./common/logger')
  * @class Wallet
  * @description
  * A wallet wrapper class on top of the neon-js light wallet.
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.network
  * @param {string} options.neonDbNet
- * @param {Object} options.loggerOptions
+ * @param {object} options.loggerOptions
  */
 class Wallet extends EventEmitter {
   /**
@@ -21,9 +21,9 @@ class Wallet extends EventEmitter {
     super()
 
     // -- Properties
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       network: '',
       neonDbNet: '',

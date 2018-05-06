@@ -10,10 +10,10 @@ const MongodbStorage = require('./storage/mongodb')
  * A storage class for the various storage methods supported by the neo-js.  This class will
  * include high level storage interface methods that will interface with a standard set of methods available
  * on each type of storage.
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.model
- * @param {Object} options.dataAccessOptions
- * @param {Object} options.loggerOptions
+ * @param {object} options.dataAccessOptions
+ * @param {object} options.loggerOptions
  */
 class Storage extends EventEmitter {
   /**
@@ -27,15 +27,15 @@ class Storage extends EventEmitter {
     this.blockHeight = 0
     /** @type {number} */
     this.index = -1
-    /** @type {Object} */
+    /** @type {object} */
     this.dataAccess = undefined
     /** @type {Array} */
     this.unlinkedBlocks = []
     /** @type {Array.<Object>} */
     this.assets = []
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       model: 'memory',
       updateAssetListIntervalMs: 10000,
@@ -415,7 +415,7 @@ class Storage extends EventEmitter {
    * Saves a json formated block to storage. This method will also split out the
    * transactions for storage as well as caching them for later use.
    * @public
-   * @param {Object} newBlock - The JSON representation of a block on the blockchain.
+   * @param {object} newBlock - The JSON representation of a block on the blockchain.
    * @returns {Promise.<Object>}
    */
   saveBlock (newBlock) {
@@ -470,7 +470,7 @@ class Storage extends EventEmitter {
    * Saves the state information of an asset.
    * @public
    * @param {string} hash
-   * @param {Object} assetState
+   * @param {object} assetState
    * @returns {void}
    */
   saveAssetState (hash, assetState) {

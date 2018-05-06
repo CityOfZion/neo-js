@@ -8,8 +8,8 @@ const Logger = require('../common/logger')
  * @class Rpc
  * @param {string} domain
  * @param {string} port
- * @param {Object} options
- * @param {Object} options.loggerOptions
+ * @param {object} options
+ * @param {object} options.loggerOptions
  */
 class Rpc extends EventEmitter {
   /**
@@ -23,11 +23,11 @@ class Rpc extends EventEmitter {
     this.domain = undefined
     /** @type {string} */
     this.port = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.neonRpc = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       loggerOptions: {}
     }
@@ -64,7 +64,7 @@ class Rpc extends EventEmitter {
   /**
    * @private
    * @deprecated as all calls are to be done through neon-js instead.
-   * @param {Object} payload
+   * @param {object} payload
    * @param {string} payload.method
    * @param {Array} payload.params
    * @param {string} payload.id
@@ -303,7 +303,7 @@ class Rpc extends EventEmitter {
   /**
    * Polls the node for the raw transaction response associated with an input txid.
    * @public
-   * @param {Object} payload
+   * @param {object} payload
    * @param {string} payload.txid - The requested transaction ID.
    * @param {number} payload.index
    * @returns {Promise.<object>} An object containing the transaction response.
@@ -326,7 +326,7 @@ class Rpc extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} payload
+   * @param {object} payload
    * @param {string} payload.assetId
    * @param {string} payload.address
    * @param {number} payload.value

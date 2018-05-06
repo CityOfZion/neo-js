@@ -5,11 +5,11 @@ const Rpc = require('./rpc')
 
 /**
  * @class Node
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.domain
  * @param {number} options.port
- * @param {Object} options.rpcOptions
- * @param {Object} options.loggerOptions
+ * @param {object} options.rpcOptions
+ * @param {object} options.loggerOptions
  */
 class Node extends EventEmitter {
   /**
@@ -33,11 +33,11 @@ class Node extends EventEmitter {
     this.pendingRequests = 0
     /** @type {number} */
     this.age = undefined // TODO: rename to lastSeen
-    /** @type {Object} */
+    /** @type {object} */
     this.rpc = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       domain: undefined,
       port: undefined,

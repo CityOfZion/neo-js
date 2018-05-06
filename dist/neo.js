@@ -12,13 +12,13 @@ const packageJson = require('../package.json')
 /**
  * @class Neo
  * @augments EventEmitter
- * @param {Object} options
+ * @param {object} options
  * @param {number} options.workerCount
  * @param {string} options.network
- * @param {Object} options.meshOptions
- * @param {Object} options.nodeOptions
- * @param {Object} options.storageOptions
- * @param {Object} options.walletOptions
+ * @param {object} options.meshOptions
+ * @param {object} options.nodeOptions
+ * @param {object} options.storageOptions
+ * @param {object} options.walletOptions
  * @param {object} options.loggerOptions
  */
 class Neo extends EventEmitter {
@@ -30,17 +30,17 @@ class Neo extends EventEmitter {
     super()
 
     // -- Properties
-    /** @type {Object} */
+    /** @type {object} */
     this.mesh = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.wallet = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.syncStrategy = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.storage = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       workerCount: 20,
       network: undefined,

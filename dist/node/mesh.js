@@ -6,8 +6,8 @@ const ValidationHelper = require('../common/validation-helper')
 /**
  * @class Mesh
  * @param {Array.<Node>} nodes
- * @param {Object} options
- * @param {Object} options.loggerOptions
+ * @param {object} options
+ * @param {object} options.loggerOptions
  */
 class Mesh extends EventEmitter {
   /**
@@ -21,9 +21,9 @@ class Mesh extends EventEmitter {
     this.nodes = []
     /** @type {boolean} */
     this.isReady = false
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       minActiveNodesRequired: 2,
       pingRandomNodeIntervalMs: 2000,
