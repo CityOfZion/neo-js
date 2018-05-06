@@ -83,11 +83,15 @@ process.on('unhandledRejection', (reason, p) => {
     }
   })
   setInterval(() => { // Generate report every 5 seconds
-    const msElapsed = moment().diff(report.startDate)
-    const successBlockCount = report.success.length
-    const highestBlock = report.success[report.success.length - 1].index // This is an guesstimate
-    const completionPercentage = math.round((highestBlock / report.max * 100), 4)
-    const BlockCountPerMinute = math.round((successBlockCount / msElapsed * 1000 * 60), 0)
-    logger.info(`Blocks synced: ${successBlockCount} (${completionPercentage}% complete) - ${BlockCountPerMinute} blocks/minute`)
+    if (report.success.length > 0) {
+      const msElapsed = moment().diff(report.startDate)
+      const successBlockCount = report.success.length
+      const highestBlock = report.success[report.success.length - 1].index // This is an guesstimate
+      const completionPercentage = math.round((highestBlock / report.max * 100), 4)
+      const blockCountPerMinute = math.round((successBlockCount / msElapsed * 1000 * 60), 0)
+      logger.info(`Blocks synced: ${successBlockCount} (${completionPercentage}% complete) - ${blockCountPerMinute} blocks/minute`)
+    } else {
+      logger.info('No sync progress yet...')
+    }
   }, 5000)
 })()

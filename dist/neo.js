@@ -1,13 +1,12 @@
 /* eslint handle-callback-err: "off" */
 const EventEmitter = require('events')
-const async = require('async')
 const Storage = require('./node/storage')
 const Mesh = require('./node/mesh')
 const Wallet = require('./wallet')
+const SyncStrategy = require('./strategy/sync-strategy')
 const Logger = require('./common/logger')
 const profiles = require('./common/profiles')
 const Node = require('./node/node')
-const ValidationHelper = require('./common/validation-helper')
 const packageJson = require('../package.json')
 
 /**
@@ -25,6 +24,7 @@ const packageJson = require('../package.json')
 class Neo extends EventEmitter {
   /**
    * @fires Neo#constructor:complete
+   * @fires Neo#storeBlock:complete
    */
   constructor (options = {}) {
     super()
@@ -35,15 +35,11 @@ class Neo extends EventEmitter {
     /** @type {Object} */
     this.wallet = undefined
     /** @type {Object} */
+    this.syncStrategy = undefined
+    /** @type {Object} */
     this.storage = undefined
     /** @type {Object} */
-    this.queue = undefined
-    /** @type {Object} */
     this.logger = undefined
-    /** @type {number} */
-    this.maxQueueLength = 10000
-    /** @type {number} */
-    this.blockWritePointer = -1
     /** @type {Object} */
     this.defaultOptions = {
       workerCount: 20,
@@ -52,6 +48,7 @@ class Neo extends EventEmitter {
       nodeOptions: {},
       storageOptions: {},
       walletOptions: {},
+      syncStrategyOptions: {},
       loggerOptions: {}
     }
 
@@ -59,9 +56,17 @@ class Neo extends EventEmitter {
     Object.assign(this, this.defaultOptions, options)
     this.logger = new Logger('Neo', this.loggerOptions)
     this.initMesh()
-    this.initStorage()
     this.initWallet()
-    this.initBackgroundTasks()
+    this.initStorage()
+    this.initSyncStrategy()
+
+    // -- Event Handlers
+    /**
+     * @event Neo#storeBlock:complete
+     * @type {object}
+     */
+    this.syncStrategy.on('storeBlock:complete', (payload) => this.emit('storeBlock:complete', payload))
+
     /**
      * @event Neo#constructor:complete
      * @type {object}
@@ -97,6 +102,40 @@ class Neo extends EventEmitter {
 
   /**
    * @private
+   * @returns {void}
+   */
+  initWallet () {
+    this.logger.debug('initWallet triggered.')
+    const options = Object.assign(this.walletOptions, { network: this.network })
+    this.wallet = new Wallet(options)
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initStorage () {
+    if (this.storageOptions) {
+      this.storage = new Storage(this.storageOptions)
+      this.logger.info('storage setup complete. storage.model:', this.storage.model)
+      if (this.storage.model !== 'mongoDB') {
+        this.logger.error('Unsupported storage model:', this.storage.model)
+      }
+    } else {
+      this.logger.error('Invalid storageOptions variable.')
+    }
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initSyncStrategy () {
+    this.syncStrategy = new SyncStrategy(this.mesh, this.storage, this.syncStrategyOptions)
+  }
+
+  /**
+   * @private
    * @returns Array.<Node>
    */
   getNodes () {
@@ -122,365 +161,6 @@ class Neo extends EventEmitter {
     })
 
     return nodes
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initStorage () {
-    if (this.storageOptions) {
-      this.storage = new Storage(this.storageOptions)
-      this.logger.info('storage setup complete. storage.model:', this.storage.model)
-      if (this.storage.model === 'mongoDB') {
-        this.initEnqueueBlock()
-        this.initBlockVerification()
-        this.initAssetVerification()
-      } else {
-        this.logger.error('Unsupported storage model:', this.storage.model)
-      }
-    } else {
-      this.logger.error('Invalid storageOptions variable.')
-    }
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initEnqueueBlock () {
-    this.logger.debug('initEnqueueBlock triggered.')
-    this.storage.getBlockCount()
-      .then(() => {
-        this.blockWritePointer = this.storage.index
-        // enqueue blocks for download
-        setInterval(() => {
-          this.doEnqueueBlock()
-        }, 2000)
-      })
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  doEnqueueBlock () {
-    this.logger.debug('doEnqueueBlock triggered.')
-    const node = this.mesh.getHighestNode()
-    if (ValidationHelper.isValidNode(node)) {
-      while ((this.blockWritePointer < node.index) && (this.queue.length() < this.maxQueueLength)) {
-        this.enqueueBlock(this.blockWritePointer + 1)
-      }
-    } else {
-      // Error
-      this.logger.error('Unable to find a valid node.')
-      // throw new Error('Unable to find a valid node.')
-    }
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initBlockVerification () {
-    this.logger.debug('initBlockVerification triggered.')
-    setInterval(() => {
-      this.storage.verifyBlocks()
-        .then((res) => {
-          this.logger.info('Blocks verified. missing:', res.length)
-          res.forEach((blockIndex) => {
-            this.enqueueBlock(blockIndex, 0)
-          })
-        })
-    }, 180000)
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initAssetVerification () {
-    this.logger.debug('initAssetVerification triggered.')
-    setInterval(() => {
-      // check for asset state
-      this.storage.verifyAssets()
-        .then((res) => {
-          this.logger.info('Assets verified. missing states:', res.length)
-          res.forEach((assetHash) => {
-            this.enqueueAsset(assetHash, 0)
-          })
-        })
-    }, 60000)
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initWallet () {
-    this.logger.debug('initWallet triggered.')
-    const options = Object.assign(this.walletOptions, { network: this.network })
-    this.wallet = new Wallet(options)
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  initBackgroundTasks () {
-    this.logger.debug('initBackgroundTasks triggered.')
-    /**
-     * This is where you line up your schedule tickers to do all sort of tasks.
-     */
-
-    // Ping all nodes in order to setup their height and latency
-    this.mesh.nodes.forEach((node) => {
-      this.pingNode(node)
-    })
-
-    // Ping a random node periodically
-    // TODO: apply some sort of priority to ping inactive node less frequent
-    setInterval(() => {
-      this.pingRandomNode()
-    }, 2000)
-
-    // Initialize an asynchronous event queue for the node to use
-    /**
-     * @param {Object} task
-     * @param {string} task.method
-     * @param {Object} task.attrs
-     * @param {number} task.attrs.index
-     * @param {number} task.attrs.max
-     * @param {function} callback
-     */
-    this.queue = async.priorityQueue((task, callback) => {
-      this.logger.debug('new worker for queue. task:', task)
-      this[task.method](task.attrs)
-        .then(() => {
-          callback()
-        })
-        .catch((err) => {
-          // If the block request fails, throw it to the back to the queue to try again.
-          // timeout prevents inf looping on connections issues etc..
-          this.logger.warn(`Task execution error. Method: [${task.method}]. Continue...`)
-          this.logger.info('Error:', err)
-
-          // TODO: need to have the reactive, oppose to hardcode enqueueBlock retry after 2 seconds
-          setTimeout(() => {
-            this.enqueueBlock(task.attrs.index, 4)
-          }, 2000)
-
-          callback()
-        })
-    }, this.workerCount)
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  pingRandomNode () {
-    this.logger.debug('pingRandomNode triggered.')
-    const targetNode = this.mesh.getRandomNode()
-    this.pingNode(targetNode)
-  }
-
-  /**
-   * @private
-   * @returns {void}
-   */
-  pingNode (node) {
-    this.logger.debug('pingNode triggered.', `node: [${node.domain}:${node.port}]`)
-    const t0 = Date.now()
-    node.pendingRequests += 1
-    node.rpc.getBlockCount()
-      .then((res) => {
-        this.logger.debug('getBlockCount success:', res)
-        const blockCount = res
-        node.blockHeight = blockCount
-        node.index = blockCount - 1
-        node.active = true
-        node.age = Date.now()
-        node.latency = node.age - t0
-        node.pendingRequests -= 1
-        this.logger.debug('node.latency:', node.latency)
-      })
-      .catch((err) => {
-        this.logger.debug('getBlockCount failed. move on.')
-        node.active = false
-        node.age = Date.now()
-        node.pendingRequests -= 1
-      })
-  }
-
-  /**
-   * @private
-   * @param {Object} attrs
-   * @param {number} attrs.index
-   * @param {number} attrs.max
-   * @returns {void}
-   * @fires Neo#storeBlock:init
-   * @fires Neo#storeBlock:complete
-   */
-  storeBlock (attrs) {
-    this.logger.debug('storeBlock triggered. attrs:', attrs)
-    /**
-     * @event Neo#storeBlock:init
-     * @type {object}
-     * @property {number} index
-     */
-    this.emit('storeBlock:init', { index: attrs.index })
-    return new Promise((resolve, reject) => {
-      // const targetNode = this.mesh.getNodeWithBlock(attrs.index)
-      // targetNode.rpc.getBlock(attrs.index)
-      this.mesh.rpc('getBlock', attrs.index)
-        .then((res) => {
-          // inject the block into the database and save.
-          this.storage.saveBlock(res)
-            .then(() => {
-              // // TODO: move below out to be reactive
-              // // Consider logging a status update... communication is important
-              // if ((attrs.index % this.logPeriod === 0) || (attrs.index === this.mesh.getHighestNode().index)) {
-              //   this.logger.info(attrs)
-              // }
-              /**
-               * @event Neo#storeBlock:complete
-               * @type {object}
-               * @property {number} index
-               * @property {number} max
-               * @property {boolean} isSuccess
-               */
-              this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: true })
-              resolve()
-            })
-            .catch((err) => {
-              /**
-               * @event Neo#storeBlock:complete
-               * @type {object}
-               * @property {number} index
-               * @property {number} max
-               * @property {boolean} isSuccess
-               */
-              this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: false })
-              resolve(err)
-            })
-        })
-        .catch((err) => {
-          /**
-           * @event Neo#storeBlock:complete
-           * @type {object}
-           * @property {number} index
-           * @property {number} max
-           * @property {boolean} isSuccess
-           */
-          this.emit('storeBlock:complete', { index: attrs.index, max: attrs.max, isSuccess: false })
-          reject(err)
-        })
-    })
-  }
-
-  /**
-   * @private
-   * @param {Object} attrs
-   * @param {string} attr.hash
-   * @returns {void}
-   * @fires Neo#storeAsset:init
-   * @fires Neo#storeAsset:complete
-   */
-  storeAsset (attrs) {
-    this.logger.debug('storeAsset triggered. attrs:', attrs)
-    /**
-     * @event Neo#storeAsset:int
-     * @type {object}
-     * @property {string} hash
-     */
-    this.emit('storeAsset:init', { hash: attrs.hash })
-    return new Promise((resolve, reject) => {
-      this.mesh.rpc('getAssetState', attrs.hash)
-        .then((res) => {
-          this.storage.saveAssetState(attrs.hash, res)
-            .then((res) => {
-              /**
-               * @event Neo#storeAsset:complete
-               * @type {object}
-               * @property {string} hash
-               * @property {boolean} isSuccess
-               */
-              this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: true })
-              resolve(res)
-            })
-            .catch((err) => {
-              /**
-               * @event Neo#storeAsset:complete
-               * @type {object}
-               * @property {string} hash
-               * @property {boolean} isSuccess
-               */
-              this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: false })
-              reject(err)
-            })
-        })
-        .catch((err) => {
-          /**
-           * @event Neo#storeAsset:complete
-           * @type {object}
-           * @property {string} hash
-           * @property {boolean} isSuccess
-           */
-          this.emit('storeAsset:complete', { hash: attrs.hash, isSuccess: false })
-          reject(err)
-        })
-    })
-  }
-
-  /**
-   * @private
-   * @param {number} index
-   * @param {priority} priority
-   * @returns {void}
-   * @fires Neo#enqueueBlock:init
-   */
-  enqueueBlock (index, priority = 5) {
-    this.logger.debug('enqueueBlock triggered. index:', index, 'priority:', priority)
-    /**
-     * @event Neo#enqueueBlock:init
-     * @type {object}
-     * @property {number} index
-     * @property {priority} priority
-     */
-    this.emit('enqueueBlock:init', { index, priority })
-    // if the block height is above the current height, increment the write pointer.
-    if (index > this.blockWritePointer) {
-      this.blockWritePointer = index
-    }
-
-    const node = this.mesh.getHighestNode() // TODO: validate
-    const max = node.index || index
-
-    // enqueue the block
-    this.queue.push({
-      method: 'storeBlock',
-      attrs: {
-        index: index,
-        max: max
-      }
-    }, priority)
-  }
-
-  /**
-   * @private
-   * @param {string} hash
-   * @param {number} priority
-   * @returns {void}
-   */
-  enqueueAsset (hash, priority = 5) {
-    this.logger.debug('enqueueAsset triggered. hash:', hash, 'priority:', priority)
-    this.queue.push({
-      method: 'storeAsset',
-      attrs: {
-        hash
-      }
-    }, priority)
   }
 }
 

@@ -38,6 +38,7 @@ class Storage extends EventEmitter {
     /** @type {Object} */
     this.defaultOptions = {
       model: 'memory',
+      updateAssetListIntervalMs: 10000,
       dataAccessOptions: {},
       loggerOptions: {}
     }
@@ -78,7 +79,7 @@ class Storage extends EventEmitter {
     this.updateAssetList()
     setInterval(() => {
       this.updateAssetList()
-    }, 10000)
+    }, this.updateAssetListIntervalMs)
   }
 
   /**
