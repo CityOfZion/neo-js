@@ -7,7 +7,7 @@ const ValidationHelper = require('../common/validation-helper')
  * @class SyncStrategy
  * @augments EventEmitter
  * @param {Mesh} mesh
- * @param {Object} options
+ * @param {object} options
  * @param {object} options.loggerOptions
  */
 class SyncStrategy extends EventEmitter {
@@ -18,17 +18,17 @@ class SyncStrategy extends EventEmitter {
     super()
 
     // -- Properties
-    /** @type {Object} */
+    /** @type {object} */
     this.mesh = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.storage = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.queue = undefined
     /** @type {number} */
     this.maxQueueLength = 10000
     /** @type {number} */
     this.blockWritePointer = -1
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       doEnqueueBlockIntervalMs: 2000,
       verifyBlocksIntervalMs: 180000,
@@ -61,9 +61,9 @@ class SyncStrategy extends EventEmitter {
 
     // Initialize an asynchronous event queue for the node to use
     /**
-     * @param {Object} task
+     * @param {object} task
      * @param {string} task.method
-     * @param {Object} task.attrs
+     * @param {object} task.attrs
      * @param {number} task.attrs.index
      * @param {number} task.attrs.max
      * @param {function} callback
@@ -251,7 +251,7 @@ class SyncStrategy extends EventEmitter {
 
   /**
    * @private
-   * @param {Object} attrs
+   * @param {object} attrs
    * @param {number} attrs.index
    * @param {number} attrs.max
    * @returns {void}
@@ -317,7 +317,7 @@ class SyncStrategy extends EventEmitter {
 
   /**
    * @private
-   * @param {Object} attrs
+   * @param {object} attrs
    * @param {string} attr.hash
    * @returns {void}
    * @fires SyncStrategy#storeAsset:init

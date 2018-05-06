@@ -4,7 +4,7 @@ const moment = require('moment')
 /**
  * @class Logger
  * @param {string} name
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.level
  * @param {boolean} options.displayTimestamp
  * @param {boolean} options.displayName
@@ -95,7 +95,7 @@ class Logger {
 
   /**
    * @private
-   * @param {Object} argumentsObject
+   * @param {object} argumentsObject
    * @param {string} level
    * @returns {Array}
    */

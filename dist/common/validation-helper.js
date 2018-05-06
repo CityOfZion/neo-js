@@ -9,7 +9,7 @@ class ValidationHelper {
    * Verify if it is a valid Node object.
    * @static
    * @public
-   * @param {Object} hash
+   * @param {object} hash
    * @returns {boolean}
    */
   static isValidNode (node) {

@@ -5,14 +5,14 @@ const Logger = require('../../common/logger')
 
 /**
  * @class MongodbStorage
- * @param {Object} options
+ * @param {object} options
  * @param {boolean} options.connectOnInit
  * @param {string} options.connectionString
- * @param {Object} options.collectionNames
+ * @param {object} options.collectionNames
  * @param {string} options.collectionNames.blocks
  * @param {string} options.collectionNames.transactions
  * @param {string} options.collectionNames.addresses
- * @param {Object} options.loggerOptions
+ * @param {object} options.loggerOptions
  */
 class MongodbStorage extends EventEmitter {
   /**
@@ -22,15 +22,15 @@ class MongodbStorage extends EventEmitter {
     super()
 
     // -- Properties
-    /** @type {Object} */
+    /** @type {object} */
     this.blockModel = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.transactionModel = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.addressModel = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       connectOnInit: true,
       connectionString: 'mongodb://localhost/neo',
@@ -85,8 +85,8 @@ class MongodbStorage extends EventEmitter {
   /**
    * @static
    * @private
-   * @param {Object} block
-   * @returns {Object}
+   * @param {object} block
+   * @returns {object}
    */
   delintBlock (block) {
     this.logger.debug('delintBlock triggered.')
@@ -109,7 +109,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} txid
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getTX (txid) {
     this.logger.debug('getTX triggered. txid:', txid)
@@ -129,7 +129,7 @@ class MongodbStorage extends EventEmitter {
    * List transactions of a specific wallet.
    * @public
    * @param {string} address
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getTransactions (address) {
     this.logger.debug('getTransactions triggered. address:', address)
@@ -155,7 +155,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {number} index
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getBlock (index) {
     this.logger.debug('getBlock triggered. index:', index)
@@ -174,7 +174,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getBlockByHash (hash) {
     this.logger.debug('getBlockByHash triggered. hash:', hash)
@@ -236,7 +236,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getAsset (hash) {
     this.logger.debug('getAsset triggered. hash:', hash)
@@ -303,7 +303,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} asset
+   * @param {object} asset
    * @returns {Promise}
    */
   saveAsset (asset) {
@@ -321,7 +321,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} block
+   * @param {object} block
    * @returns {Promise}
    */
   saveBlock (block) {
@@ -341,7 +341,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @param {Object} assetState
+   * @param {object} assetState
    * @returns {Promise}
    */
   saveAssetState (hash, assetState) {
@@ -367,7 +367,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} tx
+   * @param {object} tx
    * @returns {Promise}
    */
   saveTransaction (tx) {
@@ -385,7 +385,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} tx
+   * @param {object} tx
    * @returns {Promise}
    */
   updateTransaction (tx) {
@@ -404,7 +404,7 @@ class MongodbStorage extends EventEmitter {
   /**
    * @public
    * @param {string} hash
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getAddress (hash) {
     this.logger.debug('getAddress triggered. hash:', hash)
@@ -422,8 +422,8 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @public
-   * @param {Object} address
-   * @returns {Promise.<Object>}
+   * @param {object} address
+   * @returns {Promise.<object>}
    */
   saveAddress (address) {
     this.logger.debug('saveAddress triggered.')
@@ -445,7 +445,7 @@ class MongodbStorage extends EventEmitter {
    * @param {string} assetHash
    * @param {number} balance
    * @param {number} index
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   updateBalance (addressHash, assetHash, balance, index) {
     this.logger.debug('updateBalance triggered. addressHash:', addressHash, 'assetHash:', assetHash, 'balance:', balance, 'index:', index)
@@ -536,7 +536,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @private
-   * @returns {Object}
+   * @returns {object}
    */
   getBlockModel () {
     const schema = new mongoose.Schema({
@@ -563,7 +563,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @private
-   * @returns {Object}
+   * @returns {object}
    */
   getTransactionModel () {
     const schema = new mongoose.Schema({
@@ -586,7 +586,7 @@ class MongodbStorage extends EventEmitter {
 
   /**
    * @private
-   * @returns {Object}
+   * @returns {object}
    */
   getAddressModel () {
     const schema = new mongoose.Schema({

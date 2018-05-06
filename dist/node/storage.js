@@ -10,10 +10,10 @@ const MongodbStorage = require('./storage/mongodb')
  * A storage class for the various storage methods supported by the neo-js.  This class will
  * include high level storage interface methods that will interface with a standard set of methods available
  * on each type of storage.
- * @param {Object} options
+ * @param {object} options
  * @param {string} options.model
- * @param {Object} options.dataAccessOptions
- * @param {Object} options.loggerOptions
+ * @param {object} options.dataAccessOptions
+ * @param {object} options.loggerOptions
  */
 class Storage extends EventEmitter {
   /**
@@ -27,15 +27,15 @@ class Storage extends EventEmitter {
     this.blockHeight = 0
     /** @type {number} */
     this.index = -1
-    /** @type {Object} */
+    /** @type {object} */
     this.dataAccess = undefined
     /** @type {Array} */
     this.unlinkedBlocks = []
-    /** @type {Array.<Object>} */
+    /** @type {Array.<object>} */
     this.assets = []
-    /** @type {Object} */
+    /** @type {object} */
     this.logger = undefined
-    /** @type {Object} */
+    /** @type {object} */
     this.defaultOptions = {
       model: 'memory',
       updateAssetListIntervalMs: 10000,
@@ -162,7 +162,7 @@ class Storage extends EventEmitter {
    * Gets the state information of the requested asset.
    * @public
    * @param {string} hash
-   * @returns Promise.<Object>
+   * @returns Promise.<object>
    */
   getAssetState (hash) {
     this.logger.debug('getAssetState triggered. hash:', hash)
@@ -186,7 +186,7 @@ class Storage extends EventEmitter {
    * Returns the requested asset from local storage.
    * @public
    * @param {string} hash
-   * @returns Promise.<Object>
+   * @returns Promise.<object>
    */
   getAsset (hash) {
     this.logger.debug('getAsset triggered. hash:', hash)
@@ -202,7 +202,7 @@ class Storage extends EventEmitter {
    * @param {string} asset - The asset to look up.
    * @param {number} [startBlock = 0] - the block start start the calculation from.
    * @param {number} [balance = 0] - the balance at the startBlock.
-   * @returns Promise.<Object> An object containing the asset balance.
+   * @returns Promise.<object> An object containing the asset balance.
    */
   getAssetBalance (address, asset, startBlock = 0, balance = 0) {
     this.logger.debug('getAssetBalance triggered. address:', address, 'asset:', asset, 'startBlock:', startBlock, 'balance:', balance)
@@ -294,7 +294,7 @@ class Storage extends EventEmitter {
    * update the expanded transaction in local storage to improve later performance.
    * @public
    * @param {string} txid - The '0x' formatted transaction ID.
-   * @returns {Promise.<Object>} A JSON formatted representation of a transaction.
+   * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
   getExpandedTX (txid) {
     this.logger.debug('getExpandedTX triggered. txid:', txid)
@@ -336,7 +336,7 @@ class Storage extends EventEmitter {
    * Returns the JSON formatted transaction from the blockchain.
    * @public
    * @param {string} txid - A '0x' formatted transaction ID.
-   * @returns {Promise.<Object>} A JSON formatted representation of a transaction.
+   * @returns {Promise.<object>} A JSON formatted representation of a transaction.
    */
   getTX (txid) {
     this.logger.debug('getTX triggered. txid:', txid)
@@ -347,7 +347,7 @@ class Storage extends EventEmitter {
    * Returns the requested block from local storage.
    * @public
    * @param {number} index - The block index being requested.
-   * @returns {Promise.<Object>} A JSON formatted block on the blockchain.
+   * @returns {Promise.<object>} A JSON formatted block on the blockchain.
    */
   getBlock (index) {
     this.logger.debug('getBlock triggered. index:', index)
@@ -358,7 +358,7 @@ class Storage extends EventEmitter {
    * Returns the requested block from local storage.
    * @public
    * @param {string} hash - The hash of the block being requested.
-   * @returns {Promise.<Object>} A promise returning information of the block
+   * @returns {Promise.<object>} A promise returning information of the block
    */
   getBlockByHash (hash) {
     this.logger.debug('getBlockByHash triggered. hash:', hash)
@@ -391,7 +391,7 @@ class Storage extends EventEmitter {
   /**
    * Gets the best block hash on the node
    * @public
-   * @returns {Promise.<Object>}
+   * @returns {Promise.<object>}
    */
   getBestBlockHash () {
     this.logger.debug('getBestBlockHash triggered.')
@@ -415,8 +415,8 @@ class Storage extends EventEmitter {
    * Saves a json formated block to storage. This method will also split out the
    * transactions for storage as well as caching them for later use.
    * @public
-   * @param {Object} newBlock - The JSON representation of a block on the blockchain.
-   * @returns {Promise.<Object>}
+   * @param {object} newBlock - The JSON representation of a block on the blockchain.
+   * @returns {Promise.<object>}
    */
   saveBlock (newBlock) {
     this.logger.debug('saveBlock triggered.')
@@ -470,7 +470,7 @@ class Storage extends EventEmitter {
    * Saves the state information of an asset.
    * @public
    * @param {string} hash
-   * @param {Object} assetState
+   * @param {object} assetState
    * @returns {void}
    */
   saveAssetState (hash, assetState) {
