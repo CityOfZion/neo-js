@@ -73,12 +73,14 @@ const testnetNeo = new Neo({ network: 'testnet' })
 const mainnetNeo = new Neo({ network: 'mainnet' })
 
 // Get block info after 5 seconds delay
-setTimeout(() => {
+testnetNeo.mesh.on('ready', () => {
   testnetNeo.mesh.rpc('getBlock', 1000)
     .then((res) => console.log('Testnet getBlock(1000).hash:', res.hash))
+})
+mainnetNeo.mesh.on('ready', () => {
   mainnetNeo.mesh.rpc('getBlock', 1000)
     .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
-}, 5000)
+})
 ```
 
 This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:
@@ -95,10 +97,8 @@ const options = {
 const neo = new Neo(options)
 
 // Get block count after 5 seconds delay
-setTimeout(() => {
-  neo.storage.getBlockCount()
-    .then((res) => console.log('Block count:', res))
-}, 5000)
+neo.storage.getBlockCount()
+  .then((res) => console.log('Block count:', res))
 ```
 
 ## Documentation
