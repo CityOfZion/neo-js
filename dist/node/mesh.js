@@ -26,6 +26,7 @@ class Mesh extends EventEmitter {
     /** @type {Object} */
     this.defaultOptions = {
       minActiveNodesRequired: 2,
+      pingRandomNodeIntervalMs: 2000,
       loggerOptions: {}
     }
 
@@ -34,6 +35,7 @@ class Mesh extends EventEmitter {
     this.nodes = nodes
     this.logger = new Logger('Mesh', this.loggerOptions)
     this.initReadyState()
+    this.initBackgroundTasks()
 
     /**
      * @event Mesh#constructor:complete
@@ -53,6 +55,29 @@ class Mesh extends EventEmitter {
         this.checkNodesReady()
       })
     })
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  initBackgroundTasks () {
+    this.logger.debug('initBackgroundTasks triggered.')
+
+    // Ping a random node periodically
+    setInterval(() => {
+      this.pingRandomNode()
+    }, this.pingRandomNodeIntervalMs)
+  }
+
+  /**
+   * @private
+   * @returns {void}
+   */
+  pingRandomNode () {
+    this.logger.debug('pingRandomNode triggered.')
+    const targetNode = this.getRandomNode()
+    targetNode.ping()
   }
 
   /**
