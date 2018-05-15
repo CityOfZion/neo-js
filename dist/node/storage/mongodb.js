@@ -281,11 +281,20 @@ class MongodbStorage extends EventEmitter {
     this.logger.debug('getAssetListByAddress triggered. address:', address, 'assetHash:', assetHash, 'startBlock:', startBlock)
     return new Promise((resolve, reject) => {
       this.transactionModel.find({
-        'vout.address': address,
-        $or: [
-          {type: 'ContractTransaction'},
-          {type: 'InvocationTransaction'},
-          {type: 'ClaimTransaction'}
+        $and: [
+          {
+            $or: [
+              {'vout.address': address},
+              {'vin.address': address}
+            ],
+          },
+          {
+            $or: [
+              {type: 'ContractTransaction'},
+              {type: 'InvocationTransaction'},
+              {type: 'ClaimTransaction'}
+            ],
+          }
         ],
         'vout.asset': assetHash,
         blockIndex: { $gte: startBlock }
