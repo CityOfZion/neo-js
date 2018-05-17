@@ -67,23 +67,25 @@ const Node = require('@cityofzion/neo-js')
 To create a new blockchain instance:
 
 ```js
-
 // Create a neo instances to interface with RPC methods
 const testnetNeo = new Neo({ network: 'testnet' })
-const mainnetNeo = new Neo({ network: 'mainnet' })
 
-// Get block info after 5 seconds delay
+// Wait for mesh to be ready before attempt to fetch block information
 testnetNeo.mesh.on('ready', () => {
   testnetNeo.mesh.rpc('getBlock', 1000)
     .then((res) => console.log('Testnet getBlock(1000).hash:', res.hash))
 })
+
+// To connect to the mainnet:
+const mainnetNeo = new Neo({ network: 'mainnet' })
+
 mainnetNeo.mesh.on('ready', () => {
   mainnetNeo.mesh.rpc('getBlock', 1000)
     .then((res) => console.log('Mainnet getBlock(1000).hash:', res.hash))
 })
 ```
 
-This will create a new node instance and configure it to sync the blockchain to a 3 mongoDB collections that we define:
+This will create a new node instance and configure it to sync the blockchain to the defined mongoDB collections:
 
 ```js
 const options = {
@@ -96,20 +98,20 @@ const options = {
 // Create a neo instance
 const neo = new Neo(options)
 
-// Get block count after 5 seconds delay
+// Get block count
 neo.storage.getBlockCount()
   .then((res) => console.log('Block count:', res))
 ```
 
 ## Documentation
 
-Documentation (incomplete) for the project can be found at:
+Documentation for the project can be found at:
 
-* http://cityofzion.io/neo-js/
+* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
 
 Self-documented code examples are available as part of the project source code:
 
-* https://github.com/CityOfZion/neo-js/blob/master/examples
+* [https://github.com/CityOfZion/neo-js/blob/master/examples](https://github.com/CityOfZion/neo-js/blob/master/examples)
 
 ## Contribution
 
