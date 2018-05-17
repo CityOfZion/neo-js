@@ -286,14 +286,14 @@ class MongodbStorage extends EventEmitter {
             $or: [
               {'vout.address': address},
               {'vin.address': address}
-            ],
+            ]
           },
           {
             $or: [
               {type: 'ContractTransaction'},
               {type: 'InvocationTransaction'},
               {type: 'ClaimTransaction'}
-            ],
+            ]
           }
         ],
         'vout.asset': assetHash,
