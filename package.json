@@ -1,6 +1,6 @@
 {
   "name": "@cityofzion/neo-js",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "private": false,
   "description": "A package for running a node on the neo blockchain.",
   "main": "dist/node.js",
