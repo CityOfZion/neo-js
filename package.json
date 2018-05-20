@@ -3,7 +3,7 @@
   "version": "0.8.0",
   "private": false,
   "description": "A package for running a node on the neo blockchain.",
-  "main": "dist/node.js",
+  "main": "dist/neo.js",
   "scripts": {
     "lint": "./node_modules/.bin/eslint ./{dist,examples,test} --ext .js",
     "test": "./node_modules/.bin/mocha -b ./test/unit/**/*",
