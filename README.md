@@ -61,7 +61,7 @@ Installation instructions can be found in [MongoDB installation manual](https://
 ## Quick Start
 
 ```js
-const Node = require('@cityofzion/neo-js')
+const Neo = require('@cityofzion/neo-js')
 ```
 
 To create a new blockchain instance:
