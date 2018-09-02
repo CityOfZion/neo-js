@@ -1,58 +1,49 @@
 {
-  "name": "@cityofzion/neo-js",
-  "version": "0.8.1",
-  "private": false,
+  "name": "neo-js",
+  "version": "0.10.0-alpha.1",
   "description": "A package for running a node on the neo blockchain.",
-  "main": "dist/neo.js",
+  "main": "dist/neo",
+  "types": "dist/neo",
   "scripts": {
-    "lint": "./node_modules/.bin/eslint ./{dist,examples,test} --ext .js",
-    "test": "./node_modules/.bin/mocha -b ./test/unit/**/*",
-    "test:integration": "./node_modules/.bin/mocha -b ./test/integration/**/*",
-    "coverage": "./node_modules/.bin/nyc npm test",
-    "build:docs": "rm -rf ./docs && ./node_modules/.bin/jsdoc -d ./docs -c ./.jsdoc.conf.json ./dist",
-    "rebuild": "rm -rf ./node_modules && npm install",
-    "rebuild:hard": "rm -f ./package-lock.json && rm -rf ./node_modules && npm install",
-    "prepush": "echo 'running lint...' && npm run lint && echo 'running tests...' && npm run test"
+    "webpack": "webpack",
+    "mocha": "mocha",
+    "clean": "rm -rf ./dist",
+    "build": "npm run clean && webpack",
+    "rebuild": "rm -rf ./node_modules && npm install && npm run build",
+    "rebuild:hard": "rm -f ./package-lock.json && npm run rebuild",
+    "test": "mocha --reporter spec"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/CityOfZion/neo-js.git"
   },
-  "keywords": [
-    "neo",
-    "blockchain",
-    "cityofzion"
-  ],
-  "author": "lllwvlvwlll",
+  "author": "",
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/CityOfZion/neo-js/issues"
   },
   "homepage": "https://github.com/CityOfZion/neo-js#readme",
-  "dependencies": {
-    "@cityofzion/neon-js": "^3.2.1",
-    "async": "~2.5.0",
-    "axios": "^0.16.2",
-    "lodash": "~4.17.4",
-    "loglevel": "^1.6.1",
-    "mathjs": "^4.1.0",
-    "moment": "^2.20.1",
-    "mongoose": "~4.11.3"
-  },
   "devDependencies": {
-    "@freshes/jsdoc-template": "^1.0.0",
-    "axios-mock-adapter": "^1.9.0",
+    "@types/async": "^2.0.49",
+    "@types/chance": "^1.0.1",
+    "@types/events": "^1.2.0",
+    "@types/mongodb": "^3.1.4",
+    "@types/mongoose": "^5.2.6",
+    "@types/node": "^10.7.1",
     "chai": "^4.1.2",
-    "eslint": "^4.9.0",
-    "eslint-config-standard": "^10.2.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-node": "^5.2.0",
-    "eslint-plugin-promise": "^3.6.0",
-    "eslint-plugin-standard": "^3.0.1",
-    "husky": "^0.14.3",
-    "jsdoc": "^3.5.5",
-    "mocha": "^3.5.3",
-    "nyc": "^11.2.1",
-    "sinon": "^4.1.3"
+    "mocha": "^5.2.0",
+    "ts-loader": "^4.4.2",
+    "typescript": "^3.0.1",
+    "webpack": "^4.16.5",
+    "webpack-cli": "^3.1.0"
+  },
+  "dependencies": {
+    "@cityofzion/neon-js": "^3.10.0",
+    "async": "^2.6.1",
+    "chance": "^1.0.16",
+    "events": "^3.0.0",
+    "lodash": "^4.17.10",
+    "mongoose": "4.13.14",
+    "node-log-it": "^2.0.0"
   }
 }
