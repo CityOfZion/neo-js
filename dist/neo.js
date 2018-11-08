@@ -98,7 +98,8 @@ class Neo extends events_1.EventEmitter {
         }
         const nodes = [];
         endpoints.forEach((item) => {
-            const node = new node_1.Node(item.endpoint, this.options.nodeOptions);
+            const endpoint = item.endpoint;
+            const node = new node_1.Node(endpoint, this.options.nodeOptions);
             nodes.push(node);
         });
         return nodes;

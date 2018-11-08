@@ -8,6 +8,7 @@ const DEFAULT_OPTIONS = {
     startBenchmarkOnInit: true,
     benchmarkIntervalMs: 2000,
     minActiveNodesRequired: 2,
+    pendingRequestsThreshold: 5,
     loggerOptions: {},
 };
 class Mesh extends events_1.EventEmitter {
@@ -82,6 +83,23 @@ class Mesh extends events_1.EventEmitter {
         }
         const randomIndex = lodash_1.random(0, nodePool.length - 1);
         return nodePool[randomIndex];
+    }
+    getOptimalNode(height, activeOnly = true) {
+        this.logger.debug('getOptimalNode triggered.');
+        const nodePool = activeOnly ? this.listActiveNodes() : this.nodes;
+        if (nodePool.length === 0) {
+            return undefined;
+        }
+        const qualifyHeightNodes = lodash_1.filter(this.nodes, (n) => n.blockHeight !== undefined && n.blockHeight >= height);
+        if (qualifyHeightNodes.length === 0) {
+            return undefined;
+        }
+        const qualifyPendingNodes = lodash_1.filter(qualifyHeightNodes, (n) => n.pendingRequests < this.options.pendingRequestsThreshold);
+        if (qualifyPendingNodes.length === 0) {
+            const randomIndex = lodash_1.random(0, qualifyHeightNodes.length - 1);
+            return qualifyHeightNodes[randomIndex];
+        }
+        return lodash_1.minBy(qualifyPendingNodes, 'latency');
     }
     validateOptionalParameters() {
     }

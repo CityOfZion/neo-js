@@ -13,10 +13,10 @@ const DEFAULT_OPTIONS = {
     toSyncIncremental: true,
     toSyncForMissingBlocks: true,
     toPruneRedundantBlocks: false,
-    workerCount: 30,
+    storeQueueConcurrency: 30,
     enqueueBlockIntervalMs: 2000,
     verifyBlocksIntervalMs: 1 * 60 * 1000,
-    maxQueueLength: 10000,
+    maxStoreQueueLength: 10000,
     retryEnqueueDelayMs: 2000,
     standardEnqueueBlockPriority: 5,
     retryEnqueueBlockPriority: 3,
@@ -35,7 +35,7 @@ class Syncer extends events_1.EventEmitter {
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
         this.validateOptionalParameters();
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
-        this.queue = this.getPriorityQueue();
+        this.storeQueue = this.getPriorityQueue(this.options.storeQueueConcurrency);
         if (this.options.startOnInit) {
             this.start();
         }
@@ -83,7 +83,7 @@ class Syncer extends events_1.EventEmitter {
             throw new Error('supplied blockRedundancy parameter is invalid. Currently only supports for value [1].');
         }
     }
-    getPriorityQueue() {
+    getPriorityQueue(concurrency) {
         return async_1.priorityQueue((task, callback) => {
             const method = task.method;
             const attrs = task.attrs;
@@ -92,14 +92,14 @@ class Syncer extends events_1.EventEmitter {
                 .then(() => {
                 callback();
                 this.logger.debug('queued method run completed.');
-                this.emit('sync:complete', { isSuccess: true, task });
+                this.emit('queue:worker:complete', { isSuccess: true, task });
             })
                 .catch((err) => {
                 this.logger.info('Task execution error, but to continue... attrs:', attrs);
                 callback();
-                this.emit('sync:complete', { isSuccess: false, task });
+                this.emit('queue:worker:complete', { isSuccess: false, task });
             });
-        }, this.options.workerCount);
+        }, concurrency);
     }
     initStoreBlock() {
         this.logger.debug('initStoreBlock triggered.');
@@ -123,7 +123,7 @@ class Syncer extends events_1.EventEmitter {
         }
         const node = this.mesh.getHighestNode();
         if (node) {
-            while (!this.isReachedMaxHeight() && !this.isReachedHighestBlock(node) && !this.isReachedMaxQueueLength()) {
+            while (!this.isReachedMaxHeight() && !this.isReachedHighestBlock(node) && !this.isReachedMaxStoreQueueLength()) {
                 this.increaseBlockWritePointer();
                 this.enqueueStoreBlock(this.blockWritePointer, this.options.standardEnqueueBlockPriority);
             }
@@ -138,8 +138,8 @@ class Syncer extends events_1.EventEmitter {
     isReachedHighestBlock(node) {
         return this.blockWritePointer >= node.blockHeight;
     }
-    isReachedMaxQueueLength() {
-        return this.queue.length() >= this.options.maxQueueLength;
+    isReachedMaxStoreQueueLength() {
+        return this.storeQueue.length() >= this.options.maxStoreQueueLength;
     }
     setBlockWritePointer() {
         this.logger.debug('setBlockWritePointer triggered.');
@@ -173,7 +173,7 @@ class Syncer extends events_1.EventEmitter {
     doBlockVerification() {
         this.logger.debug('doBlockVerification triggered.');
         this.emit('blockVerification:init');
-        this.logger.info('Blocks queue length:', this.queue.length());
+        this.logger.info('storeQueue.length:', this.storeQueue.length());
         const startHeight = this.options.minHeight;
         const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
         this.storage.analyzeBlocks(startHeight, endHeight)
@@ -231,7 +231,7 @@ class Syncer extends events_1.EventEmitter {
             this.logger.debug('height > this.blockWritePointer, blockWritePointer is now:', height);
             this.blockWritePointer = height;
         }
-        this.queue.push({
+        this.storeQueue.push({
             method: this.storeBlock.bind(this),
             attrs: {
                 height,
@@ -241,7 +241,7 @@ class Syncer extends events_1.EventEmitter {
     enqueuePruneBlock(height, redundancySize, priority) {
         this.logger.debug('enqueuePruneBlock triggered. height:', height, 'redundancySize:', redundancySize, 'priority:', priority);
         this.emit('enqueuePruneBlock:init', { height, redundancySize, priority });
-        this.queue.push({
+        this.storeQueue.push({
             method: this.pruneBlock.bind(this),
             attrs: {
                 height,
@@ -254,7 +254,7 @@ class Syncer extends events_1.EventEmitter {
         const height = attrs.height;
         this.emit('storeBlock:init', { height });
         return new Promise((resolve, reject) => {
-            const node = this.mesh.getFastestNode();
+            const node = this.mesh.getOptimalNode(height);
             if (!node) {
                 this.emit('storeBlock:complete', { isSuccess: false, height });
                 return reject(new Error('No valid node found.'));

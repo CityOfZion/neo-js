@@ -15,6 +15,7 @@ const DEFAULT_OPTIONS = {
 class Node extends events_1.EventEmitter {
     constructor(endpoint, options = {}) {
         super();
+        this.pendingRequests = 0;
         this.endpoint = endpoint;
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
         this.validateOptionalParameters();
@@ -89,21 +90,11 @@ class Node extends events_1.EventEmitter {
     }
     increasePendingRequest() {
         this.logger.debug('increasePendingRequest triggered.');
-        if (!this.pendingRequests) {
-            this.pendingRequests = 1;
-        }
-        else {
-            this.pendingRequests += 1;
-        }
+        this.pendingRequests += 1;
     }
     decreasePendingRequest() {
         this.logger.debug('decreasePendingRequest triggered.');
-        if (!this.pendingRequests) {
-            this.pendingRequests = 0;
-        }
-        else {
-            this.pendingRequests -= 1;
-        }
+        this.pendingRequests -= 1;
     }
 }
 exports.Node = Node;

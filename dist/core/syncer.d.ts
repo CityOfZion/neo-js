@@ -12,10 +12,10 @@ export interface SyncerOptions {
     toSyncIncremental?: boolean;
     toSyncForMissingBlocks?: boolean;
     toPruneRedundantBlocks?: boolean;
-    workerCount?: number;
+    storeQueueConcurrency?: number;
     enqueueBlockIntervalMs?: number;
     verifyBlocksIntervalMs?: number;
-    maxQueueLength?: number;
+    maxStoreQueueLength?: number;
     retryEnqueueDelayMs?: number;
     standardEnqueueBlockPriority?: number;
     retryEnqueueBlockPriority?: number;
@@ -26,7 +26,7 @@ export interface SyncerOptions {
 }
 export declare class Syncer extends EventEmitter {
     private _isRunning;
-    private queue;
+    private storeQueue;
     private blockWritePointer;
     private mesh;
     private storage?;
@@ -45,7 +45,7 @@ export declare class Syncer extends EventEmitter {
     private doEnqueueStoreBlock;
     private isReachedMaxHeight;
     private isReachedHighestBlock;
-    private isReachedMaxQueueLength;
+    private isReachedMaxStoreQueueLength;
     private setBlockWritePointer;
     private initBlockVerification;
     private doBlockVerification;
