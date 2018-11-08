@@ -11,8 +11,8 @@ process.on('unhandledRejection', (reason, promise) => {
 
 const network = 'mainnet'
 const dbConnectOnInit = true
-// const dbConnectionString = 'mongodb://localhost/neo_mainnet'
-const dbConnectionString = 'mongodb://localhost/neo_mainnet_eclipse'
+const dbConnectionString = 'mongodb://localhost/neo_mainnet'
+// const dbConnectionString = 'mongodb://localhost/neo_mainnet_juliet'
 const blockCollectionName = 'blocks'
 const syncDurationMs = 0 * 60 * 1000
 
@@ -35,9 +35,9 @@ const syncDurationMs = 0 * 60 * 1000
       loggerOptions: { level: 'warn' },
     },
     syncerOptions: {
-      minHeight: 4001,
-      maxHeight: 6000,
-      verifyBlocksIntervalMs: 30 * 1000,
+      // minHeight: 1001,
+      // maxHeight: 1500,
+      // verifyBlocksIntervalMs: 20 * 1000,
       loggerOptions: { level: 'info' },
     },
     loggerOptions: { level: 'info' },
@@ -87,7 +87,9 @@ const syncDurationMs = 0 * 60 * 1000
       })
     }
   })
-  const reportIntervalId = setInterval(() => { // Generate report periodically
+
+ // Generate  sync report periodically
+  const syncReportIntervalId = setInterval(() => {
     if (report.success.length > 0) {
       const node = neo.mesh.getHighestNode()
       if (!node) {
@@ -105,13 +107,24 @@ const syncDurationMs = 0 * 60 * 1000
     } else {
       console.log('No sync progress yet...')
     }
-  }, 5000)
+  }, 5 * 1000)
+
+  // Generate mesh report
+  const meshReportIntervalId = setInterval(() => {
+    console.log('Nodes report:')
+    let i = 0
+    neo.mesh.nodes.forEach((node) => {
+      console.log(`#${i} ${node.endpoint} [active: ${node.isActive}] [pending: ${node.pendingRequests}] [latency: ${node.latency}] [height: ${node.blockHeight}]`)
+      i += 1
+    })
+  }, 30 * 1000)
 
   if (syncDurationMs) {
     console.log(`Sync process with stop after ${syncDurationMs} ms...`)
     setTimeout(() => {
       neo.close()
-      clearInterval(reportIntervalId)
+      clearInterval(syncReportIntervalId)
+      clearInterval(meshReportIntervalId)
       console.log('=== THE END ===')
     }, syncDurationMs)
   }
