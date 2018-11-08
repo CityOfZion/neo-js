@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   blockRedundancy: 1, // If value is greater than 1, than it'll keep multiple copies of same block as integrity measurement // TODO: to ensure redundant blocks are coming from unique sources
+  checkRedundancyBeforeStoreBlock: true, // Perform a count on given height before attempt to store block.
   startOnInit: true,
   toSyncIncremental: true,
   toSyncForMissingBlocks: true,
@@ -35,6 +36,7 @@ export interface SyncerOptions {
   minHeight?: number
   maxHeight?: number
   blockRedundancy?: number
+  checkRedundancyBeforeStoreBlock?: boolean
   startOnInit?: boolean
   toSyncIncremental?: boolean
   toSyncForMissingBlocks?: boolean
@@ -354,33 +356,37 @@ export class Syncer extends EventEmitter {
   private storeBlock(attrs: object): Promise<any> {
     this.logger.debug('storeBlock triggered. attrs:', attrs)
     const height: number = (attrs as any).height
+    const node = this.mesh.getOptimalNode(height)
 
-    this.emit('storeBlock:init', { height })
     return new Promise((resolve, reject) => {
-      const node = this.mesh.getOptimalNode(height)
-      if (!node) {
-        this.emit('storeBlock:complete', { isSuccess: false, height })
-        return reject(new Error('No valid node found.'))
-      }
-
-      node
-        .getBlock(height)
-        .then((block) => {
-          const source = node.endpoint
-          this.storage!.setBlock(height, block, source)
-            .then((res) => {
-              this.logger.debug('setBlock succeeded. For height:', height)
-              this.emit('storeBlock:complete', { isSuccess: true, height })
-              return resolve()
-            })
-            .catch((err: any) => {
-              this.logger.debug('setBlock failed. For height:', height)
-              this.emit('storeBlock:complete', { isSuccess: false, height })
-              return reject(err)
-            })
+      this.emit('storeBlock:init', { height })
+      Promise.resolve()
+        .then(() => {
+          if (this.options.checkRedundancyBeforeStoreBlock) {
+            // TODO
+          }
+          return Promise.resolve()
+        })
+        .then(() => {
+          if (!node) {
+            throw new Error('No valid node found.')
+          }
+          return Promise.resolve()
+        })
+        .then(() => {
+          return node!.getBlock(height)
+        })
+        .then((block: any) => {
+          const source = node!.endpoint
+          return this.storage!.setBlock(height, block, source)
+        })
+        .then(() => {
+          this.logger.debug('setBlock succeeded. height:', height)
+          this.emit('storeBlock:complete', { isSuccess: true, height })
+          return resolve()
         })
         .catch((err: any) => {
-          this.logger.debug('getBlock failed. For height:', height)
+          this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
           this.emit('storeBlock:complete', { isSuccess: false, height })
           return reject(err)
         })
