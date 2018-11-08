@@ -357,7 +357,7 @@ export class Syncer extends EventEmitter {
 
     this.emit('storeBlock:init', { height })
     return new Promise((resolve, reject) => {
-      const node = this.mesh.getFastestNode() // TODO: need to pick a node with least pending requests
+      const node = this.mesh.getOptimalNode(height)
       if (!node) {
         this.emit('storeBlock:complete', { isSuccess: false, height })
         return reject(new Error('No valid node found.'))

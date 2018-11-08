@@ -19,7 +19,7 @@ export interface NodeOptions {
 
 export class Node extends EventEmitter {
   isActive: boolean | undefined
-  pendingRequests: number | undefined
+  pendingRequests: number = 0
   latency: number | undefined // In milliseconds
   blockHeight: number | undefined
   lastSeenTimestamp: number | undefined
@@ -125,19 +125,11 @@ export class Node extends EventEmitter {
 
   private increasePendingRequest() {
     this.logger.debug('increasePendingRequest triggered.')
-    if (!this.pendingRequests) {
-      this.pendingRequests = 1
-    } else {
-      this.pendingRequests += 1
-    }
+    this.pendingRequests += 1
   }
 
   private decreasePendingRequest() {
     this.logger.debug('decreasePendingRequest triggered.')
-    if (!this.pendingRequests) {
-      this.pendingRequests = 0
-    } else {
-      this.pendingRequests -= 1
-    }
+    this.pendingRequests -= 1
   }
 }
