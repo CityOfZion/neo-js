@@ -7,7 +7,5 @@ const Neo = require('../../dist/neo').Neo
 ;(async () => {
   console.log('== Get Version Example ==')
   console.log('Neo class Version:', Neo.VERSION)
-  const neo = new Neo()
-  console.log('Neo instance Version:', neo.VERSION)
-  neo.close()
+  console.log('Neo class user agent:', Neo.UserAgent)
 })()

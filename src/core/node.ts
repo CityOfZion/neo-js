@@ -13,18 +13,18 @@ const DEFAULT_OPTIONS: NodeOptions = {
 }
 
 export interface NodeOptions {
-  toBenchmark?: boolean,
-  loggerOptions?: LoggerOptions,
+  toBenchmark?: boolean
+  loggerOptions?: LoggerOptions
 }
 
 export class Node extends EventEmitter {
-  public isActive: boolean | undefined
-  public pendingRequests: number | undefined
-  public latency: number | undefined // In milliseconds
-  public blockHeight: number | undefined
-  public lastSeenTimestamp: number | undefined
+  isActive: boolean | undefined
+  pendingRequests: number | undefined
+  latency: number | undefined // In milliseconds
+  blockHeight: number | undefined
+  lastSeenTimestamp: number | undefined
+  endpoint: string
 
-  private endpoint: string
   private options: NodeOptions
   private logger: Logger
 
@@ -36,6 +36,7 @@ export class Node extends EventEmitter {
 
     // Associate optional properties
     this.options = merge({}, DEFAULT_OPTIONS, options)
+    this.validateOptionalParameters()
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
@@ -46,37 +47,6 @@ export class Node extends EventEmitter {
     this.on('query:failed', this.queryFailedHandler.bind(this))
 
     this.logger.debug('constructor completes.')
-  }
-
-  private queryInitHandler(payload: object) {
-    this.logger.debug('queryInitHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.increasePendingRequest()
-    }
-  }
-
-  private querySuccessHandler(payload: object) {
-    this.logger.debug('querySuccessHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = true
-      if ((<any> payload).latency) {
-        this.latency = (<any> payload).latency
-      }
-      if ((<any> payload).blockHeight) {
-        this.blockHeight = (<any> payload).blockHeight
-      }
-    }
-  }
-
-  private queryFailedHandler(payload: object) {
-    this.logger.debug('queryFailedHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = false
-    }
   }
 
   getBlock(height: number, isVerbose: boolean = true): Promise<object> {
@@ -98,6 +68,41 @@ export class Node extends EventEmitter {
     return this.query(C.rpc.getversion)
   }
 
+  private queryInitHandler(payload: object) {
+    this.logger.debug('queryInitHandler triggered.')
+    if (this.options.toBenchmark) {
+      this.increasePendingRequest()
+    }
+  }
+
+  private querySuccessHandler(payload: object) {
+    this.logger.debug('querySuccessHandler triggered.')
+    if (this.options.toBenchmark) {
+      this.decreasePendingRequest()
+      this.lastSeenTimestamp = Date.now()
+      this.isActive = true
+      if ((<any>payload).latency) {
+        this.latency = (<any>payload).latency
+      }
+      if ((<any>payload).blockHeight) {
+        this.blockHeight = (<any>payload).blockHeight
+      }
+    }
+  }
+
+  private queryFailedHandler(payload: object) {
+    this.logger.debug('queryFailedHandler triggered.')
+    if (this.options.toBenchmark) {
+      this.decreasePendingRequest()
+      this.lastSeenTimestamp = Date.now()
+      this.isActive = false
+    }
+  }
+
+  private validateOptionalParameters() {
+    // TODO
+  }
+
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
     this.logger.debug('query triggered. method:', method)
     this.emit('query:init', { method, params, id })
@@ -106,8 +111,8 @@ export class Node extends EventEmitter {
       RpcDelegate.query(this.endpoint, method, params, id)
         .then((res) => {
           const latency = Date.now() - t0
-          const result = (<any> res).result
-          const blockHeight = (method === C.rpc.getblockcount) ? result : undefined
+          const result = (<any>res).result
+          const blockHeight = method === C.rpc.getblockcount ? result : undefined
           this.emit('query:success', { method, latency, blockHeight })
           return resolve(result)
         })

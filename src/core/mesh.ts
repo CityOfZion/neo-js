@@ -1,10 +1,8 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, filter, minBy, maxBy } from 'lodash'
-import { Chance } from 'chance'
+import { merge, filter, minBy, maxBy, random } from 'lodash'
 import { Node } from './node'
 
-const chance = new Chance()
 const MODULE_NAME = 'Mesh'
 const DEFAULT_OPTIONS: MeshOptions = {
   startBenchmarkOnInit: true,
@@ -14,14 +12,15 @@ const DEFAULT_OPTIONS: MeshOptions = {
 }
 
 export interface MeshOptions {
-  startBenchmarkOnInit?: boolean,
-  benchmarkIntervalMs?: number,
-  minActiveNodesRequired?: number,
-  loggerOptions?: LoggerOptions,
+  startBenchmarkOnInit?: boolean
+  benchmarkIntervalMs?: number
+  minActiveNodesRequired?: number
+  loggerOptions?: LoggerOptions
 }
 
 export class Mesh extends EventEmitter {
-  public nodes: Node[] // Ensure there's at least 1 item in the array
+  nodes: Node[] // Ensure there's at least 1 item in the array
+
   private _isReady = false
   private benchmarkIntervalId?: NodeJS.Timer
   private options: MeshOptions
@@ -38,13 +37,14 @@ export class Mesh extends EventEmitter {
 
     // Associate optional properties
     this.options = merge({}, DEFAULT_OPTIONS, options)
+    this.validateOptionalParameters()
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     if (this.options.startBenchmarkOnInit) {
       this.startBenchmark()
     }
-  
+
     this.logger.debug('constructor completes.')
   }
 
@@ -56,17 +56,20 @@ export class Mesh extends EventEmitter {
     this.logger.debug('startBenchmark triggered.')
 
     // Go through and ping all unknown nodes
-    const unknownNodes = filter(this.nodes, (n: Node) => (n.isActive === undefined))
+    const unknownNodes = filter(this.nodes, (n: Node) => n.isActive === undefined)
     this.logger.debug('unknownNodes.length:', unknownNodes.length)
     unknownNodes.forEach((n) => {
       n.getBlockCount()
         .then(() => {
           this.checkMeshReady()
         })
+        .catch((err: any) => {
+          this.logger.info('node.getBlockCount error, but to continue... Endpoint:', n.endpoint, 'Message:', err.message)
+        })
     })
 
     // Start timer
-    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), <number> this.options.benchmarkIntervalMs)
+    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), <number>this.options.benchmarkIntervalMs)
   }
 
   stopBenchmark() {
@@ -74,32 +77,6 @@ export class Mesh extends EventEmitter {
     if (this.benchmarkIntervalId) {
       clearInterval(this.benchmarkIntervalId)
     }
-  }
-
-  private performBenchmark() {
-    this.logger.debug('performBenchmark triggered.')
-
-    // pick and ping a random node
-    const node = this.getRandomNode()
-    if (node) {
-      node.getBlockCount()
-    }
-  }
-
-  private checkMeshReady() {
-    this.logger.debug('checkMeshReady triggered.')
-    const activeNodes = this.listActiveNodes()
-    if (!this.options.minActiveNodesRequired || activeNodes.length >= this.options.minActiveNodesRequired) {
-      if (!this._isReady) { // First signal that mesh is considered as 'ready' state
-        this.setReady()
-        this.logger.debug('mesh is considered to be now ready.')
-      }
-    }
-  }
-
-  private setReady() {
-    this._isReady = true
-    this.emit('ready')
   }
 
   getFastestNode(activeOnly = true): Node | undefined {
@@ -110,7 +87,7 @@ export class Mesh extends EventEmitter {
       return undefined
     }
 
-    nodePool = filter(nodePool, (n: Node) => (n.latency !== undefined))
+    nodePool = filter(nodePool, (n: Node) => n.latency !== undefined)
     if (nodePool.length === 0) {
       return undefined
     }
@@ -126,7 +103,7 @@ export class Mesh extends EventEmitter {
       return undefined
     }
 
-    nodePool = filter(nodePool, (n: Node) => (n.blockHeight !== undefined))
+    nodePool = filter(nodePool, (n: Node) => n.blockHeight !== undefined)
     if (nodePool.length === 0) {
       return undefined
     }
@@ -145,8 +122,41 @@ export class Mesh extends EventEmitter {
       return undefined
     }
 
-    const randomIndex = chance.natural({ min: 0, max: nodePool.length-1 })
+    const randomIndex = random(0, nodePool.length - 1)
     return nodePool[randomIndex]
+  }
+
+  private validateOptionalParameters() {
+    // TODO
+  }
+
+  private performBenchmark() {
+    this.logger.debug('performBenchmark triggered.')
+
+    // pick and ping a random node
+    const node = this.getRandomNode()
+    if (node) {
+      node.getBlockCount().catch((err) => {
+        this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message)
+      })
+    }
+  }
+
+  private checkMeshReady() {
+    this.logger.debug('checkMeshReady triggered.')
+    const activeNodes = this.listActiveNodes()
+    if (!this.options.minActiveNodesRequired || activeNodes.length >= this.options.minActiveNodesRequired) {
+      if (!this._isReady) {
+        // First signal that mesh is considered as 'ready' state
+        this.setReady()
+        this.logger.debug('mesh is considered to be now ready.')
+      }
+    }
+  }
+
+  private setReady() {
+    this._isReady = true
+    this.emit('ready')
   }
 
   private listActiveNodes(): Node[] {

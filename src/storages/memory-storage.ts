@@ -8,12 +8,12 @@ const DEFAULT_OPTIONS: MemoryStorageOptions = {
 }
 
 export interface MemoryStorageOptions {
-  loggerOptions?: LoggerOptions,
+  loggerOptions?: LoggerOptions
 }
 
 interface BlockItem {
-  height: number,
-  block: object,
+  height: number
+  block: object
 }
 
 export class MemoryStorage extends EventEmitter {
@@ -28,6 +28,7 @@ export class MemoryStorage extends EventEmitter {
 
     // Associate optional properties
     this.options = merge({}, DEFAULT_OPTIONS, options)
+    this.validateOptionalParameters()
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
@@ -48,9 +49,9 @@ export class MemoryStorage extends EventEmitter {
     }
   }
 
-  setBlockCount(blockHeight: number) {
-    // TODO: change this to return promise instead
+  setBlockCount(blockHeight: number): Promise<void> {
     this._blockHeight = blockHeight
+    return Promise.resolve()
   }
 
   getBlock(height: number): Promise<object> {
@@ -62,13 +63,25 @@ export class MemoryStorage extends EventEmitter {
     }
   }
 
-  setBlock(height: number, block: object, source: object): Promise<void> {
+  setBlock(height: number, block: object, source: string): Promise<void> {
     this.blockCollection.push({ height, block })
     return Promise.resolve()
+  }
+
+  pruneBlock(height: number, redundancySize: number): Promise<void> {
+    throw new Error('Not implemented.')
+  }
+
+  analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
+    throw new Error('Not implemented.')
   }
 
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return Promise.resolve()
+  }
+
+  private validateOptionalParameters() {
+    // TODO
   }
 }

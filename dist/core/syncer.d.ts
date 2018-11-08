@@ -5,11 +5,23 @@ import { Mesh } from './mesh';
 import { MemoryStorage } from '../storages/memory-storage';
 import { MongodbStorage } from '../storages/mongodb-storage';
 export interface SyncerOptions {
+    minHeight?: number;
+    maxHeight?: number;
+    blockRedundancy?: number;
     startOnInit?: boolean;
+    toSyncIncremental?: boolean;
+    toSyncForMissingBlocks?: boolean;
+    toPruneRedundantBlocks?: boolean;
     workerCount?: number;
-    doEnqueueBlockIntervalMs?: number;
+    enqueueBlockIntervalMs?: number;
+    verifyBlocksIntervalMs?: number;
     maxQueueLength?: number;
-    reQueueDelayMs?: number;
+    retryEnqueueDelayMs?: number;
+    standardEnqueueBlockPriority?: number;
+    retryEnqueueBlockPriority?: number;
+    missingEnqueueStoreBlockPriority?: number;
+    enqueuePruneBlockPriority?: number;
+    maxPruneChunkSize?: number;
     loggerOptions?: LoggerOptions;
 }
 export declare class Syncer extends EventEmitter {
@@ -20,15 +32,26 @@ export declare class Syncer extends EventEmitter {
     private storage?;
     private options;
     private logger;
+    private enqueueStoreBlockIntervalId?;
+    private blockVerificationIntervalId?;
     constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options?: SyncerOptions);
     isRunning(): boolean;
     start(): void;
     stop(): void;
     private storeBlockCompleteHandler;
+    private validateOptionalParameters;
     private getPriorityQueue;
-    private initEnqueueBlock;
-    private doEnqueueBlock;
+    private initStoreBlock;
+    private doEnqueueStoreBlock;
+    private isReachedMaxHeight;
+    private isReachedHighestBlock;
+    private isReachedMaxQueueLength;
+    private setBlockWritePointer;
+    private initBlockVerification;
+    private doBlockVerification;
     private increaseBlockWritePointer;
-    private enqueueBlock;
+    private enqueueStoreBlock;
+    private enqueuePruneBlock;
     private storeBlock;
+    private pruneBlock;
 }

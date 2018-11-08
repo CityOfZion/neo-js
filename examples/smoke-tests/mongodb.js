@@ -3,7 +3,7 @@
 const Neo = require('../../dist/neo').Neo
 
 process.on('unhandledRejection', (reason, p) => {
-  console.warn('Unhandled Rejection at: Promise', p, 'reason:', reason)
+  console.warn('Unhandled promise rejection. Reason:', reason)
 })
 
 // -- Parameters
@@ -29,18 +29,22 @@ const blockCollectionName = 'blocks'
       loggerOptions: { level: 'debug' },
     },
     meshOptions: {
-      loggerOptions: { level: 'debug' },
+      loggerOptions: { level: 'info' },
     },
     apiOptions: {
-      loggerOptions: { level: 'debug' },
+      loggerOptions: { level: 'info' },
     },
-    loggerOptions: { level: 'debug' },
+    syncerOptions: {
+      startOnInit: false,
+      loggerOptions: { level: 'info' },
+    },
+    loggerOptions: { level: 'info' },
   })
 
-  // Wait for mesh to be ready before start testing
-  neo.mesh.on('ready', async () => {
-    // console.log('=> blockCount:', await neo.api.getBlockCount())
-    console.log('=> block #12:', await neo.api.getBlock(12))
+  neo.storage.on('ready', async () => {
+    console.log('=> neo.storage ready.')
+    const blocks = await neo.storage.getBlocks(517622)
+    console.log('=> Blocks of height 517622:', blocks)
 
     neo.close()
     console.log('=== THE END ===')

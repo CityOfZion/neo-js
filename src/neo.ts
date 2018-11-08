@@ -11,6 +11,7 @@ import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
 
+const version = require('../package.json').version
 
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
@@ -19,22 +20,22 @@ const DEFAULT_OPTIONS: NeoOptions = {
 }
 
 export interface NeoOptions {
-  network?: string,
-  storageType?: string,
-  endpoints?: object[],
-  nodeOptions?: NodeOptions,
-  meshOptions?: MeshOptions,
-  storageOptions?: MemoryStorageOptions | MongodbStorageOptions,
-  apiOptions?: ApiOptions,
-  syncerOptions?: SyncerOptions,
-  loggerOptions?: LoggerOptions,
+  network?: string
+  storageType?: string
+  endpoints?: object[]
+  nodeOptions?: NodeOptions
+  meshOptions?: MeshOptions
+  storageOptions?: MemoryStorageOptions | MongodbStorageOptions
+  apiOptions?: ApiOptions
+  syncerOptions?: SyncerOptions
+  loggerOptions?: LoggerOptions
 }
 
 export class Neo extends EventEmitter {
-  public mesh: Mesh
-  public storage?: MemoryStorage | MongodbStorage
-  public api: Api
-  public syncer: Syncer
+  mesh: Mesh
+  storage?: MemoryStorage | MongodbStorage
+  api: Api
+  syncer: Syncer
 
   private options: NeoOptions
   private logger: Logger
@@ -44,9 +45,11 @@ export class Neo extends EventEmitter {
 
     // Associate optional properties
     this.options = merge({}, DEFAULT_OPTIONS, options)
+    this.validateOptionalParameters()
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
+    this.logger.info('Version:', Neo.VERSION)
     this.mesh = this.getMesh()
     this.storage = this.getStorage()
     this.api = this.getApi()
@@ -56,11 +59,28 @@ export class Neo extends EventEmitter {
   }
 
   static get VERSION(): string {
-    return profiles.version
+    return version
   }
 
-  get VERSION(): string {
-    return profiles.version
+  static get UserAgent(): string {
+    return `NEO-JS:${Neo.VERSION}`
+  }
+
+  close() {
+    this.logger.debug('close triggered.')
+    if (this.syncer) {
+      this.syncer.stop()
+    }
+    if (this.mesh) {
+      this.mesh.stopBenchmark()
+    }
+    if (this.storage) {
+      this.storage.disconnect()
+    }
+  }
+
+  private validateOptionalParameters() {
+    // TODO
   }
 
   private getMesh(): Mesh {
@@ -71,12 +91,14 @@ export class Neo extends EventEmitter {
 
   private getStorage(): MemoryStorage | MongodbStorage | undefined {
     this.logger.debug('getStorage triggered.')
-    if (!this.options.storageType) { // No storage
+    if (!this.options.storageType) {
+      // No storage
       return undefined
     } else if (this.options.storageType === C.storage.memory) {
       return new MemoryStorage(this.options.storageOptions)
     } else if (this.options.storageType === C.storage.mongodb) {
-      return new MongodbStorage(this.options.storageOptions)
+      const mongoStorageOptions = merge({}, this.options.storageOptions, { userAgent: Neo.UserAgent })
+      return new MongodbStorage(mongoStorageOptions)
     } else {
       throw new Error(`Unknown storageType [${this.options.storageType}]`)
     }
@@ -108,22 +130,12 @@ export class Neo extends EventEmitter {
     }
 
     // Instantiate nodes
-    let nodes: Node[] = []
+    const nodes: Node[] = []
     endpoints.forEach((item) => {
-      const node = new Node((<any> item).endpoint, this.options.nodeOptions)
+      const node = new Node((<any>item).endpoint, this.options.nodeOptions)
       nodes.push(node)
     })
 
     return nodes
-  }
-
-  close() {
-    this.logger.debug('close triggered.')
-    if (this.mesh) {
-      this.mesh.stopBenchmark()
-    }
-    if (this.storage) {
-      this.storage.disconnect()
-    }
   }
 }

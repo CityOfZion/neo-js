@@ -1,5 +1,4 @@
 declare const profiles: {
-    version: string;
     rpc: {
         mainnet: {
             endpoint: string;

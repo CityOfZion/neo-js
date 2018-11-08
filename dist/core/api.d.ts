@@ -13,11 +13,12 @@ export declare class Api extends EventEmitter {
     private options;
     private logger;
     constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options?: ApiOptions);
+    getBlockCount(): Promise<number>;
+    getBlock(height: number): Promise<object>;
     private storageInsertHandler;
+    private validateOptionalParameters;
     private storeBlockCount;
     private storeBlock;
-    getBlockCount(): Promise<number>;
     private getBlockCountFromMesh;
-    getBlock(height: number): Promise<object>;
     private getBlockFromMesh;
 }

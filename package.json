@@ -1,16 +1,23 @@
 {
   "name": "neo-js",
-  "version": "0.10.0-alpha.1",
+  "version": "0.10.0-rc.1",
   "description": "A package for running a node on the neo blockchain.",
   "main": "dist/neo",
   "types": "dist/neo",
   "scripts": {
-    "webpack": "webpack",
     "mocha": "mocha",
+    "tsc": "tsc",
+    "tslint": "tslint",
+    "prettier": "prettier",
+    "typedoc": "typedoc",
+    "dev": "tsc --watch",
     "clean": "rm -rf ./dist",
-    "build": "npm run clean && webpack",
+    "build": "npm run clean && tsc",
+    "build:docs": "typedoc --out ./docs --mode modules ./src",
     "rebuild": "rm -rf ./node_modules && npm install && npm run build",
     "rebuild:hard": "rm -f ./package-lock.json && npm run rebuild",
+    "lint": "tslint -c tslint.json './src/**/*.ts'",
+    "format": "prettier --write './src/**/*.ts'",
     "test": "mocha --reporter spec"
   },
   "repository": {
@@ -32,15 +39,15 @@
     "@types/node": "^10.7.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",
-    "ts-loader": "^4.4.2",
-    "typescript": "^3.0.1",
-    "webpack": "^4.16.5",
-    "webpack-cli": "^3.1.0"
+    "prettier": "^1.15.1",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.15.0",
+    "typedoc": "^0.13.0",
+    "typescript": "^3.1.1"
   },
   "dependencies": {
-    "@cityofzion/neon-js": "^3.10.0",
+    "@cityofzion/neon-js": "3.10.0",
     "async": "^2.6.1",
-    "chance": "^1.0.16",
     "events": "^3.0.0",
     "lodash": "^4.17.10",
     "mongoose": "4.13.14",

@@ -13,12 +13,12 @@ const DEFAULT_OPTIONS: ApiOptions = {
 }
 
 export interface ApiOptions {
-  loggerOptions?: LoggerOptions,
+  loggerOptions?: LoggerOptions
 }
 
 interface StorageInsertPayload {
-  method: string,
-  result: any,
+  method: string
+  result: any
 }
 
 export class Api extends EventEmitter {
@@ -36,16 +36,69 @@ export class Api extends EventEmitter {
 
     // Associate optional properties
     this.options = merge({}, DEFAULT_OPTIONS, options)
+    this.validateOptionalParameters()
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
-  
+
     // Event handlers
     this.on('storage:insert', this.storageInsertHandler.bind(this))
 
     this.logger.debug('constructor completes.')
   }
-  
+
+  getBlockCount(): Promise<number> {
+    this.logger.debug('getBlockCount triggered.')
+    if (!this.storage) {
+      this.logger.debug('No storage delegate detected.')
+      return this.getBlockCountFromMesh()
+    }
+
+    return new Promise((resolve, reject) => {
+      this.storage!.getBlockCount()
+        .then((blockHeight) => resolve(blockHeight))
+        .catch((err) => {
+          // Failed to fetch from storage, try mesh instead
+          this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...')
+          this.getBlockCountFromMesh()
+            .then((res) => {
+              this.logger.debug('Successfully fetch result from mesh.')
+              this.emit('storage:insert', { method: C.rpc.getblockcount, result: res })
+              resolve(res)
+            })
+            .catch((err2) => reject(err2))
+        })
+    })
+  }
+
+  getBlock(height: number): Promise<object> {
+    this.logger.debug('getBlock triggered. height:', height)
+
+    NeoValidator.validateHeight(height)
+
+    if (!this.storage) {
+      this.logger.debug('No storage delegate detected.')
+      return this.getBlockFromMesh(height)
+    }
+
+    return new Promise((resolve, reject) => {
+      this.storage!.getBlock(height)
+        .then((block) => resolve(block))
+        .catch((err) => {
+          // Failed to fetch from storage, try mesh instead
+          this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
+          this.logger.debug('Attempt to fetch from mesh instead...')
+          this.getBlockFromMesh(height)
+            .then((block) => {
+              this.logger.debug('Successfully fetch result from mesh.')
+              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block } })
+              resolve(block)
+            })
+            .catch((err2) => reject(err2))
+        })
+    })
+  }
+
   private storageInsertHandler(payload: StorageInsertPayload) {
     this.logger.debug('storageInsertHandler triggered.')
     if (payload.method === C.rpc.getblockcount) {
@@ -57,42 +110,24 @@ export class Api extends EventEmitter {
     }
   }
 
+  private validateOptionalParameters() {
+    // TODO
+  }
+
   private storeBlockCount(payload: StorageInsertPayload) {
     if (this.storage) {
-      const blockHeight = <number> payload.result
+      const blockHeight = <number>payload.result
       this.storage.setBlockCount(blockHeight)
     }
   }
 
   private storeBlock(payload: StorageInsertPayload) {
     if (this.storage) {
-      const height = <number> payload.result.height
-      const block = <object> payload.result.block
-      this.storage.setBlock(height, block, {})
+      const height = <number>payload.result.height
+      const block = <object>payload.result.block
+      const source = 'api:storeBlock'
+      this.storage.setBlock(height, block, source)
     }
-  }
-
-  getBlockCount(): Promise<number> {
-    this.logger.debug('getBlockCount triggered.')
-    if(!this.storage) {
-      this.logger.debug('No storage delegate detected.')
-      return this.getBlockCountFromMesh()
-    }
-
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlockCount()
-        .then((blockHeight) => resolve(blockHeight))
-        .catch((err) => { // Failed to fetch from storage, try mesh instead
-          this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...')
-          this.getBlockCountFromMesh()
-            .then((res) => {
-              this.logger.debug('Successfully fetch result from mesh.')
-              this.emit('storage:insert', { method: C.rpc.getblockcount, result: res})
-              resolve(res)
-            })
-            .catch((err2) => reject(err2))
-        })
-    })
   }
 
   private getBlockCountFromMesh(): Promise<number> {
@@ -104,33 +139,6 @@ export class Api extends EventEmitter {
       // TODO
       return Promise.reject(new Error('Edge case not implemented.'))
     }
-  }
-
-  getBlock(height: number): Promise<object> {
-    this.logger.debug('getBlock triggered. height:', height)
-
-    NeoValidator.validateHeight(height)
-
-    if(!this.storage) {
-      this.logger.debug('No storage delegate detected.')
-      return this.getBlockFromMesh(height)
-    }
-
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlock(height)
-        .then((block) => resolve(block))
-        .catch((err) => { // Failed to fetch from storage, try mesh instead
-          this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
-          this.logger.debug('Attempt to fetch from mesh instead...')
-          this.getBlockFromMesh(height)
-            .then((block) => {
-              this.logger.debug('Successfully fetch result from mesh.')
-              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block, }})
-              resolve(block)
-            })
-            .catch((err2) => reject(err2))
-        })
-    })
   }
 
   private getBlockFromMesh(height: number): Promise<object> {

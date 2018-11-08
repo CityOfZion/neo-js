@@ -13,8 +13,11 @@ export declare class MemoryStorage extends EventEmitter {
     constructor(options?: MemoryStorageOptions);
     isReady(): boolean;
     getBlockCount(): Promise<number>;
-    setBlockCount(blockHeight: number): void;
+    setBlockCount(blockHeight: number): Promise<void>;
     getBlock(height: number): Promise<object>;
-    setBlock(height: number, block: object, source: object): Promise<void>;
+    setBlock(height: number, block: object, source: string): Promise<void>;
+    pruneBlock(height: number, redundancySize: number): Promise<void>;
+    analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]>;
     disconnect(): Promise<void>;
+    private validateOptionalParameters;
 }
