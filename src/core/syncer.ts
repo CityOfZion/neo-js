@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { priorityQueue } from 'async'
+import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, difference, filter, take } from 'lodash'
 import { Node } from './node'
@@ -54,7 +54,7 @@ export interface SyncerOptions {
 
 export class Syncer extends EventEmitter {
   private _isRunning = false
-  private storeQueue: any
+  private storeQueue: AsyncPriorityQueue<Object>
   private blockWritePointer: number = 0
   private mesh: Mesh
   private storage?: MemoryStorage | MongodbStorage
@@ -137,7 +137,7 @@ export class Syncer extends EventEmitter {
     }
   }
 
-  private getPriorityQueue(concurrency: number): any {
+  private getPriorityQueue(concurrency: number): AsyncPriorityQueue<Object> {
     return priorityQueue((task: object, callback: () => void) => {
       const method: (attrs: object) => Promise<any> = (<any>task).method
       const attrs: object = (<any>task).attrs
