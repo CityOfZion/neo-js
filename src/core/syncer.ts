@@ -54,7 +54,7 @@ export interface SyncerOptions {
 
 export class Syncer extends EventEmitter {
   private _isRunning = false
-  private storeQueue: AsyncPriorityQueue<Object>
+  private storeQueue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private mesh: Mesh
   private storage?: MemoryStorage | MongodbStorage
@@ -137,7 +137,7 @@ export class Syncer extends EventEmitter {
     }
   }
 
-  private getPriorityQueue(concurrency: number): AsyncPriorityQueue<Object> {
+  private getPriorityQueue(concurrency: number): AsyncPriorityQueue<object> {
     return priorityQueue((task: object, callback: () => void) => {
       const method: (attrs: object) => Promise<any> = (<any>task).method
       const attrs: object = (<any>task).attrs
