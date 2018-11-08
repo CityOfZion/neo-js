@@ -69,7 +69,7 @@ export class Mesh extends EventEmitter {
     })
 
     // Start timer
-    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), <number>this.options.benchmarkIntervalMs)
+    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), this.options.benchmarkIntervalMs!)
   }
 
   stopBenchmark() {

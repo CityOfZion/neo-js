@@ -4,7 +4,6 @@
     "tslint-config-prettier"
   ],
   "rules": {
-    "no-angle-bracket-type-assertion": false,
     "member-access": [true, "no-public"],
     "object-literal-sort-keys": false,
     "variable-name": [true, "allow-leading-underscore"],

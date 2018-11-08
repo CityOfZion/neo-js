@@ -132,7 +132,8 @@ export class Neo extends EventEmitter {
     // Instantiate nodes
     const nodes: Node[] = []
     endpoints.forEach((item) => {
-      const node = new Node((<any>item).endpoint, this.options.nodeOptions)
+      const endpoint = (item as any).endpoint
+      const node = new Node(endpoint, this.options.nodeOptions)
       nodes.push(node)
     })
 

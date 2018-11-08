@@ -139,8 +139,8 @@ export class Syncer extends EventEmitter {
 
   private getPriorityQueue(concurrency: number): AsyncPriorityQueue<object> {
     return priorityQueue((task: object, callback: () => void) => {
-      const method: (attrs: object) => Promise<any> = (<any>task).method
-      const attrs: object = (<any>task).attrs
+      const method: (attrs: object) => Promise<any> = (task as any).method
+      const attrs: object = (task as any).attrs
       this.logger.debug('new worker for queue.')
 
       method(attrs)
@@ -353,7 +353,7 @@ export class Syncer extends EventEmitter {
 
   private storeBlock(attrs: object): Promise<any> {
     this.logger.debug('storeBlock triggered. attrs:', attrs)
-    const height: number = (<any>attrs).height
+    const height: number = (attrs as any).height
 
     this.emit('storeBlock:init', { height })
     return new Promise((resolve, reject) => {
@@ -389,8 +389,8 @@ export class Syncer extends EventEmitter {
 
   private pruneBlock(attrs: object): Promise<any> {
     this.logger.debug('pruneBlock triggered. attrs:', attrs)
-    const height: number = (<any>attrs).height
-    const redundancySize: number = (<any>attrs).redundancySize
+    const height: number = (attrs as any).height
+    const redundancySize: number = (attrs as any).redundancySize
 
     return new Promise((resolve, reject) => {
       this.storage!.pruneBlock(height, redundancySize)

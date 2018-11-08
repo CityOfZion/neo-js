@@ -116,15 +116,15 @@ export class Api extends EventEmitter {
 
   private storeBlockCount(payload: StorageInsertPayload) {
     if (this.storage) {
-      const blockHeight = <number>payload.result
+      const blockHeight = payload.result as number
       this.storage.setBlockCount(blockHeight)
     }
   }
 
   private storeBlock(payload: StorageInsertPayload) {
     if (this.storage) {
-      const height = <number>payload.result.height
-      const block = <object>payload.result.block
+      const height = payload.result.height as number
+      const block = payload.result.block as object
       const source = 'api:storeBlock'
       this.storage.setBlock(height, block, source)
     }

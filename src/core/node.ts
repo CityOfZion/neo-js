@@ -81,11 +81,11 @@ export class Node extends EventEmitter {
       this.decreasePendingRequest()
       this.lastSeenTimestamp = Date.now()
       this.isActive = true
-      if ((<any>payload).latency) {
-        this.latency = (<any>payload).latency
+      if ((payload as any).latency) {
+        this.latency = (payload as any).latency
       }
-      if ((<any>payload).blockHeight) {
-        this.blockHeight = (<any>payload).blockHeight
+      if ((payload as any).blockHeight) {
+        this.blockHeight = (payload as any).blockHeight
       }
     }
   }
@@ -111,7 +111,7 @@ export class Node extends EventEmitter {
       RpcDelegate.query(this.endpoint, method, params, id)
         .then((res) => {
           const latency = Date.now() - t0
-          const result = (<any>res).result
+          const result = (res as any).result
           const blockHeight = method === C.rpc.getblockcount ? result : undefined
           this.emit('query:success', { method, latency, blockHeight })
           return resolve(result)
