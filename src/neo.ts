@@ -11,7 +11,7 @@ import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
 
-const version = require('../package.json').version
+const version = require('../package.json').version // tslint:disable-line
 
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
