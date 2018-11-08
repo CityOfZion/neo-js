@@ -49,9 +49,13 @@ export class MemoryStorage extends EventEmitter {
     }
   }
 
-  setBlockCount(blockHeight: number): Promise<void> {
-    this._blockHeight = blockHeight
+  setBlockCount(height: number): Promise<void> {
+    this._blockHeight = height
     return Promise.resolve()
+  }
+
+  countBlockRedundancy(height: number): Promise<number> {
+    throw new Error('Not implemented.')
   }
 
   getBlock(height: number): Promise<object> {

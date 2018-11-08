@@ -74,8 +74,24 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
-  setBlockCount(blockHeight: number): Promise<void> {
+  setBlockCount(height: number): Promise<void> {
     throw new Error('Not implemented.')
+  }
+
+  countBlockRedundancy(height: number): Promise<number> {
+    this.logger.debug('countBlockRedundancy triggered. height:', height)
+
+    return new Promise((resolve, reject) => {
+      this.blockModel
+        .count({ height })
+        .exec((err: any, res: number) => {
+          if (err) {
+            this.logger.warn('blockModel.count() execution failed. error:', err.message)
+            return reject(err)
+          }
+          return resolve(res as number)
+        })
+    })
   }
 
   getBlock(height: number): Promise<object> {
