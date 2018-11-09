@@ -9,6 +9,7 @@ const DEFAULT_OPTIONS = {
     minHeight: 1,
     maxHeight: undefined,
     blockRedundancy: 1,
+    checkRedundancyBeforeStoreBlock: true,
     startOnInit: true,
     toSyncIncremental: true,
     toSyncForMissingBlocks: true,
@@ -252,33 +253,55 @@ class Syncer extends events_1.EventEmitter {
     storeBlock(attrs) {
         this.logger.debug('storeBlock triggered. attrs:', attrs);
         const height = attrs.height;
-        this.emit('storeBlock:init', { height });
+        const node = this.mesh.getOptimalNode(height);
         return new Promise((resolve, reject) => {
-            const node = this.mesh.getOptimalNode(height);
-            if (!node) {
-                this.emit('storeBlock:complete', { isSuccess: false, height });
-                return reject(new Error('No valid node found.'));
-            }
-            node
-                .getBlock(height)
+            this.emit('storeBlock:init', { height });
+            Promise.resolve()
+                .then(() => {
+                if (this.options.checkRedundancyBeforeStoreBlock) {
+                    return this.storage.countBlockRedundancy(height);
+                }
+                return Promise.resolve(undefined);
+            })
+                .then((redundantCount) => {
+                if (!redundantCount) {
+                    return Promise.resolve();
+                }
+                else if (redundantCount < this.options.blockRedundancy) {
+                    return Promise.resolve();
+                }
+                else {
+                    throw new Error('SKIP_STORE_BLOCK');
+                }
+            })
+                .then(() => {
+                if (!node) {
+                    throw new Error('No valid node found.');
+                }
+                return Promise.resolve();
+            })
+                .then(() => {
+                return node.getBlock(height);
+            })
                 .then((block) => {
                 const source = node.endpoint;
-                this.storage.setBlock(height, block, source)
-                    .then((res) => {
-                    this.logger.debug('setBlock succeeded. For height:', height);
-                    this.emit('storeBlock:complete', { isSuccess: true, height });
-                    return resolve();
-                })
-                    .catch((err) => {
-                    this.logger.debug('setBlock failed. For height:', height);
-                    this.emit('storeBlock:complete', { isSuccess: false, height });
-                    return reject(err);
-                });
+                return this.storage.setBlock(height, block, source);
+            })
+                .then(() => {
+                this.logger.debug('setBlock succeeded. height:', height);
+                this.emit('storeBlock:complete', { isSuccess: true, height });
+                return resolve();
             })
                 .catch((err) => {
-                this.logger.debug('getBlock failed. For height:', height);
-                this.emit('storeBlock:complete', { isSuccess: false, height });
-                return reject(err);
+                if (err.Message === 'SKIP_STORE_BLOCK') {
+                    this.logger.debug('setBlock skipped. height:', height);
+                    this.emit('storeBlock:complete', { isSuccess: false, isSkipped: true, height });
+                }
+                else {
+                    this.logger.debug('setBlock failed. height:', height, 'Message:', err.message);
+                    this.emit('storeBlock:complete', { isSuccess: false, height });
+                    return reject(err);
+                }
             });
         });
     }

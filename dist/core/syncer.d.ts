@@ -8,6 +8,7 @@ export interface SyncerOptions {
     minHeight?: number;
     maxHeight?: number;
     blockRedundancy?: number;
+    checkRedundancyBeforeStoreBlock?: boolean;
     startOnInit?: boolean;
     toSyncIncremental?: boolean;
     toSyncForMissingBlocks?: boolean;
