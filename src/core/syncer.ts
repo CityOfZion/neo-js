@@ -99,6 +99,11 @@ export class Syncer extends EventEmitter {
       return
     }
 
+    if (!this.storage) {
+      this.logger.info('Unable to start syncer when no storage are defined.')
+      return
+    }
+
     this.logger.info('Start syncer. minHeight:', this.options.minHeight!, 'maxHeight:', this.options.maxHeight)
     this._isRunning = true
     this.emit('start')
