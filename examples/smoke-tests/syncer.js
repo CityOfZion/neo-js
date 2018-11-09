@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 
+const _ = require('lodash')
 const moment = require('moment')
 const Neo = require('../../dist/neo').Neo
 
@@ -12,7 +13,7 @@ process.on('unhandledRejection', (reason, promise) => {
 const network = 'mainnet'
 const dbConnectOnInit = true
 const dbConnectionString = 'mongodb://localhost/neo_mainnet'
-// const dbConnectionString = 'mongodb://localhost/neo_mainnet_juliet'
+// const dbConnectionString = 'mongodb://localhost/neo_mainnet_lollipop'
 const blockCollectionName = 'blocks'
 const syncDurationMs = 0 * 60 * 1000
 
@@ -36,8 +37,8 @@ const syncDurationMs = 0 * 60 * 1000
     },
     syncerOptions: {
       // minHeight: 1001,
-      // maxHeight: 1500,
-      // verifyBlocksIntervalMs: 20 * 1000,
+      // maxHeight: 1200,
+      verifyBlocksIntervalMs: 20 * 1000,
       loggerOptions: { level: 'info' },
     },
     loggerOptions: { level: 'info' },
@@ -111,13 +112,36 @@ const syncDurationMs = 0 * 60 * 1000
 
   // Generate mesh report
   const meshReportIntervalId = setInterval(() => {
-    console.log('Nodes report:')
+    console.log('## Nodes report:')
     let i = 0
     neo.mesh.nodes.forEach((node) => {
-      console.log(`#${i} ${node.endpoint} [active: ${node.isActive}] [pending: ${node.pendingRequests}] [latency: ${node.latency}] [height: ${node.blockHeight}]`)
+      console.log(`> #${i} ${node.endpoint} [active: ${node.isActive}] [pending: ${node.pendingRequests}] [latency: ${node.latency}] [height: ${node.blockHeight}]`)
       i += 1
     })
   }, 30 * 1000)
+
+  // // Generate progress report
+  // const progressReportIntervalId = setInterval(async () => {
+  //   console.log('## Progress report:')
+  //   console.log('> Blockchain height:', neo.mesh.getHighestNode().blockHeight)
+  //   const storageHeight = await neo.storage.getBlockCount()
+  //   console.log('> Highest synced block:', storageHeight)
+
+  //   // Analyze blocks
+  //   const startHeight = 1
+  //   const endHeight = storageHeight
+  //   const report = await neo.storage.analyzeBlocks(startHeight, endHeight)
+  //   const all = []
+  //   for (let i = startHeight; i <= endHeight; i++) {
+  //     all.push(i)
+  //   }
+  //   const availableBlocks = _.map(report, (item) => item._id)
+  //   console.log('> Blocks available count:', availableBlocks.length)
+  //   const missingBlocks = _.difference(all, availableBlocks)
+  //   console.log('> Blocks missing count:', missingBlocks.length)
+  //   const excessiveBlocks = map(filter(report, (item) => item.count > 2), (item) => item._id)
+  //   console.log('> Blocks has 2 or more redundancy:', excessiveBlocks.length)
+  // }, 30 * 1000)
 
   if (syncDurationMs) {
     console.log(`Sync process with stop after ${syncDurationMs} ms...`)
@@ -125,6 +149,7 @@ const syncDurationMs = 0 * 60 * 1000
       neo.close()
       clearInterval(syncReportIntervalId)
       clearInterval(meshReportIntervalId)
+      // clearInterval(progressReportIntervalId)
       console.log('=== THE END ===')
     }, syncDurationMs)
   }
