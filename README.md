@@ -23,7 +23,7 @@
 
 `neo-js` package is designed to interface with the NEO blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
 
-**This is not a SDK library for interacting with NEO blockchain. Please use `neon-js` instead.**
+**This is not a SDK library for interacting with NEO blockchain. You are looking for [`neon-js`](https://github.com/cityofzion/neon-js).**
 
 ## Getting Started
 
@@ -48,13 +48,13 @@ $ npm install --save @cityofzion/neo-js
 Alternatively, to access to the latest available code, you can reference to the git repository directly:
 
 ```bash
-$ npm install --save @cityofzion/neo-js#develop
+$ npm install --save git://github.com/CityOfZion/neo-js.git#develop
 ```
 
 ## Quick Start
 
 ```js
-const Neo = require('@cityofzion/neo-js')
+const Neo = require('@cityofzion/neo-js').Neo
 ```
 
 To create a new blockchain instance:
@@ -97,10 +97,12 @@ const options = {
 const neo = new Neo(options)
 
 // Get block count
-neo.storage.getBlockCount()
-  .then((res) => {
-    console.log('Block count:', res)
-  })
+neo.storage.on('ready', () => {
+  neo.storage.getBlockCount()
+    .then((res) => {
+      console.log('Block count:', res)
+    })
+})
 ```
 
 ## Documentation
@@ -109,9 +111,9 @@ Documentation for the project can be found at:
 
 * [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
 
-Self-documented code examples are available as part of the project source code:
+You can find more code examples at repository:
 
-* [https://github.com/CityOfZion/neo-js/blob/master/examples](https://github.com/CityOfZion/neo-js/blob/master/examples)
+* [https://github.com/rockacola/neo-js-examples](https://github.com/rockacola/neo-js-examples)
 
 ## Contribution
 
