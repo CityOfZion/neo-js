@@ -29,9 +29,12 @@ class MemoryStorage extends events_1.EventEmitter {
             return Promise.reject(new Error('blockHeight unavailable'));
         }
     }
-    setBlockCount(blockHeight) {
-        this._blockHeight = blockHeight;
+    setBlockCount(height) {
+        this._blockHeight = height;
         return Promise.resolve();
+    }
+    countBlockRedundancy(height) {
+        throw new Error('Not implemented.');
     }
     getBlock(height) {
         const blockItem = lodash_1.find(this.blockCollection, { height });

@@ -8,6 +8,7 @@ const DEFAULT_OPTIONS: MeshOptions = {
   startBenchmarkOnInit: true,
   benchmarkIntervalMs: 2000,
   minActiveNodesRequired: 2,
+  pendingRequestsThreshold: 5,
   loggerOptions: {},
 }
 
@@ -15,6 +16,7 @@ export interface MeshOptions {
   startBenchmarkOnInit?: boolean
   benchmarkIntervalMs?: number
   minActiveNodesRequired?: number
+  pendingRequestsThreshold?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -69,7 +71,7 @@ export class Mesh extends EventEmitter {
     })
 
     // Start timer
-    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), <number>this.options.benchmarkIntervalMs)
+    this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), this.options.benchmarkIntervalMs!)
   }
 
   stopBenchmark() {
@@ -124,6 +126,35 @@ export class Mesh extends EventEmitter {
 
     const randomIndex = random(0, nodePool.length - 1)
     return nodePool[randomIndex]
+  }
+
+  /**
+   * An optimal node is defined as a fast node that has not exceed a pending threshold.
+   */
+  getOptimalNode(height: number, activeOnly = true): Node | undefined {
+    this.logger.debug('getOptimalNode triggered.')
+
+    const nodePool = activeOnly ? this.listActiveNodes() : this.nodes
+    if (nodePool.length === 0) {
+      return undefined
+    }
+
+    // Filter nodes that has the required height
+    const qualifyHeightNodes = filter(this.nodes, (n: Node) => n.blockHeight !== undefined && n.blockHeight >= height)
+    if (qualifyHeightNodes.length === 0) {
+      return undefined
+    }
+
+    // Filter nodes that exceed pending threshold
+    const qualifyPendingNodes = filter(qualifyHeightNodes, (n: Node) => n.pendingRequests < this.options.pendingRequestsThreshold!)
+    if (qualifyPendingNodes.length === 0) {
+      // If all qualify nodes exceeded pending threshold, then just pick a random one from qualifyHeightNodes
+      const randomIndex = random(0, qualifyHeightNodes.length - 1)
+      return qualifyHeightNodes[randomIndex]
+    }
+
+    // Pick the fastest node from qualifyPendingNodes
+    return minBy(qualifyPendingNodes, 'latency')
   }
 
   private validateOptionalParameters() {

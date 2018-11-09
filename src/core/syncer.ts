@@ -1,5 +1,5 @@
 import { EventEmitter } from 'events'
-import { priorityQueue } from 'async'
+import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, difference, filter, take } from 'lodash'
 import { Node } from './node'
@@ -14,14 +14,15 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   blockRedundancy: 1, // If value is greater than 1, than it'll keep multiple copies of same block as integrity measurement // TODO: to ensure redundant blocks are coming from unique sources
+  checkRedundancyBeforeStoreBlock: true, // Perform a count on given height before attempt to store block.
   startOnInit: true,
   toSyncIncremental: true,
   toSyncForMissingBlocks: true,
   toPruneRedundantBlocks: false,
-  workerCount: 30,
+  storeQueueConcurrency: 30,
   enqueueBlockIntervalMs: 2000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
-  maxQueueLength: 10000,
+  maxStoreQueueLength: 10000,
   retryEnqueueDelayMs: 2000,
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
@@ -35,14 +36,15 @@ export interface SyncerOptions {
   minHeight?: number
   maxHeight?: number
   blockRedundancy?: number
+  checkRedundancyBeforeStoreBlock?: boolean
   startOnInit?: boolean
   toSyncIncremental?: boolean
   toSyncForMissingBlocks?: boolean
   toPruneRedundantBlocks?: boolean
-  workerCount?: number
+  storeQueueConcurrency?: number
   enqueueBlockIntervalMs?: number
   verifyBlocksIntervalMs?: number
-  maxQueueLength?: number
+  maxStoreQueueLength?: number
   retryEnqueueDelayMs?: number
   standardEnqueueBlockPriority?: number
   retryEnqueueBlockPriority?: number
@@ -54,7 +56,7 @@ export interface SyncerOptions {
 
 export class Syncer extends EventEmitter {
   private _isRunning = false
-  private queue: any
+  private storeQueue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private mesh: Mesh
   private storage?: MemoryStorage | MongodbStorage
@@ -76,7 +78,7 @@ export class Syncer extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
-    this.queue = this.getPriorityQueue()
+    this.storeQueue = this.getPriorityQueue(this.options.storeQueueConcurrency!)
     if (this.options.startOnInit) {
       this.start()
     }
@@ -137,31 +139,25 @@ export class Syncer extends EventEmitter {
     }
   }
 
-  private getPriorityQueue(): any {
-    /**
-     * @param {object} task
-     * @param {string} task.method
-     * @param {object} task.attrs
-     * @param {function} callback
-     */
+  private getPriorityQueue(concurrency: number): AsyncPriorityQueue<object> {
     return priorityQueue((task: object, callback: () => void) => {
-      const method: (attrs: object) => Promise<any> = (<any>task).method
-      const attrs: object = (<any>task).attrs
+      const method: (attrs: object) => Promise<any> = (task as any).method
+      const attrs: object = (task as any).attrs
       this.logger.debug('new worker for queue.')
 
       method(attrs)
         .then(() => {
           callback()
           this.logger.debug('queued method run completed.')
-          this.emit('sync:complete', { isSuccess: true, task })
+          this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
           this.logger.info('Task execution error, but to continue... attrs:', attrs)
           // this.logger.info('Error:', err)
           callback()
-          this.emit('sync:complete', { isSuccess: false, task })
+          this.emit('queue:worker:complete', { isSuccess: false, task })
         })
-    }, this.options.workerCount!)
+    }, concurrency)
   }
 
   private initStoreBlock() {
@@ -192,7 +188,7 @@ export class Syncer extends EventEmitter {
     if (node) {
       // TODO: better way to validate a node
       // TODO: undefined param handler
-      while (!this.isReachedMaxHeight() && !this.isReachedHighestBlock(node) && !this.isReachedMaxQueueLength()) {
+      while (!this.isReachedMaxHeight() && !this.isReachedHighestBlock(node) && !this.isReachedMaxStoreQueueLength()) {
         this.increaseBlockWritePointer()
         this.enqueueStoreBlock(this.blockWritePointer!, this.options.standardEnqueueBlockPriority!)
       }
@@ -209,8 +205,8 @@ export class Syncer extends EventEmitter {
     return this.blockWritePointer! >= node.blockHeight!
   }
 
-  private isReachedMaxQueueLength(): boolean {
-    return this.queue.length() >= this.options.maxQueueLength!
+  private isReachedMaxStoreQueueLength(): boolean {
+    return this.storeQueue.length() >= this.options.maxStoreQueueLength!
   }
 
   private setBlockWritePointer(): Promise<void> {
@@ -248,7 +244,7 @@ export class Syncer extends EventEmitter {
     this.emit('blockVerification:init')
 
     // Queue size
-    this.logger.info('Blocks queue length:', this.queue.length())
+    this.logger.info('storeQueue.length:', this.storeQueue.length())
 
     // Blocks analysis
     const startHeight = this.options.minHeight!
@@ -327,7 +323,7 @@ export class Syncer extends EventEmitter {
     }
 
     // enqueue the block
-    this.queue.push(
+    this.storeQueue.push(
       {
         method: this.storeBlock.bind(this),
         attrs: {
@@ -345,7 +341,7 @@ export class Syncer extends EventEmitter {
     this.logger.debug('enqueuePruneBlock triggered. height:', height, 'redundancySize:', redundancySize, 'priority:', priority)
     this.emit('enqueuePruneBlock:init', { height, redundancySize, priority })
 
-    this.queue.push(
+    this.storeQueue.push(
       {
         method: this.pruneBlock.bind(this),
         attrs: {
@@ -359,44 +355,63 @@ export class Syncer extends EventEmitter {
 
   private storeBlock(attrs: object): Promise<any> {
     this.logger.debug('storeBlock triggered. attrs:', attrs)
-    const height: number = (<any>attrs).height
+    const height: number = (attrs as any).height
+    const node = this.mesh.getOptimalNode(height)
 
-    this.emit('storeBlock:init', { height })
     return new Promise((resolve, reject) => {
-      const node = this.mesh.getFastestNode() // TODO: need to pick a node with least pending requests
-      if (!node) {
-        this.emit('storeBlock:complete', { isSuccess: false, height })
-        return reject(new Error('No valid node found.'))
-      }
-
-      node
-        .getBlock(height)
-        .then((block) => {
-          const source = node.endpoint
-          this.storage!.setBlock(height, block, source)
-            .then((res) => {
-              this.logger.debug('setBlock succeeded. For height:', height)
-              this.emit('storeBlock:complete', { isSuccess: true, height })
-              return resolve()
-            })
-            .catch((err: any) => {
-              this.logger.debug('setBlock failed. For height:', height)
-              this.emit('storeBlock:complete', { isSuccess: false, height })
-              return reject(err)
-            })
+      this.emit('storeBlock:init', { height })
+      Promise.resolve()
+        .then(() => {
+          if (this.options.checkRedundancyBeforeStoreBlock) {
+            return this.storage!.countBlockRedundancy(height)
+          }
+          return Promise.resolve(undefined)
+        })
+        .then((redundantCount: number | undefined) => {
+          if (!redundantCount) {
+            return Promise.resolve()
+          } else if (redundantCount < this.options.blockRedundancy!) {
+            return Promise.resolve()
+          } else {
+            // Determined that there's no need to fetch and store this block height
+            throw new Error('SKIP_STORE_BLOCK')
+          }
+        })
+        .then(() => {
+          if (!node) {
+            throw new Error('No valid node found.')
+          }
+          return Promise.resolve()
+        })
+        .then(() => {
+          return node!.getBlock(height)
+        })
+        .then((block: any) => {
+          const source = node!.endpoint
+          return this.storage!.setBlock(height, block, source)
+        })
+        .then(() => {
+          this.logger.debug('setBlock succeeded. height:', height)
+          this.emit('storeBlock:complete', { isSuccess: true, height })
+          return resolve()
         })
         .catch((err: any) => {
-          this.logger.debug('getBlock failed. For height:', height)
-          this.emit('storeBlock:complete', { isSuccess: false, height })
-          return reject(err)
+          if (err.Message === 'SKIP_STORE_BLOCK') {
+            this.logger.debug('setBlock skipped. height:', height)
+            this.emit('storeBlock:complete', { isSuccess: false, isSkipped: true, height })
+          } else {
+            this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
+            this.emit('storeBlock:complete', { isSuccess: false, height })
+            return reject(err)
+          }
         })
     })
   }
 
   private pruneBlock(attrs: object): Promise<any> {
     this.logger.debug('pruneBlock triggered. attrs:', attrs)
-    const height: number = (<any>attrs).height
-    const redundancySize: number = (<any>attrs).redundancySize
+    const height: number = (attrs as any).height
+    const redundancySize: number = (attrs as any).redundancySize
 
     return new Promise((resolve, reject) => {
       this.storage!.pruneBlock(height, redundancySize)

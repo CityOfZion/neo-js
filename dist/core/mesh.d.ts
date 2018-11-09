@@ -6,6 +6,7 @@ export interface MeshOptions {
     startBenchmarkOnInit?: boolean;
     benchmarkIntervalMs?: number;
     minActiveNodesRequired?: number;
+    pendingRequestsThreshold?: number;
     loggerOptions?: LoggerOptions;
 }
 export declare class Mesh extends EventEmitter {
@@ -21,6 +22,7 @@ export declare class Mesh extends EventEmitter {
     getFastestNode(activeOnly?: boolean): Node | undefined;
     getHighestNode(activeOnly?: boolean): Node | undefined;
     getRandomNode(activeOnly?: boolean): Node | undefined;
+    getOptimalNode(height: number, activeOnly?: boolean): Node | undefined;
     private validateOptionalParameters;
     private performBenchmark;
     private checkMeshReady;

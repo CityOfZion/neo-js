@@ -7,7 +7,7 @@ export interface NodeOptions {
 }
 export declare class Node extends EventEmitter {
     isActive: boolean | undefined;
-    pendingRequests: number | undefined;
+    pendingRequests: number;
     latency: number | undefined;
     blockHeight: number | undefined;
     lastSeenTimestamp: number | undefined;

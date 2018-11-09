@@ -20,7 +20,8 @@ export declare class MongodbStorage extends EventEmitter {
     constructor(options?: MongodbStorageOptions);
     isReady(): boolean;
     getBlockCount(): Promise<number>;
-    setBlockCount(blockHeight: number): Promise<void>;
+    setBlockCount(height: number): Promise<void>;
+    countBlockRedundancy(height: number): Promise<number>;
     getBlock(height: number): Promise<object>;
     getBlocks(height: number): Promise<object[]>;
     setBlock(height: number, block: object, source: string): Promise<void>;

@@ -50,8 +50,20 @@ class MongodbStorage extends events_1.EventEmitter {
             });
         });
     }
-    setBlockCount(blockHeight) {
+    setBlockCount(height) {
         throw new Error('Not implemented.');
+    }
+    countBlockRedundancy(height) {
+        this.logger.debug('countBlockRedundancy triggered. height:', height);
+        return new Promise((resolve, reject) => {
+            this.blockModel.count({ height }).exec((err, res) => {
+                if (err) {
+                    this.logger.warn('blockModel.count() execution failed. error:', err.message);
+                    return reject(err);
+                }
+                return resolve(res);
+            });
+        });
     }
     getBlock(height) {
         this.logger.debug('getBlock triggered. height:', height);

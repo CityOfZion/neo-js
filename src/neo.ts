@@ -11,7 +11,7 @@ import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
 
-const version = require('../package.json').version
+const version = require('../package.json').version // tslint:disable-line
 
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
@@ -132,7 +132,8 @@ export class Neo extends EventEmitter {
     // Instantiate nodes
     const nodes: Node[] = []
     endpoints.forEach((item) => {
-      const node = new Node((<any>item).endpoint, this.options.nodeOptions)
+      const endpoint = (item as any).endpoint
+      const node = new Node(endpoint, this.options.nodeOptions)
       nodes.push(node)
     })
 

@@ -46,6 +46,9 @@ const blockCollectionName = 'blocks'
     const blocks = await neo.storage.getBlocks(517622)
     console.log('=> Blocks of height 517622:', blocks)
 
+    const redundancyCount = await neo.storage.countBlockRedundancy(517622)
+    console.log('redundancyCount:', redundancyCount)
+
     neo.close()
     console.log('=== THE END ===')
   })

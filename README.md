@@ -10,13 +10,10 @@
 </p>
 
 <p align="center">
-  A package for running a node on the <b>neo</b> blockchain.
+  Running NEO blockchain full node with Node.js and MongoDB.
 </p>
 
 <p align="center">
-  <a href="https://travis-ci.org/CityOfZion/neo-js">
-    <img src="https://travis-ci.org/CityOfZion/neo-js.svg?branch=master" alt="Build Status">
-  </a>
   <a href="https://badge.fury.io/js/%40cityofzion%2Fneo-js">
     <img src="https://badge.fury.io/js/%40cityofzion%2Fneo-js.svg" alt="npm version">
   </a>
@@ -24,6 +21,107 @@
 
 ## Overview
 
-The `neo-js` package is designed to interface with the **Neo** blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
+`neo-js` package is designed to interface with the NEO blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.
 
-**note:** All blockchain events (Invocation and Deploy) use the RPC calls to interface with the blockchain unless they can be run locally (sometimes referred to as a 'test invoke')
+**This is not a SDK library for interacting with NEO blockchain. Please use `neon-js` instead.**
+
+## Getting Started
+
+### Preparations
+
+Currently this module only support MongoDB for synchronizing the blockchain. You are expect to be connected to an
+instance of MongoDB 3.2+ to use most of its features.
+
+### System Recommendations
+
+* NodeJS 8+
+* MongoDB 3.2+
+
+## Installation
+
+Install the package using:
+
+```bash
+$ npm install --save @cityofzion/neo-js
+```
+
+Alternatively, to access to the latest available code, you can reference to the git repository directly:
+
+```bash
+$ npm install --save @cityofzion/neo-js#develop
+```
+
+## Quick Start
+
+```js
+const Neo = require('@cityofzion/neo-js')
+```
+
+To create a new blockchain instance:
+
+```js
+// Create a neo instances to interface with RPC methods
+const testnetNeo = new Neo({ network: 'testnet' })
+
+// Wait for mesh to be ready before attempt to fetch block information
+testnetNeo.mesh.on('ready', () => {
+  testnetNeo.api.getBlockCount()
+    .then((res) => {
+      console.log('Testnet getBlockCount:', res)
+    })
+})
+
+// To connect to the mainnet:
+const mainnetNeo = new Neo({ network: 'mainnet' })
+
+mainnetNeo.mesh.on('ready', () => {
+  mainnetNeo.api.getBlock(1000)
+    .then((res) => {
+      console.log('Mainnet getBlock(1000).hash:', res.hash)
+    })
+})
+```
+
+This will create a new node instance and configure it to sync the blockchain to the defined mongoDB collections:
+
+```js
+const options = {
+  network: 'testnet',
+  storageType: 'mongodb',
+  storageOptions: {
+    connectionString: 'mongodb://localhost/neo_testnet',
+  },
+}
+
+// Create a neo instance
+const neo = new Neo(options)
+
+// Get block count
+neo.storage.getBlockCount()
+  .then((res) => {
+    console.log('Block count:', res)
+  })
+```
+
+## Documentation
+
+Documentation for the project can be found at:
+
+* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
+
+Self-documented code examples are available as part of the project source code:
+
+* [https://github.com/CityOfZion/neo-js/blob/master/examples](https://github.com/CityOfZion/neo-js/blob/master/examples)
+
+## Contribution
+
+`neo-js` always encourages community code contribution. Before contributing please read the [contributor guidelines](https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md) and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork `neo-js`, commit your changes and submit a pull request.
+
+By contributing to `neo-js`, you agree that your contributions will be licensed under its MIT license.
+
+## License
+
+* Open-source [MIT](https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md).
+* Authors:
+  * [@lllwvlvwlll](https://github.com/lllwvlvwlll)
+  * [@rockacola](https://github.com/rockacola)
