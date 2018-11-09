@@ -363,9 +363,19 @@ export class Syncer extends EventEmitter {
       Promise.resolve()
         .then(() => {
           if (this.options.checkRedundancyBeforeStoreBlock) {
-            // TODO
+            return this.storage!.countBlockRedundancy(height)
           }
-          return Promise.resolve()
+          return Promise.resolve(undefined)
+        })
+        .then((redundantCount: number | undefined) => {
+          if (!redundantCount) {
+            return Promise.resolve()
+          } else if (redundantCount < this.options.blockRedundancy!) {
+            return Promise.resolve()
+          } else {
+            // Determined that there's no need to fetch and store this block height
+            throw new Error('SKIP_STORE_BLOCK')
+          }
         })
         .then(() => {
           if (!node) {
@@ -386,9 +396,14 @@ export class Syncer extends EventEmitter {
           return resolve()
         })
         .catch((err: any) => {
-          this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
-          this.emit('storeBlock:complete', { isSuccess: false, height })
-          return reject(err)
+          if (err.Message === 'SKIP_STORE_BLOCK') {
+            this.logger.debug('setBlock skipped. height:', height)
+            this.emit('storeBlock:complete', { isSuccess: false, isSkipped: true, height })
+          } else {
+            this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
+            this.emit('storeBlock:complete', { isSuccess: false, height })
+            return reject(err)
+          }
         })
     })
   }
