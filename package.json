@@ -1,5 +1,5 @@
 {
-  "name": "neo-js",
+  "name": "@cityofzion/neo-js",
   "description": "Running NEO blockchain full node with Node.js and MongoDB.",
   "version": "0.10.0-rc.1",
   "license": "MIT",
