@@ -231,7 +231,7 @@ class MongodbStorage extends events_1.EventEmitter {
                 if (!res) {
                     return reject(new Error('No result found.'));
                 }
-                return resolve(res.payload);
+                return resolve(res);
             });
         });
     }
