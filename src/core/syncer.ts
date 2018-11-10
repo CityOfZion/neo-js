@@ -393,7 +393,8 @@ export class Syncer extends EventEmitter {
         })
         .then((block: any) => {
           const source = node!.endpoint
-          return this.storage!.setBlock(height, block, source)
+          const userAgent = node!.userAgent
+          return this.storage!.setBlock(height, block, { source, userAgent })
         })
         .then(() => {
           this.logger.debug('setBlock succeeded. height:', height)

@@ -6,7 +6,10 @@ const lodash_1 = require("lodash");
 const MODULE_NAME = 'Mesh';
 const DEFAULT_OPTIONS = {
     startBenchmarkOnInit: true,
+    toFetchUserAgent: true,
     benchmarkIntervalMs: 2000,
+    fetchMissingUserAgentIntervalMs: 5000,
+    refreshUserAgentIntervalMs: 1 * 60 * 1000,
     minActiveNodesRequired: 2,
     pendingRequestsThreshold: 5,
     loggerOptions: {},
@@ -40,15 +43,28 @@ class Mesh extends events_1.EventEmitter {
                 this.checkMeshReady();
             })
                 .catch((err) => {
-                this.logger.info('node.getBlockCount error, but to continue... Endpoint:', n.endpoint, 'Message:', err.message);
+                this.logger.info('node.getBlockCount() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
             });
         });
+        if (this.options.toFetchUserAgent) {
+            unknownNodes.forEach((n) => {
+                n.getVersion()
+                    .catch((err) => {
+                    this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
+                });
+            });
+            this.fetchMissingUserAgentIntervalId = setInterval(() => this.performFetchMissingUserAgent(), this.options.fetchMissingUserAgentIntervalMs);
+            this.refreshUserAgentIntervalId = setInterval(() => this.performRefreshUserAgent(), this.options.refreshUserAgentIntervalMs);
+        }
         this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), this.options.benchmarkIntervalMs);
     }
     stopBenchmark() {
         this.logger.debug('stopBenchmark triggered.');
         if (this.benchmarkIntervalId) {
             clearInterval(this.benchmarkIntervalId);
+        }
+        if (this.fetchMissingUserAgentIntervalId) {
+            clearInterval(this.fetchMissingUserAgentIntervalId);
         }
     }
     getFastestNode(activeOnly = true) {
@@ -111,6 +127,26 @@ class Mesh extends events_1.EventEmitter {
                 this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message);
             });
         }
+    }
+    performFetchMissingUserAgent() {
+        this.logger.debug('performBenchmark triggered.');
+        const nodePool = lodash_1.filter(this.nodes, (n) => n.userAgent === undefined);
+        nodePool.forEach((n) => {
+            n.getVersion()
+                .catch((err) => {
+                this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
+            });
+        });
+    }
+    performRefreshUserAgent() {
+        this.logger.debug('performRefreshUserAgent triggered.');
+        this.logger.warn('!!! performRefreshUserAgent !!!');
+        this.nodes.forEach((n) => {
+            n.getVersion()
+                .catch((err) => {
+                this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
+            });
+        });
     }
     checkMeshReady() {
         this.logger.debug('checkMeshReady triggered.');

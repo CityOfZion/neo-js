@@ -45,7 +45,7 @@ class MemoryStorage extends events_1.EventEmitter {
             return Promise.reject(new Error('Block not found.'));
         }
     }
-    setBlock(height, block, source) {
+    setBlock(height, block, options = {}) {
         this.blockCollection.push({ height, block });
         return Promise.resolve();
     }

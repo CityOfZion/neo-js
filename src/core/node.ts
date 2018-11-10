@@ -23,6 +23,7 @@ export class Node extends EventEmitter {
   latency: number | undefined // In milliseconds
   blockHeight: number | undefined
   lastSeenTimestamp: number | undefined
+  userAgent: string | undefined
   endpoint: string
 
   private options: NodeOptions
@@ -75,17 +76,20 @@ export class Node extends EventEmitter {
     }
   }
 
-  private querySuccessHandler(payload: object) {
+  private querySuccessHandler(payload: any) {
     this.logger.debug('querySuccessHandler triggered.')
     if (this.options.toBenchmark) {
       this.decreasePendingRequest()
       this.lastSeenTimestamp = Date.now()
       this.isActive = true
-      if ((payload as any).latency) {
-        this.latency = (payload as any).latency
+      if (payload.latency) {
+        this.latency = payload.latency
       }
-      if ((payload as any).blockHeight) {
-        this.blockHeight = (payload as any).blockHeight
+      if (payload.blockHeight) {
+        this.blockHeight = payload.blockHeight
+      }
+      if (payload.userAgent) {
+        this.userAgent = payload.userAgent
       }
     }
   }
@@ -109,14 +113,15 @@ export class Node extends EventEmitter {
     const t0 = Date.now()
     return new Promise((resolve, reject) => {
       RpcDelegate.query(this.endpoint, method, params, id)
-        .then((res) => {
+        .then((res: any) => {
           const latency = Date.now() - t0
-          const result = (res as any).result
+          const result = res.result
           const blockHeight = method === C.rpc.getblockcount ? result : undefined
-          this.emit('query:success', { method, latency, blockHeight })
+          const userAgent = method === C.rpc.getversion ? result.useragent : undefined
+          this.emit('query:success', { method, latency, blockHeight, userAgent })
           return resolve(result)
         })
-        .catch((err) => {
+        .catch((err: any) => {
           this.emit('query:failed', { method, error: err })
           return reject(err)
         })

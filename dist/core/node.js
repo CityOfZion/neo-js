@@ -57,6 +57,9 @@ class Node extends events_1.EventEmitter {
             if (payload.blockHeight) {
                 this.blockHeight = payload.blockHeight;
             }
+            if (payload.userAgent) {
+                this.userAgent = payload.userAgent;
+            }
         }
     }
     queryFailedHandler(payload) {
@@ -79,7 +82,8 @@ class Node extends events_1.EventEmitter {
                 const latency = Date.now() - t0;
                 const result = res.result;
                 const blockHeight = method === constants_1.default.rpc.getblockcount ? result : undefined;
-                this.emit('query:success', { method, latency, blockHeight });
+                const userAgent = method === constants_1.default.rpc.getversion ? result.useragent : undefined;
+                this.emit('query:success', { method, latency, blockHeight, userAgent });
                 return resolve(result);
             })
                 .catch((err) => {

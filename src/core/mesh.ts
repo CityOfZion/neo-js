@@ -6,7 +6,10 @@ import { Node } from './node'
 const MODULE_NAME = 'Mesh'
 const DEFAULT_OPTIONS: MeshOptions = {
   startBenchmarkOnInit: true,
+  toFetchUserAgent: true,
   benchmarkIntervalMs: 2000,
+  fetchMissingUserAgentIntervalMs: 5000,
+  refreshUserAgentIntervalMs: 1 * 60 * 1000,
   minActiveNodesRequired: 2,
   pendingRequestsThreshold: 5,
   loggerOptions: {},
@@ -14,7 +17,10 @@ const DEFAULT_OPTIONS: MeshOptions = {
 
 export interface MeshOptions {
   startBenchmarkOnInit?: boolean
+  toFetchUserAgent?: boolean
   benchmarkIntervalMs?: number
+  fetchMissingUserAgentIntervalMs?: number
+  refreshUserAgentIntervalMs?: number
   minActiveNodesRequired?: number
   pendingRequestsThreshold?: number
   loggerOptions?: LoggerOptions
@@ -25,6 +31,8 @@ export class Mesh extends EventEmitter {
 
   private _isReady = false
   private benchmarkIntervalId?: NodeJS.Timer
+  private fetchMissingUserAgentIntervalId?: NodeJS.Timer
+  private refreshUserAgentIntervalId?: NodeJS.Timer
   private options: MeshOptions
   private logger: Logger
 
@@ -60,15 +68,28 @@ export class Mesh extends EventEmitter {
     // Go through and ping all unknown nodes
     const unknownNodes = filter(this.nodes, (n: Node) => n.isActive === undefined)
     this.logger.debug('unknownNodes.length:', unknownNodes.length)
-    unknownNodes.forEach((n) => {
+    unknownNodes.forEach((n: Node) => {
       n.getBlockCount()
         .then(() => {
           this.checkMeshReady()
         })
         .catch((err: any) => {
-          this.logger.info('node.getBlockCount error, but to continue... Endpoint:', n.endpoint, 'Message:', err.message)
+          this.logger.info('node.getBlockCount() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
         })
     })
+
+    // Fetch node version
+    if (this.options.toFetchUserAgent) {
+      unknownNodes.forEach((n: Node) => {
+        n.getVersion()
+          .catch((err: any) => {
+            this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
+          })
+      })
+
+      this.fetchMissingUserAgentIntervalId = setInterval(() => this.performFetchMissingUserAgent(), this.options.fetchMissingUserAgentIntervalMs!)
+      this.refreshUserAgentIntervalId = setInterval(() => this.performRefreshUserAgent(), this.options.refreshUserAgentIntervalMs!)
+    }
 
     // Start timer
     this.benchmarkIntervalId = setInterval(() => this.performBenchmark(), this.options.benchmarkIntervalMs!)
@@ -78,6 +99,9 @@ export class Mesh extends EventEmitter {
     this.logger.debug('stopBenchmark triggered.')
     if (this.benchmarkIntervalId) {
       clearInterval(this.benchmarkIntervalId)
+    }
+    if (this.fetchMissingUserAgentIntervalId) {
+      clearInterval(this.fetchMissingUserAgentIntervalId)
     }
   }
 
@@ -163,14 +187,35 @@ export class Mesh extends EventEmitter {
 
   private performBenchmark() {
     this.logger.debug('performBenchmark triggered.')
-
-    // pick and ping a random node
+    // Pick and ping a random node
     const node = this.getRandomNode()
     if (node) {
       node.getBlockCount().catch((err) => {
         this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message)
       })
     }
+  }
+
+  private performFetchMissingUserAgent() {
+    this.logger.debug('performBenchmark triggered.')
+    const nodePool = filter(this.nodes, (n: Node) => n.userAgent === undefined)
+    nodePool.forEach((n: Node) => {
+      n.getVersion()
+      .catch((err: any) => {
+        this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
+      })
+    })
+  }
+
+  private performRefreshUserAgent() {
+    this.logger.debug('performRefreshUserAgent triggered.')
+    this.logger.warn('!!! performRefreshUserAgent !!!')
+    this.nodes.forEach((n: Node) => {
+      n.getVersion()
+        .catch((err: any) => {
+          this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
+        })
+    })
   }
 
   private checkMeshReady() {
