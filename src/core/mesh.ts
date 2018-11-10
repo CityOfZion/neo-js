@@ -212,7 +212,6 @@ export class Mesh extends EventEmitter {
 
   private performRefreshUserAgent() {
     this.logger.debug('performRefreshUserAgent triggered.')
-    this.logger.warn('!!! performRefreshUserAgent !!!')
     this.nodes.forEach((n: Node) => {
       n.getVersion()
         .catch((err: any) => {
