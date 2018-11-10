@@ -126,7 +126,7 @@ export class Api extends EventEmitter {
       const height = payload.result.height as number
       const block = payload.result.block as object
       const source = 'api:storeBlock'
-      this.storage.setBlock(height, block, source)
+      this.storage.setBlock(height, block, { source })
     }
   }
 

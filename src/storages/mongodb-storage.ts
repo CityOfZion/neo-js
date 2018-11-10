@@ -123,13 +123,14 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
-  setBlock(height: number, block: object, source: string): Promise<void> {
+  setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.logger.debug('setBlock triggered.')
 
     const data = {
       height,
-      source,
-      createdBy: this.options.userAgent,
+      source: (options as any).source,
+      userAgent: (options as any).userAgent, // Source RPC's user agent
+      createdBy: this.options.userAgent, // neo-js's user agent
       payload: block,
     }
     return new Promise((resolve, reject) => {
@@ -227,6 +228,7 @@ export class MongodbStorage extends EventEmitter {
         height: Number,
         createdBy: String,
         source: String,
+        userAgent: String,
         payload: {
           hash: String,
           size: Number,

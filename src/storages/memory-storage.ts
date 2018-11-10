@@ -67,7 +67,7 @@ export class MemoryStorage extends EventEmitter {
     }
   }
 
-  setBlock(height: number, block: object, source: string): Promise<void> {
+  setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.blockCollection.push({ height, block })
     return Promise.resolve()
   }
