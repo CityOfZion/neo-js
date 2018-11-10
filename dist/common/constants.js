@@ -12,7 +12,7 @@ const C = {
     rpc: {
         getblock: 'getblock',
         getblockcount: 'getblockcount',
-        getversion: 'getversion,',
+        getversion: 'getversion',
     },
 };
 exports.default = C;

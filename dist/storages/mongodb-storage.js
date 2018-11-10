@@ -92,11 +92,12 @@ class MongodbStorage extends events_1.EventEmitter {
                 .catch((err) => reject(err));
         });
     }
-    setBlock(height, block, source) {
+    setBlock(height, block, options = {}) {
         this.logger.debug('setBlock triggered.');
         const data = {
             height,
-            source,
+            source: options.source,
+            userAgent: options.userAgent,
             createdBy: this.options.userAgent,
             payload: block,
         };
@@ -177,6 +178,7 @@ class MongodbStorage extends events_1.EventEmitter {
             height: Number,
             createdBy: String,
             source: String,
+            userAgent: String,
             payload: {
                 hash: String,
                 size: Number,
