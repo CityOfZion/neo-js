@@ -9,7 +9,7 @@ const DEFAULT_OPTIONS = {
     toFetchUserAgent: true,
     benchmarkIntervalMs: 2000,
     fetchMissingUserAgentIntervalMs: 5000,
-    refreshUserAgentIntervalMs: 1 * 60 * 1000,
+    refreshUserAgentIntervalMs: 5 * 60 * 1000,
     minActiveNodesRequired: 2,
     pendingRequestsThreshold: 5,
     loggerOptions: {},
@@ -48,8 +48,7 @@ class Mesh extends events_1.EventEmitter {
         });
         if (this.options.toFetchUserAgent) {
             unknownNodes.forEach((n) => {
-                n.getVersion()
-                    .catch((err) => {
+                n.getVersion().catch((err) => {
                     this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
                 });
             });
@@ -65,6 +64,9 @@ class Mesh extends events_1.EventEmitter {
         }
         if (this.fetchMissingUserAgentIntervalId) {
             clearInterval(this.fetchMissingUserAgentIntervalId);
+        }
+        if (this.refreshUserAgentIntervalId) {
+            clearInterval(this.refreshUserAgentIntervalId);
         }
     }
     getFastestNode(activeOnly = true) {
@@ -132,18 +134,15 @@ class Mesh extends events_1.EventEmitter {
         this.logger.debug('performBenchmark triggered.');
         const nodePool = lodash_1.filter(this.nodes, (n) => n.userAgent === undefined);
         nodePool.forEach((n) => {
-            n.getVersion()
-                .catch((err) => {
+            n.getVersion().catch((err) => {
                 this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
             });
         });
     }
     performRefreshUserAgent() {
         this.logger.debug('performRefreshUserAgent triggered.');
-        this.logger.warn('!!! performRefreshUserAgent !!!');
         this.nodes.forEach((n) => {
-            n.getVersion()
-                .catch((err) => {
+            n.getVersion().catch((err) => {
                 this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message);
             });
         });
