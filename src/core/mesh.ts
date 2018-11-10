@@ -9,7 +9,7 @@ const DEFAULT_OPTIONS: MeshOptions = {
   toFetchUserAgent: true,
   benchmarkIntervalMs: 2000,
   fetchMissingUserAgentIntervalMs: 5000,
-  refreshUserAgentIntervalMs: 1 * 60 * 1000,
+  refreshUserAgentIntervalMs: 5 * 60 * 1000,
   minActiveNodesRequired: 2,
   pendingRequestsThreshold: 5,
   loggerOptions: {},
