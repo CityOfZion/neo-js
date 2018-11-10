@@ -103,6 +103,9 @@ export class Mesh extends EventEmitter {
     if (this.fetchMissingUserAgentIntervalId) {
       clearInterval(this.fetchMissingUserAgentIntervalId)
     }
+    if (this.refreshUserAgentIntervalId) {
+      clearInterval(this.refreshUserAgentIntervalId)
+    }
   }
 
   getFastestNode(activeOnly = true): Node | undefined {
