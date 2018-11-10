@@ -81,10 +81,9 @@ export class Mesh extends EventEmitter {
     // Fetch node version
     if (this.options.toFetchUserAgent) {
       unknownNodes.forEach((n: Node) => {
-        n.getVersion()
-          .catch((err: any) => {
-            this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
-          })
+        n.getVersion().catch((err: any) => {
+          this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
+        })
       })
 
       this.fetchMissingUserAgentIntervalId = setInterval(() => this.performFetchMissingUserAgent(), this.options.fetchMissingUserAgentIntervalMs!)
@@ -203,8 +202,7 @@ export class Mesh extends EventEmitter {
     this.logger.debug('performBenchmark triggered.')
     const nodePool = filter(this.nodes, (n: Node) => n.userAgent === undefined)
     nodePool.forEach((n: Node) => {
-      n.getVersion()
-      .catch((err: any) => {
+      n.getVersion().catch((err: any) => {
         this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
       })
     })
@@ -213,10 +211,9 @@ export class Mesh extends EventEmitter {
   private performRefreshUserAgent() {
     this.logger.debug('performRefreshUserAgent triggered.')
     this.nodes.forEach((n: Node) => {
-      n.getVersion()
-        .catch((err: any) => {
-          this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
-        })
+      n.getVersion().catch((err: any) => {
+        this.logger.info('node.getVersion() failed, but to continue. Endpoint:', n.endpoint, 'Message:', err.message)
+      })
     })
   }
 
