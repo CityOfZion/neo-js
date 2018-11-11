@@ -30,7 +30,9 @@
     "rebuild:hard": "rm -f ./package-lock.json && npm run rebuild",
     "lint": "tslint -c tslint.json './src/**/*.ts'",
     "format": "prettier --write './src/**/*.ts'",
-    "test": "mocha --reporter spec"
+    "test": "mocha --reporter spec",
+    "version:minor": "npm version minor",
+    "version:patch": "npm version patch"
   },
   "dependencies": {
     "@cityofzion/neon-js": "3.10.0",
