@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Syncer | neo-js</title>
+	<title>Syncer | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">neo-js</a>
+					<a href="../index.html" class="title">@cityofzion/neo-js</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -102,8 +102,8 @@
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#logger" class="tsd-kind-icon">logger</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#mesh" class="tsd-kind-icon">mesh</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#options" class="tsd-kind-icon">options</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#queue" class="tsd-kind-icon">queue</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#storage" class="tsd-kind-icon">storage</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#storequeue" class="tsd-kind-icon">store<wbr>Queue</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_core_syncer_.syncer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 							</ul>
 						</section>
@@ -124,7 +124,7 @@
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#initstoreblock" class="tsd-kind-icon">init<wbr>Store<wbr>Block</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#isreachedhighestblock" class="tsd-kind-icon">is<wbr>Reached<wbr>Highest<wbr>Block</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_core_syncer_.syncer.html#isreachedmaxstorequeuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Store<wbr>Queue<wbr>Length</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_core_syncer_.syncer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_core_syncer_.syncer.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
 								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_core_syncer_.syncer.html#listeners" class="tsd-kind-icon">listeners</a></li>
@@ -162,7 +162,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L64">core/syncer.ts:64</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L66">core/syncer.ts:66</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -190,7 +190,7 @@
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Running<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L56">core/syncer.ts:56</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L58">core/syncer.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -200,7 +200,7 @@
 					<div class="tsd-signature tsd-kind-icon">block<wbr>Verification<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L64">core/syncer.ts:64</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L66">core/syncer.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -210,7 +210,7 @@
 					<div class="tsd-signature tsd-kind-icon">block<wbr>Write<wbr>Pointer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L58">core/syncer.ts:58</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L60">core/syncer.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -220,7 +220,7 @@
 					<div class="tsd-signature tsd-kind-icon">enqueue<wbr>Store<wbr>Block<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L63">core/syncer.ts:63</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L65">core/syncer.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -230,7 +230,7 @@
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L62">core/syncer.ts:62</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L64">core/syncer.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -240,7 +240,7 @@
 					<div class="tsd-signature tsd-kind-icon">mesh<span class="tsd-signature-symbol">:</span> <a href="_core_mesh_.mesh.html" class="tsd-signature-type">Mesh</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L59">core/syncer.ts:59</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L61">core/syncer.ts:61</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -250,17 +250,7 @@
 					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_core_syncer_.synceroptions.html" class="tsd-signature-type">SyncerOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L61">core/syncer.ts:61</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="queue" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> queue</h3>
-					<div class="tsd-signature tsd-kind-icon">queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L57">core/syncer.ts:57</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L63">core/syncer.ts:63</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -270,7 +260,17 @@
 					<div class="tsd-signature tsd-kind-icon">storage<span class="tsd-signature-symbol">:</span> <a href="_storages_memory_storage_.memorystorage.html" class="tsd-signature-type">MemoryStorage</a><span class="tsd-signature-symbol"> | </span><a href="_storages_mongodb_storage_.mongodbstorage.html" class="tsd-signature-type">MongodbStorage</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L60">core/syncer.ts:60</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L62">core/syncer.ts:62</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="storequeue" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> store<wbr>Queue</h3>
+					<div class="tsd-signature tsd-kind-icon">store<wbr>Queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L59">core/syncer.ts:59</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -281,7 +281,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from EventEmitter.defaultMaxListeners</p>
 						<ul>
-							<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1048</li>
+							<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1048</li>
 						</ul>
 					</aside>
 				</section>
@@ -300,7 +300,7 @@
 								<p>Inherited from EventEmitter.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1050</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1050</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -344,7 +344,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L246">core/syncer.ts:246</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L247">core/syncer.ts:247</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -361,7 +361,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L183">core/syncer.ts:183</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L184">core/syncer.ts:184</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -380,7 +380,7 @@
 								<p>Inherited from EventEmitter.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1062</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1062</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -406,7 +406,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L340">core/syncer.ts:340</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L345">core/syncer.ts:345</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -440,7 +440,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L315">core/syncer.ts:315</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L320">core/syncer.ts:320</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -473,7 +473,7 @@
 								<p>Inherited from EventEmitter.eventNames</p>
 								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1063</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1063</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -492,7 +492,7 @@
 								<p>Inherited from EventEmitter.getMaxListeners</p>
 								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1059</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1059</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
@@ -503,16 +503,22 @@
 					<a name="getpriorityqueue" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Priority<wbr>Queue</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">get<wbr>Priority<wbr>Queue<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Priority<wbr>Queue<span class="tsd-signature-symbol">(</span>concurrency<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L140">core/syncer.ts:140</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L147">core/syncer.ts:147</a></li>
 								</ul>
 							</aside>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>concurrency: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -526,7 +532,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L307">core/syncer.ts:307</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L312">core/syncer.ts:312</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -543,7 +549,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L239">core/syncer.ts:239</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L240">core/syncer.ts:240</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -560,7 +566,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L167">core/syncer.ts:167</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L168">core/syncer.ts:168</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -577,7 +583,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L208">core/syncer.ts:208</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L209">core/syncer.ts:209</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -600,7 +606,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L204">core/syncer.ts:204</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L205">core/syncer.ts:205</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -608,16 +614,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="isreachedmaxqueuelength" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</h3>
+					<a name="isreachedmaxstorequeuelength" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Reached<wbr>Max<wbr>Store<wbr>Queue<wbr>Length</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
+						<li class="tsd-signature tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Store<wbr>Queue<wbr>Length<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">boolean</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L212">core/syncer.ts:212</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L213">core/syncer.ts:213</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -634,7 +640,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L90">core/syncer.ts:90</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L92">core/syncer.ts:92</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -653,7 +659,7 @@
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1064</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1064</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -678,7 +684,7 @@
 								<p>Inherited from EventEmitter.listeners</p>
 								<p>Overrides EventEmitter.listeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1060</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1060</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -703,7 +709,7 @@
 								<p>Inherited from EventEmitter.off</p>
 								<p>Overrides EventEmitter.off</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1056</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1056</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -749,7 +755,7 @@
 								<p>Inherited from EventEmitter.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1051</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1051</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -795,7 +801,7 @@
 								<p>Inherited from EventEmitter.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1052</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1052</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -841,7 +847,7 @@
 								<p>Inherited from EventEmitter.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1053</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1053</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -887,7 +893,7 @@
 								<p>Inherited from EventEmitter.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1054</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1054</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -931,7 +937,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L392">core/syncer.ts:392</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L417">core/syncer.ts:417</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -956,7 +962,7 @@
 								<p>Inherited from EventEmitter.rawListeners</p>
 								<p>Overrides EventEmitter.rawListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1061</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1061</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -981,7 +987,7 @@
 								<p>Inherited from EventEmitter.removeAllListeners</p>
 								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1057</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1057</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1006,7 +1012,7 @@
 								<p>Inherited from EventEmitter.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1055</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1055</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1050,7 +1056,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L216">core/syncer.ts:216</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L217">core/syncer.ts:217</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1069,7 +1075,7 @@
 								<p>Inherited from EventEmitter.setMaxListeners</p>
 								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1058</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1058</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1092,7 +1098,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L94">core/syncer.ts:94</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L96">core/syncer.ts:96</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1109,7 +1115,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L108">core/syncer.ts:108</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L115">core/syncer.ts:115</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1126,7 +1132,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L356">core/syncer.ts:356</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L361">core/syncer.ts:361</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1149,7 +1155,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L122">core/syncer.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L129">core/syncer.ts:129</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1172,7 +1178,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/syncer.ts#L132">core/syncer.ts:132</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/syncer.ts#L139">core/syncer.ts:139</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1190,7 +1196,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/rockacola/neo-js/node_modules/@types/node/index.d.ts:1047</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1047</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1294,10 +1300,10 @@
 								<a href="_core_syncer_.syncer.html#options" class="tsd-kind-icon">options</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_core_syncer_.syncer.html#queue" class="tsd-kind-icon">queue</a>
+								<a href="_core_syncer_.syncer.html#storage" class="tsd-kind-icon">storage</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_core_syncer_.syncer.html#storage" class="tsd-kind-icon">storage</a>
+								<a href="_core_syncer_.syncer.html#storequeue" class="tsd-kind-icon">store<wbr>Queue</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
 								<a href="_core_syncer_.syncer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
@@ -1345,7 +1351,7 @@
 								<a href="_core_syncer_.syncer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_core_syncer_.syncer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a>
+								<a href="_core_syncer_.syncer.html#isreachedmaxstorequeuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Store<wbr>Queue<wbr>Length</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
 								<a href="_core_syncer_.syncer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a>

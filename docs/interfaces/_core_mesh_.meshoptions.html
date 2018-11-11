@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>MeshOptions | neo-js</title>
+	<title>MeshOptions | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="../index.html" class="title">neo-js</a>
+					<a href="../index.html" class="title">@cityofzion/neo-js</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -85,9 +85,13 @@
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#benchmarkintervalms" class="tsd-kind-icon">benchmark<wbr>Interval<wbr>Ms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#fetchmissinguseragentintervalms" class="tsd-kind-icon">fetch<wbr>Missing<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#minactivenodesrequired" class="tsd-kind-icon">min<wbr>Active<wbr>Nodes<wbr>Required</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#pendingrequeststhreshold" class="tsd-kind-icon">pending<wbr>Requests<wbr>Threshold</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#refreshuseragentintervalms" class="tsd-kind-icon">refresh<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</a></li>
 								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#startbenchmarkoninit" class="tsd-kind-icon">start<wbr>Benchmark<wbr>OnInit</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_mesh_.meshoptions.html#tofetchuseragent" class="tsd-kind-icon">to<wbr>Fetch<wbr>User<wbr>Agent</a></li>
 							</ul>
 						</section>
 					</div>
@@ -101,7 +105,17 @@
 					<div class="tsd-signature tsd-kind-icon">benchmark<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/mesh.ts#L16">core/mesh.ts:16</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L21">core/mesh.ts:21</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="fetchmissinguseragentintervalms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> fetch<wbr>Missing<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</h3>
+					<div class="tsd-signature tsd-kind-icon">fetch<wbr>Missing<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L22">core/mesh.ts:22</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -111,7 +125,7 @@
 					<div class="tsd-signature tsd-kind-icon">logger<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">LoggerOptions</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/mesh.ts#L18">core/mesh.ts:18</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L26">core/mesh.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -121,7 +135,27 @@
 					<div class="tsd-signature tsd-kind-icon">min<wbr>Active<wbr>Nodes<wbr>Required<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/mesh.ts#L17">core/mesh.ts:17</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L24">core/mesh.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="pendingrequeststhreshold" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> pending<wbr>Requests<wbr>Threshold</h3>
+					<div class="tsd-signature tsd-kind-icon">pending<wbr>Requests<wbr>Threshold<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L25">core/mesh.ts:25</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="refreshuseragentintervalms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> refresh<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</h3>
+					<div class="tsd-signature tsd-kind-icon">refresh<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L23">core/mesh.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -131,7 +165,17 @@
 					<div class="tsd-signature tsd-kind-icon">start<wbr>Benchmark<wbr>OnInit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/rockacola/neo-js/blob/b8b5de6/src/core/mesh.ts#L15">core/mesh.ts:15</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L19">core/mesh.ts:19</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="tofetchuseragent" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> to<wbr>Fetch<wbr>User<wbr>Agent</h3>
+					<div class="tsd-signature tsd-kind-icon">to<wbr>Fetch<wbr>User<wbr>Agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/e61a871/src/core/mesh.ts#L20">core/mesh.ts:20</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -198,13 +242,25 @@
 								<a href="_core_mesh_.meshoptions.html#benchmarkintervalms" class="tsd-kind-icon">benchmark<wbr>Interval<wbr>Ms</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_mesh_.meshoptions.html#fetchmissinguseragentintervalms" class="tsd-kind-icon">fetch<wbr>Missing<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_core_mesh_.meshoptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_core_mesh_.meshoptions.html#minactivenodesrequired" class="tsd-kind-icon">min<wbr>Active<wbr>Nodes<wbr>Required</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_mesh_.meshoptions.html#pendingrequeststhreshold" class="tsd-kind-icon">pending<wbr>Requests<wbr>Threshold</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_mesh_.meshoptions.html#refreshuseragentintervalms" class="tsd-kind-icon">refresh<wbr>User<wbr>Agent<wbr>Interval<wbr>Ms</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
 								<a href="_core_mesh_.meshoptions.html#startbenchmarkoninit" class="tsd-kind-icon">start<wbr>Benchmark<wbr>OnInit</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_mesh_.meshoptions.html#tofetchuseragent" class="tsd-kind-icon">to<wbr>Fetch<wbr>User<wbr>Agent</a>
 							</li>
 						</ul>
 					</li>

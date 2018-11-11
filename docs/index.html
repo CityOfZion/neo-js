@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>neo-js</title>
+	<title>@cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">neo-js</a>
+					<a href="index.html" class="title">@cityofzion/neo-js</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1> neo-js</h1>
+			<h1> @cityofzion/neo-js</h1>
 		</div>
 	</div>
 </header>
@@ -74,19 +74,93 @@
 					<strong>neo-js</strong>
 				</p>
 				<p align="center">
-					A package for running a node on the <b>neo</b> blockchain.
+					Running NEO blockchain full node with Node.js and MongoDB.
 				</p>
 				<p align="center">
-					<a href="https://travis-ci.org/CityOfZion/neo-js">
-						<img src="https://travis-ci.org/CityOfZion/neo-js.svg?branch=master" alt="Build Status">
-					</a>
 					<a href="https://badge.fury.io/js/%40cityofzion%2Fneo-js">
 						<img src="https://badge.fury.io/js/%40cityofzion%2Fneo-js.svg" alt="npm version">
 					</a>
 				</p>
 				<h2 id="overview">Overview</h2>
-				<p>The <code>neo-js</code> package is designed to interface with the <strong>Neo</strong> blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.</p>
-				<p><strong>note:</strong> All blockchain events (Invocation and Deploy) use the RPC calls to interface with the blockchain unless they can be run locally (sometimes referred to as a &#39;test invoke&#39;)</p>
+				<p><code>neo-js</code> package is designed to interface with the NEO blockchain in a number of different ways that are configured by options that are used to initialize a node. A few examples of these different interaction mechanics are defined in the quickstart below as well as in the examples.</p>
+				<p><strong>This is not a SDK library for interacting with NEO blockchain. You are looking for <a href="https://github.com/cityofzion/neon-js"><code>neon-js</code></a>.</strong></p>
+				<h2 id="getting-started">Getting Started</h2>
+				<h3 id="preparations">Preparations</h3>
+				<p>Currently this module only support MongoDB for synchronizing the blockchain. You are expect to be connected to an
+				instance of MongoDB 3.2+ to use most of its features.</p>
+				<h3 id="system-recommendations">System Recommendations</h3>
+				<ul>
+					<li>NodeJS 8+</li>
+					<li>MongoDB 3.2+</li>
+				</ul>
+				<h2 id="installation">Installation</h2>
+				<p>Install the package using:</p>
+				<pre><code class="language-bash">$ npm install --save @cityofzion/neo-js</code></pre>
+				<p>Alternatively, to access to the latest available code, you can reference to the git repository directly:</p>
+				<pre><code class="language-bash">$ npm install --save git://github.com/CityOfZion/neo-js.git<span class="hljs-comment">#develop</span></code></pre>
+				<h2 id="quick-start">Quick Start</h2>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> Neo = <span class="hljs-built_in">require</span>(<span class="hljs-string">'@cityofzion/neo-js'</span>).Neo</code></pre>
+				<p>To create a new blockchain instance:</p>
+				<pre><code class="language-js"><span class="hljs-comment">// Create a neo instances to interface with RPC methods</span>
+<span class="hljs-keyword">const</span> testnetNeo = <span class="hljs-keyword">new</span> Neo({ <span class="hljs-attr">network</span>: <span class="hljs-string">'testnet'</span> })
+
+<span class="hljs-comment">// Wait for mesh to be ready before attempt to fetch block information</span>
+testnetNeo.mesh.on(<span class="hljs-string">'ready'</span>, () =&gt; {
+  testnetNeo.api.getBlockCount()
+    .then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Testnet getBlockCount:'</span>, res)
+    })
+})
+
+<span class="hljs-comment">// To connect to the mainnet:</span>
+<span class="hljs-keyword">const</span> mainnetNeo = <span class="hljs-keyword">new</span> Neo({ <span class="hljs-attr">network</span>: <span class="hljs-string">'mainnet'</span> })
+
+mainnetNeo.mesh.on(<span class="hljs-string">'ready'</span>, () =&gt; {
+  mainnetNeo.api.getBlock(<span class="hljs-number">1000</span>)
+    .then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Mainnet getBlock(1000).hash:'</span>, res.hash)
+    })
+})</code></pre>
+				<p>This will create a new node instance and configure it to sync the blockchain to the defined mongoDB collections:</p>
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> options = {
+  <span class="hljs-attr">network</span>: <span class="hljs-string">'testnet'</span>,
+  <span class="hljs-attr">storageType</span>: <span class="hljs-string">'mongodb'</span>,
+  <span class="hljs-attr">storageOptions</span>: {
+    <span class="hljs-attr">connectionString</span>: <span class="hljs-string">'mongodb://localhost/neo_testnet'</span>,
+  },
+}
+
+<span class="hljs-comment">// Create a neo instance</span>
+<span class="hljs-keyword">const</span> neo = <span class="hljs-keyword">new</span> Neo(options)
+
+<span class="hljs-comment">// Get block count</span>
+neo.storage.on(<span class="hljs-string">'ready'</span>, () =&gt; {
+  neo.storage.getBlockCount()
+    .then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> {
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Block count:'</span>, res)
+    })
+})</code></pre>
+				<h2 id="documentation">Documentation</h2>
+				<p>Documentation for the project can be found at:</p>
+				<ul>
+					<li><a href="http://cityofzion.io/neo-js/">http://cityofzion.io/neo-js/</a></li>
+				</ul>
+				<p>You can find more code examples at repository:</p>
+				<ul>
+					<li><a href="https://github.com/rockacola/neo-js-examples">https://github.com/rockacola/neo-js-examples</a></li>
+				</ul>
+				<h2 id="contribution">Contribution</h2>
+				<p><code>neo-js</code> always encourages community code contribution. Before contributing please read the <a href="https://github.com/CityOfZion/neo-js/blob/master/.github/CONTRIBUTING.md">contributor guidelines</a> and search the issue tracker as your issue may have already been discussed or fixed. To contribute, fork <code>neo-js</code>, commit your changes and submit a pull request.</p>
+				<p>By contributing to <code>neo-js</code>, you agree that your contributions will be licensed under its MIT license.</p>
+				<h2 id="license">License</h2>
+				<ul>
+					<li>Open-source <a href="https://github.com/CityOfZion/neo-js/blob/master/LICENSE.md">MIT</a>.</li>
+					<li>Authors:<ul>
+							<li><a href="https://github.com/lllwvlvwlll">@lllwvlvwlll</a></li>
+							<li><a href="https://github.com/rockacola">@rockacola</a></li>
+						</ul>
+					</li>
+				</ul>
 			</div>
 		</div>
 		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
