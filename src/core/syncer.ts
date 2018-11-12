@@ -157,8 +157,7 @@ export class Syncer extends EventEmitter {
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Task execution error, but to continue... attrs:', attrs)
-          // this.logger.info('Error:', err)
+          this.logger.info('Task execution error, but to continue... attrs:', attrs, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })
