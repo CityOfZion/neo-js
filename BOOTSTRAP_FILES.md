@@ -2,7 +2,7 @@
 
 MongoDB bootstrap files comes in 2 flavors:
 
-* [`mongoexport`]((https://docs.mongodb.com/manual/reference/program/mongoexport/))
+* [`mongoexport`](https://docs.mongodb.com/manual/reference/program/mongoexport/)
 * [`mongodump`](https://docs.mongodb.com/manual/reference/program/mongodump/)
 
 ## `mongoexport`
