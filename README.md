@@ -105,6 +105,125 @@ neo.storage.on('ready', () => {
 })
 ```
 
+## Options
+
+Possible options and default values.
+
+### `neo`
+
+```js
+const neoOptions = {
+  network: 'testnet',
+  storageType: undefined,
+  endpoints: undefined,
+  nodeOptions: undefined,
+  meshOptions: undefined,
+  storageOptions: undefined,
+  apiOptions: undefined,
+  syncerOptions: undefined,
+  loggerOptions: {},
+}
+```
+
+### `core/api`
+
+```js
+const apiOptions = {
+  loggerOptions: {},
+}
+```
+
+### `core/mesh`
+
+```js
+const meshOptions = {
+  startBenchmarkOnInit: true,
+  toFetchUserAgent: true,
+  benchmarkIntervalMs: 2000,
+  fetchMissingUserAgentIntervalMs: 5000,
+  refreshUserAgentIntervalMs: 5 * 60 * 1000,
+  minActiveNodesRequired: 2,
+  pendingRequestsThreshold: 5,
+  loggerOptions: {},
+}
+```
+
+### `core/syncer`
+
+```js
+const syncerOptions = {
+  minHeight: 1,
+  maxHeight: undefined,
+  blockRedundancy: 1,
+  checkRedundancyBeforeStoreBlock: true,
+  startOnInit: true,
+  toSyncIncremental: true,
+  toSyncForMissingBlocks: true,
+  toPruneRedundantBlocks: false,
+  storeQueueConcurrency: 30,
+  enqueueBlockIntervalMs: 5000,
+  verifyBlocksIntervalMs: 1 * 60 * 1000,
+  maxStoreQueueLength: 1000,
+  retryEnqueueDelayMs: 5000,
+  standardEnqueueBlockPriority: 5,
+  retryEnqueueBlockPriority: 3,
+  missingEnqueueStoreBlockPriority: 1,
+  enqueuePruneBlockPriority: 2,
+  maxPruneChunkSize: 1000,
+  loggerOptions: {},
+}
+```
+
+### `core/node`
+
+```js
+const nodeOptions = {
+  toBenchmark: true,
+  loggerOptions: {},
+}
+```
+
+### `storages/memory-storage`
+
+```js
+const memoryStorageOptions = {
+  loggerOptions: {},
+}
+```
+
+### `storages/mongodb-storage`
+
+```js
+const mongodbStorageOptions = {
+  connectOnInit: true,
+  userAgent: 'Unknown',
+  collectionNames: {
+    blocks: 'blocks',
+    transactions: 'transactions',
+    assets: 'assets',
+  },
+  loggerOptions: {},
+}
+```
+
+### `Logger`
+
+```js
+const loggerOptions = {
+  level: 'warn', // silent | error | warn | info | debug | trace
+  displayTimestamp: true,
+  displayName: true,
+  displayLevel: true,
+  useLevelInitial: false,
+  useLocalTime: false,
+  timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS'
+}
+```
+
+## Blockchain Bootstrap Files
+
+[_Please refer to Bootstrap Files document_](https://github.com/CityOfZion/neo-js/blob/master/BOOTSTRAP_FILES.md)
+
 ## Documentation
 
 Documentation for the project can be found at:
