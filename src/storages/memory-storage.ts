@@ -32,7 +32,7 @@ export class MemoryStorage extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
-    this._isReady = true
+    this.setReady()
 
     this.logger.debug('constructor completes.')
   }
@@ -83,6 +83,11 @@ export class MemoryStorage extends EventEmitter {
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return Promise.resolve()
+  }
+
+  private setReady() {
+    this._isReady = true
+    this.emit('ready')
   }
 
   private validateOptionalParameters() {
