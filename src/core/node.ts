@@ -4,16 +4,19 @@ import { merge } from 'lodash'
 import { RpcDelegate } from '../delegates/rpc-delegate'
 import C from '../common/constants'
 import { NeoValidator } from '../validators/neo-validator'
+import { AxiosRequestConfig } from 'axios'
 
 const MODULE_NAME = 'Node'
 const DEFAULT_ID = 0
 const DEFAULT_OPTIONS: NodeOptions = {
   toBenchmark: true,
+  timeout: 5000,
   loggerOptions: {},
 }
 
 export interface NodeOptions {
   toBenchmark?: boolean
+  timeout?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -110,9 +113,10 @@ export class Node extends EventEmitter {
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
     this.logger.debug('query triggered. method:', method)
     this.emit('query:init', { method, params, id })
+    const requestConfig = this.getRequestConfig()
     const t0 = Date.now()
     return new Promise((resolve, reject) => {
-      RpcDelegate.query(this.endpoint, method, params, id)
+      RpcDelegate.query(this.endpoint, method, params, id, requestConfig)
         .then((res: any) => {
           const latency = Date.now() - t0
           const result = res.result
@@ -136,5 +140,13 @@ export class Node extends EventEmitter {
   private decreasePendingRequest() {
     this.logger.debug('decreasePendingRequest triggered.')
     this.pendingRequests -= 1
+  }
+
+  private getRequestConfig(): AxiosRequestConfig {
+    const config: AxiosRequestConfig = {}
+    if (this.options.timeout) {
+      config.timeout = this.options.timeout
+    }
+    return config
   }
 }
