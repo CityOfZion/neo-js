@@ -12,6 +12,16 @@ const DEFAULT_OPTIONS: NodeOptions = {
   loggerOptions: {},
 }
 
+export interface NodeMeta {
+  isActive: boolean | undefined
+  pendingRequests: number
+  latency: number | undefined
+  blockHeight: number | undefined
+  lastSeenTimestamp: number | undefined
+  userAgent: string | undefined
+  endpoint: string
+}
+
 export interface NodeOptions {
   toBenchmark?: boolean
   loggerOptions?: LoggerOptions
@@ -68,6 +78,18 @@ export class Node extends EventEmitter {
     this.logger.debug('getVersion triggered.')
     return this.query(C.rpc.getversion)
   }
+
+  getNodeMeta(): NodeMeta {
+    return {
+      isActive: this.isActive,
+      pendingRequests: this.pendingRequests,
+      latency: this.latency,
+      blockHeight: this.blockHeight,
+      lastSeenTimestamp: this.lastSeenTimestamp,
+      userAgent: this.userAgent,
+      endpoint: this.endpoint,
+    }
+  }  
 
   private queryInitHandler(payload: object) {
     this.logger.debug('queryInitHandler triggered.')
