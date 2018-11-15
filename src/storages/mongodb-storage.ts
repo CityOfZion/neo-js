@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, takeRight } from 'lodash'
+import { merge, map, takeRight, includes } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -8,6 +8,7 @@ mongoose.Promise = global.Promise // Explicitly supply promise library (http://m
 const MODULE_NAME = 'MongodbStorage'
 const DEFAULT_OPTIONS: MongodbStorageOptions = {
   connectOnInit: true,
+  reviewIndexesOnConnect: false,
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
@@ -19,6 +20,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
 
 export interface MongodbStorageOptions {
   connectOnInit?: boolean
+  reviewIndexesOnConnect?: boolean,
   connectionString?: string
   userAgent?: string
   collectionNames?: {
@@ -265,8 +267,17 @@ export class MongodbStorage extends EventEmitter {
           { useMongoClient: true }
         )
         .then(() => {
-          this.setReady()
           this.logger.info('mongoose connected.')
+          if (this.options.reviewIndexesOnConnect) {
+            this.logger.debug('proceed to review indexes...')
+            this.reviewIndexes()
+              .then(() => {
+                this.setReady()
+              })
+              .catch(() => {})
+          } else {
+            this.setReady()
+          }
         })
         .catch((err: any) => {
           this.logger.error('Error establish MongoDB connection.')
@@ -278,6 +289,62 @@ export class MongodbStorage extends EventEmitter {
   private setReady() {
     this._isReady = true
     this.emit('ready')
+  }
+
+  private reviewIndexes(): Promise<void> {
+    this.logger.debug('reviewIndexes triggered.')
+    const blockIndexKey = 'height_1_createdAt_-1'
+    const blockIndexKeyObj = { height: 1, createdAt: -1 }
+
+    return new Promise((resolve, reject) => {
+      Promise.resolve()
+        .then(() => this.hasIndex(this.blockModel, blockIndexKey))
+        .then((hasRequiredIndex: boolean) => {
+          if (hasRequiredIndex) {
+            // Determined that there's no need to create index
+            throw new Error('SKIP_INDEX_BLOCK')
+          }
+          this.logger.info('generating MongoDB index(es)...')
+          return Promise.resolve()
+        })
+        .then(()=> this.createIndex(this.blockModel, blockIndexKeyObj))
+        .then(() => {
+          this.logger.info('MongoDB index(es) generation complete.')
+          return resolve()
+        })
+        .catch((err: any) => {
+          if (err.message === 'SKIP_INDEX_BLOCK') {
+            this.logger.debug('has required MongoDB index(es), no action needed.')
+            return resolve()
+          } else {
+            this.logger.info('hasIndex failed, but to continue. Message:', err.message)
+            return resolve()
+          }
+        })
+    })
+  }
+
+  private hasIndex(model: any, key: string): Promise<boolean> {
+    this.logger.debug('hasIndex triggered. key:', key)
+    return new Promise((resolve, reject) => {
+      model.collection.getIndexes()
+        .then((res: any) => {
+          this.logger.debug('collection.getIndexes succeed. res:', res)
+          const keys = Object.keys(res)
+          const result = includes(keys, key)
+          return resolve(result)
+        })
+        .catch((err: any) => reject(err))
+    })
+  }
+
+  private createIndex(model: any, keyObj: object): Promise<void> {
+    this.logger.debug('createIndex triggered.')
+    return new Promise((resolve, reject) => {
+      model.collection.createIndex(keyObj)
+        .then((res: any) => resolve())
+        .catch((err: any) => reject(err))
+    })
   }
 
   private getBlockDocument(height: number): Promise<object> {
