@@ -94,7 +94,7 @@ export class Api extends EventEmitter {
             .then((res: any) => {
               this.logger.debug('Successfully fetch result from mesh.')
               const { block, nodeMeta } = res
-              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block, nodeMeta } })
+              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block }, nodeMeta })
               return resolve(block)
             })
             .catch((err2: any) => reject(err2))
@@ -168,7 +168,6 @@ export class Api extends EventEmitter {
           })
           .catch((err: any) => reject(err))
       })
-
     } else {
       // TODO
       return Promise.reject(new Error('Edge case not implemented.'))
