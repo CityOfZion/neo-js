@@ -10,7 +10,7 @@ const MODULE_NAME = 'Node'
 const DEFAULT_ID = 0
 const DEFAULT_OPTIONS: NodeOptions = {
   toBenchmark: true,
-  timeout: 5000,
+  timeout: 30000,
   loggerOptions: {},
 }
 
