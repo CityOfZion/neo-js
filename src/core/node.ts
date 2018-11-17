@@ -39,10 +39,10 @@ export class Node extends EventEmitter {
   lastSeenTimestamp: number | undefined
   userAgent: string | undefined
   endpoint: string
+  isBenchmarking = false
 
   private options: NodeOptions
   private logger: Logger
-  private isBenchmarking = false
   private requestLogs: object[] = []
   private truncateRequestLogIntervalId?: NodeJS.Timer
 
@@ -210,7 +210,7 @@ export class Node extends EventEmitter {
   private truncateRequestLog() {
     this.logger.debug('truncateRequestLog triggered.')
     const cutOffTimestamp = Date.now() - this.options.requestLogTtl!
-    this.requestLogs = remove(this.requestLogs, (logObj: any) => logObj.timestamp < cutOffTimestamp)
+    this.requestLogs = remove(this.requestLogs, (logObj: any) => logObj.timestamp > cutOffTimestamp)
   }
 
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
