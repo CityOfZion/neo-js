@@ -172,7 +172,7 @@ export class Mesh extends EventEmitter {
     }
 
     // Filter nodes that exceed pending threshold
-    const qualifyPendingNodes = filter(qualifyHeightNodes, (n: Node) => n.pendingRequests < this.options.pendingRequestsThreshold!)
+    const qualifyPendingNodes = filter(qualifyHeightNodes, (n: Node) => !n.pendingRequests || n.pendingRequests < this.options.pendingRequestsThreshold!)
     if (qualifyPendingNodes.length === 0) {
       // If all qualify nodes exceeded pending threshold, then just pick a random one from qualifyHeightNodes
       const randomIndex = random(0, qualifyHeightNodes.length - 1)

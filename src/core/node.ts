@@ -13,7 +13,7 @@ const DEFAULT_OPTIONS: NodeOptions = {
 
 export interface NodeMeta {
   isActive: boolean | undefined
-  pendingRequests: number
+  pendingRequests: number | undefined
   latency: number | undefined
   blockHeight: number | undefined
   lastSeenTimestamp: number | undefined
@@ -27,7 +27,7 @@ export interface NodeOptions {
 
 export class Node extends EventEmitter {
   isActive: boolean | undefined
-  pendingRequests: number = 0
+  pendingRequests: number | undefined
   latency: number | undefined // In milliseconds
   blockHeight: number | undefined
   lastSeenTimestamp: number | undefined
@@ -181,11 +181,19 @@ export class Node extends EventEmitter {
 
   private increasePendingRequest() {
     this.logger.debug('increasePendingRequest triggered.')
-    this.pendingRequests += 1
+    if (this.pendingRequests) {
+      this.pendingRequests += 1
+    } else {
+      this.pendingRequests = 1
+    }
   }
 
   private decreasePendingRequest() {
     this.logger.debug('decreasePendingRequest triggered.')
-    this.pendingRequests -= 1
+    if (this.pendingRequests) {
+      this.pendingRequests -= 1
+    } else {
+      this.pendingRequests = 0
+    }
   }
 }
