@@ -36,6 +36,7 @@ export class Node extends EventEmitter {
 
   private options: NodeOptions
   private logger: Logger
+  private isBenchmarking = false
 
   constructor(endpoint: string, options: NodeOptions = {}) {
     super()
@@ -111,27 +112,48 @@ export class Node extends EventEmitter {
   private startBenchmark(payload: any) {
     this.logger.debug('startBenchmark triggered.')
     this.increasePendingRequest()
+
+    // Perform latency benchmark when it's a getBlockCount() request
+    if (payload.method === C.rpc.getblockcount) {
+      if (this.isBenchmarking) {
+        this.logger.debug('An benchmarking schedule is already in place. Skipping... endpoint:', this.endpoint)
+      } else {
+        this.isBenchmarking = true
+      }
+    }
   }
 
   private stopBenchmark(payload: any) {
     this.logger.debug('stopBenchmark triggered.')
     this.decreasePendingRequest()
+    this.lastSeenTimestamp = Date.now()
 
+    // Store latest active state base on existence of error
     if (payload.error) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
       this.isActive = false
     } else {
-      this.lastSeenTimestamp = Date.now()
       this.isActive = true
-      if (payload.latency) {
-        this.latency = payload.latency
-      }
-      if (payload.blockHeight) {
-        this.blockHeight = payload.blockHeight
-      }
-      if (payload.userAgent) {
-        this.userAgent = payload.userAgent
+    }
+
+    // Store block height value if provided
+    if (payload.blockHeight) {
+      this.blockHeight = payload.blockHeight
+    }
+
+    // Store user agent value if provided
+    if (payload.userAgent) {
+      this.userAgent = payload.userAgent
+    }
+
+    // Perform latency benchmark when it's a getBlockCount() request
+    if (payload.method === C.rpc.getblockcount) {
+      if (!this.isBenchmarking) {
+        this.logger.debug('There are no running benchmarking schedule in place. Skipping... endpoint:', this.endpoint)
+      } else {
+        this.isBenchmarking = false
+        if (payload.latency) {
+          this.latency = payload.latency
+        }
       }
     }
   }
