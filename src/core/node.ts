@@ -91,34 +91,49 @@ export class Node extends EventEmitter {
 
   private queryInitHandler(payload: object) {
     this.logger.debug('queryInitHandler triggered.')
-    this.increasePendingRequest()
+    this.startBenchmark(payload)
   }
 
   private querySuccessHandler(payload: any) {
     this.logger.debug('querySuccessHandler triggered.')
-    this.decreasePendingRequest()
-    this.lastSeenTimestamp = Date.now()
-    this.isActive = true
-    if (payload.latency) {
-      this.latency = payload.latency
-    }
-    if (payload.blockHeight) {
-      this.blockHeight = payload.blockHeight
-    }
-    if (payload.userAgent) {
-      this.userAgent = payload.userAgent
-    }
+    this.stopBenchmark(payload)
   }
 
   private queryFailedHandler(payload: object) {
     this.logger.debug('queryFailedHandler triggered.')
-    this.decreasePendingRequest()
-    this.lastSeenTimestamp = Date.now()
-    this.isActive = false
+    this.stopBenchmark(payload)
   }
 
   private validateOptionalParameters() {
     // TODO
+  }
+
+  private startBenchmark(payload: any) {
+    this.logger.debug('startBenchmark triggered.')
+    this.increasePendingRequest()
+  }
+
+  private stopBenchmark(payload: any) {
+    this.logger.debug('stopBenchmark triggered.')
+    this.decreasePendingRequest()
+
+    if (payload.error) {
+      this.decreasePendingRequest()
+      this.lastSeenTimestamp = Date.now()
+      this.isActive = false
+    } else {
+      this.lastSeenTimestamp = Date.now()
+      this.isActive = true
+      if (payload.latency) {
+        this.latency = payload.latency
+      }
+      if (payload.blockHeight) {
+        this.blockHeight = payload.blockHeight
+      }
+      if (payload.userAgent) {
+        this.userAgent = payload.userAgent
+      }
+    }
   }
 
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
