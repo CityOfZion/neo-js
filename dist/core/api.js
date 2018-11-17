@@ -54,11 +54,12 @@ class Api extends events_1.EventEmitter {
                 .catch((err) => {
                 this.logger.debug('Cannot find result from storage delegate. Error:', err.message);
                 this.logger.debug('Attempt to fetch from mesh instead...');
-                this.getBlockFromMesh(height)
-                    .then((block) => {
+                this.getBlockAndNodeMetaFromMesh(height)
+                    .then((res) => {
                     this.logger.debug('Successfully fetch result from mesh.');
-                    this.emit('storage:insert', { method: constants_1.default.rpc.getblock, result: { height, block } });
-                    resolve(block);
+                    const { block, nodeMeta } = res;
+                    this.emit('storage:insert', { method: constants_1.default.rpc.getblock, result: { height, block }, nodeMeta });
+                    return resolve(block);
                 })
                     .catch((err2) => reject(err2));
             });
@@ -88,7 +89,7 @@ class Api extends events_1.EventEmitter {
         if (this.storage) {
             const height = payload.result.height;
             const block = payload.result.block;
-            const source = 'api:storeBlock';
+            const source = payload.nodeMeta ? payload.nodeMeta.endpoint : 'api:storeBlock';
             this.storage.setBlock(height, block, { source });
         }
     }
@@ -104,9 +105,27 @@ class Api extends events_1.EventEmitter {
     }
     getBlockFromMesh(height) {
         this.logger.debug('getBlockFromMesh triggered.');
+        return new Promise((resolve, reject) => {
+            this.getBlockAndNodeMetaFromMesh(height)
+                .then((res) => {
+                const { block } = res;
+                return resolve(block);
+            })
+                .catch((err) => reject(err));
+        });
+    }
+    getBlockAndNodeMetaFromMesh(height) {
+        this.logger.debug('getBlockAndNodeMetaFromMesh triggered.');
         const highestNode = this.mesh.getHighestNode();
         if (highestNode && highestNode.blockHeight) {
-            return highestNode.getBlock(height);
+            const nodeMeta = highestNode.getNodeMeta();
+            return new Promise((resolve, reject) => {
+                highestNode.getBlock(height)
+                    .then((block) => {
+                    return resolve({ block, nodeMeta });
+                })
+                    .catch((err) => reject(err));
+            });
         }
         else {
             return Promise.reject(new Error('Edge case not implemented.'));

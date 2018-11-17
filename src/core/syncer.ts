@@ -64,6 +64,7 @@ export class Syncer extends EventEmitter {
   private logger: Logger
   private enqueueStoreBlockIntervalId?: NodeJS.Timer
   private blockVerificationIntervalId?: NodeJS.Timer
+  private isVerifyingBlocks = false
 
   constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options: SyncerOptions = {}) {
     super()
@@ -247,10 +248,18 @@ export class Syncer extends EventEmitter {
     this.logger.debug('doBlockVerification triggered.')
     this.emit('blockVerification:init')
 
+    // Check if this process is currently executing
+    if (this.isVerifyingBlocks) {
+      this.logger.info('doBlockVerification() is already running. Skip this turn.')
+      this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true })
+      return
+    }
+
     // Queue size
     this.logger.info('storeQueue.length:', this.storeQueue.length())
 
     // Blocks analysis
+    this.isVerifyingBlocks = true
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
     this.storage!.analyzeBlocks(startHeight, endHeight)
@@ -302,9 +311,15 @@ export class Syncer extends EventEmitter {
             }
           }
         }
+
+        // Conclude
+        this.isVerifyingBlocks = false
+        this.emit('blockVerification:complete', { isSuccess: true })
       })
       .catch((err: any) => {
         this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message)
+        this.emit('blockVerification:complete', { isSuccess: false })
+        this.isVerifyingBlocks = false
       })
   }
 

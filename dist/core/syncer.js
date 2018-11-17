@@ -15,10 +15,10 @@ const DEFAULT_OPTIONS = {
     toSyncForMissingBlocks: true,
     toPruneRedundantBlocks: false,
     storeQueueConcurrency: 30,
-    enqueueBlockIntervalMs: 2000,
+    enqueueBlockIntervalMs: 5000,
     verifyBlocksIntervalMs: 1 * 60 * 1000,
-    maxStoreQueueLength: 10000,
-    retryEnqueueDelayMs: 2000,
+    maxStoreQueueLength: 1000,
+    retryEnqueueDelayMs: 5000,
     standardEnqueueBlockPriority: 5,
     retryEnqueueBlockPriority: 3,
     missingEnqueueStoreBlockPriority: 1,
@@ -31,6 +31,7 @@ class Syncer extends events_1.EventEmitter {
         super();
         this._isRunning = false;
         this.blockWritePointer = 0;
+        this.isVerifyingBlocks = false;
         this.mesh = mesh;
         this.storage = storage;
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
@@ -178,7 +179,13 @@ class Syncer extends events_1.EventEmitter {
     doBlockVerification() {
         this.logger.debug('doBlockVerification triggered.');
         this.emit('blockVerification:init');
+        if (this.isVerifyingBlocks) {
+            this.logger.info('doBlockVerification() is already running. Skip this turn.');
+            this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true });
+            return;
+        }
         this.logger.info('storeQueue.length:', this.storeQueue.length());
+        this.isVerifyingBlocks = true;
         const startHeight = this.options.minHeight;
         const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
         this.storage.analyzeBlocks(startHeight, endHeight)
@@ -220,9 +227,13 @@ class Syncer extends events_1.EventEmitter {
                     }
                 }
             }
+            this.isVerifyingBlocks = false;
+            this.emit('blockVerification:complete', { isSuccess: true });
         })
             .catch((err) => {
             this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message);
+            this.emit('blockVerification:complete', { isSuccess: false });
+            this.isVerifyingBlocks = false;
         });
     }
     increaseBlockWritePointer() {

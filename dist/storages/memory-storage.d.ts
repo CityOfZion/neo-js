@@ -20,5 +20,6 @@ export declare class MemoryStorage extends EventEmitter {
     pruneBlock(height: number, redundancySize: number): Promise<void>;
     analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]>;
     disconnect(): Promise<void>;
+    private setReady;
     private validateOptionalParameters;
 }
