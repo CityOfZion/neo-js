@@ -217,13 +217,13 @@ export class Mesh extends EventEmitter {
     }
 
     // Attempt to find a node that hasn't been benchmarked at all
-    const unknownNode = find(nodePool, (n: Node) => n.lastSeenTimestamp === undefined)
+    const unknownNode = find(nodePool, (n: Node) => n.lastPingTimestamp === undefined)
     if (unknownNode) {
       return unknownNode
     }
 
-    // Attempt to find a node that last seen longest ago
-    const targetNode = minBy(nodePool, (n: Node) => n.lastSeenTimestamp)
+    // Attempt to find a node that last benchmark longest ago
+    const targetNode = minBy(nodePool, (n: Node) => n.lastPingTimestamp)
     return targetNode
   }
 

@@ -36,7 +36,8 @@ export class Node extends EventEmitter {
   pendingRequests: number | undefined
   latency: number | undefined // In milliseconds
   blockHeight: number | undefined
-  lastSeenTimestamp: number | undefined
+  lastPingTimestamp: number | undefined // Latest timestamp that node perform benchmark on
+  lastSeenTimestamp: number | undefined // Latest timestamp that node detected to be activated via benchmark
   userAgent: string | undefined
   endpoint: string
   isBenchmarking = false
@@ -157,13 +158,14 @@ export class Node extends EventEmitter {
   private stopBenchmark(payload: any) {
     this.logger.debug('stopBenchmark triggered.')
     this.decreasePendingRequest()
-    this.lastSeenTimestamp = Date.now()
+    this.lastPingTimestamp = Date.now()
 
     // Store latest active state base on existence of error
     if (payload.error) {
       this.isActive = false
     } else {
       this.isActive = true
+      this.lastSeenTimestamp = Date.now()
     }
 
     // Store block height value if provided
