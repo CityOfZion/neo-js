@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge } from 'lodash'
+import { merge, filter, remove } from 'lodash'
 import { RpcDelegate } from '../delegates/rpc-delegate'
 import C from '../common/constants'
 import { NeoValidator } from '../validators/neo-validator'
@@ -8,6 +8,9 @@ import { NeoValidator } from '../validators/neo-validator'
 const MODULE_NAME = 'Node'
 const DEFAULT_ID = 0
 const DEFAULT_OPTIONS: NodeOptions = {
+  toLogReliability: false,
+  truncateRequestLogIntervalMs: 30 * 1000,
+  requestLogTtl: 5 * 60 * 1000, // In milliseconds
   loggerOptions: {},
 }
 
@@ -22,6 +25,9 @@ export interface NodeMeta {
 }
 
 export interface NodeOptions {
+  toLogReliability?: boolean
+  truncateRequestLogIntervalMs?: number
+  requestLogTtl?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -37,6 +43,8 @@ export class Node extends EventEmitter {
   private options: NodeOptions
   private logger: Logger
   private isBenchmarking = false
+  private requestLogs: object[] = []
+  private truncateRequestLogIntervalId?: NodeJS.Timer
 
   constructor(endpoint: string, options: NodeOptions = {}) {
     super()
@@ -50,6 +58,9 @@ export class Node extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
+    if (this.options.toLogReliability) {
+      this.truncateRequestLogIntervalId = setInterval(() => this.truncateRequestLog(), this.options.truncateRequestLogIntervalMs!)
+    }
 
     // Event handlers
     this.on('query:init', this.queryInitHandler.bind(this))
@@ -87,6 +98,26 @@ export class Node extends EventEmitter {
       lastSeenTimestamp: this.lastSeenTimestamp,
       userAgent: this.userAgent,
       endpoint: this.endpoint,
+    }
+  }
+
+  /**
+   * A float number between 0 an 1
+   */
+  getNodeReliability(): number | undefined {
+    const requestCount = this.requestLogs.length
+    if (requestCount === 0) {
+      return undefined
+    }
+
+    const successCount = filter(this.requestLogs, (logObj: any) => logObj.isSuccess === true).length
+    return successCount / requestCount
+  }
+
+  close() {
+    this.logger.debug('close triggered.')
+    if (this.truncateRequestLogIntervalId) {
+      clearInterval(this.truncateRequestLogIntervalId)
     }
   }
 
@@ -145,17 +176,41 @@ export class Node extends EventEmitter {
       this.userAgent = payload.userAgent
     }
 
-    // Perform latency benchmark when it's a getBlockCount() request
+    // Perform benchmark when it's a getBlockCount() request
     if (payload.method === C.rpc.getblockcount) {
       if (!this.isBenchmarking) {
         this.logger.debug('There are no running benchmarking schedule in place. Skipping... endpoint:', this.endpoint)
       } else {
         this.isBenchmarking = false
+
+        // Store latency value if provided
         if (payload.latency) {
           this.latency = payload.latency
         }
+
+        // Reliability logging
+        if (this.options.toLogReliability) {
+          if (payload.error) {
+            this.requestLogs.push({
+              timestamp: Date.now(),
+              isSuccess: false,
+            })
+          } else {
+            this.requestLogs.push({
+              timestamp: Date.now(),
+              isSuccess: true,
+              latency: this.latency,
+            })
+          }
+        }
       }
     }
+  }
+
+  private truncateRequestLog() {
+    this.logger.debug('truncateRequestLog triggered.')
+    const cutOffTimestamp = Date.now() - this.options.requestLogTtl!
+    this.requestLogs = remove(this.requestLogs, (logObj: any) => logObj.timestamp < cutOffTimestamp)
   }
 
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {

@@ -107,6 +107,14 @@ export class Mesh extends EventEmitter {
     }
   }
 
+  close() {
+    this.logger.debug('close triggered.')
+    this.stopBenchmark()
+    this.nodes.forEach((n: Node) => {
+      n.close()
+    })
+  }
+
   getFastestNode(activeOnly = true): Node | undefined {
     this.logger.debug('getFastestNode triggered.')
 
