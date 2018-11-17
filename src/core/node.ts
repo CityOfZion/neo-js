@@ -8,7 +8,6 @@ import { NeoValidator } from '../validators/neo-validator'
 const MODULE_NAME = 'Node'
 const DEFAULT_ID = 0
 const DEFAULT_OPTIONS: NodeOptions = {
-  toBenchmark: true,
   loggerOptions: {},
 }
 
@@ -23,7 +22,6 @@ export interface NodeMeta {
 }
 
 export interface NodeOptions {
-  toBenchmark?: boolean
   loggerOptions?: LoggerOptions
 }
 
@@ -93,36 +91,30 @@ export class Node extends EventEmitter {
 
   private queryInitHandler(payload: object) {
     this.logger.debug('queryInitHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.increasePendingRequest()
-    }
+    this.increasePendingRequest()
   }
 
   private querySuccessHandler(payload: any) {
     this.logger.debug('querySuccessHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = true
-      if (payload.latency) {
-        this.latency = payload.latency
-      }
-      if (payload.blockHeight) {
-        this.blockHeight = payload.blockHeight
-      }
-      if (payload.userAgent) {
-        this.userAgent = payload.userAgent
-      }
+    this.decreasePendingRequest()
+    this.lastSeenTimestamp = Date.now()
+    this.isActive = true
+    if (payload.latency) {
+      this.latency = payload.latency
+    }
+    if (payload.blockHeight) {
+      this.blockHeight = payload.blockHeight
+    }
+    if (payload.userAgent) {
+      this.userAgent = payload.userAgent
     }
   }
 
   private queryFailedHandler(payload: object) {
     this.logger.debug('queryFailedHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = false
-    }
+    this.decreasePendingRequest()
+    this.lastSeenTimestamp = Date.now()
+    this.isActive = false
   }
 
   private validateOptionalParameters() {
