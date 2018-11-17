@@ -88,7 +88,7 @@ export class Node extends EventEmitter {
       userAgent: this.userAgent,
       endpoint: this.endpoint,
     }
-  }  
+  }
 
   private queryInitHandler(payload: object) {
     this.logger.debug('queryInitHandler triggered.')

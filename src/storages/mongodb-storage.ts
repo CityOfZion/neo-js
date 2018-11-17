@@ -20,7 +20,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
 
 export interface MongodbStorageOptions {
   connectOnInit?: boolean
-  reviewIndexesOnConnect?: boolean,
+  reviewIndexesOnConnect?: boolean
   connectionString?: string
   userAgent?: string
   collectionNames?: {
@@ -274,7 +274,9 @@ export class MongodbStorage extends EventEmitter {
               .then(() => {
                 this.setReady()
               })
-              .catch(() => {})
+              .catch(() => {
+                // Do nothing...
+              })
           } else {
             this.setReady()
           }
@@ -307,7 +309,7 @@ export class MongodbStorage extends EventEmitter {
           this.logger.info('generating MongoDB index(es)...')
           return Promise.resolve()
         })
-        .then(()=> this.createIndex(this.blockModel, blockIndexKeyObj))
+        .then(() => this.createIndex(this.blockModel, blockIndexKeyObj))
         .then(() => {
           this.logger.info('MongoDB index(es) generation complete.')
           return resolve()
@@ -327,7 +329,8 @@ export class MongodbStorage extends EventEmitter {
   private hasIndex(model: any, key: string): Promise<boolean> {
     this.logger.debug('hasIndex triggered. key:', key)
     return new Promise((resolve, reject) => {
-      model.collection.getIndexes()
+      model.collection
+        .getIndexes()
         .then((res: any) => {
           this.logger.debug('collection.getIndexes succeed. res:', res)
           const keys = Object.keys(res)
@@ -341,7 +344,8 @@ export class MongodbStorage extends EventEmitter {
   private createIndex(model: any, keyObj: object): Promise<void> {
     this.logger.debug('createIndex triggered.')
     return new Promise((resolve, reject) => {
-      model.collection.createIndex(keyObj)
+      model.collection
+        .createIndex(keyObj)
         .then((res: any) => resolve())
         .catch((err: any) => reject(err))
     })
