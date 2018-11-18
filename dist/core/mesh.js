@@ -69,6 +69,13 @@ class Mesh extends events_1.EventEmitter {
             clearInterval(this.refreshUserAgentIntervalId);
         }
     }
+    close() {
+        this.logger.debug('close triggered.');
+        this.stopBenchmark();
+        this.nodes.forEach((n) => {
+            n.close();
+        });
+    }
     getFastestNode(activeOnly = true) {
         this.logger.debug('getFastestNode triggered.');
         let nodePool = activeOnly ? this.listActiveNodes() : this.nodes;
@@ -112,7 +119,7 @@ class Mesh extends events_1.EventEmitter {
         if (qualifyHeightNodes.length === 0) {
             return undefined;
         }
-        const qualifyPendingNodes = lodash_1.filter(qualifyHeightNodes, (n) => n.pendingRequests < this.options.pendingRequestsThreshold);
+        const qualifyPendingNodes = lodash_1.filter(qualifyHeightNodes, (n) => !n.pendingRequests || n.pendingRequests < this.options.pendingRequestsThreshold);
         if (qualifyPendingNodes.length === 0) {
             const randomIndex = lodash_1.random(0, qualifyHeightNodes.length - 1);
             return qualifyHeightNodes[randomIndex];
@@ -123,12 +130,28 @@ class Mesh extends events_1.EventEmitter {
     }
     performBenchmark() {
         this.logger.debug('performBenchmark triggered.');
-        const node = this.getRandomNode();
+        const node = this.getNodeToBenchmark();
         if (node) {
             node.getBlockCount().catch((err) => {
                 this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message);
             });
         }
+        else {
+            this.logger.info('Unable to find a suitable node to perform benchmark.');
+        }
+    }
+    getNodeToBenchmark() {
+        this.logger.debug('getNodeToBenchmark triggered.');
+        const nodePool = lodash_1.filter(this.nodes, (n) => !n.isBenchmarking);
+        if (nodePool.length === 0) {
+            return undefined;
+        }
+        const unknownNode = lodash_1.find(nodePool, (n) => n.lastPingTimestamp === undefined);
+        if (unknownNode) {
+            return unknownNode;
+        }
+        const targetNode = lodash_1.minBy(nodePool, (n) => n.lastPingTimestamp);
+        return targetNode;
     }
     performFetchMissingUserAgent() {
         this.logger.debug('performBenchmark triggered.');

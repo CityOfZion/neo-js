@@ -43,7 +43,7 @@ class Neo extends events_1.EventEmitter {
             this.syncer.stop();
         }
         if (this.mesh) {
-            this.mesh.stopBenchmark();
+            this.mesh.close();
         }
         if (this.storage) {
             this.storage.disconnect();

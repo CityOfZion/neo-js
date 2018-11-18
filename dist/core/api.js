@@ -120,7 +120,8 @@ class Api extends events_1.EventEmitter {
         if (highestNode && highestNode.blockHeight) {
             const nodeMeta = highestNode.getNodeMeta();
             return new Promise((resolve, reject) => {
-                highestNode.getBlock(height)
+                highestNode
+                    .getBlock(height)
                     .then((block) => {
                     return resolve({ block, nodeMeta });
                 })

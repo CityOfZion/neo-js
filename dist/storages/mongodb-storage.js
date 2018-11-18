@@ -214,7 +214,8 @@ class MongodbStorage extends events_1.EventEmitter {
                         .then(() => {
                         this.setReady();
                     })
-                        .catch(() => { });
+                        .catch(() => {
+                    });
                 }
                 else {
                     this.setReady();
@@ -264,7 +265,8 @@ class MongodbStorage extends events_1.EventEmitter {
     hasIndex(model, key) {
         this.logger.debug('hasIndex triggered. key:', key);
         return new Promise((resolve, reject) => {
-            model.collection.getIndexes()
+            model.collection
+                .getIndexes()
                 .then((res) => {
                 this.logger.debug('collection.getIndexes succeed. res:', res);
                 const keys = Object.keys(res);
@@ -277,7 +279,8 @@ class MongodbStorage extends events_1.EventEmitter {
     createIndex(model, keyObj) {
         this.logger.debug('createIndex triggered.');
         return new Promise((resolve, reject) => {
-            model.collection.createIndex(keyObj)
+            model.collection
+                .createIndex(keyObj)
                 .then((res) => resolve())
                 .catch((err) => reject(err));
         });
