@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, filter, minBy, maxBy, random } from 'lodash'
+import { merge, filter, minBy, maxBy, random, find } from 'lodash'
 import { Node } from './node'
 
 const MODULE_NAME = 'Mesh'
@@ -107,6 +107,14 @@ export class Mesh extends EventEmitter {
     }
   }
 
+  close() {
+    this.logger.debug('close triggered.')
+    this.stopBenchmark()
+    this.nodes.forEach((n: Node) => {
+      n.close()
+    })
+  }
+
   getFastestNode(activeOnly = true): Node | undefined {
     this.logger.debug('getFastestNode triggered.')
 
@@ -189,13 +197,34 @@ export class Mesh extends EventEmitter {
 
   private performBenchmark() {
     this.logger.debug('performBenchmark triggered.')
-    // Pick and ping a random node
-    const node = this.getRandomNode()
+    const node = this.getNodeToBenchmark()
     if (node) {
       node.getBlockCount().catch((err) => {
         this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message)
       })
+    } else {
+      this.logger.info('Unable to find a suitable node to perform benchmark.')
     }
+  }
+
+  private getNodeToBenchmark(): Node | undefined {
+    this.logger.debug('getNodeToBenchmark triggered.')
+
+    // Find nodes that's not currently running benchmarks
+    const nodePool = filter(this.nodes, (n: Node) => !n.isBenchmarking)
+    if (nodePool.length === 0) {
+      return undefined
+    }
+
+    // Attempt to find a node that hasn't been benchmarked at all
+    const unknownNode = find(nodePool, (n: Node) => n.lastPingTimestamp === undefined)
+    if (unknownNode) {
+      return unknownNode
+    }
+
+    // Attempt to find a node that last benchmark longest ago
+    const targetNode = minBy(nodePool, (n: Node) => n.lastPingTimestamp)
+    return targetNode
   }
 
   private performFetchMissingUserAgent() {
