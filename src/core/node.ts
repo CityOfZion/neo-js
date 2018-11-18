@@ -9,20 +9,28 @@ import { AxiosRequestConfig } from 'axios'
 const MODULE_NAME = 'Node'
 const DEFAULT_ID = 0
 const DEFAULT_OPTIONS: NodeOptions = {
-  toBenchmark: true,
   timeout: 30000,
   loggerOptions: {},
 }
 
+export interface NodeMeta {
+  isActive: boolean | undefined
+  pendingRequests: number | undefined
+  latency: number | undefined
+  blockHeight: number | undefined
+  lastSeenTimestamp: number | undefined
+  userAgent: string | undefined
+  endpoint: string
+}
+
 export interface NodeOptions {
-  toBenchmark?: boolean
   timeout?: number
   loggerOptions?: LoggerOptions
 }
 
 export class Node extends EventEmitter {
   isActive: boolean | undefined
-  pendingRequests: number = 0
+  pendingRequests: number | undefined
   latency: number | undefined // In milliseconds
   blockHeight: number | undefined
   lastSeenTimestamp: number | undefined
@@ -31,6 +39,7 @@ export class Node extends EventEmitter {
 
   private options: NodeOptions
   private logger: Logger
+  private isBenchmarking = false
 
   constructor(endpoint: string, options: NodeOptions = {}) {
     super()
@@ -72,42 +81,84 @@ export class Node extends EventEmitter {
     return this.query(C.rpc.getversion)
   }
 
+  getNodeMeta(): NodeMeta {
+    return {
+      isActive: this.isActive,
+      pendingRequests: this.pendingRequests,
+      latency: this.latency,
+      blockHeight: this.blockHeight,
+      lastSeenTimestamp: this.lastSeenTimestamp,
+      userAgent: this.userAgent,
+      endpoint: this.endpoint,
+    }
+  }
+
   private queryInitHandler(payload: object) {
     this.logger.debug('queryInitHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.increasePendingRequest()
-    }
+    this.startBenchmark(payload)
   }
 
   private querySuccessHandler(payload: any) {
     this.logger.debug('querySuccessHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = true
-      if (payload.latency) {
-        this.latency = payload.latency
-      }
-      if (payload.blockHeight) {
-        this.blockHeight = payload.blockHeight
-      }
-      if (payload.userAgent) {
-        this.userAgent = payload.userAgent
-      }
-    }
+    this.stopBenchmark(payload)
   }
 
   private queryFailedHandler(payload: object) {
     this.logger.debug('queryFailedHandler triggered.')
-    if (this.options.toBenchmark) {
-      this.decreasePendingRequest()
-      this.lastSeenTimestamp = Date.now()
-      this.isActive = false
-    }
+    this.stopBenchmark(payload)
   }
 
   private validateOptionalParameters() {
     // TODO
+  }
+
+  private startBenchmark(payload: any) {
+    this.logger.debug('startBenchmark triggered.')
+    this.increasePendingRequest()
+
+    // Perform latency benchmark when it's a getBlockCount() request
+    if (payload.method === C.rpc.getblockcount) {
+      if (this.isBenchmarking) {
+        this.logger.debug('An benchmarking schedule is already in place. Skipping... endpoint:', this.endpoint)
+      } else {
+        this.isBenchmarking = true
+      }
+    }
+  }
+
+  private stopBenchmark(payload: any) {
+    this.logger.debug('stopBenchmark triggered.')
+    this.decreasePendingRequest()
+    this.lastSeenTimestamp = Date.now()
+
+    // Store latest active state base on existence of error
+    if (payload.error) {
+      this.isActive = false
+    } else {
+      this.isActive = true
+    }
+
+    // Store block height value if provided
+    if (payload.blockHeight) {
+      this.blockHeight = payload.blockHeight
+    }
+
+    // Store user agent value if provided
+    if (payload.userAgent) {
+      this.userAgent = payload.userAgent
+    }
+
+    // Perform latency benchmark when it's a getBlockCount() request
+    if (payload.method === C.rpc.getblockcount) {
+      if (!this.isBenchmarking) {
+        this.logger.debug('There are no running benchmarking schedule in place. Skipping... endpoint:', this.endpoint)
+      } else {
+        this.isBenchmarking = false
+        if (payload.latency) {
+          this.latency = payload.latency
+        }
+      }
+    }
   }
 
   private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
@@ -134,12 +185,20 @@ export class Node extends EventEmitter {
 
   private increasePendingRequest() {
     this.logger.debug('increasePendingRequest triggered.')
-    this.pendingRequests += 1
+    if (this.pendingRequests) {
+      this.pendingRequests += 1
+    } else {
+      this.pendingRequests = 1
+    }
   }
 
   private decreasePendingRequest() {
     this.logger.debug('decreasePendingRequest triggered.')
-    this.pendingRequests -= 1
+    if (this.pendingRequests) {
+      this.pendingRequests -= 1
+    } else {
+      this.pendingRequests = 0
+    }
   }
 
   private getRequestConfig(): AxiosRequestConfig {

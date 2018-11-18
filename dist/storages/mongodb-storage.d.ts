@@ -3,6 +3,7 @@ import { EventEmitter } from 'events';
 import { LoggerOptions } from 'node-log-it';
 export interface MongodbStorageOptions {
     connectOnInit?: boolean;
+    reviewIndexesOnConnect?: boolean;
     connectionString?: string;
     userAgent?: string;
     collectionNames?: {
@@ -32,6 +33,9 @@ export declare class MongodbStorage extends EventEmitter {
     private getBlockModel;
     private initConnection;
     private setReady;
+    private reviewIndexes;
+    private hasIndex;
+    private createIndex;
     private getBlockDocument;
     private getBlockDocuments;
 }

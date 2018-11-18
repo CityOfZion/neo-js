@@ -15,7 +15,7 @@ class MemoryStorage extends events_1.EventEmitter {
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
         this.validateOptionalParameters();
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
-        this._isReady = true;
+        this.setReady();
         this.logger.debug('constructor completes.');
     }
     isReady() {
@@ -58,6 +58,10 @@ class MemoryStorage extends events_1.EventEmitter {
     disconnect() {
         this.logger.debug('disconnect triggered.');
         return Promise.resolve();
+    }
+    setReady() {
+        this._isReady = true;
+        this.emit('ready');
     }
     validateOptionalParameters() {
     }

@@ -35,6 +35,7 @@ export declare class Syncer extends EventEmitter {
     private logger;
     private enqueueStoreBlockIntervalId?;
     private blockVerificationIntervalId?;
+    private isVerifyingBlocks;
     constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options?: SyncerOptions);
     isRunning(): boolean;
     start(): void;

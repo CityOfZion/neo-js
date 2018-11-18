@@ -20,10 +20,10 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   toSyncForMissingBlocks: true,
   toPruneRedundantBlocks: false,
   storeQueueConcurrency: 30,
-  enqueueBlockIntervalMs: 2000,
+  enqueueBlockIntervalMs: 5000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
-  maxStoreQueueLength: 10000,
-  retryEnqueueDelayMs: 2000,
+  maxStoreQueueLength: 1000,
+  retryEnqueueDelayMs: 5000,
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
   missingEnqueueStoreBlockPriority: 1,
@@ -64,6 +64,7 @@ export class Syncer extends EventEmitter {
   private logger: Logger
   private enqueueStoreBlockIntervalId?: NodeJS.Timer
   private blockVerificationIntervalId?: NodeJS.Timer
+  private isVerifyingBlocks = false
 
   constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options: SyncerOptions = {}) {
     super()
@@ -157,8 +158,7 @@ export class Syncer extends EventEmitter {
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Task execution error, but to continue... attrs:', attrs)
-          // this.logger.info('Error:', err)
+          this.logger.info('Task execution error, but to continue... attrs:', attrs, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })
@@ -248,10 +248,18 @@ export class Syncer extends EventEmitter {
     this.logger.debug('doBlockVerification triggered.')
     this.emit('blockVerification:init')
 
+    // Check if this process is currently executing
+    if (this.isVerifyingBlocks) {
+      this.logger.info('doBlockVerification() is already running. Skip this turn.')
+      this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true })
+      return
+    }
+
     // Queue size
     this.logger.info('storeQueue.length:', this.storeQueue.length())
 
     // Blocks analysis
+    this.isVerifyingBlocks = true
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
     this.storage!.analyzeBlocks(startHeight, endHeight)
@@ -303,9 +311,15 @@ export class Syncer extends EventEmitter {
             }
           }
         }
+
+        // Conclude
+        this.isVerifyingBlocks = false
+        this.emit('blockVerification:complete', { isSuccess: true })
       })
       .catch((err: any) => {
         this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message)
+        this.emit('blockVerification:complete', { isSuccess: false })
+        this.isVerifyingBlocks = false
       })
   }
 

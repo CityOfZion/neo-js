@@ -21,4 +21,5 @@ export declare class Api extends EventEmitter {
     private storeBlock;
     private getBlockCountFromMesh;
     private getBlockFromMesh;
+    private getBlockAndNodeMetaFromMesh;
 }
