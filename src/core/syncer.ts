@@ -307,7 +307,7 @@ export class Syncer extends EventEmitter {
           if (this.isReachedMaxHeight() || this.isReachedHighestBlock(node)) {
             if (missingBlocks.length === 0) {
               this.logger.info('Storage is fully synced and up to date.')
-              this.emit('UpToDate')
+              this.emit('upToDate')
             }
           }
         }
