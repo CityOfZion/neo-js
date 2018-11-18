@@ -2,6 +2,7 @@ import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
 import { merge } from 'lodash'
 import { Mesh } from './mesh'
+import { NodeMeta } from './node'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import C from '../common/constants'
@@ -18,6 +19,7 @@ export interface ApiOptions {
 
 interface StorageInsertPayload {
   method: string
+  nodeMeta: NodeMeta | undefined
   result: any
 }
 
@@ -83,18 +85,19 @@ export class Api extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       this.storage!.getBlock(height)
-        .then((block) => resolve(block))
-        .catch((err) => {
+        .then((block: object) => resolve(block))
+        .catch((err: any) => {
           // Failed to fetch from storage, try mesh instead
           this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
           this.logger.debug('Attempt to fetch from mesh instead...')
-          this.getBlockFromMesh(height)
-            .then((block) => {
+          this.getBlockAndNodeMetaFromMesh(height)
+            .then((res: any) => {
               this.logger.debug('Successfully fetch result from mesh.')
-              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block } })
-              resolve(block)
+              const { block, nodeMeta } = res
+              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block }, nodeMeta })
+              return resolve(block)
             })
-            .catch((err2) => reject(err2))
+            .catch((err2: any) => reject(err2))
         })
     })
   }
@@ -125,7 +128,7 @@ export class Api extends EventEmitter {
     if (this.storage) {
       const height = payload.result.height as number
       const block = payload.result.block as object
-      const source = 'api:storeBlock'
+      const source = payload.nodeMeta ? payload.nodeMeta.endpoint : 'api:storeBlock'
       this.storage.setBlock(height, block, { source })
     }
   }
@@ -143,9 +146,29 @@ export class Api extends EventEmitter {
 
   private getBlockFromMesh(height: number): Promise<object> {
     this.logger.debug('getBlockFromMesh triggered.')
+    return new Promise((resolve, reject) => {
+      this.getBlockAndNodeMetaFromMesh(height)
+        .then((res: any) => {
+          const { block } = res
+          return resolve(block)
+        })
+        .catch((err: any) => reject(err))
+    })
+  }
+
+  private getBlockAndNodeMetaFromMesh(height: number): Promise<object> {
+    this.logger.debug('getBlockAndNodeMetaFromMesh triggered.')
     const highestNode = this.mesh.getHighestNode()
     if (highestNode && highestNode.blockHeight) {
-      return highestNode.getBlock(height)
+      const nodeMeta = highestNode.getNodeMeta()
+      return new Promise((resolve, reject) => {
+        highestNode
+          .getBlock(height)
+          .then((block: object) => {
+            return resolve({ block, nodeMeta })
+          })
+          .catch((err: any) => reject(err))
+      })
     } else {
       // TODO
       return Promise.reject(new Error('Edge case not implemented.'))

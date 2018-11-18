@@ -20,10 +20,10 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   toSyncForMissingBlocks: true,
   toPruneRedundantBlocks: false,
   storeQueueConcurrency: 30,
-  enqueueBlockIntervalMs: 2000,
+  enqueueBlockIntervalMs: 5000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
-  maxStoreQueueLength: 10000,
-  retryEnqueueDelayMs: 2000,
+  maxStoreQueueLength: 1000,
+  retryEnqueueDelayMs: 5000,
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
   missingEnqueueStoreBlockPriority: 1,
@@ -158,8 +158,7 @@ export class Syncer extends EventEmitter {
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Task execution error, but to continue... attrs:', attrs)
-          // this.logger.info('Error:', err)
+          this.logger.info('Task execution error, but to continue... attrs:', attrs, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })

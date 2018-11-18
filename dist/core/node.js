@@ -39,6 +39,17 @@ class Node extends events_1.EventEmitter {
         this.logger.debug('getVersion triggered.');
         return this.query(constants_1.default.rpc.getversion);
     }
+    getNodeMeta() {
+        return {
+            isActive: this.isActive,
+            pendingRequests: this.pendingRequests,
+            latency: this.latency,
+            blockHeight: this.blockHeight,
+            lastSeenTimestamp: this.lastSeenTimestamp,
+            userAgent: this.userAgent,
+            endpoint: this.endpoint,
+        };
+    }
     queryInitHandler(payload) {
         this.logger.debug('queryInitHandler triggered.');
         if (this.options.toBenchmark) {
