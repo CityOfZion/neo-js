@@ -1,13 +1,14 @@
 import { rpc } from '@cityofzion/neon-js'
 import { RpcValidator } from '../validators/rpc-validator'
+import { AxiosRequestConfig } from 'axios'
 
 export class RpcDelegate {
-  static query(url: string, method: string, params: any[], id: number): Promise<object> {
+  static query(url: string, method: string, params: any[], id: number, requestConfig: AxiosRequestConfig): Promise<object> {
     RpcValidator.validateUrl(url)
     RpcValidator.validateMethod(method)
     RpcValidator.validateId(id)
 
     const q = new rpc.Query({ method, params, id })
-    return q.execute(url)
+    return q.execute(url, requestConfig)
   }
 }
