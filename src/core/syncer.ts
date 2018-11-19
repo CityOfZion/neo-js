@@ -149,16 +149,17 @@ export class Syncer extends EventEmitter {
     return priorityQueue((task: object, callback: () => void) => {
       const method: (attrs: object) => Promise<any> = (task as any).method
       const attrs: object = (task as any).attrs
-      this.logger.debug('new worker for queue.')
+      const meta: object = (task as any).meta
+      this.logger.debug('New worker for queue. meta:', meta, 'attrs:', attrs)
 
       method(attrs)
         .then(() => {
           callback()
-          this.logger.debug('queued method run completed.')
+          this.logger.debug('Worker queued method completed.')
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Task execution error, but to continue... attrs:', attrs, 'Message:', err.message)
+          this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'attrs:', attrs, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })
@@ -348,6 +349,9 @@ export class Syncer extends EventEmitter {
         attrs: {
           height,
         },
+        meta: {
+          methodName: 'storeBlock',
+        },
       },
       priority
     )
@@ -366,6 +370,9 @@ export class Syncer extends EventEmitter {
         attrs: {
           height,
           redundancySize,
+        },
+        meta: {
+          methodName: 'pruneBlock',
         },
       },
       priority
