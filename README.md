@@ -53,6 +53,8 @@ $ npm install --save git://github.com/CityOfZion/neo-js.git#develop
 
 ## Quick Start
 
+More comprehensive examples can be found at [`neo-js-examples`](https://github.com/rockacola/neo-js-examples) repository.
+
 ```js
 const Neo = require('@cityofzion/neo-js').Neo
 ```
@@ -104,6 +106,20 @@ neo.storage.on('ready', () => {
     })
 })
 ```
+
+## Documentation
+
+Documentation for the project can be found at:
+
+* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
+
+You can find more code examples at repository:
+
+* [https://github.com/rockacola/neo-js-examples](https://github.com/rockacola/neo-js-examples)
+
+## Blockchain Bootstrap Files
+
+[_Please refer to Bootstrap Files document_](https://github.com/CityOfZion/neo-js/blob/master/BOOTSTRAP_FILES.md)
 
 ## Options
 
@@ -219,20 +235,6 @@ const loggerOptions = {
   timestampFormat: 'YYYY-MM-DD HH:mm:ss.SSS'
 }
 ```
-
-## Blockchain Bootstrap Files
-
-[_Please refer to Bootstrap Files document_](https://github.com/CityOfZion/neo-js/blob/master/BOOTSTRAP_FILES.md)
-
-## Documentation
-
-Documentation for the project can be found at:
-
-* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
-
-You can find more code examples at repository:
-
-* [https://github.com/rockacola/neo-js-examples](https://github.com/rockacola/neo-js-examples)
 
 ## Contribution
 
