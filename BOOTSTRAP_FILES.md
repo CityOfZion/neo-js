@@ -56,15 +56,15 @@ MongoDB archive file that can be used to restore an entire database via `mongore
 mongorestore --gzip --archive=BACKUP_FILE.archive.gz
 ```
 
-### Mainnet up to block  2,957,600
+### Mainnet up to block 2,957,600
 
-* Date Created: 2018-11-14
+* Date Created: 2018-11-19
 * Database name: `neo_mainnet`
 * Collection names:
   * Block: `blocks`
-* Block range: from 1 to 2,957,600
-* Filename: `neo_mainnet_blocks_2957600.archive.gz`
-* File size: 6.6GB
-* URL: https://drive.google.com/file/d/1zG5W_DZ92IxZlJ1Kj2uKfLFrmJOYPPPF/view?usp=sharing
-* MD5: `ccbbd6bb248e4e961cc5cf98665762e5`
-* SHA256: `17a750b6822ee949d0276c90004feae5dcd9b18def1634dfb0241150f0fe30ae`
+* Block range: from 1 to 2,980,149
+* Filename: `neo_mainnet_blocks_2980149.archive.gz`
+* File size: 6.7GB
+* URL: https://drive.google.com/file/d/1WSqwHs9imjD-5Kf03Mx23iCy_ABtdV5r/view?usp=sharing
+* MD5: `6ee692dabc51af2531b15048fd3ede23`
+* SHA256: `dc0c856959fd9ee28d412f007c226623742a4af987b756f93503ba987f247775`
