@@ -18,8 +18,9 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   startOnInit: true,
   toSyncIncremental: true,
   toSyncForMissingBlocks: true,
-  toPruneRedundantBlocks: false,
+  toPruneRedundantBlocks: true,
   storeQueueConcurrency: 30,
+  pruneQueueConcurrency: 10,
   enqueueBlockIntervalMs: 5000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
   maxStoreQueueLength: 1000,
@@ -27,7 +28,7 @@ const DEFAULT_OPTIONS: SyncerOptions = {
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
   missingEnqueueStoreBlockPriority: 1,
-  enqueuePruneBlockPriority: 2,
+  enqueuePruneBlockPriority: 5,
   maxPruneChunkSize: 1000,
   loggerOptions: {},
 }
@@ -42,6 +43,7 @@ export interface SyncerOptions {
   toSyncForMissingBlocks?: boolean
   toPruneRedundantBlocks?: boolean
   storeQueueConcurrency?: number
+  pruneQueueConcurrency?: number
   enqueueBlockIntervalMs?: number
   verifyBlocksIntervalMs?: number
   maxStoreQueueLength?: number
@@ -57,6 +59,7 @@ export interface SyncerOptions {
 export class Syncer extends EventEmitter {
   private _isRunning = false
   private storeQueue: AsyncPriorityQueue<object>
+  private pruneQueue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private mesh: Mesh
   private storage?: MemoryStorage | MongodbStorage
@@ -80,6 +83,7 @@ export class Syncer extends EventEmitter {
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.storeQueue = this.getPriorityQueue(this.options.storeQueueConcurrency!)
+    this.pruneQueue = this.getPriorityQueue(this.options.pruneQueueConcurrency!)
     if (this.options.startOnInit) {
       this.start()
     }
@@ -248,15 +252,16 @@ export class Syncer extends EventEmitter {
     this.logger.debug('doBlockVerification triggered.')
     this.emit('blockVerification:init')
 
+    // Queue sizes
+    this.logger.info('storeQueue.length:', this.storeQueue.length())
+    this.logger.info('pruneQueue.length:', this.pruneQueue.length())
+
     // Check if this process is currently executing
     if (this.isVerifyingBlocks) {
       this.logger.info('doBlockVerification() is already running. Skip this turn.')
       this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true })
       return
     }
-
-    // Queue size
-    this.logger.info('storeQueue.length:', this.storeQueue.length())
 
     // Blocks analysis
     this.isVerifyingBlocks = true
@@ -333,7 +338,6 @@ export class Syncer extends EventEmitter {
    */
   private enqueueStoreBlock(height: number, priority: number) {
     this.logger.debug('enqueueStoreBlock triggered. height:', height, 'priority:', priority)
-    this.emit('enqueueStoreBlock:init', { height, priority })
 
     // if the block height is above the current height, increment the write pointer.
     if (height > this.blockWritePointer) {
@@ -358,9 +362,8 @@ export class Syncer extends EventEmitter {
    */
   private enqueuePruneBlock(height: number, redundancySize: number, priority: number) {
     this.logger.debug('enqueuePruneBlock triggered. height:', height, 'redundancySize:', redundancySize, 'priority:', priority)
-    this.emit('enqueuePruneBlock:init', { height, redundancySize, priority })
 
-    this.storeQueue.push(
+    this.pruneQueue.push(
       {
         method: this.pruneBlock.bind(this),
         attrs: {
