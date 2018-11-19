@@ -56,7 +56,7 @@ MongoDB archive file that can be used to restore an entire database via `mongore
 mongorestore --gzip --archive=BACKUP_FILE.archive.gz
 ```
 
-### Mainnet up to block 2,957,600
+### Mainnet up to block 2,980,149
 
 * Date Created: 2018-11-19
 * Database name: `neo_mainnet`
