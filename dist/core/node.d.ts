@@ -37,6 +37,7 @@ export declare class Node extends EventEmitter {
     getVersion(): Promise<object>;
     getNodeMeta(): NodeMeta;
     getNodeReliability(): number | undefined;
+    getShapedLatency(): number | undefined;
     close(): void;
     private queryInitHandler;
     private querySuccessHandler;

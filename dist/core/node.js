@@ -65,6 +65,15 @@ class Node extends events_1.EventEmitter {
         const successCount = lodash_1.filter(this.requestLogs, (logObj) => logObj.isSuccess === true).length;
         return successCount / requestCount;
     }
+    getShapedLatency() {
+        this.logger.debug('getShapedLatency triggered.');
+        if (this.requestLogs.length === 0) {
+            return this.latency;
+        }
+        const logPool = lodash_1.filter(this.requestLogs, (logObj) => logObj.isSuccess === true);
+        const averageLatency = lodash_1.round(lodash_1.meanBy(logPool, (logObj) => logObj.latency), 0);
+        return averageLatency;
+    }
     close() {
         this.logger.debug('close triggered.');
         if (this.truncateRequestLogIntervalId) {
