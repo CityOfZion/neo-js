@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, filter, remove } from 'lodash'
+import { merge, filter, remove, meanBy, round } from 'lodash'
 import { RpcDelegate } from '../delegates/rpc-delegate'
 import C from '../common/constants'
 import { NeoValidator } from '../validators/neo-validator'
@@ -116,6 +116,17 @@ export class Node extends EventEmitter {
 
     const successCount = filter(this.requestLogs, (logObj: any) => logObj.isSuccess === true).length
     return successCount / requestCount
+  }
+
+  getShapedLatency(): number | undefined {
+    this.logger.debug('getShapedLatency triggered.')
+    if (this.requestLogs.length === 0) {
+      return this.latency
+    }
+
+    const logPool = filter(this.requestLogs, (logObj: any) => logObj.isSuccess === true)
+    const averageLatency = round(meanBy(logPool, (logObj: any) => logObj.latency), 0)
+    return averageLatency
   }
 
   close() {
