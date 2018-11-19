@@ -175,8 +175,9 @@ const syncerOptions = {
   startOnInit: true,
   toSyncIncremental: true,
   toSyncForMissingBlocks: true,
-  toPruneRedundantBlocks: false,
+  toPruneRedundantBlocks: true,
   storeQueueConcurrency: 30,
+  pruneQueueConcurrency: 10,
   enqueueBlockIntervalMs: 5000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
   maxStoreQueueLength: 1000,
@@ -184,7 +185,7 @@ const syncerOptions = {
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
   missingEnqueueStoreBlockPriority: 1,
-  enqueuePruneBlockPriority: 2,
+  enqueuePruneBlockPriority: 5,
   maxPruneChunkSize: 1000,
   loggerOptions: {},
 }
@@ -194,7 +195,10 @@ const syncerOptions = {
 
 ```js
 const nodeOptions = {
-  toBenchmark: true,
+  toLogReliability: false,
+  truncateRequestLogIntervalMs: 30 * 1000,
+  requestLogTtl: 5 * 60 * 1000,
+  timeout: 30000,
   loggerOptions: {},
 }
 ```
@@ -212,6 +216,7 @@ const memoryStorageOptions = {
 ```js
 const mongodbStorageOptions = {
   connectOnInit: true,
+  reviewIndexesOnConnect: false,
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
