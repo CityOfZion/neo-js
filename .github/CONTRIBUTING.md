@@ -1,10 +1,10 @@
 # Contributing to `neo-js`
 
 1. [Getting Involved](#getting-involved)
-2. [Questions and Discussion](#questions-and-discussion)
-3. [Core Style Guide](#core-style-guide)
-3. [Pull Request Process](#pull-request-process)
-4. [Code of Conduct](#code-of-conduct)
+1. [Questions and Discussion](#questions-and-discussion)
+1. [Core Style Guide](#core-style-guide)
+1. [Pull Request Process](#pull-request-process)
+1. [Code of Conduct](#code-of-conduct)
 
 ## Getting Involved
 
@@ -25,15 +25,15 @@ You may also use the [official community chat](https://discord.gg/R8v48YA) and j
 Before submitted a pull request, ensure you tested your code against ESLint rules in the project:
 
 ```js
-npm run lint
+npm run format && npm run lint
 ```
 
 ## Pull Request Process
 
 1. Ensure any install or build dependencies are removed before the end of the layer when doing a build.
-2. Update the `README.md` with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
-3. Pull requests are made against feature branches and the develop branch.
-4. You may merge the Pull Request in once you have the sign-off of a developer on the project.
+1. Update the `README.md` with details of changes to the interface, this includes new environment variables, exposed ports, useful file locations and container parameters.
+1. Pull requests are made against feature branches and the develop branch.
+1. You may merge the Pull Request in once you have the sign-off of a developer on the project.
 
 ## Code of Conduct
 
