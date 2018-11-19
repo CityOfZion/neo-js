@@ -119,7 +119,7 @@ class Mesh extends events_1.EventEmitter {
         if (qualifyHeightNodes.length === 0) {
             return undefined;
         }
-        const qualifyPendingNodes = lodash_1.filter(qualifyHeightNodes, (n) => !n.pendingRequests || n.pendingRequests < this.options.pendingRequestsThreshold);
+        const qualifyPendingNodes = lodash_1.filter(qualifyHeightNodes, (n) => !n.pendingRequests || n.pendingRequests <= this.options.pendingRequestsThreshold);
         if (qualifyPendingNodes.length === 0) {
             const randomIndex = lodash_1.random(0, qualifyHeightNodes.length - 1);
             return qualifyHeightNodes[randomIndex];

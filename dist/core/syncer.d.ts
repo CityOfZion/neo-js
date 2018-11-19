@@ -14,6 +14,7 @@ export interface SyncerOptions {
     toSyncForMissingBlocks?: boolean;
     toPruneRedundantBlocks?: boolean;
     storeQueueConcurrency?: number;
+    pruneQueueConcurrency?: number;
     enqueueBlockIntervalMs?: number;
     verifyBlocksIntervalMs?: number;
     maxStoreQueueLength?: number;
@@ -28,6 +29,7 @@ export interface SyncerOptions {
 export declare class Syncer extends EventEmitter {
     private _isRunning;
     private storeQueue;
+    private pruneQueue;
     private blockWritePointer;
     private mesh;
     private storage?;

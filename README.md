@@ -53,6 +53,8 @@ $ npm install --save git://github.com/CityOfZion/neo-js.git#develop
 
 ## Quick Start
 
+More comprehensive examples can be found at [`neo-js-examples`](https://github.com/rockacola/neo-js-examples) repository.
+
 ```js
 const Neo = require('@cityofzion/neo-js').Neo
 ```
@@ -104,6 +106,20 @@ neo.storage.on('ready', () => {
     })
 })
 ```
+
+## Documentation
+
+Documentation for the project can be found at:
+
+* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
+
+You can find more code examples at repository:
+
+* [https://github.com/rockacola/neo-js-examples](https://github.com/rockacola/neo-js-examples)
+
+## Blockchain Bootstrap Files
+
+[_Please refer to Bootstrap Files document_](https://github.com/CityOfZion/neo-js/blob/master/BOOTSTRAP_FILES.md)
 
 ## Options
 
@@ -159,8 +175,9 @@ const syncerOptions = {
   startOnInit: true,
   toSyncIncremental: true,
   toSyncForMissingBlocks: true,
-  toPruneRedundantBlocks: false,
+  toPruneRedundantBlocks: true,
   storeQueueConcurrency: 30,
+  pruneQueueConcurrency: 10,
   enqueueBlockIntervalMs: 5000,
   verifyBlocksIntervalMs: 1 * 60 * 1000,
   maxStoreQueueLength: 1000,
@@ -168,7 +185,7 @@ const syncerOptions = {
   standardEnqueueBlockPriority: 5,
   retryEnqueueBlockPriority: 3,
   missingEnqueueStoreBlockPriority: 1,
-  enqueuePruneBlockPriority: 2,
+  enqueuePruneBlockPriority: 5,
   maxPruneChunkSize: 1000,
   loggerOptions: {},
 }
@@ -178,7 +195,10 @@ const syncerOptions = {
 
 ```js
 const nodeOptions = {
-  toBenchmark: true,
+  toLogReliability: false,
+  truncateRequestLogIntervalMs: 30 * 1000,
+  requestLogTtl: 5 * 60 * 1000,
+  timeout: 30000,
   loggerOptions: {},
 }
 ```
@@ -196,6 +216,7 @@ const memoryStorageOptions = {
 ```js
 const mongodbStorageOptions = {
   connectOnInit: true,
+  reviewIndexesOnConnect: false,
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
@@ -220,19 +241,48 @@ const loggerOptions = {
 }
 ```
 
-## Blockchain Bootstrap Files
+## Events
 
-[_Please refer to Bootstrap Files document_](https://github.com/CityOfZion/neo-js/blob/master/BOOTSTRAP_FILES.md)
+Possible events emitters per class.
 
-## Documentation
+### `neo`
 
-Documentation for the project can be found at:
+* N/A
 
-* [http://cityofzion.io/neo-js/](http://cityofzion.io/neo-js/)
+### `core/api`
 
-You can find more code examples at repository:
+* `storage:insert`
 
-* [https://github.com/rockacola/neo-js-examples](https://github.com/rockacola/neo-js-examples)
+### `core/mesh`
+
+* `ready`
+
+### `core/syncer`
+
+* `start`
+* `stop`
+* `query:worker:complete`
+* `blockVerification:init`
+* `blockVerification:complete`
+* `blockVerification:missingBlocks`
+* `blockVerification:excessiveBlocks`
+* `storeBlock:init`
+* `storeBlock:complete`
+* `upToDate`
+
+### `core/node`
+
+* `query:init`
+* `query:success`
+* `query:failed`
+
+### `storages/memory-storage`
+
+* `ready`
+
+### `storages/mongodb-storage`
+
+* `ready`
 
 ## Contribution
 
