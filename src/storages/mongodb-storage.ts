@@ -108,7 +108,7 @@ export class MongodbStorage extends EventEmitter {
           }
           return resolve(doc.payload)
         })
-        .catch((err) => reject(err))
+        .catch((err: any) => reject(err))
     })
   }
 
