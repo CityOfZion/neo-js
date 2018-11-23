@@ -268,8 +268,11 @@ export class Syncer extends EventEmitter {
     this.isVerifyingBlocks = true
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
+    this.logger.debug('Analyzing blocks in storage...')
     this.storage!.analyzeBlocks(startHeight, endHeight)
       .then((res: object[]) => {
+        this.logger.debug('Analyzing blocks complete!')
+
         const all: number[] = []
         for (let i = startHeight; i <= endHeight; i++) {
           all.push(i)
