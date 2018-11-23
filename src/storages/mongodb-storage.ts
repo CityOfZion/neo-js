@@ -49,6 +49,9 @@ export class MongodbStorage extends EventEmitter {
     this.blockModel = this.getBlockModel()
     this.initConnection()
 
+    // Event handlers
+    this.on('ready', this.readyHandler.bind(this))
+
     this.logger.debug('constructor completes.')
   }
 
@@ -220,6 +223,13 @@ export class MongodbStorage extends EventEmitter {
     return mongoose.disconnect()
   }
 
+  private readyHandler(payload: any) {
+    this.logger.debug('readyHandler triggered.')
+    if (this.options.reviewIndexesOnConnect) {
+      this.reviewIndexes()
+    }
+  }
+
   private validateOptionalParameters() {
     // TODO
   }
@@ -267,19 +277,8 @@ export class MongodbStorage extends EventEmitter {
           { useMongoClient: true }
         )
         .then(() => {
-          this.logger.info('mongoose connected.')
-          if (this.options.reviewIndexesOnConnect) {
-            this.logger.debug('proceed to review indexes...')
-            this.reviewIndexes()
-              .then(() => {
-                this.setReady()
-              })
-              .catch(() => {
-                // Do nothing...
-              })
-          } else {
-            this.setReady()
-          }
+          this.logger.info('MongoDB connected.')
+          this.setReady()
         })
         .catch((err: any) => {
           this.logger.error('Error establish MongoDB connection.')
@@ -294,7 +293,28 @@ export class MongodbStorage extends EventEmitter {
   }
 
   private reviewIndexes(): Promise<void> {
-    this.logger.debug('reviewIndexes triggered.')
+    this.logger.debug('Proceed to review indexes...')
+    this.emit('reviewIndexes:init')
+
+    return new Promise((resolve, reject) => {
+      Promise.resolve()
+        .then(() => this.reviewBlockHeightIndex())
+        .then(() => {
+          this.logger.debug('Review indexes succeed.')
+          this.emit('reviewIndexes:complete', { isSuccess: true })
+          return resolve()
+        })
+        .catch((err: any) => {
+          this.logger.debug('reviewIndexes failed. Message:', err.message)
+          this.emit('reviewIndexes:complete', { isSuccess: false })
+          return resolve()
+        })
+    })
+  }
+
+  private reviewBlockHeightIndex(): Promise<void> {
+    this.logger.debug('reviewBlockHeightIndex triggered.')
+
     const blockIndexKey = 'height_1_createdAt_-1'
     const blockIndexKeyObj = { height: 1, createdAt: -1 }
 
@@ -306,21 +326,21 @@ export class MongodbStorage extends EventEmitter {
             // Determined that there's no need to create index
             throw new Error('SKIP_INDEX_BLOCK')
           }
-          this.logger.info('generating MongoDB index(es)...')
+          this.logger.info(`Generating index [${blockIndexKey}]...`)
           return Promise.resolve()
         })
         .then(() => this.createIndex(this.blockModel, blockIndexKeyObj))
         .then(() => {
-          this.logger.info('MongoDB index(es) generation complete.')
+          this.logger.info(`Index [${blockIndexKey}] generation complete.`)
           return resolve()
         })
         .catch((err: any) => {
           if (err.message === 'SKIP_INDEX_BLOCK') {
-            this.logger.debug('has required MongoDB index(es), no action needed.')
+            this.logger.info(`Index [${blockIndexKey}] already available. No action needed.`)
             return resolve()
           } else {
-            this.logger.info('hasIndex failed, but to continue. Message:', err.message)
-            return resolve()
+            this.logger.info(`Index [${blockIndexKey}] generation failed. Message:`, err.message)
+            return reject(err)
           }
         })
     })
