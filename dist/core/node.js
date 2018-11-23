@@ -1,10 +1,13 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const node_log_it_1 = require("node-log-it");
 const lodash_1 = require("lodash");
 const rpc_delegate_1 = require("../delegates/rpc-delegate");
-const constants_1 = require("../common/constants");
+const constants_1 = __importDefault(require("../common/constants"));
 const neo_validator_1 = require("../validators/neo-validator");
 const MODULE_NAME = 'Node';
 const DEFAULT_ID = 0;
