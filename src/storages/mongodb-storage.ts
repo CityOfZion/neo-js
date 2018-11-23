@@ -298,7 +298,7 @@ export class MongodbStorage extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       Promise.resolve()
-        .then(() => this.reviewBlockHeightIndex())
+        .then(() => this.reviewIndexForBlockHeight())
         .then(() => {
           this.logger.debug('Review indexes succeed.')
           this.emit('reviewIndexes:complete', { isSuccess: true })
@@ -312,8 +312,8 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
-  private reviewBlockHeightIndex(): Promise<void> {
-    this.logger.debug('reviewBlockHeightIndex triggered.')
+  private reviewIndexForBlockHeight(): Promise<void> {
+    this.logger.debug('reviewIndexForBlockHeight triggered.')
 
     const blockIndexKey = 'height_1_createdAt_-1'
     const blockIndexKeyObj = { height: 1, createdAt: -1 }
@@ -321,6 +321,8 @@ export class MongodbStorage extends EventEmitter {
   }
 
   private reviewIndex(model: any, key: string, keyObj: object): Promise<void> {
+    this.logger.debug('reviewIndex triggered.')
+
     return new Promise((resolve, reject) => {
       Promise.resolve()
         .then(() => this.hasIndex(model, key))
@@ -351,6 +353,7 @@ export class MongodbStorage extends EventEmitter {
 
   private hasIndex(model: any, key: string): Promise<boolean> {
     this.logger.debug('hasIndex triggered. key:', key)
+
     return new Promise((resolve, reject) => {
       model.collection
         .getIndexes()
@@ -366,6 +369,7 @@ export class MongodbStorage extends EventEmitter {
 
   private createIndex(model: any, keyObj: object): Promise<void> {
     this.logger.debug('createIndex triggered.')
+
     return new Promise((resolve, reject) => {
       model.collection
         .createIndex(keyObj)
