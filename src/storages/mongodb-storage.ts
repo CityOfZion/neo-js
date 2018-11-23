@@ -317,29 +317,32 @@ export class MongodbStorage extends EventEmitter {
 
     const blockIndexKey = 'height_1_createdAt_-1'
     const blockIndexKeyObj = { height: 1, createdAt: -1 }
+    return this.reviewIndex(this.blockModel, blockIndexKey, blockIndexKeyObj)
+  }
 
+  private reviewIndex(model: any, key: string, keyObj: object): Promise<void> {
     return new Promise((resolve, reject) => {
       Promise.resolve()
-        .then(() => this.hasIndex(this.blockModel, blockIndexKey))
+        .then(() => this.hasIndex(model, key))
         .then((hasRequiredIndex: boolean) => {
           if (hasRequiredIndex) {
             // Determined that there's no need to create index
-            throw new Error('SKIP_INDEX_BLOCK')
+            throw new Error('SKIP_INDEX')
           }
-          this.logger.info(`Generating index [${blockIndexKey}]...`)
+          this.logger.info(`Generating index [${key}]...`)
           return Promise.resolve()
         })
-        .then(() => this.createIndex(this.blockModel, blockIndexKeyObj))
+        .then(() => this.createIndex(model, keyObj))
         .then(() => {
-          this.logger.info(`Index [${blockIndexKey}] generation complete.`)
+          this.logger.info(`Index [${key}] generation complete.`)
           return resolve()
         })
         .catch((err: any) => {
-          if (err.message === 'SKIP_INDEX_BLOCK') {
-            this.logger.info(`Index [${blockIndexKey}] already available. No action needed.`)
+          if (err.message === 'SKIP_INDEX') {
+            this.logger.info(`Index [${key}] already available. No action needed.`)
             return resolve()
           } else {
-            this.logger.info(`Index [${blockIndexKey}] generation failed. Message:`, err.message)
+            this.logger.info(`Index [${key}] generation failed. Message:`, err.message)
             return reject(err)
           }
         })
