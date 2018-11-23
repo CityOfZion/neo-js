@@ -299,6 +299,7 @@ export class MongodbStorage extends EventEmitter {
     return new Promise((resolve, reject) => {
       Promise.resolve()
         .then(() => this.reviewIndexForBlockHeight())
+        .then(() => this.reviewIndexForTransactionId())
         .then(() => {
           this.logger.debug('Review indexes succeed.')
           this.emit('reviewIndexes:complete', { isSuccess: true })
@@ -315,9 +316,17 @@ export class MongodbStorage extends EventEmitter {
   private reviewIndexForBlockHeight(): Promise<void> {
     this.logger.debug('reviewIndexForBlockHeight triggered.')
 
-    const blockIndexKey = 'height_1_createdAt_-1'
-    const blockIndexKeyObj = { height: 1, createdAt: -1 }
-    return this.reviewIndex(this.blockModel, blockIndexKey, blockIndexKeyObj)
+    const key = 'height_1_createdAt_-1'
+    const keyObj = { height: 1, createdAt: -1 }
+    return this.reviewIndex(this.blockModel, key, keyObj)
+  }
+
+  private reviewIndexForTransactionId(): Promise<void> {
+    this.logger.debug('reviewIndexForTransactionId triggered.')
+
+    const key = 'payload.tx.txid_1'
+    const keyObj = { 'payload.tx.txid': 1 }
+    return this.reviewIndex(this.blockModel, key, keyObj)
   }
 
   private reviewIndex(model: any, key: string, keyObj: object): Promise<void> {
