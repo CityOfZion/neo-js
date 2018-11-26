@@ -40,8 +40,7 @@ export declare class Node extends EventEmitter {
     getShapedLatency(): number | undefined;
     close(): void;
     private queryInitHandler;
-    private querySuccessHandler;
-    private queryFailedHandler;
+    private queryCompleteHandler;
     private validateOptionalParameters;
     private startBenchmark;
     private stopBenchmark;

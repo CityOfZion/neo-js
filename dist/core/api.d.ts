@@ -5,6 +5,7 @@ import { Mesh } from './mesh';
 import { MemoryStorage } from '../storages/memory-storage';
 import { MongodbStorage } from '../storages/mongodb-storage';
 export interface ApiOptions {
+    insertToStorage?: boolean;
     loggerOptions?: LoggerOptions;
 }
 export declare class Api extends EventEmitter {

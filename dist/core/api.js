@@ -10,6 +10,7 @@ const constants_1 = __importDefault(require("../common/constants"));
 const neo_validator_1 = require("../validators/neo-validator");
 const MODULE_NAME = 'Api';
 const DEFAULT_OPTIONS = {
+    insertToStorage: true,
     loggerOptions: {},
 };
 class Api extends events_1.EventEmitter {
@@ -69,6 +70,9 @@ class Api extends events_1.EventEmitter {
         });
     }
     storageInsertHandler(payload) {
+        if (!this.options.insertToStorage) {
+            return;
+        }
         this.logger.debug('storageInsertHandler triggered.');
         if (payload.method === constants_1.default.rpc.getblockcount) {
             this.storeBlockCount(payload);

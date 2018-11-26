@@ -186,14 +186,16 @@ class Syncer extends events_1.EventEmitter {
         this.logger.info('pruneQueue.length:', this.pruneQueue.length());
         if (this.isVerifyingBlocks) {
             this.logger.info('doBlockVerification() is already running. Skip this turn.');
-            this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true });
+            this.emit('blockVerification:complete', { isSkipped: true });
             return;
         }
         this.isVerifyingBlocks = true;
         const startHeight = this.options.minHeight;
         const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
+        this.logger.debug('Analyzing blocks in storage...');
         this.storage.analyzeBlocks(startHeight, endHeight)
             .then((res) => {
+            this.logger.debug('Analyzing blocks complete!');
             const all = [];
             for (let i = startHeight; i <= endHeight; i++) {
                 all.push(i);
@@ -319,7 +321,7 @@ class Syncer extends events_1.EventEmitter {
                 .catch((err) => {
                 if (err.Message === 'SKIP_STORE_BLOCK') {
                     this.logger.debug('setBlock skipped. height:', height);
-                    this.emit('storeBlock:complete', { isSuccess: false, isSkipped: true, height });
+                    this.emit('storeBlock:complete', { isSkipped: true, height });
                 }
                 else {
                     this.logger.debug('setBlock failed. height:', height, 'Message:', err.message);

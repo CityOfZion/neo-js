@@ -29,11 +29,15 @@ export declare class MongodbStorage extends EventEmitter {
     pruneBlock(height: number, redundancySize: number): Promise<void>;
     analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]>;
     disconnect(): Promise<void>;
+    private readyHandler;
     private validateOptionalParameters;
     private getBlockModel;
     private initConnection;
     private setReady;
     private reviewIndexes;
+    private reviewIndexForBlockHeight;
+    private reviewIndexForTransactionId;
+    private reviewIndex;
     private hasIndex;
     private createIndex;
     private getBlockDocument;

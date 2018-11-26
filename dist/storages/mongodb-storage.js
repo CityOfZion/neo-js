@@ -4,6 +4,7 @@ const events_1 = require("events");
 const node_log_it_1 = require("node-log-it");
 const lodash_1 = require("lodash");
 const mongoose_1 = require("mongoose");
+const mongodb_validator_1 = require("../validators/mongodb-validator");
 const mongoose = new mongoose_1.Mongoose();
 mongoose.Promise = global.Promise;
 const MODULE_NAME = 'MongodbStorage';
@@ -27,6 +28,7 @@ class MongodbStorage extends events_1.EventEmitter {
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
         this.blockModel = this.getBlockModel();
         this.initConnection();
+        this.on('ready', this.readyHandler.bind(this));
         this.logger.debug('constructor completes.');
     }
     isReady() {
@@ -172,6 +174,12 @@ class MongodbStorage extends events_1.EventEmitter {
         this.logger.debug('disconnect triggered.');
         return mongoose.disconnect();
     }
+    readyHandler(payload) {
+        this.logger.debug('readyHandler triggered.');
+        if (this.options.reviewIndexesOnConnect) {
+            this.reviewIndexes();
+        }
+    }
     validateOptionalParameters() {
     }
     getBlockModel() {
@@ -204,22 +212,12 @@ class MongodbStorage extends events_1.EventEmitter {
     initConnection() {
         if (this.options.connectOnInit) {
             this.logger.debug('initConnection triggered.');
+            mongodb_validator_1.MongodbValidator.validateConnectionString(this.options.connectionString);
             mongoose
                 .connect(this.options.connectionString, { useMongoClient: true })
                 .then(() => {
-                this.logger.info('mongoose connected.');
-                if (this.options.reviewIndexesOnConnect) {
-                    this.logger.debug('proceed to review indexes...');
-                    this.reviewIndexes()
-                        .then(() => {
-                        this.setReady();
-                    })
-                        .catch(() => {
-                    });
-                }
-                else {
-                    this.setReady();
-                }
+                this.logger.info('MongoDB connected.');
+                this.setReady();
             })
                 .catch((err) => {
                 this.logger.error('Error establish MongoDB connection.');
@@ -232,32 +230,61 @@ class MongodbStorage extends events_1.EventEmitter {
         this.emit('ready');
     }
     reviewIndexes() {
-        this.logger.debug('reviewIndexes triggered.');
-        const blockIndexKey = 'height_1_createdAt_-1';
-        const blockIndexKeyObj = { height: 1, createdAt: -1 };
+        this.logger.debug('Proceed to review indexes...');
+        this.emit('reviewIndexes:init');
         return new Promise((resolve, reject) => {
             Promise.resolve()
-                .then(() => this.hasIndex(this.blockModel, blockIndexKey))
-                .then((hasRequiredIndex) => {
-                if (hasRequiredIndex) {
-                    throw new Error('SKIP_INDEX_BLOCK');
-                }
-                this.logger.info('generating MongoDB index(es)...');
-                return Promise.resolve();
-            })
-                .then(() => this.createIndex(this.blockModel, blockIndexKeyObj))
+                .then(() => this.reviewIndexForBlockHeight())
+                .then(() => this.reviewIndexForTransactionId())
                 .then(() => {
-                this.logger.info('MongoDB index(es) generation complete.');
+                this.logger.debug('Review indexes succeed.');
+                this.emit('reviewIndexes:complete', { isSuccess: true });
                 return resolve();
             })
                 .catch((err) => {
-                if (err.message === 'SKIP_INDEX_BLOCK') {
-                    this.logger.debug('has required MongoDB index(es), no action needed.');
+                this.logger.debug('reviewIndexes failed. Message:', err.message);
+                this.emit('reviewIndexes:complete', { isSuccess: false });
+                return resolve();
+            });
+        });
+    }
+    reviewIndexForBlockHeight() {
+        this.logger.debug('reviewIndexForBlockHeight triggered.');
+        const key = 'height_1_createdAt_-1';
+        const keyObj = { height: 1, createdAt: -1 };
+        return this.reviewIndex(this.blockModel, key, keyObj);
+    }
+    reviewIndexForTransactionId() {
+        this.logger.debug('reviewIndexForTransactionId triggered.');
+        const key = 'payload.tx.txid_1';
+        const keyObj = { 'payload.tx.txid': 1 };
+        return this.reviewIndex(this.blockModel, key, keyObj);
+    }
+    reviewIndex(model, key, keyObj) {
+        this.logger.debug('reviewIndex triggered.');
+        return new Promise((resolve, reject) => {
+            Promise.resolve()
+                .then(() => this.hasIndex(model, key))
+                .then((hasRequiredIndex) => {
+                if (hasRequiredIndex) {
+                    throw new Error('SKIP_INDEX');
+                }
+                this.logger.info(`Generating index [${key}]...`);
+                return Promise.resolve();
+            })
+                .then(() => this.createIndex(model, keyObj))
+                .then(() => {
+                this.logger.info(`Index [${key}] generation complete.`);
+                return resolve();
+            })
+                .catch((err) => {
+                if (err.message === 'SKIP_INDEX') {
+                    this.logger.info(`Index [${key}] already available. No action needed.`);
                     return resolve();
                 }
                 else {
-                    this.logger.info('hasIndex failed, but to continue. Message:', err.message);
-                    return resolve();
+                    this.logger.info(`Index [${key}] generation failed. Message:`, err.message);
+                    return reject(err);
                 }
             });
         });

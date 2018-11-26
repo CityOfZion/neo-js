@@ -31,8 +31,7 @@ class Node extends events_1.EventEmitter {
             this.truncateRequestLogIntervalId = setInterval(() => this.truncateRequestLog(), this.options.truncateRequestLogIntervalMs);
         }
         this.on('query:init', this.queryInitHandler.bind(this));
-        this.on('query:success', this.querySuccessHandler.bind(this));
-        this.on('query:failed', this.queryFailedHandler.bind(this));
+        this.on('query:complete', this.queryCompleteHandler.bind(this));
         this.logger.debug('constructor completes.');
     }
     getBlock(height, isVerbose = true) {
@@ -71,9 +70,12 @@ class Node extends events_1.EventEmitter {
     getShapedLatency() {
         this.logger.debug('getShapedLatency triggered.');
         if (this.requestLogs.length === 0) {
-            return this.latency;
+            return undefined;
         }
-        const logPool = lodash_1.filter(this.requestLogs, (logObj) => logObj.isSuccess === true);
+        const logPool = lodash_1.filter(this.requestLogs, (logObj) => logObj.isSuccess === true && logObj.latency !== undefined);
+        if (logPool.length === 0) {
+            return undefined;
+        }
         const averageLatency = lodash_1.round(lodash_1.meanBy(logPool, (logObj) => logObj.latency), 0);
         return averageLatency;
     }
@@ -87,12 +89,8 @@ class Node extends events_1.EventEmitter {
         this.logger.debug('queryInitHandler triggered.');
         this.startBenchmark(payload);
     }
-    querySuccessHandler(payload) {
-        this.logger.debug('querySuccessHandler triggered.');
-        this.stopBenchmark(payload);
-    }
-    queryFailedHandler(payload) {
-        this.logger.debug('queryFailedHandler triggered.');
+    queryCompleteHandler(payload) {
+        this.logger.debug('queryCompleteHandler triggered.');
         this.stopBenchmark(payload);
     }
     validateOptionalParameters() {
@@ -113,7 +111,7 @@ class Node extends events_1.EventEmitter {
         this.logger.debug('stopBenchmark triggered.');
         this.decreasePendingRequest();
         this.lastPingTimestamp = Date.now();
-        if (payload.error) {
+        if (!payload.isSuccess) {
             this.isActive = false;
         }
         else {
@@ -136,16 +134,16 @@ class Node extends events_1.EventEmitter {
                     this.latency = payload.latency;
                 }
                 if (this.options.toLogReliability) {
-                    if (payload.error) {
+                    if (!payload.isSuccess) {
                         this.requestLogs.push({
                             timestamp: Date.now(),
-                            isSuccess: false,
+                            isSuccess: payload.isSuccess,
                         });
                     }
                     else {
                         this.requestLogs.push({
                             timestamp: Date.now(),
-                            isSuccess: true,
+                            isSuccess: payload.isSuccess,
                             latency: this.latency,
                         });
                     }
@@ -170,11 +168,11 @@ class Node extends events_1.EventEmitter {
                 const result = res.result;
                 const blockHeight = method === constants_1.default.rpc.getblockcount ? result : undefined;
                 const userAgent = method === constants_1.default.rpc.getversion ? result.useragent : undefined;
-                this.emit('query:success', { method, latency, blockHeight, userAgent });
+                this.emit('query:complete', { isSuccess: true, method, latency, blockHeight, userAgent });
                 return resolve(result);
             })
                 .catch((err) => {
-                this.emit('query:failed', { method, error: err });
+                this.emit('query:complete', { isSuccess: false, method, error: err });
                 return reject(err);
             });
         });
