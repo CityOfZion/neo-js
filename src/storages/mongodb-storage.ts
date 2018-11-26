@@ -2,6 +2,8 @@ import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, takeRight, includes } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
+import { MongodbValidator } from '../validators/mongodb-validator'
+
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
 
@@ -269,7 +271,7 @@ export class MongodbStorage extends EventEmitter {
   private initConnection() {
     if (this.options.connectOnInit) {
       this.logger.debug('initConnection triggered.')
-      // TODO: valid connection string
+      MongodbValidator.validateConnectionString(this.options.connectionString!)
 
       mongoose
         .connect(
