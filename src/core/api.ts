@@ -10,10 +10,12 @@ import { NeoValidator } from '../validators/neo-validator'
 
 const MODULE_NAME = 'Api'
 const DEFAULT_OPTIONS: ApiOptions = {
+  insertToStorage: true,
   loggerOptions: {},
 }
 
 export interface ApiOptions {
+  insertToStorage?: Boolean
   loggerOptions?: LoggerOptions
 }
 
@@ -103,12 +105,17 @@ export class Api extends EventEmitter {
   }
 
   private storageInsertHandler(payload: StorageInsertPayload) {
+    if (!this.options.insertToStorage) {
+      return
+    }
+
     this.logger.debug('storageInsertHandler triggered.')
     if (payload.method === C.rpc.getblockcount) {
       this.storeBlockCount(payload)
     } else if (payload.method === C.rpc.getblock) {
       this.storeBlock(payload)
     } else {
+      // TODO
       throw new Error('Not implemented.')
     }
   }
