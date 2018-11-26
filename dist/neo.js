@@ -1,4 +1,7 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const node_log_it_1 = require("node-log-it");
@@ -10,8 +13,8 @@ const syncer_1 = require("./core/syncer");
 const memory_storage_1 = require("./storages/memory-storage");
 const mongodb_storage_1 = require("./storages/mongodb-storage");
 const endpoint_validator_1 = require("./validators/endpoint-validator");
-const profiles_1 = require("./common/profiles");
-const constants_1 = require("./common/constants");
+const profiles_1 = __importDefault(require("./common/profiles"));
+const constants_1 = __importDefault(require("./common/constants"));
 const version = require('../package.json').version;
 const MODULE_NAME = 'Neo';
 const DEFAULT_OPTIONS = {

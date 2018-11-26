@@ -58,17 +58,17 @@ export class Api extends EventEmitter {
 
     return new Promise((resolve, reject) => {
       this.storage!.getBlockCount()
-        .then((blockHeight) => resolve(blockHeight))
-        .catch((err) => {
+        .then((blockHeight: number) => resolve(blockHeight))
+        .catch((err: any) => {
           // Failed to fetch from storage, try mesh instead
           this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...')
           this.getBlockCountFromMesh()
-            .then((res) => {
+            .then((res: number) => {
               this.logger.debug('Successfully fetch result from mesh.')
               this.emit('storage:insert', { method: C.rpc.getblockcount, result: res })
               resolve(res)
             })
-            .catch((err2) => reject(err2))
+            .catch((err2: any) => reject(err2))
         })
     })
   }

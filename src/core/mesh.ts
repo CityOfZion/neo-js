@@ -199,7 +199,7 @@ export class Mesh extends EventEmitter {
     this.logger.debug('performBenchmark triggered.')
     const node = this.getNodeToBenchmark()
     if (node) {
-      node.getBlockCount().catch((err) => {
+      node.getBlockCount().catch((err: any) => {
         this.logger.info('node.getBlockCount error in performBenchmark(). Endpoint:', node.endpoint, 'Message:', err.message)
       })
     } else {
