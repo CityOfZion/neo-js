@@ -119,10 +119,14 @@ export class Node extends EventEmitter {
   getShapedLatency(): number | undefined {
     this.logger.debug('getShapedLatency triggered.')
     if (this.requestLogs.length === 0) {
-      return this.latency
+      return undefined
     }
 
-    const logPool = filter(this.requestLogs, (logObj: any) => logObj.isSuccess === true)
+    const logPool = filter(this.requestLogs, (logObj: any) => logObj.isSuccess === true && logObj.latency !== undefined)
+    if (logPool.length === 0) {
+      return undefined
+    }
+
     const averageLatency = round(meanBy(logPool, (logObj: any) => logObj.latency), 0)
     return averageLatency
   }
