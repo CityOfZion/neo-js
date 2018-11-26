@@ -260,7 +260,7 @@ export class Syncer extends EventEmitter {
     // Check if this process is currently executing
     if (this.isVerifyingBlocks) {
       this.logger.info('doBlockVerification() is already running. Skip this turn.')
-      this.emit('blockVerification:complete', { isSuccess: false, isSkipped: true })
+      this.emit('blockVerification:complete', { isSkipped: true })
       return
     }
 
@@ -431,7 +431,7 @@ export class Syncer extends EventEmitter {
         .catch((err: any) => {
           if (err.Message === 'SKIP_STORE_BLOCK') {
             this.logger.debug('setBlock skipped. height:', height)
-            this.emit('storeBlock:complete', { isSuccess: false, isSkipped: true, height })
+            this.emit('storeBlock:complete', { isSkipped: true, height })
           } else {
             this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
             this.emit('storeBlock:complete', { isSuccess: false, height })
