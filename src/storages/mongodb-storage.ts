@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, takeRight, includes } from 'lodash'
+import { merge, map, takeRight, includes, find } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
 
@@ -125,6 +125,22 @@ export class MongodbStorage extends EventEmitter {
           }
           const result = map(docs, (item: any) => item.payload)
           return resolve(result)
+        })
+        .catch((err: any) => reject(err))
+    })
+  }
+
+  getTransaction(transactionId: string): Promise<object> {
+    this.logger.debug('getTransaction triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.getBlockDocumentByTransactionId(transactionId)
+        .then((doc: any) => {
+          if (!doc) {
+            return reject(new Error('No result found.'))
+          }
+          const transaction = find(doc.payload.tx, (t: any) => t.txid === transactionId)
+          return resolve(transaction)
         })
         .catch((err: any) => reject(err))
     })
@@ -428,6 +444,28 @@ export class MongodbStorage extends EventEmitter {
           if (!res) {
             // TODO: Verify if res is array
             return resolve([])
+          }
+          return resolve(res)
+        })
+    })
+  }
+  
+  private getBlockDocumentByTransactionId(transactionId: string): Promise<object> {
+    this.logger.debug('getBlockDocumentByTransactionId triggered. transactionId:', transactionId)
+
+    return new Promise((resolve, reject) => {
+      this.blockModel
+        .findOne({
+          'payload.tx': {
+            $elemMatch: {
+              txid: transactionId,
+            },
+          },
+        })
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockModel.findOne() execution failed. error:', err.message)
+            return reject(err)
           }
           return resolve(res)
         })

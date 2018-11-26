@@ -67,6 +67,10 @@ export class MemoryStorage extends EventEmitter {
     }
   }
 
+  getTransaction(transactionId: string): Promise<object> {
+    throw new Error('Not implemented.')
+  }
+
   setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.blockCollection.push({ height, block })
     return Promise.resolve()

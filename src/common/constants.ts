@@ -11,6 +11,7 @@ const C = {
     getblock: 'getblock',
     getblockcount: 'getblockcount',
     getversion: 'getversion',
+    getrawtransaction: 'getrawtransaction',
   },
 }
 
