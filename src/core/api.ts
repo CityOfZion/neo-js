@@ -15,7 +15,7 @@ const DEFAULT_OPTIONS: ApiOptions = {
 }
 
 export interface ApiOptions {
-  insertToStorage?: Boolean
+  insertToStorage?: boolean
   loggerOptions?: LoggerOptions
 }
 
