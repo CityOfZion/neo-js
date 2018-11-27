@@ -11,11 +11,13 @@ import { NeoValidator } from '../validators/neo-validator'
 const MODULE_NAME = 'Api'
 const DEFAULT_OPTIONS: ApiOptions = {
   insertToStorage: true,
+  checkReadyIntervalMs: 200,
   loggerOptions: {},
 }
 
 export interface ApiOptions {
   insertToStorage?: boolean
+  checkReadyIntervalMs?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -44,6 +46,7 @@ export class Api extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
+    this.checkMeshAndStorageReady()
 
     // Event handlers
     this.on('storage:insert', this.storageInsertHandler.bind(this))
@@ -122,6 +125,24 @@ export class Api extends EventEmitter {
 
   private validateOptionalParameters() {
     // TODO
+  }
+
+  private checkMeshAndStorageReady() {
+    this.logger.debug('checkMeshAndStorageReady triggered.')
+
+    /**
+     * The easiest implementation to asynchronously detects readiness
+     * of multiple components, is to just periodically ping them until
+     * all are stated to be ready.
+     */
+    const checkIntervalId = setInterval(() => {
+      const meshReady = this.mesh.isReady()
+      const storageReady = this.storage ? this.storage.isReady() : true
+      if (meshReady && storageReady) {
+        this.emit('ready')
+        clearInterval(checkIntervalId)
+      }
+    }, this.options.checkReadyIntervalMs!)
   }
 
   private storeBlockCount(payload: StorageInsertPayload) {
