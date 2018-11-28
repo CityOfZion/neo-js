@@ -29,6 +29,7 @@ export interface BlockMetaAnalyzerOptions {
 }
 
 export class BlockMetaAnalyzer extends EventEmitter {
+  private apiLevel = 1 // A flag to determine version of the metadata (akin to Android API level)
   private _isRunning = false
   private queue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
@@ -132,25 +133,8 @@ export class BlockMetaAnalyzer extends EventEmitter {
 
   private setBlockWritePointer(): Promise<void> {
     this.logger.debug('setBlockWritePointer triggered.')
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlockCount()
-        .then((height: number) => {
-          this.logger.debug('getBlockCount success. height:', height)
-          if (this.options.minHeight && height < this.options.minHeight) {
-            this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
-            this.blockWritePointer = this.options.minHeight
-          } else {
-            this.blockWritePointer = height
-          }
-          resolve()
-        })
-        .catch((err: any) => {
-          this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
-          this.logger.info('Assumed that there are no blocks.')
-          this.blockWritePointer = this.options.minHeight!
-          resolve()
-        })
-    })
+    this.blockWritePointer = 0
+    return Promise.resolve()
   }
 
   private doEnqueueAnalyzeBlock() {
@@ -208,23 +192,43 @@ export class BlockMetaAnalyzer extends EventEmitter {
   }
 
   private analyzeBlock(attrs: object): Promise<any> {
-    this.logger.debug('storeBlock triggered. attrs:', attrs)
+    this.logger.debug('analyzeBlock triggered. attrs:', attrs)
 
     const height: number = (attrs as any).height
+    let previousBlockTimestamp: number | undefined = undefined
 
-    // TODO: fetch block from storage
-    // TODO: fetch previous block from storage
-    // TODO: meta data extraction
-    // TODO: store meta data to storage
-
-    /**
-     * Block Meta Data:
-     * - height
-     * - generationSecond
-     * - transactionCount
-     * - createdBy
-     * - apiLevel
-     */
-    throw new Error('Not implemented')
+    return new Promise((resolve, reject) => {
+      Promise.resolve()
+        .then((): object | undefined => {
+          if (height === 1) {
+            // No need to fetch previous block
+            return Promise.resolve()
+          } else {
+            return this.storage!.getBlock(height-1)
+          }
+        })
+        .then((previousBlock: object | undefined) => {
+          if (previousBlock) {
+            previousBlockTimestamp = (previousBlock as any).time
+          }
+          // this.logger.debug('previousBlock type:', typeof(previousBlock), 'previousBlockTimestamp:', previousBlockTimestamp)
+          return Promise.resolve()
+        })
+        .then(() => this.storage!.getBlock(height))
+        .then((block: any) => {
+          const blockMeta = {
+            height: height,
+            time: block.time,
+            size: block.size,
+            generationTime: (previousBlockTimestamp) ? block.time - previousBlockTimestamp : 0,
+            transactionCount: block.tx.length,
+            apiLevel: this.apiLevel, 
+          }
+          // this.logger.debug('blockMeta:', blockMeta)
+          return Promise.resolve(blockMeta)
+        })
+        .then((blockMeta: any) => this.storage!.setBlockMeta(blockMeta))
+        .catch((err: any) => reject(err))
+    })
   }
 }

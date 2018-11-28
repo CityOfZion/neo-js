@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
+    blockMetas: 'block_metas',
     transactions: 'transactions',
     assets: 'assets',
   },
@@ -27,6 +28,7 @@ export interface MongodbStorageOptions {
   userAgent?: string
   collectionNames?: {
     blocks?: string
+    blockMetas?: string
     transactions?: string
     assets?: string
   }
@@ -36,6 +38,7 @@ export interface MongodbStorageOptions {
 export class MongodbStorage extends EventEmitter {
   private _isReady = false
   private blockModel: any
+  private blockMetaModel: any
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -49,6 +52,7 @@ export class MongodbStorage extends EventEmitter {
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockModel = this.getBlockModel()
+    this.blockMetaModel = this.getBlockMetaModel()
     this.initConnection()
 
     // Event handlers
@@ -220,6 +224,24 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
+  setBlockMeta(blockMeta: object): Promise<void> {
+    this.logger.debug('setBlockMeta triggered.')
+
+    const data = {
+      createdBy: this.options.userAgent, // neo-js's user agent
+      ...blockMeta,
+    }
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel(data).save((err: any) => {
+        if (err) {
+          this.logger.warn('blockMetaModel().save() execution failed.')
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return mongoose.disconnect()
@@ -266,6 +288,24 @@ export class MongodbStorage extends EventEmitter {
     )
 
     return mongoose.models[this.options.collectionNames!.blocks!] || mongoose.model(this.options.collectionNames!.blocks!, schema)
+  }
+
+  private getBlockMetaModel() {
+    const schema = new Schema(
+      {
+        height: { type: 'Number', unique: true, required: true, dropDups: true },
+        time: Number,
+        size: Number,
+        generationTime: Number,
+        transactionCount: Number,
+        createdBy: String,
+        apiLevel: Number,
+      },
+      { timestamps: true }
+    )
+
+    const name = this.options.collectionNames!.blockMetas!
+    return mongoose.models[name] || mongoose.model(name, schema)
   }
 
   private initConnection() {
