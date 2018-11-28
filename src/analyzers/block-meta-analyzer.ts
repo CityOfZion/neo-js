@@ -4,6 +4,7 @@ import { Logger, LoggerOptions } from 'node-log-it'
 import { merge } from 'lodash'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
+import { BlockHelper } from '../helpers/block-helper'
 
 const MODULE_NAME = 'BlockMetaAnalyzer'
 const DEFAULT_OPTIONS: BlockMetaAnalyzerOptions = {
@@ -220,8 +221,8 @@ export class BlockMetaAnalyzer extends EventEmitter {
             height: height,
             time: block.time,
             size: block.size,
-            generationTime: (previousBlockTimestamp) ? block.time - previousBlockTimestamp : 0,
-            transactionCount: block.tx.length,
+            generationTime: BlockHelper.getGenerationTime(block, previousBlockTimestamp),
+            transactionCount: BlockHelper.getTransactionCount(block),
             apiLevel: this.apiLevel, 
           }
           // this.logger.debug('blockMeta:', blockMeta)
