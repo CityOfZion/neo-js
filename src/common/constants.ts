@@ -17,7 +17,7 @@ const C = {
     ContractTransaction: 'ContractTransaction',
     InvocationTransaction: 'InvocationTransaction',
     ClaimTransaction: 'ClaimTransaction',
-  }
+  },
 }
 
 export default C
