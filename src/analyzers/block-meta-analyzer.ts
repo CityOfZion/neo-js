@@ -11,9 +11,10 @@ const DEFAULT_OPTIONS: BlockMetaAnalyzerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   startOnInit: true,
-  analyzeQueueConcurrency: 30,
+  analyzeQueueConcurrency: 5,
   enqueueBlockIntervalMs: 5000,
-  maxQueueLength: 1000,
+  verifyBlockMetasIntervalMs: 10000,
+  maxQueueLength: 3000,
   standardEnqueueBlockPriority: 5,
   loggerOptions: {},
 }
@@ -24,6 +25,7 @@ export interface BlockMetaAnalyzerOptions {
   startOnInit?: boolean
   analyzeQueueConcurrency?: number
   enqueueBlockIntervalMs?: number
+  verifyBlockMetasIntervalMs?: number
   maxQueueLength?: number
   standardEnqueueBlockPriority?: number
   loggerOptions?: LoggerOptions
@@ -38,6 +40,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
   private options: BlockMetaAnalyzerOptions
   private logger: Logger
   private enqueueAnalyzeBlockIntervalId?: NodeJS.Timer
+  private blockMetaVerificationIntervalId?: NodeJS.Timer
 
   constructor(storage?: MemoryStorage | MongodbStorage, options: BlockMetaAnalyzerOptions = {}) {
     super()
@@ -79,6 +82,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
     this.emit('start')
 
     this.initAnalyzeBlock()
+    this.initBlockMetaVerification()
   }
 
   stop() {
@@ -92,9 +96,11 @@ export class BlockMetaAnalyzer extends EventEmitter {
     this.emit('stop')
 
     clearInterval(this.enqueueAnalyzeBlockIntervalId!)
+    clearInterval(this.blockMetaVerificationIntervalId!)
   }
 
   private validateOptionalParameters() {
+    // TODO
   }
 
   private getPriorityQueue(concurrency: number): AsyncPriorityQueue<object> {
@@ -138,6 +144,22 @@ export class BlockMetaAnalyzer extends EventEmitter {
     return Promise.resolve()
   }
 
+  private initBlockMetaVerification() {
+    this.logger.debug('initBlockMetaVerification triggered.')
+    this.blockMetaVerificationIntervalId = setInterval(() => {
+      this.doBlockMetaVerification()
+    }, this.options.verifyBlockMetasIntervalMs!)
+  }
+
+  private doBlockMetaVerification() {
+    this.logger.debug('doBlockMetaVerification triggered.')
+
+    // TODO: analyze block metas
+    // TODO: find missing block metas
+    // TODO: enqueue missing block metas
+    // TODO: if no missing, then emit 'upToDate'
+  }
+
   private doEnqueueAnalyzeBlock() {
     this.logger.debug('doEnqueueAnalyzeBlock triggered.')
 
@@ -171,13 +193,6 @@ export class BlockMetaAnalyzer extends EventEmitter {
   private enqueueAnalyzeBlock(height: number, priority: number) {
     this.logger.debug('enqueueAnalyzeBlock triggered. height:', height, 'priority:', priority)
 
-    // if the block height is above the current height, increment the write pointer.
-    if (height > this.blockWritePointer) {
-      this.logger.debug('height > this.blockWritePointer, blockWritePointer is now:', height)
-      this.blockWritePointer = height
-    }
-
-    // enqueue the block
     this.queue.push(
       {
         method: this.analyzeBlock.bind(this),
@@ -229,6 +244,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
           return Promise.resolve(blockMeta)
         })
         .then((blockMeta: any) => this.storage!.setBlockMeta(blockMeta))
+        .then(() => resolve())
         .catch((err: any) => reject(err))
     })
   }

@@ -224,6 +224,21 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
+  getBlockMetaCount(): Promise<number> {
+    this.logger.debug('getBlockMetaCount triggered.')
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .count({})
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.findOne() execution failed.')
+            return reject(err)
+          }
+          return resolve(res)
+        })
+    })
+  }
+
   setBlockMeta(blockMeta: object): Promise<void> {
     this.logger.debug('setBlockMeta triggered.')
 
@@ -234,7 +249,7 @@ export class MongodbStorage extends EventEmitter {
     return new Promise((resolve, reject) => {
       this.blockMetaModel(data).save((err: any) => {
         if (err) {
-          this.logger.warn('blockMetaModel().save() execution failed.')
+          this.logger.info('blockMetaModel().save() execution failed.')
           reject(err)
         }
         resolve()
