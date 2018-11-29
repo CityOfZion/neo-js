@@ -12,6 +12,12 @@ const C = {
     getblockcount: 'getblockcount',
     getversion: 'getversion',
   },
+  transaction: {
+    MinerTransaction: 'MinerTransaction',
+    ContractTransaction: 'ContractTransaction',
+    InvocationTransaction: 'InvocationTransaction',
+    ClaimTransaction: 'ClaimTransaction',
+  }
 }
 
 export default C
