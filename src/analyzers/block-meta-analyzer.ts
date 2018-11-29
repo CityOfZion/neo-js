@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge } from 'lodash'
+import { merge, map, difference } from 'lodash'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import { BlockHelper } from '../helpers/block-helper'
@@ -41,6 +41,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
   private logger: Logger
   private enqueueAnalyzeBlockIntervalId?: NodeJS.Timer
   private blockMetaVerificationIntervalId?: NodeJS.Timer
+  private isVerifyingBlockMetas = false
 
   constructor(storage?: MemoryStorage | MongodbStorage, options: BlockMetaAnalyzerOptions = {}) {
     super()
@@ -140,8 +141,26 @@ export class BlockMetaAnalyzer extends EventEmitter {
 
   private setBlockWritePointer(): Promise<void> {
     this.logger.debug('setBlockWritePointer triggered.')
-    this.blockWritePointer = 0
-    return Promise.resolve()
+
+    return new Promise((resolve, reject) => {
+      this.storage!.getBlockMetaCount()
+        .then((height: number) => {
+          this.logger.debug('getBlockMetaCount success. height:', height)
+          if (this.options.minHeight && height < this.options.minHeight) {
+            this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
+            this.blockWritePointer = this.options.minHeight
+          } else {
+            this.blockWritePointer = height
+          }
+          resolve()
+        })
+        .catch((err: any) => {
+          this.logger.warn('storage.getBlockMetaCount() failed. Error:', err.message)
+          this.logger.info('Assumed that there are no blocks.')
+          this.blockWritePointer = this.options.minHeight!
+          resolve()
+        })
+    })
   }
 
   private initBlockMetaVerification() {
@@ -153,11 +172,60 @@ export class BlockMetaAnalyzer extends EventEmitter {
 
   private doBlockMetaVerification() {
     this.logger.debug('doBlockMetaVerification triggered.')
+    this.emit('blockMetaVerification:init')
 
-    // TODO: analyze block metas
-    // TODO: find missing block metas
-    // TODO: enqueue missing block metas
-    // TODO: if no missing, then emit 'upToDate'
+    // Queue sizes
+    this.logger.info('queue.length:', this.queue.length())
+
+    // Check if this process is currently executing
+    if (this.isVerifyingBlockMetas) {
+      this.logger.info('doBlockVerification() is already running. Skip this turn.')
+      this.emit('blockMetaVerification:complete', { isSkipped: true })
+      return
+    }
+
+    // Blocks analysis
+    this.isVerifyingBlockMetas = true
+    const startHeight = this.options.minHeight!
+    const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
+    this.logger.debug('Analyzing block metas in storage...')
+    // TODO: also fetch and evaluate docs' apiLevel
+    this.storage!.analyzeBlockMetas(startHeight, endHeight)
+      .then((res: any) => {
+        this.logger.debug('Analyzing block metas complete!')
+        // this.logger.warn('analyzeBlockMetas res:', res)
+
+        const all: number[] = []
+        for (let i = startHeight; i <= endHeight; i++) {
+          all.push(i)
+        }
+        
+        const availableBlocks: number[] = map(res, (item: any) => item.height)
+        this.logger.info('Blocks available count:', availableBlocks.length)
+
+        // Enqueue missing block heights
+        const missingBlocks = difference(all, availableBlocks)
+        this.logger.info('Blocks missing count:', missingBlocks.length)
+        this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
+        missingBlocks.forEach((height: number) => {
+          this.enqueueAnalyzeBlock(height, this.options.standardEnqueueBlockPriority!)
+        })
+
+        // TODO: Check for apiLevel
+
+
+        // Check if fully sync'ed
+        if (this.isReachedMaxHeight()) {
+          if (missingBlocks.length === 0) {
+            this.logger.info('BlockMetaAnalyzer is up to date.')
+            this.emit('upToDate')
+          }
+        }
+
+        // Conclude
+        this.isVerifyingBlockMetas = false
+        this.emit('blockMetaVerification:complete', { isSuccess: true })
+      })
   }
 
   private doEnqueueAnalyzeBlock() {

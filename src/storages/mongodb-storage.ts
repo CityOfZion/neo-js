@@ -3,6 +3,7 @@ import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, takeRight, includes } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
+import { sort } from 'shelljs';
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -254,6 +255,34 @@ export class MongodbStorage extends EventEmitter {
         }
         resolve()
       })
+    })
+  }
+
+  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    this.logger.debug('analyzeBlockMetas triggered.')
+    
+    /**
+     * Example Result:
+     * [
+     *  { _id: 5bff6c8738e6a25319bbb7a2, height: 1 },
+     *  { _id: 5bff6c8738e6a25319bbb7a3, height: 2 },
+     *  ...
+     * ]
+     */
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .find({ height: {
+          $gte: startHeight,
+          $lte: endHeight,
+        }}, 'height')
+        .sort({ height: 1 })
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.find() execution failed.')
+            return reject(err)
+          }
+          return resolve(res)
+        })
     })
   }
 

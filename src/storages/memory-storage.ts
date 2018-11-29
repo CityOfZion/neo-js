@@ -88,6 +88,10 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
+  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    throw new Error('Not implemented.')
+  }
+
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return Promise.resolve()
