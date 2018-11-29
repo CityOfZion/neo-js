@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, difference } from 'lodash'
+import { merge, map, filter, difference } from 'lodash'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import { BlockHelper } from '../helpers/block-helper'
@@ -143,7 +143,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
     this.logger.debug('setBlockWritePointer triggered.')
 
     return new Promise((resolve, reject) => {
-      this.storage!.getBlockMetaCount()
+      this.storage!.getHighestBlockMetaHeight()
         .then((height: number) => {
           this.logger.debug('getBlockMetaCount success. height:', height)
           if (this.options.minHeight && height < this.options.minHeight) {
@@ -194,12 +194,13 @@ export class BlockMetaAnalyzer extends EventEmitter {
       .then((res: any) => {
         this.logger.debug('Analyzing block metas complete!')
         // this.logger.warn('analyzeBlockMetas res:', res)
+        // this.logger.warn('this.apiLevel:', this.apiLevel)
 
         const all: number[] = []
         for (let i = startHeight; i <= endHeight; i++) {
           all.push(i)
         }
-        
+
         const availableBlocks: number[] = map(res, (item: any) => item.height)
         this.logger.info('Blocks available count:', availableBlocks.length)
 
@@ -211,12 +212,18 @@ export class BlockMetaAnalyzer extends EventEmitter {
           this.enqueueAnalyzeBlock(height, this.options.standardEnqueueBlockPriority!)
         })
 
-        // TODO: Check for apiLevel
-
+        // Truncate legacy block meta right away
+        const legacyBlockObjs = filter(res, (item: any) => { return (item.apiLevel < this.apiLevel)})
+        const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
+        this.logger.info('Legacy block count:', legacyBlockObjs.length)
+        this.emit('blockMetaVerification:legacyBlocks', { count: legacyBlocks.length })
+        legacyBlocks.forEach((height: number) => {
+          this.storage!.removeBlockMetaByHeight(height)
+        })
 
         // Check if fully sync'ed
         if (this.isReachedMaxHeight()) {
-          if (missingBlocks.length === 0) {
+          if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
             this.logger.info('BlockMetaAnalyzer is up to date.')
             this.emit('upToDate')
           }
@@ -260,6 +267,12 @@ export class BlockMetaAnalyzer extends EventEmitter {
    */
   private enqueueAnalyzeBlock(height: number, priority: number) {
     this.logger.debug('enqueueAnalyzeBlock triggered. height:', height, 'priority:', priority)
+
+    // if the block height is above the current height, increment the write pointer.
+    if (height > this.blockWritePointer) {
+      this.logger.debug('height > this.blockWritePointer, blockWritePointer is now:', height)
+      this.blockWritePointer = height
+    }
 
     this.queue.push(
       {

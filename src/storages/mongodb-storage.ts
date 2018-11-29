@@ -227,6 +227,7 @@ export class MongodbStorage extends EventEmitter {
 
   getBlockMetaCount(): Promise<number> {
     this.logger.debug('getBlockMetaCount triggered.')
+
     return new Promise((resolve, reject) => {
       this.blockMetaModel
         .count({})
@@ -234,6 +235,44 @@ export class MongodbStorage extends EventEmitter {
           if (err) {
             this.logger.warn('blockMetaModel.findOne() execution failed.')
             return reject(err)
+          }
+          return resolve(res)
+        })
+    })
+  }
+
+  getHighestBlockMetaHeight(): Promise<number> {
+    this.logger.debug('getHighestBlockMetaHeight triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.getHighestBlockMeta()
+        .then((res: any) => {
+          if (res) {
+            return resolve(res.height)
+          }
+          return resolve(0)
+        })
+        .catch((err) => {
+          return resolve(0)
+        })
+    })
+  }
+
+  getHighestBlockMeta(): Promise<object | undefined> {
+    this.logger.debug('getHighestBlockMeta triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .findOne()
+        .sort({ height: -1 })
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.findOne() execution failed.')
+            return reject(err)
+          }
+          if (!res) {
+            this.logger.info('blockMetaModel.findOne() executed by without response data, hence no blocks available.')
+            return resolve(undefined)
           }
           return resolve(res)
         })
@@ -264,8 +303,8 @@ export class MongodbStorage extends EventEmitter {
     /**
      * Example Result:
      * [
-     *  { _id: 5bff6c8738e6a25319bbb7a2, height: 1 },
-     *  { _id: 5bff6c8738e6a25319bbb7a3, height: 2 },
+     *  { _id: 5bff81ccbbd4fc5d6f3352d5, height: 95, apiLevel: 1 },
+     *  { _id: 5bff81ccbbd4fc5d6f3352d9, height: 96, apiLevel: 1 },
      *  ...
      * ]
      */
@@ -274,8 +313,7 @@ export class MongodbStorage extends EventEmitter {
         .find({ height: {
           $gte: startHeight,
           $lte: endHeight,
-        }}, 'height')
-        .sort({ height: 1 })
+        }}, 'height apiLevel')
         .exec((err: any, res: any) => {
           if (err) {
             this.logger.warn('blockMetaModel.find() execution failed.')
@@ -283,6 +321,22 @@ export class MongodbStorage extends EventEmitter {
           }
           return resolve(res)
         })
+    })
+  }
+
+  removeBlockMetaByHeight(height: number): Promise<void> {
+    this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
+
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel.remove({ height }).exec((err: any, res: any) => {
+        if (err) {
+          this.logger.debug('blockMetaModel.remove() execution failed. error:', err.message)
+          return reject(err)
+        } else {
+          this.logger.debug('blockMetaModel.remove() execution succeed.')
+          return resolve()
+        }
+      })
     })
   }
 
