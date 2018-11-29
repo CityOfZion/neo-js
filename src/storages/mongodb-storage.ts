@@ -3,7 +3,6 @@ import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, takeRight, includes } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
-import { sort } from 'shelljs';
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)

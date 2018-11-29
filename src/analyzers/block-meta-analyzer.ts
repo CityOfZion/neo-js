@@ -12,10 +12,11 @@ const DEFAULT_OPTIONS: BlockMetaAnalyzerOptions = {
   maxHeight: undefined,
   startOnInit: true,
   analyzeQueueConcurrency: 5,
-  enqueueBlockIntervalMs: 5000,
-  verifyBlockMetasIntervalMs: 10000,
-  maxQueueLength: 3000,
+  enqueueBlockIntervalMs: 5 * 1000,
+  verifyBlockMetasIntervalMs: 30 * 1000,
+  maxQueueLength: 30 * 1000,
   standardEnqueueBlockPriority: 5,
+  missingEnqueueBlockPriority: 3,
   loggerOptions: {},
 }
 
@@ -28,6 +29,7 @@ export interface BlockMetaAnalyzerOptions {
   verifyBlockMetasIntervalMs?: number
   maxQueueLength?: number
   standardEnqueueBlockPriority?: number
+  missingEnqueueBlockPriority?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -209,7 +211,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
         this.logger.info('Blocks missing count:', missingBlocks.length)
         this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
         missingBlocks.forEach((height: number) => {
-          this.enqueueAnalyzeBlock(height, this.options.standardEnqueueBlockPriority!)
+          this.enqueueAnalyzeBlock(height, this.options.missingEnqueueBlockPriority!)
         })
 
         // Truncate legacy block meta right away
