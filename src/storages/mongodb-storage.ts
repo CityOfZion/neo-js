@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
+    blockMetas: 'block_metas',
     transactions: 'transactions',
     assets: 'assets',
   },
@@ -27,6 +28,7 @@ export interface MongodbStorageOptions {
   userAgent?: string
   collectionNames?: {
     blocks?: string
+    blockMetas?: string
     transactions?: string
     assets?: string
   }
@@ -36,6 +38,7 @@ export interface MongodbStorageOptions {
 export class MongodbStorage extends EventEmitter {
   private _isReady = false
   private blockModel: any
+  private blockMetaModel: any
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -49,6 +52,7 @@ export class MongodbStorage extends EventEmitter {
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockModel = this.getBlockModel()
+    this.blockMetaModel = this.getBlockMetaModel()
     this.initConnection()
 
     // Event handlers
@@ -220,6 +224,121 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
+  getBlockMetaCount(): Promise<number> {
+    this.logger.debug('getBlockMetaCount triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .count({})
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.findOne() execution failed.')
+            return reject(err)
+          }
+          return resolve(res)
+        })
+    })
+  }
+
+  getHighestBlockMetaHeight(): Promise<number> {
+    this.logger.debug('getHighestBlockMetaHeight triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.getHighestBlockMeta()
+        .then((res: any) => {
+          if (res) {
+            return resolve(res.height)
+          }
+          return resolve(0)
+        })
+        .catch((err) => {
+          return resolve(0)
+        })
+    })
+  }
+
+  getHighestBlockMeta(): Promise<object | undefined> {
+    this.logger.debug('getHighestBlockMeta triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .findOne()
+        .sort({ height: -1 })
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.findOne() execution failed.')
+            return reject(err)
+          }
+          if (!res) {
+            this.logger.info('blockMetaModel.findOne() executed by without response data, hence no blocks available.')
+            return resolve(undefined)
+          }
+          return resolve(res)
+        })
+    })
+  }
+
+  setBlockMeta(blockMeta: object): Promise<void> {
+    this.logger.debug('setBlockMeta triggered.')
+
+    const data = {
+      createdBy: this.options.userAgent, // neo-js's user agent
+      ...blockMeta,
+    }
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel(data).save((err: any) => {
+        if (err) {
+          this.logger.info('blockMetaModel().save() execution failed.')
+          reject(err)
+        }
+        resolve()
+      })
+    })
+  }
+
+  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    this.logger.debug('analyzeBlockMetas triggered.')
+    
+    /**
+     * Example Result:
+     * [
+     *  { _id: 5bff81ccbbd4fc5d6f3352d5, height: 95, apiLevel: 1 },
+     *  { _id: 5bff81ccbbd4fc5d6f3352d9, height: 96, apiLevel: 1 },
+     *  ...
+     * ]
+     */
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel
+        .find({ height: {
+          $gte: startHeight,
+          $lte: endHeight,
+        }}, 'height apiLevel')
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockMetaModel.find() execution failed.')
+            return reject(err)
+          }
+          return resolve(res)
+        })
+    })
+  }
+
+  removeBlockMetaByHeight(height: number): Promise<void> {
+    this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
+
+    return new Promise((resolve, reject) => {
+      this.blockMetaModel.remove({ height }).exec((err: any, res: any) => {
+        if (err) {
+          this.logger.debug('blockMetaModel.remove() execution failed. error:', err.message)
+          return reject(err)
+        } else {
+          this.logger.debug('blockMetaModel.remove() execution succeed.')
+          return resolve()
+        }
+      })
+    })
+  }
+
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return mongoose.disconnect()
@@ -266,6 +385,24 @@ export class MongodbStorage extends EventEmitter {
     )
 
     return mongoose.models[this.options.collectionNames!.blocks!] || mongoose.model(this.options.collectionNames!.blocks!, schema)
+  }
+
+  private getBlockMetaModel() {
+    const schema = new Schema(
+      {
+        height: { type: 'Number', unique: true, required: true, dropDups: true },
+        time: Number,
+        size: Number,
+        generationTime: Number,
+        transactionCount: Number,
+        createdBy: String,
+        apiLevel: Number,
+      },
+      { timestamps: true }
+    )
+
+    const name = this.options.collectionNames!.blockMetas!
+    return mongoose.models[name] || mongoose.model(name, schema)
   }
 
   private initConnection() {
