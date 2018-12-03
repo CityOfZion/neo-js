@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>NodeOptions | @cityofzion/neo-js</title>
+	<title>BlockMetaAnalyzerOptions | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_core_node_.html">&quot;core/node&quot;</a>
+					<a href="../modules/_analyzers_block_meta_analyzer_.html">&quot;analyzers/block-meta-analyzer&quot;</a>
 				</li>
 				<li>
-					<a href="_core_node_.nodeoptions.html">NodeOptions</a>
+					<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html">BlockMetaAnalyzerOptions</a>
 				</li>
 			</ul>
-			<h1>Interface NodeOptions</h1>
+			<h1>Interface BlockMetaAnalyzerOptions</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">NodeOptions</span>
+						<span class="target">BlockMetaAnalyzerOptions</span>
 					</li>
 				</ul>
 			</section>
@@ -84,11 +84,16 @@
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodeoptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodeoptions.html#requestlogttl" class="tsd-kind-icon">request<wbr>Log<wbr>Ttl</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodeoptions.html#timeout" class="tsd-kind-icon">timeout</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodeoptions.html#tologreliability" class="tsd-kind-icon">to<wbr>Log<wbr>Reliability</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodeoptions.html#truncaterequestlogintervalms" class="tsd-kind-icon">truncate<wbr>Request<wbr>Log<wbr>Interval<wbr>Ms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#analyzequeueconcurrency" class="tsd-kind-icon">analyze<wbr>Queue<wbr>Concurrency</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#enqueueblockintervalms" class="tsd-kind-icon">enqueue<wbr>Block<wbr>Interval<wbr>Ms</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#maxheight" class="tsd-kind-icon">max<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#maxqueuelength" class="tsd-kind-icon">max<wbr>Queue<wbr>Length</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#minheight" class="tsd-kind-icon">min<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#missingenqueueblockpriority" class="tsd-kind-icon">missing<wbr>Enqueue<wbr>Block<wbr>Priority</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#standardenqueueblockpriority" class="tsd-kind-icon">standard<wbr>Enqueue<wbr>Block<wbr>Priority</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#startoninit" class="tsd-kind-icon">start<wbr>OnInit</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#verifyblockmetasintervalms" class="tsd-kind-icon">verify<wbr>Block<wbr>Metas<wbr>Interval<wbr>Ms</a></li>
 							</ul>
 						</section>
 					</div>
@@ -97,52 +102,102 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="analyzequeueconcurrency" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> analyze<wbr>Queue<wbr>Concurrency</h3>
+					<div class="tsd-signature tsd-kind-icon">analyze<wbr>Queue<wbr>Concurrency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L27">analyzers/block-meta-analyzer.ts:27</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="enqueueblockintervalms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> enqueue<wbr>Block<wbr>Interval<wbr>Ms</h3>
+					<div class="tsd-signature tsd-kind-icon">enqueue<wbr>Block<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L28">analyzers/block-meta-analyzer.ts:28</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
 					<a name="loggeroptions" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagOptional">Optional</span> logger<wbr>Options</h3>
 					<div class="tsd-signature tsd-kind-icon">logger<wbr>Options<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">LoggerOptions</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L34">core/node.ts:34</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L33">analyzers/block-meta-analyzer.ts:33</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="requestlogttl" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> request<wbr>Log<wbr>Ttl</h3>
-					<div class="tsd-signature tsd-kind-icon">request<wbr>Log<wbr>Ttl<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="maxheight" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> max<wbr>Height</h3>
+					<div class="tsd-signature tsd-kind-icon">max<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L32">core/node.ts:32</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L25">analyzers/block-meta-analyzer.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="timeout" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> timeout</h3>
-					<div class="tsd-signature tsd-kind-icon">timeout<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="maxqueuelength" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> max<wbr>Queue<wbr>Length</h3>
+					<div class="tsd-signature tsd-kind-icon">max<wbr>Queue<wbr>Length<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L33">core/node.ts:33</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L30">analyzers/block-meta-analyzer.ts:30</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="tologreliability" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> to<wbr>Log<wbr>Reliability</h3>
-					<div class="tsd-signature tsd-kind-icon">to<wbr>Log<wbr>Reliability<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<a name="minheight" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> min<wbr>Height</h3>
+					<div class="tsd-signature tsd-kind-icon">min<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L30">core/node.ts:30</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L24">analyzers/block-meta-analyzer.ts:24</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
-					<a name="truncaterequestlogintervalms" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagOptional">Optional</span> truncate<wbr>Request<wbr>Log<wbr>Interval<wbr>Ms</h3>
-					<div class="tsd-signature tsd-kind-icon">truncate<wbr>Request<wbr>Log<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<a name="missingenqueueblockpriority" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> missing<wbr>Enqueue<wbr>Block<wbr>Priority</h3>
+					<div class="tsd-signature tsd-kind-icon">missing<wbr>Enqueue<wbr>Block<wbr>Priority<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L31">core/node.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L32">analyzers/block-meta-analyzer.ts:32</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="standardenqueueblockpriority" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> standard<wbr>Enqueue<wbr>Block<wbr>Priority</h3>
+					<div class="tsd-signature tsd-kind-icon">standard<wbr>Enqueue<wbr>Block<wbr>Priority<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L31">analyzers/block-meta-analyzer.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="startoninit" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> start<wbr>OnInit</h3>
+					<div class="tsd-signature tsd-kind-icon">start<wbr>OnInit<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">false</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">true</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L26">analyzers/block-meta-analyzer.ts:26</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="verifyblockmetasintervalms" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagOptional">Optional</span> verify<wbr>Block<wbr>Metas<wbr>Interval<wbr>Ms</h3>
+					<div class="tsd-signature tsd-kind-icon">verify<wbr>Block<wbr>Metas<wbr>Interval<wbr>Ms<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">number</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/analyzers/block-meta-analyzer.ts#L29">analyzers/block-meta-analyzer.ts:29</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -154,7 +209,7 @@
 					<li class="globals  ">
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_analyzers_block_meta_analyzer_.html">"analyzers/block-<wbr>meta-<wbr>analyzer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -169,7 +224,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_core_mesh_.html">"core/mesh"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_core_node_.html">"core/node"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -207,43 +262,52 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_core_node_.node.html" class="tsd-kind-icon">Node</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_core_node_.nodemeta.html" class="tsd-kind-icon">Node<wbr>Meta</a>
+						<a href="../classes/_analyzers_block_meta_analyzer_.blockmetaanalyzer.html" class="tsd-kind-icon">Block<wbr>Meta<wbr>Analyzer</a>
 					</li>
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_core_node_.nodeoptions.html" class="tsd-kind-icon">Node<wbr>Options</a>
+						<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html" class="tsd-kind-icon">Block<wbr>Meta<wbr>Analyzer<wbr>Options</a>
 						<ul>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_core_node_.nodeoptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a>
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#analyzequeueconcurrency" class="tsd-kind-icon">analyze<wbr>Queue<wbr>Concurrency</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_core_node_.nodeoptions.html#requestlogttl" class="tsd-kind-icon">request<wbr>Log<wbr>Ttl</a>
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#enqueueblockintervalms" class="tsd-kind-icon">enqueue<wbr>Block<wbr>Interval<wbr>Ms</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_core_node_.nodeoptions.html#timeout" class="tsd-kind-icon">timeout</a>
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#loggeroptions" class="tsd-kind-icon">logger<wbr>Options</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_core_node_.nodeoptions.html#tologreliability" class="tsd-kind-icon">to<wbr>Log<wbr>Reliability</a>
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#maxheight" class="tsd-kind-icon">max<wbr>Height</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-interface">
-								<a href="_core_node_.nodeoptions.html#truncaterequestlogintervalms" class="tsd-kind-icon">truncate<wbr>Request<wbr>Log<wbr>Interval<wbr>Ms</a>
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#maxqueuelength" class="tsd-kind-icon">max<wbr>Queue<wbr>Length</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#minheight" class="tsd-kind-icon">min<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#missingenqueueblockpriority" class="tsd-kind-icon">missing<wbr>Enqueue<wbr>Block<wbr>Priority</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#standardenqueueblockpriority" class="tsd-kind-icon">standard<wbr>Enqueue<wbr>Block<wbr>Priority</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#startoninit" class="tsd-kind-icon">start<wbr>OnInit</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html#verifyblockmetasintervalms" class="tsd-kind-icon">verify<wbr>Block<wbr>Metas<wbr>Interval<wbr>Ms</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_node_.html#default_id" class="tsd-kind-icon">DEFAULT_<wbr>ID</a>
-					</li>
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_node_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
+						<a href="../modules/_analyzers_block_meta_analyzer_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_node_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
+						<a href="../modules/_analyzers_block_meta_analyzer_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
 					</li>
 				</ul>
 			</nav>

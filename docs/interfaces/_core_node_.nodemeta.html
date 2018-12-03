@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>StorageInsertPayload | @cityofzion/neo-js</title>
+	<title>NodeMeta | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_core_api_.html">&quot;core/api&quot;</a>
+					<a href="../modules/_core_node_.html">&quot;core/node&quot;</a>
 				</li>
 				<li>
-					<a href="_core_api_.storageinsertpayload.html">StorageInsertPayload</a>
+					<a href="_core_node_.nodemeta.html">NodeMeta</a>
 				</li>
 			</ul>
-			<h1>Interface StorageInsertPayload</h1>
+			<h1>Interface NodeMeta</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">StorageInsertPayload</span>
+						<span class="target">NodeMeta</span>
 					</li>
 				</ul>
 			</section>
@@ -81,46 +81,90 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
+						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#method" class="tsd-kind-icon">method</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#nodemeta" class="tsd-kind-icon">node<wbr>Meta</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#result" class="tsd-kind-icon">result</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#blockheight" class="tsd-kind-icon">block<wbr>Height</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#endpoint" class="tsd-kind-icon">endpoint</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#isactive" class="tsd-kind-icon">is<wbr>Active</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#lastseentimestamp" class="tsd-kind-icon">last<wbr>Seen<wbr>Timestamp</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#latency" class="tsd-kind-icon">latency</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#pendingrequests" class="tsd-kind-icon">pending<wbr>Requests</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-interface"><a href="_core_node_.nodemeta.html#useragent" class="tsd-kind-icon">user<wbr>Agent</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
+			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="method" class="tsd-anchor"></a>
-					<h3>method</h3>
-					<div class="tsd-signature tsd-kind-icon">method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="blockheight" class="tsd-anchor"></a>
+					<h3>block<wbr>Height</h3>
+					<div class="tsd-signature tsd-kind-icon">block<wbr>Height<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L25">core/api.ts:25</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L23">core/node.ts:23</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="nodemeta" class="tsd-anchor"></a>
-					<h3>node<wbr>Meta</h3>
-					<div class="tsd-signature tsd-kind-icon">node<wbr>Meta<span class="tsd-signature-symbol">:</span> <a href="_core_node_.nodemeta.html" class="tsd-signature-type">NodeMeta</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="endpoint" class="tsd-anchor"></a>
+					<h3>endpoint</h3>
+					<div class="tsd-signature tsd-kind-icon">endpoint<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L26">core/api.ts:26</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L26">core/node.ts:26</a></li>
 						</ul>
 					</aside>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="result" class="tsd-anchor"></a>
-					<h3>result</h3>
-					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="isactive" class="tsd-anchor"></a>
+					<h3>is<wbr>Active</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Active<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L27">core/api.ts:27</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L20">core/node.ts:20</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="lastseentimestamp" class="tsd-anchor"></a>
+					<h3>last<wbr>Seen<wbr>Timestamp</h3>
+					<div class="tsd-signature tsd-kind-icon">last<wbr>Seen<wbr>Timestamp<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L24">core/node.ts:24</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="latency" class="tsd-anchor"></a>
+					<h3>latency</h3>
+					<div class="tsd-signature tsd-kind-icon">latency<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L22">core/node.ts:22</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="pendingrequests" class="tsd-anchor"></a>
+					<h3>pending<wbr>Requests</h3>
+					<div class="tsd-signature tsd-kind-icon">pending<wbr>Requests<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L21">core/node.ts:21</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface">
+					<a name="useragent" class="tsd-anchor"></a>
+					<h3>user<wbr>Agent</h3>
+					<div class="tsd-signature tsd-kind-icon">user<wbr>Agent<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/node.ts#L25">core/node.ts:25</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -141,13 +185,13 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_common_profiles_.html">"common/profiles"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_core_api_.html">"core/api"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_core_mesh_.html">"core/mesh"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_core_node_.html">"core/node"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -185,34 +229,49 @@
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
 					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_core_api_.api.html" class="tsd-kind-icon">Api</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_core_api_.apioptions.html" class="tsd-kind-icon">Api<wbr>Options</a>
+						<a href="../classes/_core_node_.node.html" class="tsd-kind-icon">Node</a>
 					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_core_api_.storageinsertpayload.html" class="tsd-kind-icon">Storage<wbr>Insert<wbr>Payload</a>
+					<li class="current tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_core_node_.nodemeta.html" class="tsd-kind-icon">Node<wbr>Meta</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#method" class="tsd-kind-icon">method</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#blockheight" class="tsd-kind-icon">block<wbr>Height</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#nodemeta" class="tsd-kind-icon">node<wbr>Meta</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#endpoint" class="tsd-kind-icon">endpoint</a>
 							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#result" class="tsd-kind-icon">result</a>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#isactive" class="tsd-kind-icon">is<wbr>Active</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#lastseentimestamp" class="tsd-kind-icon">last<wbr>Seen<wbr>Timestamp</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#latency" class="tsd-kind-icon">latency</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#pendingrequests" class="tsd-kind-icon">pending<wbr>Requests</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-interface">
+								<a href="_core_node_.nodemeta.html#useragent" class="tsd-kind-icon">user<wbr>Agent</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
+					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
+						<a href="_core_node_.nodeoptions.html" class="tsd-kind-icon">Node<wbr>Options</a>
+					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_api_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
+						<a href="../modules/_core_node_.html#default_id" class="tsd-kind-icon">DEFAULT_<wbr>ID</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
+						<a href="../modules/_core_node_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_api_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
+						<a href="../modules/_core_node_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
 					</li>
 				</ul>
 			</nav>

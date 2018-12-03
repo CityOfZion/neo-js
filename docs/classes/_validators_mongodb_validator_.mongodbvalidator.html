@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>StorageInsertPayload | @cityofzion/neo-js</title>
+	<title>MongodbValidator | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_core_api_.html">&quot;core/api&quot;</a>
+					<a href="../modules/_validators_mongodb_validator_.html">&quot;validators/mongodb-validator&quot;</a>
 				</li>
 				<li>
-					<a href="_core_api_.storageinsertpayload.html">StorageInsertPayload</a>
+					<a href="_validators_mongodb_validator_.mongodbvalidator.html">MongodbValidator</a>
 				</li>
 			</ul>
-			<h1>Interface StorageInsertPayload</h1>
+			<h1>Class MongodbValidator</h1>
 		</div>
 	</div>
 </header>
@@ -73,7 +73,7 @@
 				<h3>Hierarchy</h3>
 				<ul class="tsd-hierarchy">
 					<li>
-						<span class="target">StorageInsertPayload</span>
+						<span class="target">MongodbValidator</span>
 					</li>
 				</ul>
 			</section>
@@ -81,48 +81,39 @@
 				<h2>Index</h2>
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
-						<section class="tsd-index-section tsd-is-not-exported">
-							<h3>Properties</h3>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#method" class="tsd-kind-icon">method</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#nodemeta" class="tsd-kind-icon">node<wbr>Meta</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported"><a href="_core_api_.storageinsertpayload.html#result" class="tsd-kind-icon">result</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-static"><a href="_validators_mongodb_validator_.mongodbvalidator.html#validateconnectionstring" class="tsd-kind-icon">validate<wbr>Connection<wbr>String</a></li>
 							</ul>
 						</section>
 					</div>
 				</section>
 			</section>
-			<section class="tsd-panel-group tsd-member-group tsd-is-not-exported">
-				<h2>Properties</h2>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="method" class="tsd-anchor"></a>
-					<h3>method</h3>
-					<div class="tsd-signature tsd-kind-icon">method<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">string</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L25">core/api.ts:25</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="nodemeta" class="tsd-anchor"></a>
-					<h3>node<wbr>Meta</h3>
-					<div class="tsd-signature tsd-kind-icon">node<wbr>Meta<span class="tsd-signature-symbol">:</span> <a href="_core_node_.nodemeta.html" class="tsd-signature-type">NodeMeta</a><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L26">core/api.ts:26</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-					<a name="result" class="tsd-anchor"></a>
-					<h3>result</h3>
-					<div class="tsd-signature tsd-kind-icon">result<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/core/api.ts#L27">core/api.ts:27</a></li>
-						</ul>
-					</aside>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-static">
+					<a name="validateconnectionstring" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagStatic">Static</span> validate<wbr>Connection<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-static">
+						<li class="tsd-signature tsd-kind-icon">validate<wbr>Connection<wbr>String<span class="tsd-signature-symbol">(</span>connectionString<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/558b58f/src/validators/mongodb-validator.ts#L4">validators/mongodb-validator.ts:4</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>connectionString: <span class="tsd-signature-type">string</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
 				</section>
 			</section>
 		</div>
@@ -141,7 +132,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_common_profiles_.html">"common/profiles"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_core_api_.html">"core/api"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -171,7 +162,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_validators_endpoint_validator_.html">"validators/endpoint-<wbr>validator"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="../modules/_validators_mongodb_validator_.html">"validators/mongodb-<wbr>validator"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -184,36 +175,18 @@
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_core_api_.api.html" class="tsd-kind-icon">Api</a>
-					</li>
-					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="_core_api_.apioptions.html" class="tsd-kind-icon">Api<wbr>Options</a>
-					</li>
 				</ul>
 				<ul class="current">
-					<li class="current tsd-kind-interface tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="_core_api_.storageinsertpayload.html" class="tsd-kind-icon">Storage<wbr>Insert<wbr>Payload</a>
+					<li class="current tsd-kind-class tsd-parent-kind-external-module">
+						<a href="_validators_mongodb_validator_.mongodbvalidator.html" class="tsd-kind-icon">Mongodb<wbr>Validator</a>
 						<ul>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#method" class="tsd-kind-icon">method</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#nodemeta" class="tsd-kind-icon">node<wbr>Meta</a>
-							</li>
-							<li class=" tsd-kind-property tsd-parent-kind-interface tsd-is-not-exported">
-								<a href="_core_api_.storageinsertpayload.html#result" class="tsd-kind-icon">result</a>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-static">
+								<a href="_validators_mongodb_validator_.mongodbvalidator.html#validateconnectionstring" class="tsd-kind-icon">validate<wbr>Connection<wbr>String</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
-					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_api_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
-					</li>
-					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_core_api_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
-					</li>
 				</ul>
 			</nav>
 		</div>
