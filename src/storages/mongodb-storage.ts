@@ -1,6 +1,6 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, takeRight, includes } from 'lodash'
+import { merge, map, takeRight, includes, find } from 'lodash'
 import { Mongoose, Schema } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
 
@@ -134,6 +134,22 @@ export class MongodbStorage extends EventEmitter {
     })
   }
 
+  getTransaction(transactionId: string): Promise<object> {
+    this.logger.debug('getTransaction triggered.')
+
+    return new Promise((resolve, reject) => {
+      this.getBlockDocumentByTransactionId(transactionId)
+        .then((doc: any) => {
+          if (!doc) {
+            return reject(new Error('No result found.'))
+          }
+          const transaction = find(doc.payload.tx, (t: any) => t.txid === transactionId)
+          return resolve(transaction)
+        })
+        .catch((err: any) => reject(err))
+    })
+  }
+
   setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.logger.debug('setBlock triggered.')
 
@@ -228,15 +244,13 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getBlockMetaCount triggered.')
 
     return new Promise((resolve, reject) => {
-      this.blockMetaModel
-        .count({})
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockMetaModel.findOne() execution failed.')
-            return reject(err)
-          }
-          return resolve(res)
-        })
+      this.blockMetaModel.count({}).exec((err: any, res: any) => {
+        if (err) {
+          this.logger.warn('blockMetaModel.findOne() execution failed.')
+          return reject(err)
+        }
+        return resolve(res)
+      })
     })
   }
 
@@ -298,7 +312,7 @@ export class MongodbStorage extends EventEmitter {
 
   analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockMetas triggered.')
-    
+
     /**
      * Example Result:
      * [
@@ -309,10 +323,15 @@ export class MongodbStorage extends EventEmitter {
      */
     return new Promise((resolve, reject) => {
       this.blockMetaModel
-        .find({ height: {
-          $gte: startHeight,
-          $lte: endHeight,
-        }}, 'height apiLevel')
+        .find(
+          {
+            height: {
+              $gte: startHeight,
+              $lte: endHeight,
+            },
+          },
+          'height apiLevel'
+        )
         .exec((err: any, res: any) => {
           if (err) {
             this.logger.warn('blockMetaModel.find() execution failed.')
@@ -565,6 +584,28 @@ export class MongodbStorage extends EventEmitter {
           if (!res) {
             // TODO: Verify if res is array
             return resolve([])
+          }
+          return resolve(res)
+        })
+    })
+  }
+
+  private getBlockDocumentByTransactionId(transactionId: string): Promise<object> {
+    this.logger.debug('getBlockDocumentByTransactionId triggered. transactionId:', transactionId)
+
+    return new Promise((resolve, reject) => {
+      this.blockModel
+        .findOne({
+          'payload.tx': {
+            $elemMatch: {
+              txid: transactionId,
+            },
+          },
+        })
+        .exec((err: any, res: any) => {
+          if (err) {
+            this.logger.warn('blockModel.findOne() execution failed. error:', err.message)
+            return reject(err)
           }
           return resolve(res)
         })

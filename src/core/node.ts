@@ -91,6 +91,12 @@ export class Node extends EventEmitter {
     return this.query(C.rpc.getversion)
   }
 
+  getTransaction(transactionId: string, isVerbose: boolean = true): Promise<object> {
+    this.logger.debug('transactionId triggered.')
+    const verboseKey: number = isVerbose ? 1 : 0
+    return this.query(C.rpc.getrawtransaction, [transactionId, verboseKey])
+  }
+
   getNodeMeta(): NodeMeta {
     return {
       isActive: this.isActive,

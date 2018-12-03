@@ -107,6 +107,28 @@ export class Api extends EventEmitter {
     })
   }
 
+  getTransaction(transactionId: string): Promise<object> {
+    this.logger.debug('getBlock triggered. transactionId:', transactionId)
+
+    NeoValidator.validateTransactionId(transactionId)
+
+    if (!this.storage) {
+      this.logger.debug('No storage delegate detected.')
+      return this.getTransactionFromMesh(transactionId)
+    }
+
+    return new Promise((resolve, reject) => {
+      this.storage!.getTransaction(transactionId)
+        .then((block: object) => resolve(block))
+        .catch((err: any) => {
+          // Failed to fetch from storage, try mesh instead
+          this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
+          this.logger.debug('Attempt to fetch from mesh instead...')
+          return this.getTransactionFromMesh(transactionId)
+        })
+    })
+  }
+
   private storageInsertHandler(payload: StorageInsertPayload) {
     if (!this.options.insertToStorage) {
       return
@@ -197,6 +219,18 @@ export class Api extends EventEmitter {
           })
           .catch((err: any) => reject(err))
       })
+    } else {
+      // TODO
+      return Promise.reject(new Error('Edge case not implemented.'))
+    }
+  }
+
+  private getTransactionFromMesh(transactionId: string): Promise<object> {
+    this.logger.debug('getTransactionFromMesh triggered.')
+
+    const highestNode = this.mesh.getHighestNode()
+    if (highestNode && highestNode.blockHeight) {
+      return highestNode.getTransaction(transactionId)
     } else {
       // TODO
       return Promise.reject(new Error('Edge case not implemented.'))

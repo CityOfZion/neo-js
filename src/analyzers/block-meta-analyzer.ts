@@ -192,49 +192,50 @@ export class BlockMetaAnalyzer extends EventEmitter {
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
     this.logger.debug('Analyzing block metas in storage...')
     // TODO: also fetch and evaluate docs' apiLevel
-    this.storage!.analyzeBlockMetas(startHeight, endHeight)
-      .then((res: any) => {
-        this.logger.debug('Analyzing block metas complete!')
-        // this.logger.warn('analyzeBlockMetas res:', res)
-        // this.logger.warn('this.apiLevel:', this.apiLevel)
+    this.storage!.analyzeBlockMetas(startHeight, endHeight).then((res: any) => {
+      this.logger.debug('Analyzing block metas complete!')
+      // this.logger.warn('analyzeBlockMetas res:', res)
+      // this.logger.warn('this.apiLevel:', this.apiLevel)
 
-        const all: number[] = []
-        for (let i = startHeight; i <= endHeight; i++) {
-          all.push(i)
-        }
+      const all: number[] = []
+      for (let i = startHeight; i <= endHeight; i++) {
+        all.push(i)
+      }
 
-        const availableBlocks: number[] = map(res, (item: any) => item.height)
-        this.logger.info('Blocks available count:', availableBlocks.length)
+      const availableBlocks: number[] = map(res, (item: any) => item.height)
+      this.logger.info('Blocks available count:', availableBlocks.length)
 
-        // Enqueue missing block heights
-        const missingBlocks = difference(all, availableBlocks)
-        this.logger.info('Blocks missing count:', missingBlocks.length)
-        this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
-        missingBlocks.forEach((height: number) => {
-          this.enqueueAnalyzeBlock(height, this.options.missingEnqueueBlockPriority!)
-        })
-
-        // Truncate legacy block meta right away
-        const legacyBlockObjs = filter(res, (item: any) => { return (item.apiLevel < this.apiLevel)})
-        const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
-        this.logger.info('Legacy block count:', legacyBlockObjs.length)
-        this.emit('blockMetaVerification:legacyBlocks', { count: legacyBlocks.length })
-        legacyBlocks.forEach((height: number) => {
-          this.storage!.removeBlockMetaByHeight(height)
-        })
-
-        // Check if fully sync'ed
-        if (this.isReachedMaxHeight()) {
-          if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-            this.logger.info('BlockMetaAnalyzer is up to date.')
-            this.emit('upToDate')
-          }
-        }
-
-        // Conclude
-        this.isVerifyingBlockMetas = false
-        this.emit('blockMetaVerification:complete', { isSuccess: true })
+      // Enqueue missing block heights
+      const missingBlocks = difference(all, availableBlocks)
+      this.logger.info('Blocks missing count:', missingBlocks.length)
+      this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
+      missingBlocks.forEach((height: number) => {
+        this.enqueueAnalyzeBlock(height, this.options.missingEnqueueBlockPriority!)
       })
+
+      // Truncate legacy block meta right away
+      const legacyBlockObjs = filter(res, (item: any) => {
+        return item.apiLevel < this.apiLevel
+      })
+      const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
+      this.logger.info('Legacy block count:', legacyBlockObjs.length)
+      this.emit('blockMetaVerification:legacyBlocks', { count: legacyBlocks.length })
+      legacyBlocks.forEach((height: number) => {
+        this.storage!.removeBlockMetaByHeight(height)
+      })
+
+      // Check if fully sync'ed
+      if (this.isReachedMaxHeight()) {
+        if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
+          this.logger.info('BlockMetaAnalyzer is up to date.')
+          this.emit('upToDate')
+        }
+      }
+
+      // Conclude
+      this.isVerifyingBlockMetas = false
+      this.emit('blockMetaVerification:complete', { isSuccess: true })
+    })
   }
 
   private doEnqueueAnalyzeBlock() {
@@ -294,18 +295,20 @@ export class BlockMetaAnalyzer extends EventEmitter {
     this.logger.debug('analyzeBlock triggered. attrs:', attrs)
 
     const height: number = (attrs as any).height
-    let previousBlockTimestamp: number | undefined = undefined
+    let previousBlockTimestamp: number | undefined
 
     return new Promise((resolve, reject) => {
       Promise.resolve()
-        .then((): object | undefined => {
-          if (height === 1) {
-            // No need to fetch previous block
-            return Promise.resolve()
-          } else {
-            return this.storage!.getBlock(height-1)
+        .then(
+          (): object | undefined => {
+            if (height === 1) {
+              // No need to fetch previous block
+              return Promise.resolve()
+            } else {
+              return this.storage!.getBlock(height - 1)
+            }
           }
-        })
+        )
         .then((previousBlock: object | undefined) => {
           if (previousBlock) {
             previousBlockTimestamp = (previousBlock as any).time
@@ -316,12 +319,12 @@ export class BlockMetaAnalyzer extends EventEmitter {
         .then(() => this.storage!.getBlock(height))
         .then((block: any) => {
           const blockMeta = {
-            height: height,
+            height,
             time: block.time,
             size: block.size,
             generationTime: BlockHelper.getGenerationTime(block, previousBlockTimestamp),
             transactionCount: BlockHelper.getTransactionCount(block),
-            apiLevel: this.apiLevel, 
+            apiLevel: this.apiLevel,
           }
           // this.logger.debug('blockMeta:', blockMeta)
           return Promise.resolve(blockMeta)
