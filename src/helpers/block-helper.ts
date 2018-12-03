@@ -2,7 +2,7 @@ import { isArray } from 'lodash'
 
 export class BlockHelper {
   static getGenerationTime(block: any, previousBlockTimestamp: number | undefined): number {
-    return (previousBlockTimestamp) ? block.time - previousBlockTimestamp : 0
+    return previousBlockTimestamp ? block.time - previousBlockTimestamp : 0
   }
 
   static getTransactionCount(block: any): number {
