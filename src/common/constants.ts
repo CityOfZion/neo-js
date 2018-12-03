@@ -13,6 +13,12 @@ const C = {
     getversion: 'getversion',
     getrawtransaction: 'getrawtransaction',
   },
+  transaction: {
+    MinerTransaction: 'MinerTransaction',
+    ContractTransaction: 'ContractTransaction',
+    InvocationTransaction: 'InvocationTransaction',
+    ClaimTransaction: 'ClaimTransaction',
+  },
 }
 
 export default C
