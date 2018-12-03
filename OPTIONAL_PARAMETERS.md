@@ -9,11 +9,13 @@ const neoOptions = {
   network: 'testnet',
   storageType: undefined,
   endpoints: undefined,
+  enableBlockMetaAnalyzer: false,
   nodeOptions: undefined,
   meshOptions: undefined,
   storageOptions: undefined,
   apiOptions: undefined,
   syncerOptions: undefined,
+  blockMetaAnalyzerOptions: undefined,
   loggerOptions: {},
 }
 ```
@@ -22,6 +24,8 @@ const neoOptions = {
 
 ```js
 const apiOptions = {
+  insertToStorage: true,
+  checkReadyIntervalMs: 200,
   loggerOptions: {},
 }
 ```
@@ -97,9 +101,27 @@ const mongodbStorageOptions = {
   userAgent: 'Unknown',
   collectionNames: {
     blocks: 'blocks',
+    blockMetas: 'block_metas',
     transactions: 'transactions',
     assets: 'assets',
   },
+  loggerOptions: {},
+}
+```
+
+### `analyzers/block-meta-analyzer`
+
+```js
+const blockMetaAnalyzerOptions = {
+  minHeight: 1,
+  maxHeight: undefined,
+  startOnInit: true,
+  analyzeQueueConcurrency: 5,
+  enqueueBlockIntervalMs: 5 * 1000,
+  verifyBlockMetasIntervalMs: 30 * 1000,
+  maxQueueLength: 30 * 1000,
+  standardEnqueueBlockPriority: 5,
+  missingEnqueueBlockPriority: 3,
   loggerOptions: {},
 }
 ```

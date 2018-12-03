@@ -8,6 +8,7 @@ Possible events emitters per class.
 
 ### `core/api`
 
+* `ready`
 * `storage:insert`
 
 ### `core/mesh`
@@ -30,8 +31,7 @@ Possible events emitters per class.
 ### `core/node`
 
 * `query:init`
-* `query:success`
-* `query:failed`
+* `query:complete`
 
 ### `storages/memory-storage`
 
@@ -40,3 +40,16 @@ Possible events emitters per class.
 ### `storages/mongodb-storage`
 
 * `ready`
+* `reviewIndexes:init`
+* `reviewIndexes:complete`
+
+### `analyzers/block-meta-analyzer`
+
+* `start`
+* `stop`
+* `query:worker:complete`
+* `blockMetaVerification:init`
+* `blockMetaVerification:complete`
+* `blockMetaVerification:missingBlocks`
+* `blockMetaVerification:excessiveBlocks`
+* `upToDate`
