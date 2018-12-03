@@ -48,6 +48,11 @@ class Node extends events_1.EventEmitter {
         this.logger.debug('getVersion triggered.');
         return this.query(constants_1.default.rpc.getversion);
     }
+    getTransaction(transactionId, isVerbose = true) {
+        this.logger.debug('transactionId triggered.');
+        const verboseKey = isVerbose ? 1 : 0;
+        return this.query(constants_1.default.rpc.getrawtransaction, [transactionId, verboseKey]);
+    }
     getNodeMeta() {
         return {
             isActive: this.isActive,

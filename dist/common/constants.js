@@ -13,6 +13,13 @@ const C = {
         getblock: 'getblock',
         getblockcount: 'getblockcount',
         getversion: 'getversion',
+        getrawtransaction: 'getrawtransaction',
+    },
+    transaction: {
+        MinerTransaction: 'MinerTransaction',
+        ContractTransaction: 'ContractTransaction',
+        InvocationTransaction: 'InvocationTransaction',
+        ClaimTransaction: 'ClaimTransaction',
     },
 };
 exports.default = C;

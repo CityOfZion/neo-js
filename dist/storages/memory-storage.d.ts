@@ -16,9 +16,16 @@ export declare class MemoryStorage extends EventEmitter {
     setBlockCount(height: number): Promise<void>;
     countBlockRedundancy(height: number): Promise<number>;
     getBlock(height: number): Promise<object>;
+    getTransaction(transactionId: string): Promise<object>;
     setBlock(height: number, block: object, options?: object): Promise<void>;
     pruneBlock(height: number, redundancySize: number): Promise<void>;
     analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]>;
+    getBlockMetaCount(): Promise<number>;
+    getHighestBlockMetaHeight(): Promise<number>;
+    getHighestBlockMeta(): Promise<object | undefined>;
+    setBlockMeta(blockMeta: object): Promise<void>;
+    analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
+    removeBlockMetaByHeight(height: number): Promise<void>;
     disconnect(): Promise<void>;
     private setReady;
     private validateOptionalParameters;

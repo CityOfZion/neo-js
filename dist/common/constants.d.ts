@@ -11,6 +11,13 @@ declare const C: {
         getblock: string;
         getblockcount: string;
         getversion: string;
+        getrawtransaction: string;
+    };
+    transaction: {
+        MinerTransaction: string;
+        ContractTransaction: string;
+        InvocationTransaction: string;
+        ClaimTransaction: string;
     };
 };
 export default C;

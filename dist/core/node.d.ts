@@ -35,6 +35,7 @@ export declare class Node extends EventEmitter {
     getBlock(height: number, isVerbose?: boolean): Promise<object>;
     getBlockCount(): Promise<object>;
     getVersion(): Promise<object>;
+    getTransaction(transactionId: string, isVerbose?: boolean): Promise<object>;
     getNodeMeta(): NodeMeta;
     getNodeReliability(): number | undefined;
     getShapedLatency(): number | undefined;

@@ -6,6 +6,8 @@ class NeoValidator {
             throw new Error(`'height' must be an integer 1 or above.`);
         }
     }
+    static validateTransactionId(transactionId) {
+    }
 }
 exports.NeoValidator = NeoValidator;
 //# sourceMappingURL=neo-validator.js.map

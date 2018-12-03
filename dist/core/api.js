@@ -11,6 +11,7 @@ const neo_validator_1 = require("../validators/neo-validator");
 const MODULE_NAME = 'Api';
 const DEFAULT_OPTIONS = {
     insertToStorage: true,
+    checkReadyIntervalMs: 200,
     loggerOptions: {},
 };
 class Api extends events_1.EventEmitter {
@@ -21,6 +22,7 @@ class Api extends events_1.EventEmitter {
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
         this.validateOptionalParameters();
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
+        this.checkMeshAndStorageReady();
         this.on('storage:insert', this.storageInsertHandler.bind(this));
         this.logger.debug('constructor completes.');
     }
@@ -69,6 +71,23 @@ class Api extends events_1.EventEmitter {
             });
         });
     }
+    getTransaction(transactionId) {
+        this.logger.debug('getBlock triggered. transactionId:', transactionId);
+        neo_validator_1.NeoValidator.validateTransactionId(transactionId);
+        if (!this.storage) {
+            this.logger.debug('No storage delegate detected.');
+            return this.getTransactionFromMesh(transactionId);
+        }
+        return new Promise((resolve, reject) => {
+            this.storage.getTransaction(transactionId)
+                .then((block) => resolve(block))
+                .catch((err) => {
+                this.logger.debug('Cannot find result from storage delegate. Error:', err.message);
+                this.logger.debug('Attempt to fetch from mesh instead...');
+                return this.getTransactionFromMesh(transactionId);
+            });
+        });
+    }
     storageInsertHandler(payload) {
         if (!this.options.insertToStorage) {
             return;
@@ -85,6 +104,17 @@ class Api extends events_1.EventEmitter {
         }
     }
     validateOptionalParameters() {
+    }
+    checkMeshAndStorageReady() {
+        this.logger.debug('checkMeshAndStorageReady triggered.');
+        const checkIntervalId = setInterval(() => {
+            const meshReady = this.mesh.isReady();
+            const storageReady = this.storage ? this.storage.isReady() : true;
+            if (meshReady && storageReady) {
+                this.emit('ready');
+                clearInterval(checkIntervalId);
+            }
+        }, this.options.checkReadyIntervalMs);
     }
     storeBlockCount(payload) {
         if (this.storage) {
@@ -134,6 +164,16 @@ class Api extends events_1.EventEmitter {
                 })
                     .catch((err) => reject(err));
             });
+        }
+        else {
+            return Promise.reject(new Error('Edge case not implemented.'));
+        }
+    }
+    getTransactionFromMesh(transactionId) {
+        this.logger.debug('getTransactionFromMesh triggered.');
+        const highestNode = this.mesh.getHighestNode();
+        if (highestNode && highestNode.blockHeight) {
+            return highestNode.getTransaction(transactionId);
         }
         else {
             return Promise.reject(new Error('Edge case not implemented.'));

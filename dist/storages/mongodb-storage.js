@@ -14,6 +14,7 @@ const DEFAULT_OPTIONS = {
     userAgent: 'Unknown',
     collectionNames: {
         blocks: 'blocks',
+        blockMetas: 'block_metas',
         transactions: 'transactions',
         assets: 'assets',
     },
@@ -27,6 +28,7 @@ class MongodbStorage extends events_1.EventEmitter {
         this.validateOptionalParameters();
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
         this.blockModel = this.getBlockModel();
+        this.blockMetaModel = this.getBlockMetaModel();
         this.initConnection();
         this.on('ready', this.readyHandler.bind(this));
         this.logger.debug('constructor completes.');
@@ -91,6 +93,20 @@ class MongodbStorage extends events_1.EventEmitter {
                 }
                 const result = lodash_1.map(docs, (item) => item.payload);
                 return resolve(result);
+            })
+                .catch((err) => reject(err));
+        });
+    }
+    getTransaction(transactionId) {
+        this.logger.debug('getTransaction triggered.');
+        return new Promise((resolve, reject) => {
+            this.getBlockDocumentByTransactionId(transactionId)
+                .then((doc) => {
+                if (!doc) {
+                    return reject(new Error('No result found.'));
+                }
+                const transaction = lodash_1.find(doc.payload.tx, (t) => t.txid === transactionId);
+                return resolve(transaction);
             })
                 .catch((err) => reject(err));
         });
@@ -170,6 +186,99 @@ class MongodbStorage extends events_1.EventEmitter {
             });
         });
     }
+    getBlockMetaCount() {
+        this.logger.debug('getBlockMetaCount triggered.');
+        return new Promise((resolve, reject) => {
+            this.blockMetaModel.count({}).exec((err, res) => {
+                if (err) {
+                    this.logger.warn('blockMetaModel.findOne() execution failed.');
+                    return reject(err);
+                }
+                return resolve(res);
+            });
+        });
+    }
+    getHighestBlockMetaHeight() {
+        this.logger.debug('getHighestBlockMetaHeight triggered.');
+        return new Promise((resolve, reject) => {
+            this.getHighestBlockMeta()
+                .then((res) => {
+                if (res) {
+                    return resolve(res.height);
+                }
+                return resolve(0);
+            })
+                .catch((err) => {
+                return resolve(0);
+            });
+        });
+    }
+    getHighestBlockMeta() {
+        this.logger.debug('getHighestBlockMeta triggered.');
+        return new Promise((resolve, reject) => {
+            this.blockMetaModel
+                .findOne()
+                .sort({ height: -1 })
+                .exec((err, res) => {
+                if (err) {
+                    this.logger.warn('blockMetaModel.findOne() execution failed.');
+                    return reject(err);
+                }
+                if (!res) {
+                    this.logger.info('blockMetaModel.findOne() executed by without response data, hence no blocks available.');
+                    return resolve(undefined);
+                }
+                return resolve(res);
+            });
+        });
+    }
+    setBlockMeta(blockMeta) {
+        this.logger.debug('setBlockMeta triggered.');
+        const data = Object.assign({ createdBy: this.options.userAgent }, blockMeta);
+        return new Promise((resolve, reject) => {
+            this.blockMetaModel(data).save((err) => {
+                if (err) {
+                    this.logger.info('blockMetaModel().save() execution failed.');
+                    reject(err);
+                }
+                resolve();
+            });
+        });
+    }
+    analyzeBlockMetas(startHeight, endHeight) {
+        this.logger.debug('analyzeBlockMetas triggered.');
+        return new Promise((resolve, reject) => {
+            this.blockMetaModel
+                .find({
+                height: {
+                    $gte: startHeight,
+                    $lte: endHeight,
+                },
+            }, 'height apiLevel')
+                .exec((err, res) => {
+                if (err) {
+                    this.logger.warn('blockMetaModel.find() execution failed.');
+                    return reject(err);
+                }
+                return resolve(res);
+            });
+        });
+    }
+    removeBlockMetaByHeight(height) {
+        this.logger.debug('removeBlockMetaByHeight triggered. height: ', height);
+        return new Promise((resolve, reject) => {
+            this.blockMetaModel.remove({ height }).exec((err, res) => {
+                if (err) {
+                    this.logger.debug('blockMetaModel.remove() execution failed. error:', err.message);
+                    return reject(err);
+                }
+                else {
+                    this.logger.debug('blockMetaModel.remove() execution succeed.');
+                    return resolve();
+                }
+            });
+        });
+    }
     disconnect() {
         this.logger.debug('disconnect triggered.');
         return mongoose.disconnect();
@@ -208,6 +317,19 @@ class MongodbStorage extends events_1.EventEmitter {
             },
         }, { timestamps: true });
         return mongoose.models[this.options.collectionNames.blocks] || mongoose.model(this.options.collectionNames.blocks, schema);
+    }
+    getBlockMetaModel() {
+        const schema = new mongoose_1.Schema({
+            height: { type: 'Number', unique: true, required: true, dropDups: true },
+            time: Number,
+            size: Number,
+            generationTime: Number,
+            transactionCount: Number,
+            createdBy: String,
+            apiLevel: Number,
+        }, { timestamps: true });
+        const name = this.options.collectionNames.blockMetas;
+        return mongoose.models[name] || mongoose.model(name, schema);
     }
     initConnection() {
         if (this.options.connectOnInit) {
@@ -343,6 +465,26 @@ class MongodbStorage extends events_1.EventEmitter {
                 }
                 if (!res) {
                     return resolve([]);
+                }
+                return resolve(res);
+            });
+        });
+    }
+    getBlockDocumentByTransactionId(transactionId) {
+        this.logger.debug('getBlockDocumentByTransactionId triggered. transactionId:', transactionId);
+        return new Promise((resolve, reject) => {
+            this.blockModel
+                .findOne({
+                'payload.tx': {
+                    $elemMatch: {
+                        txid: transactionId,
+                    },
+                },
+            })
+                .exec((err, res) => {
+                if (err) {
+                    this.logger.warn('blockModel.findOne() execution failed. error:', err.message);
+                    return reject(err);
                 }
                 return resolve(res);
             });

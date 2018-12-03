@@ -45,6 +45,9 @@ class MemoryStorage extends events_1.EventEmitter {
             return Promise.reject(new Error('Block not found.'));
         }
     }
+    getTransaction(transactionId) {
+        throw new Error('Not implemented.');
+    }
     setBlock(height, block, options = {}) {
         this.blockCollection.push({ height, block });
         return Promise.resolve();
@@ -53,6 +56,24 @@ class MemoryStorage extends events_1.EventEmitter {
         throw new Error('Not implemented.');
     }
     analyzeBlocks(startHeight, endHeight) {
+        throw new Error('Not implemented.');
+    }
+    getBlockMetaCount() {
+        throw new Error('Not implemented.');
+    }
+    getHighestBlockMetaHeight() {
+        throw new Error('Not implemented.');
+    }
+    getHighestBlockMeta() {
+        throw new Error('Not implemented.');
+    }
+    setBlockMeta(blockMeta) {
+        throw new Error('Not implemented.');
+    }
+    analyzeBlockMetas(startHeight, endHeight) {
+        throw new Error('Not implemented.');
+    }
+    removeBlockMetaByHeight(height) {
         throw new Error('Not implemented.');
     }
     disconnect() {

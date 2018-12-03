@@ -12,6 +12,7 @@ const api_1 = require("./core/api");
 const syncer_1 = require("./core/syncer");
 const memory_storage_1 = require("./storages/memory-storage");
 const mongodb_storage_1 = require("./storages/mongodb-storage");
+const block_meta_analyzer_1 = require("./analyzers/block-meta-analyzer");
 const endpoint_validator_1 = require("./validators/endpoint-validator");
 const profiles_1 = __importDefault(require("./common/profiles"));
 const constants_1 = __importDefault(require("./common/constants"));
@@ -19,6 +20,7 @@ const version = require('../package.json').version;
 const MODULE_NAME = 'Neo';
 const DEFAULT_OPTIONS = {
     network: constants_1.default.network.testnet,
+    enableBlockMetaAnalyzer: false,
     loggerOptions: {},
 };
 class Neo extends events_1.EventEmitter {
@@ -32,6 +34,7 @@ class Neo extends events_1.EventEmitter {
         this.storage = this.getStorage();
         this.api = this.getApi();
         this.syncer = this.getSyncer();
+        this.blockMetaAnalyzer = this.getBlockMetaAnalyzer();
         this.logger.debug('constructor completes.');
     }
     static get VERSION() {
@@ -50,6 +53,9 @@ class Neo extends events_1.EventEmitter {
         }
         if (this.storage) {
             this.storage.disconnect();
+        }
+        if (this.blockMetaAnalyzer) {
+            this.blockMetaAnalyzer.stop();
         }
     }
     validateOptionalParameters() {
@@ -82,6 +88,15 @@ class Neo extends events_1.EventEmitter {
     getSyncer() {
         this.logger.debug('getSyncer triggered.');
         return new syncer_1.Syncer(this.mesh, this.storage, this.options.syncerOptions);
+    }
+    getBlockMetaAnalyzer() {
+        this.logger.debug('getBlockMetaAnalyzer triggered.');
+        if (this.options.enableBlockMetaAnalyzer) {
+            return new block_meta_analyzer_1.BlockMetaAnalyzer(this.storage, this.options.blockMetaAnalyzerOptions);
+        }
+        else {
+            return undefined;
+        }
     }
     getNodes() {
         this.logger.debug('getNodes triggered.');

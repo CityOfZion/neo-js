@@ -7,15 +7,18 @@ import { Api, ApiOptions } from './core/api';
 import { Syncer, SyncerOptions } from './core/syncer';
 import { MemoryStorage, MemoryStorageOptions } from './storages/memory-storage';
 import { MongodbStorage, MongodbStorageOptions } from './storages/mongodb-storage';
+import { BlockMetaAnalyzer, BlockMetaAnalyzerOptions } from './analyzers/block-meta-analyzer';
 export interface NeoOptions {
     network?: string;
     storageType?: string;
     endpoints?: object[];
+    enableBlockMetaAnalyzer?: boolean;
     nodeOptions?: NodeOptions;
     meshOptions?: MeshOptions;
     storageOptions?: MemoryStorageOptions | MongodbStorageOptions;
     apiOptions?: ApiOptions;
     syncerOptions?: SyncerOptions;
+    blockMetaAnalyzerOptions?: BlockMetaAnalyzerOptions;
     loggerOptions?: LoggerOptions;
 }
 export declare class Neo extends EventEmitter {
@@ -23,6 +26,7 @@ export declare class Neo extends EventEmitter {
     storage?: MemoryStorage | MongodbStorage;
     api: Api;
     syncer: Syncer;
+    blockMetaAnalyzer: BlockMetaAnalyzer | undefined;
     private options;
     private logger;
     constructor(options?: NeoOptions);
@@ -34,5 +38,6 @@ export declare class Neo extends EventEmitter {
     private getStorage;
     private getApi;
     private getSyncer;
+    private getBlockMetaAnalyzer;
     private getNodes;
 }
