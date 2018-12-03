@@ -7,6 +7,7 @@ import { Api, ApiOptions } from './core/api'
 import { Syncer, SyncerOptions } from './core/syncer'
 import { MemoryStorage, MemoryStorageOptions } from './storages/memory-storage'
 import { MongodbStorage, MongodbStorageOptions } from './storages/mongodb-storage'
+import { BlockMetaAnalyzer, BlockMetaAnalyzerOptions } from './analyzers/block-meta-analyzer'
 import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
@@ -16,6 +17,7 @@ const version = require('../package.json').version // tslint:disable-line
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
   network: C.network.testnet,
+  enableBlockMetaAnalyzer: false,
   loggerOptions: {},
 }
 
@@ -23,11 +25,13 @@ export interface NeoOptions {
   network?: string
   storageType?: string
   endpoints?: object[]
+  enableBlockMetaAnalyzer?: boolean
   nodeOptions?: NodeOptions
   meshOptions?: MeshOptions
   storageOptions?: MemoryStorageOptions | MongodbStorageOptions
   apiOptions?: ApiOptions
   syncerOptions?: SyncerOptions
+  blockMetaAnalyzerOptions?: BlockMetaAnalyzerOptions
   loggerOptions?: LoggerOptions
 }
 
@@ -36,6 +40,7 @@ export class Neo extends EventEmitter {
   storage?: MemoryStorage | MongodbStorage
   api: Api
   syncer: Syncer
+  blockMetaAnalyzer: BlockMetaAnalyzer | undefined
 
   private options: NeoOptions
   private logger: Logger
@@ -54,6 +59,7 @@ export class Neo extends EventEmitter {
     this.storage = this.getStorage()
     this.api = this.getApi()
     this.syncer = this.getSyncer()
+    this.blockMetaAnalyzer = this.getBlockMetaAnalyzer()
 
     this.logger.debug('constructor completes.')
   }
@@ -76,6 +82,9 @@ export class Neo extends EventEmitter {
     }
     if (this.storage) {
       this.storage.disconnect()
+    }
+    if (this.blockMetaAnalyzer) {
+      this.blockMetaAnalyzer.stop()
     }
   }
 
@@ -112,6 +121,15 @@ export class Neo extends EventEmitter {
   private getSyncer(): Syncer {
     this.logger.debug('getSyncer triggered.')
     return new Syncer(this.mesh, this.storage, this.options.syncerOptions)
+  }
+
+  private getBlockMetaAnalyzer(): BlockMetaAnalyzer | undefined {
+    this.logger.debug('getBlockMetaAnalyzer triggered.')
+    if (this.options.enableBlockMetaAnalyzer) {
+      return new BlockMetaAnalyzer(this.storage, this.options.blockMetaAnalyzerOptions)
+    } else {
+      return undefined
+    }
   }
 
   private getNodes(): Node[] {

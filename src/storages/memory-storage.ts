@@ -84,6 +84,30 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
+  getBlockMetaCount(): Promise<number> {
+    throw new Error('Not implemented.')
+  }
+
+  getHighestBlockMetaHeight(): Promise<number> {
+    throw new Error('Not implemented.')
+  }
+
+  getHighestBlockMeta(): Promise<object | undefined> {
+    throw new Error('Not implemented.')
+  }
+
+  setBlockMeta(blockMeta: object): Promise<void> {
+    throw new Error('Not implemented.')
+  }
+
+  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    throw new Error('Not implemented.')
+  }
+
+  removeBlockMetaByHeight(height: number): Promise<void> {
+    throw new Error('Not implemented.')
+  }
+
   disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
     return Promise.resolve()
