@@ -197,24 +197,7 @@ export class MongodbStorage extends EventEmitter {
 
   getHighestBlockMetaHeight(): Promise<number> {
     this.logger.debug('getHighestBlockMetaHeight triggered.')
-
-    return new Promise((resolve, reject) => {
-      this.getHighestBlockMeta()
-        .then((res: any) => {
-          if (res) {
-            return resolve(res.height)
-          }
-          return resolve(0)
-        })
-        .catch((err) => {
-          return resolve(0)
-        })
-    })
-  }
-
-  getHighestBlockMeta(): Promise<object | undefined> {
-    this.logger.debug('getHighestBlockMeta triggered.')
-    return this.blockMetaDao.getHighest()
+    return this.blockMetaDao.getHighestHeight()
   }
 
   setBlockMeta(blockMeta: object): Promise<void> {

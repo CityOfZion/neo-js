@@ -33,6 +33,21 @@ export class BlockMetaDao {
     })
   }
 
+  getHighestHeight(): Promise<number> {
+    return new Promise((resolve, reject) => {
+      this.getHighest()
+        .then((res: any) => {
+          if (res) {
+            return resolve(res.height)
+          }
+          return resolve(0)
+        })
+        .catch((err) => {
+          return resolve(0)
+        })
+    })
+  }
+
   save(data: object): Promise<void> {
     return new Promise((resolve, reject) => {
       this.model(data).save((err: any) => {
