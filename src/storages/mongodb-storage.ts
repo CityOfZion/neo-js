@@ -4,6 +4,7 @@ import { merge, map, takeRight, includes, find } from 'lodash'
 import { Mongoose } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
 import { BlockSchema, BlockMetaSchema } from './mongodb/schemas'
+import { BlockDao } from './mongodb/block-dao'
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -40,6 +41,7 @@ export class MongodbStorage extends EventEmitter {
   private _isReady = false
   private blockModel: any
   private blockMetaModel: any
+  private blockDao: BlockDao
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -54,6 +56,7 @@ export class MongodbStorage extends EventEmitter {
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockModel = this.getBlockModel()
     this.blockMetaModel = this.getBlockMetaModel()
+    this.blockDao = new BlockDao(mongoose, this.options.collectionNames!.blocks!)
     this.initConnection()
 
     // Event handlers
@@ -67,23 +70,9 @@ export class MongodbStorage extends EventEmitter {
   }
 
   getBlockCount(): Promise<number> {
+    // TODO: Propose more accurate renaming
     this.logger.debug('getBlockCount triggered.')
-    return new Promise((resolve, reject) => {
-      this.blockModel
-        .findOne({}, 'height')
-        .sort({ height: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockModel.findOne() execution failed.')
-            return reject(err)
-          }
-          if (!res) {
-            this.logger.info('blockModel.findOne() executed by without response data, hence no blocks available.')
-            return resolve(0)
-          }
-          return resolve(res.height)
-        })
-    })
+    return this.blockDao.getHighestHeight()
   }
 
   setBlockCount(height: number): Promise<void> {
@@ -92,24 +81,18 @@ export class MongodbStorage extends EventEmitter {
 
   countBlockRedundancy(height: number): Promise<number> {
     this.logger.debug('countBlockRedundancy triggered. height:', height)
-
-    return new Promise((resolve, reject) => {
-      this.blockModel.count({ height }).exec((err: any, res: number) => {
-        if (err) {
-          this.logger.warn('blockModel.count() execution failed. error:', err.message)
-          return reject(err)
-        }
-        return resolve(res as number)
-      })
-    })
+    return this.blockDao.countByHeight(height)
   }
 
   getBlock(height: number): Promise<object> {
     this.logger.debug('getBlock triggered. height:', height)
 
     return new Promise((resolve, reject) => {
-      this.getBlockDocument(height)
+      this.blockDao.getByHeight(height)
         .then((doc: any) => {
+          if (!doc) {
+            return reject(new Error('No document found.'))
+          }
           if (!doc.payload) {
             return reject(new Error('Invalid document result.'))
           }
@@ -123,7 +106,7 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getBlocks triggered. height:', height)
 
     return new Promise((resolve, reject) => {
-      this.getBlockDocuments(height)
+      this.blockDao.listByHeight(height)
         .then((docs: object[]) => {
           if (docs.length === 0) {
             return resolve([])
@@ -139,7 +122,7 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getTransaction triggered.')
 
     return new Promise((resolve, reject) => {
-      this.getBlockDocumentByTransactionId(transactionId)
+      this.blockDao.getByTransactionId(transactionId)
         .then((doc: any) => {
           if (!doc) {
             return reject(new Error('No result found.'))
@@ -162,13 +145,12 @@ export class MongodbStorage extends EventEmitter {
       payload: block,
     }
     return new Promise((resolve, reject) => {
-      this.blockModel(data).save((err: any) => {
-        if (err) {
-          this.logger.warn('blockModel().save() execution failed.')
-          reject(err)
-        }
-        resolve()
-      })
+      this.blockDao.save(data)
+        .then(() => resolve())
+        .catch((err: any) => {
+          this.logger.warn('blockDao.save() execution failed.')
+          return reject(err)
+        })
     })
   }
 
@@ -176,21 +158,21 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('pruneBlock triggered. height: ', height, 'redundancySize:', redundancySize)
 
     return new Promise((resolve, reject) => {
-      this.getBlockDocuments(height)
+      this.blockDao.listByHeight(height)
         .then((docs: object[]) => {
-          this.logger.debug('getBlockDocuments() succeed. docs.length:', docs.length)
+          this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length)
           if (docs.length > redundancySize) {
             const takeCount = docs.length - redundancySize
             const toPrune = takeRight(docs, takeCount)
             toPrune.forEach((doc: any) => {
               this.logger.debug('Removing document id:', doc._id)
-              this.blockModel.remove({ _id: doc._id }).exec((err: any, res: any) => {
-                if (err) {
-                  this.logger.debug('blockModel.remove() execution failed. error:', err.message)
-                } else {
+              this.blockDao.removeById(doc._id)
+                .then(() => {
                   this.logger.debug('blockModel.remove() execution succeed.')
-                }
-              })
+                })
+                .catch((err: any) => {
+                  this.logger.debug('blockModel.remove() execution failed. error:', err.message)
+                })
             })
           }
           resolve()
@@ -201,44 +183,7 @@ export class MongodbStorage extends EventEmitter {
 
   analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockHeight triggered.')
-    /**
-     * Example result:
-     * [
-     *   { _id: 1, count: 1 },
-     *   { _id: 2, count: 4 },
-     *   ...
-     * ]
-     */
-    return new Promise((resolve, reject) => {
-      const aggregatorOptions = [
-        {
-          $group: {
-            _id: '$height',
-            count: { $sum: 1 },
-          },
-        },
-        {
-          $match: {
-            _id: {
-              // This '_id' is now referring to $height as designated in $group
-              $gte: startHeight,
-              $lte: endHeight,
-            },
-          },
-        },
-      ]
-
-      this.blockModel
-        .aggregate(aggregatorOptions)
-        .allowDiskUse(true)
-        .exec((err: Error, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-
-          return resolve(res)
-        })
-    })
+    return this.blockDao.analyze(startHeight, endHeight)
   }
 
   getBlockMetaCount(): Promise<number> {
@@ -505,73 +450,6 @@ export class MongodbStorage extends EventEmitter {
         .createIndex(keyObj)
         .then((res: any) => resolve())
         .catch((err: any) => reject(err))
-    })
-  }
-
-  private getBlockDocument(height: number): Promise<object> {
-    this.logger.debug('getBlockDocument triggered. height:', height)
-
-    /**
-     * NOTE:
-     * It is assumed that there may be multiple matches and will pick 'latest created' one as truth.
-     */
-    return new Promise((resolve, reject) => {
-      this.blockModel
-        .findOne({ height })
-        .sort({ createdAt: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockModel.findOne() execution failed. error:', err.message)
-            return reject(err)
-          }
-          if (!res) {
-            return reject(new Error('No result found.'))
-          }
-          return resolve(res)
-        })
-    })
-  }
-
-  private getBlockDocuments(height: number): Promise<object[]> {
-    this.logger.debug('getBlockDocuments triggered. height:', height)
-
-    return new Promise((resolve, reject) => {
-      this.blockModel
-        .find({ height })
-        .sort({ createdAt: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockModel.find() execution failed. error:', err.message)
-            return reject(err)
-          }
-          if (!res) {
-            // TODO: Verify if res is array
-            return resolve([])
-          }
-          return resolve(res)
-        })
-    })
-  }
-
-  private getBlockDocumentByTransactionId(transactionId: string): Promise<object> {
-    this.logger.debug('getBlockDocumentByTransactionId triggered. transactionId:', transactionId)
-
-    return new Promise((resolve, reject) => {
-      this.blockModel
-        .findOne({
-          'payload.tx': {
-            $elemMatch: {
-              txid: transactionId,
-            },
-          },
-        })
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockModel.findOne() execution failed. error:', err.message)
-            return reject(err)
-          }
-          return resolve(res)
-        })
     })
   }
 }
