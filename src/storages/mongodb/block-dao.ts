@@ -1,5 +1,5 @@
 import { Mongoose } from 'mongoose'
-import { BlockSchema } from './schemas'
+import { blockSchema } from './schemas'
 import { MongodbUtils } from './utils'
 
 export class BlockDao {
@@ -38,7 +38,6 @@ export class BlockDao {
   }
 
   getByHeight(height: number): Promise<any> {
-    console.log('getByHeight triggered. height:', height)
     /**
      * NOTE:
      * It is assumed that there may be multiple matches and will pick 'latest created' one as truth.
@@ -160,7 +159,7 @@ export class BlockDao {
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {
-    const schema = BlockSchema
+    const schema = blockSchema
     return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
   }
 }

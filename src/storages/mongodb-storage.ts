@@ -86,7 +86,8 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getBlock triggered. height:', height)
 
     return new Promise((resolve, reject) => {
-      this.blockDao.getByHeight(height)
+      this.blockDao
+        .getByHeight(height)
         .then((doc: any) => {
           if (!doc) {
             return reject(new Error('No document found.'))
@@ -104,7 +105,8 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getBlocks triggered. height:', height)
 
     return new Promise((resolve, reject) => {
-      this.blockDao.listByHeight(height)
+      this.blockDao
+        .listByHeight(height)
         .then((docs: object[]) => {
           if (docs.length === 0) {
             return resolve([])
@@ -120,7 +122,8 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('getTransaction triggered.')
 
     return new Promise((resolve, reject) => {
-      this.blockDao.getByTransactionId(transactionId)
+      this.blockDao
+        .getByTransactionId(transactionId)
         .then((doc: any) => {
           if (!doc) {
             return reject(new Error('No result found.'))
@@ -143,7 +146,8 @@ export class MongodbStorage extends EventEmitter {
       payload: block,
     }
     return new Promise((resolve, reject) => {
-      this.blockDao.save(data)
+      this.blockDao
+        .save(data)
         .then(() => resolve())
         .catch((err: any) => {
           this.logger.warn('blockDao.save() execution failed.')
@@ -156,7 +160,8 @@ export class MongodbStorage extends EventEmitter {
     this.logger.debug('pruneBlock triggered. height: ', height, 'redundancySize:', redundancySize)
 
     return new Promise((resolve, reject) => {
-      this.blockDao.listByHeight(height)
+      this.blockDao
+        .listByHeight(height)
         .then((docs: object[]) => {
           this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length)
           if (docs.length > redundancySize) {
@@ -164,7 +169,8 @@ export class MongodbStorage extends EventEmitter {
             const toPrune = takeRight(docs, takeCount)
             toPrune.forEach((doc: any) => {
               this.logger.debug('Removing document id:', doc._id)
-              this.blockDao.removeById(doc._id)
+              this.blockDao
+                .removeById(doc._id)
                 .then(() => {
                   this.logger.debug('blockModel.remove() execution succeed.')
                 })

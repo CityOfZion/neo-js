@@ -1,6 +1,6 @@
 import { Schema } from 'mongoose'
 
-export const BlockSchema = new Schema(
+export const blockSchema = new Schema(
   {
     height: Number,
     createdBy: String,
@@ -28,7 +28,7 @@ export const BlockSchema = new Schema(
   { timestamps: true }
 )
 
-export const BlockMetaSchema = new Schema(
+export const blockMetaSchema = new Schema(
   {
     height: { type: 'Number', unique: true, required: true, dropDups: true },
     time: Number,

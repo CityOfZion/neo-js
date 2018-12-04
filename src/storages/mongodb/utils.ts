@@ -2,7 +2,6 @@ import { includes } from 'lodash'
 
 export class MongodbUtils {
   static reviewIndex(model: any, key: string, keyObj: object): Promise<void> {
-
     return new Promise((resolve, reject) => {
       Promise.resolve()
         .then(() => MongodbUtils.hasIndex(model, key))

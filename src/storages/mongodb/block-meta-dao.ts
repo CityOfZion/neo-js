@@ -1,5 +1,5 @@
 import { Mongoose } from 'mongoose'
-import { BlockMetaSchema } from './schemas'
+import { blockMetaSchema } from './schemas'
 
 export class BlockMetaDao {
   private model: any
@@ -85,7 +85,7 @@ export class BlockMetaDao {
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {
-    const schema = BlockMetaSchema
+    const schema = blockMetaSchema
     return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
   }
 }
