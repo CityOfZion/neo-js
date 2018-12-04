@@ -3,8 +3,8 @@ import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, takeRight, includes, find } from 'lodash'
 import { Mongoose } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
-import { BlockSchema, BlockMetaSchema } from './mongodb/schemas'
 import { BlockDao } from './mongodb/block-dao'
+import { BlockMetaDao } from './mongodb/block-meta-dao'
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -39,9 +39,8 @@ export interface MongodbStorageOptions {
 
 export class MongodbStorage extends EventEmitter {
   private _isReady = false
-  private blockModel: any
-  private blockMetaModel: any
   private blockDao: BlockDao
+  private blockMetaDao: BlockMetaDao
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -54,9 +53,8 @@ export class MongodbStorage extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
-    this.blockModel = this.getBlockModel()
-    this.blockMetaModel = this.getBlockMetaModel()
     this.blockDao = new BlockDao(mongoose, this.options.collectionNames!.blocks!)
+    this.blockMetaDao = new BlockMetaDao(mongoose, this.options.collectionNames!.blockMetas!)
     this.initConnection()
 
     // Event handlers
@@ -188,16 +186,7 @@ export class MongodbStorage extends EventEmitter {
 
   getBlockMetaCount(): Promise<number> {
     this.logger.debug('getBlockMetaCount triggered.')
-
-    return new Promise((resolve, reject) => {
-      this.blockMetaModel.count({}).exec((err: any, res: any) => {
-        if (err) {
-          this.logger.warn('blockMetaModel.findOne() execution failed.')
-          return reject(err)
-        }
-        return resolve(res)
-      })
-    })
+    return this.blockMetaDao.count()
   }
 
   getHighestBlockMetaHeight(): Promise<number> {
@@ -219,23 +208,7 @@ export class MongodbStorage extends EventEmitter {
 
   getHighestBlockMeta(): Promise<object | undefined> {
     this.logger.debug('getHighestBlockMeta triggered.')
-
-    return new Promise((resolve, reject) => {
-      this.blockMetaModel
-        .findOne()
-        .sort({ height: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockMetaModel.findOne() execution failed.')
-            return reject(err)
-          }
-          if (!res) {
-            this.logger.info('blockMetaModel.findOne() executed by without response data, hence no blocks available.')
-            return resolve(undefined)
-          }
-          return resolve(res)
-        })
-    })
+    return this.blockMetaDao.getHighest()
   }
 
   setBlockMeta(blockMeta: object): Promise<void> {
@@ -245,63 +218,17 @@ export class MongodbStorage extends EventEmitter {
       createdBy: this.options.userAgent, // neo-js's user agent
       ...blockMeta,
     }
-    return new Promise((resolve, reject) => {
-      this.blockMetaModel(data).save((err: any) => {
-        if (err) {
-          this.logger.info('blockMetaModel().save() execution failed.')
-          reject(err)
-        }
-        resolve()
-      })
-    })
+    return this.blockMetaDao.save(data)
   }
 
   analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockMetas triggered.')
-
-    /**
-     * Example Result:
-     * [
-     *  { _id: 5bff81ccbbd4fc5d6f3352d5, height: 95, apiLevel: 1 },
-     *  { _id: 5bff81ccbbd4fc5d6f3352d9, height: 96, apiLevel: 1 },
-     *  ...
-     * ]
-     */
-    return new Promise((resolve, reject) => {
-      this.blockMetaModel
-        .find(
-          {
-            height: {
-              $gte: startHeight,
-              $lte: endHeight,
-            },
-          },
-          'height apiLevel'
-        )
-        .exec((err: any, res: any) => {
-          if (err) {
-            this.logger.warn('blockMetaModel.find() execution failed.')
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
+    return this.blockMetaDao.analyze(startHeight, endHeight)
   }
 
   removeBlockMetaByHeight(height: number): Promise<void> {
     this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
-
-    return new Promise((resolve, reject) => {
-      this.blockMetaModel.remove({ height }).exec((err: any, res: any) => {
-        if (err) {
-          this.logger.debug('blockMetaModel.remove() execution failed. error:', err.message)
-          return reject(err)
-        } else {
-          this.logger.debug('blockMetaModel.remove() execution succeed.')
-          return resolve()
-        }
-      })
-    })
+    return this.blockMetaDao.removeByHeight(height)
   }
 
   disconnect(): Promise<void> {
@@ -318,18 +245,6 @@ export class MongodbStorage extends EventEmitter {
 
   private validateOptionalParameters() {
     // TODO
-  }
-
-  private getBlockModel() {
-    const collectionName = this.options.collectionNames!.blocks!
-    const schema = BlockSchema
-    return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
-  }
-
-  private getBlockMetaModel() {
-    const collectionName = this.options.collectionNames!.blockMetas!
-    const schema = BlockMetaSchema
-    return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
   }
 
   private initConnection() {
@@ -384,7 +299,7 @@ export class MongodbStorage extends EventEmitter {
 
     const key = 'height_1_createdAt_-1'
     const keyObj = { height: 1, createdAt: -1 }
-    return this.reviewIndex(this.blockModel, key, keyObj)
+    return this.blockDao.reviewIndex(key, keyObj)
   }
 
   private reviewIndexForTransactionId(): Promise<void> {
@@ -392,64 +307,6 @@ export class MongodbStorage extends EventEmitter {
 
     const key = 'payload.tx.txid_1'
     const keyObj = { 'payload.tx.txid': 1 }
-    return this.reviewIndex(this.blockModel, key, keyObj)
-  }
-
-  private reviewIndex(model: any, key: string, keyObj: object): Promise<void> {
-    this.logger.debug('reviewIndex triggered.')
-
-    return new Promise((resolve, reject) => {
-      Promise.resolve()
-        .then(() => this.hasIndex(model, key))
-        .then((hasRequiredIndex: boolean) => {
-          if (hasRequiredIndex) {
-            // Determined that there's no need to create index
-            throw new Error('SKIP_INDEX')
-          }
-          this.logger.info(`Generating index [${key}]...`)
-          return Promise.resolve()
-        })
-        .then(() => this.createIndex(model, keyObj))
-        .then(() => {
-          this.logger.info(`Index [${key}] generation complete.`)
-          return resolve()
-        })
-        .catch((err: any) => {
-          if (err.message === 'SKIP_INDEX') {
-            this.logger.info(`Index [${key}] already available. No action needed.`)
-            return resolve()
-          } else {
-            this.logger.info(`Index [${key}] generation failed. Message:`, err.message)
-            return reject(err)
-          }
-        })
-    })
-  }
-
-  private hasIndex(model: any, key: string): Promise<boolean> {
-    this.logger.debug('hasIndex triggered. key:', key)
-
-    return new Promise((resolve, reject) => {
-      model.collection
-        .getIndexes()
-        .then((res: any) => {
-          this.logger.debug('collection.getIndexes succeed. res:', res)
-          const keys = Object.keys(res)
-          const result = includes(keys, key)
-          return resolve(result)
-        })
-        .catch((err: any) => reject(err))
-    })
-  }
-
-  private createIndex(model: any, keyObj: object): Promise<void> {
-    this.logger.debug('createIndex triggered.')
-
-    return new Promise((resolve, reject) => {
-      model.collection
-        .createIndex(keyObj)
-        .then((res: any) => resolve())
-        .catch((err: any) => reject(err))
-    })
+    return this.blockDao.reviewIndex(key, keyObj)
   }
 }

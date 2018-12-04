@@ -1,5 +1,6 @@
 import { Mongoose } from 'mongoose'
 import { BlockSchema } from './schemas'
+import { MongodbUtils } from './utils'
 
 export class BlockDao {
   private model: any
@@ -152,6 +153,10 @@ export class BlockDao {
           return resolve(res)
         })
     })
+  }
+
+  reviewIndex(key: string, keyObj: object): Promise<void> {
+    return MongodbUtils.reviewIndex(this.model, key, keyObj)
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {
