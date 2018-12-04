@@ -1,8 +1,9 @@
 import { EventEmitter } from 'events'
 import { Logger, LoggerOptions } from 'node-log-it'
 import { merge, map, takeRight, includes, find } from 'lodash'
-import { Mongoose, Schema } from 'mongoose'
+import { Mongoose } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
+import { BlockSchema, BlockMetaSchema } from './mongodb/schemas'
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -375,53 +376,15 @@ export class MongodbStorage extends EventEmitter {
   }
 
   private getBlockModel() {
-    const schema = new Schema(
-      {
-        height: Number,
-        createdBy: String,
-        source: String,
-        userAgent: String,
-        payload: {
-          hash: String,
-          size: Number,
-          version: Number,
-          previousblockhash: String,
-          merkleroot: String,
-          time: Number,
-          index: { type: 'Number', required: true },
-          nonce: String,
-          nextconsensus: String,
-          script: {
-            invocation: String,
-            verification: String,
-          },
-          tx: [],
-          confirmations: Number,
-          nextblockhash: String,
-        },
-      },
-      { timestamps: true }
-    )
-
-    return mongoose.models[this.options.collectionNames!.blocks!] || mongoose.model(this.options.collectionNames!.blocks!, schema)
+    const collectionName = this.options.collectionNames!.blocks!
+    const schema = BlockSchema
+    return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
   }
 
   private getBlockMetaModel() {
-    const schema = new Schema(
-      {
-        height: { type: 'Number', unique: true, required: true, dropDups: true },
-        time: Number,
-        size: Number,
-        generationTime: Number,
-        transactionCount: Number,
-        createdBy: String,
-        apiLevel: Number,
-      },
-      { timestamps: true }
-    )
-
-    const name = this.options.collectionNames!.blockMetas!
-    return mongoose.models[name] || mongoose.model(name, schema)
+    const collectionName = this.options.collectionNames!.blockMetas!
+    const schema = BlockMetaSchema
+    return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
   }
 
   private initConnection() {
