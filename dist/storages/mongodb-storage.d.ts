@@ -16,8 +16,8 @@ export interface MongodbStorageOptions {
 }
 export declare class MongodbStorage extends EventEmitter {
     private _isReady;
-    private blockModel;
-    private blockMetaModel;
+    private blockDao;
+    private blockMetaDao;
     private options;
     private logger;
     constructor(options?: MongodbStorageOptions);
@@ -33,24 +33,15 @@ export declare class MongodbStorage extends EventEmitter {
     analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]>;
     getBlockMetaCount(): Promise<number>;
     getHighestBlockMetaHeight(): Promise<number>;
-    getHighestBlockMeta(): Promise<object | undefined>;
     setBlockMeta(blockMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
     disconnect(): Promise<void>;
     private readyHandler;
     private validateOptionalParameters;
-    private getBlockModel;
-    private getBlockMetaModel;
     private initConnection;
     private setReady;
     private reviewIndexes;
     private reviewIndexForBlockHeight;
     private reviewIndexForTransactionId;
-    private reviewIndex;
-    private hasIndex;
-    private createIndex;
-    private getBlockDocument;
-    private getBlockDocuments;
-    private getBlockDocumentByTransactionId;
 }
