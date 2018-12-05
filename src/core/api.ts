@@ -163,7 +163,6 @@ export class Api extends EventEmitter {
      * all are stated to be ready.
      */
     this.checkReadyIntervalId = setInterval(() => {
-      console.log('checkMeshAndStorageReady triggered.')
       const meshReady = this.mesh.isReady()
       const storageReady = this.storage ? this.storage.isReady() : true
       if (meshReady && storageReady) {
