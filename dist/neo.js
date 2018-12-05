@@ -54,6 +54,9 @@ class Neo extends events_1.EventEmitter {
         if (this.storage) {
             this.storage.disconnect();
         }
+        if (this.api) {
+            this.api.close();
+        }
         if (this.blockMetaAnalyzer) {
             this.blockMetaAnalyzer.stop();
         }

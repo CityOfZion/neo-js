@@ -32,6 +32,7 @@ export class Api extends EventEmitter {
   private storage?: MemoryStorage | MongodbStorage
   private options: ApiOptions
   private logger: Logger
+  private checkReadyIntervalId?: NodeJS.Timer
 
   constructor(mesh: Mesh, storage?: MemoryStorage | MongodbStorage, options: ApiOptions = {}) {
     super()
@@ -129,6 +130,10 @@ export class Api extends EventEmitter {
     })
   }
 
+  close() {
+    clearInterval(this.checkReadyIntervalId!)
+  }
+
   private storageInsertHandler(payload: StorageInsertPayload) {
     if (!this.options.insertToStorage) {
       return
@@ -157,12 +162,12 @@ export class Api extends EventEmitter {
      * of multiple components, is to just periodically ping them until
      * all are stated to be ready.
      */
-    const checkIntervalId = setInterval(() => {
+    this.checkReadyIntervalId = setInterval(() => {
       const meshReady = this.mesh.isReady()
       const storageReady = this.storage ? this.storage.isReady() : true
       if (meshReady && storageReady) {
         this.emit('ready')
-        clearInterval(checkIntervalId)
+        clearInterval(this.checkReadyIntervalId!)
       }
     }, this.options.checkReadyIntervalMs!)
   }

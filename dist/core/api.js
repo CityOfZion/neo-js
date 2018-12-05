@@ -88,6 +88,9 @@ class Api extends events_1.EventEmitter {
             });
         });
     }
+    close() {
+        clearInterval(this.checkReadyIntervalId);
+    }
     storageInsertHandler(payload) {
         if (!this.options.insertToStorage) {
             return;
@@ -107,12 +110,12 @@ class Api extends events_1.EventEmitter {
     }
     checkMeshAndStorageReady() {
         this.logger.debug('checkMeshAndStorageReady triggered.');
-        const checkIntervalId = setInterval(() => {
+        this.checkReadyIntervalId = setInterval(() => {
             const meshReady = this.mesh.isReady();
             const storageReady = this.storage ? this.storage.isReady() : true;
             if (meshReady && storageReady) {
                 this.emit('ready');
-                clearInterval(checkIntervalId);
+                clearInterval(this.checkReadyIntervalId);
             }
         }, this.options.checkReadyIntervalMs);
     }
