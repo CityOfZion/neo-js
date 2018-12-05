@@ -111,7 +111,6 @@ class Api extends events_1.EventEmitter {
     checkMeshAndStorageReady() {
         this.logger.debug('checkMeshAndStorageReady triggered.');
         this.checkReadyIntervalId = setInterval(() => {
-            console.log('checkMeshAndStorageReady triggered.');
             const meshReady = this.mesh.isReady();
             const storageReady = this.storage ? this.storage.isReady() : true;
             if (meshReady && storageReady) {
