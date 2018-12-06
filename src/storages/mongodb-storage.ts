@@ -213,7 +213,7 @@ export class MongodbStorage extends EventEmitter {
       mongoose
         .connect(
           this.options.connectionString!,
-          { useMongoClient: true }
+          { useCreateIndex: true, useNewUrlParser: true }
         )
         .then(() => {
           this.logger.info('MongoDB connected.')

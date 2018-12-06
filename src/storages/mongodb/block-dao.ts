@@ -11,7 +11,7 @@ export class BlockDao {
 
   countByHeight(height: number): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.model.count({ height }).exec((err: any, res: number) => {
+      this.model.countDocuments({ height }).exec((err: any, res: number) => {
         if (err) {
           return reject(err)
         }

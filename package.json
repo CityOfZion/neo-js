@@ -39,15 +39,15 @@
     "async": "^2.6.1",
     "events": "^3.0.0",
     "lodash": "^4.17.10",
-    "mongoose": "4.13.14",
+    "mongoose": "^5.3.15",
     "node-log-it": "^2.0.0"
   },
   "devDependencies": {
     "@types/async": "^2.0.50",
     "@types/chance": "^1.0.1",
     "@types/events": "^1.2.0",
-    "@types/mongodb": "^3.1.4",
-    "@types/mongoose": "^5.2.6",
+    "@types/mongodb": "^3.1.17",
+    "@types/mongoose": "^5.3.3",
     "@types/node": "^10.7.1",
     "chai": "^4.1.2",
     "mocha": "^5.2.0",

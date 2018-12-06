@@ -10,7 +10,7 @@ export class BlockMetaDao {
 
   count(): Promise<number> {
     return new Promise((resolve, reject) => {
-      this.model.count({}).exec((err: any, res: any) => {
+      this.model.countDocuments({}).exec((err: any, res: any) => {
         if (err) {
           return reject(err)
         }
