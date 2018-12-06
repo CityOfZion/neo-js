@@ -412,7 +412,6 @@ export class Syncer extends EventEmitter {
       await this.storage!.setBlock(height, block, { source, userAgent })
       this.logger.debug('storeBlock succeeded. height:', height)
       this.emit('storeBlock:complete', { isSuccess: true, height })
-
     } catch (err) {
       this.logger.debug('storeBlock failed. height:', height, 'Message:', err.message)
       this.emit('storeBlock:complete', { isSuccess: false, height })

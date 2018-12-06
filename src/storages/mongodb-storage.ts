@@ -140,7 +140,7 @@ export class MongodbStorage extends EventEmitter {
     if (docs.length > redundancySize) {
       const takeCount = docs.length - redundancySize
       const toPrune = takeRight(docs, takeCount)
-      // TODO: allow all removal tasks to run in parallel via Promise.all() 
+      // TODO: allow all removal tasks to run in parallel via Promise.all()
       toPrune.forEach(async (doc: any) => {
         this.logger.debug('Removing document id:', doc._id)
         try {
@@ -239,7 +239,7 @@ export class MongodbStorage extends EventEmitter {
       await this.reviewIndexForBlockHeight()
       await this.reviewIndexForTransactionId()
       this.logger.debug('Review indexes succeed.')
-      this.emit('reviewIndexes:complete', { isSuccess: true })  
+      this.emit('reviewIndexes:complete', { isSuccess: true })
     } catch (err) {
       this.logger.debug('reviewIndexes failed. Message:', err.message)
       this.emit('reviewIndexes:complete', { isSuccess: false })
