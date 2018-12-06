@@ -66,7 +66,7 @@ class MongodbStorage extends events_1.EventEmitter {
     getBlock(height) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('getBlock triggered. height:', height);
-            const doc = this.blockDao.getByHeight(height);
+            const doc = yield this.blockDao.getByHeight(height);
             if (!doc) {
                 throw new Error('No document found.');
             }

@@ -85,7 +85,7 @@ export class MongodbStorage extends EventEmitter {
   async getBlock(height: number): Promise<object> {
     this.logger.debug('getBlock triggered. height:', height)
 
-    const doc: any = this.blockDao.getByHeight(height)
+    const doc: any = await this.blockDao.getByHeight(height)
     if (!doc) {
       throw new Error('No document found.')
     }
