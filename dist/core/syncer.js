@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const async_1 = require("async");
@@ -151,10 +159,10 @@ class Syncer extends events_1.EventEmitter {
         return this.storeQueue.length() >= this.options.maxStoreQueueLength;
     }
     setBlockWritePointer() {
-        this.logger.debug('setBlockWritePointer triggered.');
-        return new Promise((resolve, reject) => {
-            this.storage.getBlockCount()
-                .then((height) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('setBlockWritePointer triggered.');
+            try {
+                const height = yield this.storage.getBlockCount();
                 this.logger.debug('getBlockCount success. height:', height);
                 if (this.options.minHeight && height < this.options.minHeight) {
                     this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`);
@@ -163,14 +171,12 @@ class Syncer extends events_1.EventEmitter {
                 else {
                     this.blockWritePointer = height;
                 }
-                resolve();
-            })
-                .catch((err) => {
+            }
+            catch (err) {
                 this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
                 this.logger.info('Assumed that there are no blocks.');
                 this.blockWritePointer = this.options.minHeight;
-                resolve();
-            });
+            }
         });
     }
     initBlockVerification() {
@@ -276,69 +282,44 @@ class Syncer extends events_1.EventEmitter {
         }, priority);
     }
     storeBlock(attrs) {
-        this.logger.debug('storeBlock triggered. attrs:', attrs);
-        const height = attrs.height;
-        const node = this.mesh.getOptimalNode(height);
-        return new Promise((resolve, reject) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('storeBlock triggered. attrs:', attrs);
+            const height = attrs.height;
+            const node = this.mesh.getOptimalNode(height);
             this.emit('storeBlock:init', { height });
-            Promise.resolve()
-                .then(() => {
+            try {
                 if (this.options.checkRedundancyBeforeStoreBlock) {
-                    return this.storage.countBlockRedundancy(height);
+                    const redundantCount = yield this.storage.countBlockRedundancy(height);
+                    if (redundantCount >= this.options.blockRedundancy) {
+                        this.logger.debug('setBlock skipped. height:', height);
+                        this.emit('storeBlock:complete', { isSkipped: true, height });
+                        return;
+                    }
                 }
-                return Promise.resolve(undefined);
-            })
-                .then((redundantCount) => {
-                if (!redundantCount) {
-                    return Promise.resolve();
-                }
-                else if (redundantCount < this.options.blockRedundancy) {
-                    return Promise.resolve();
-                }
-                else {
-                    throw new Error('SKIP_STORE_BLOCK');
-                }
-            })
-                .then(() => {
                 if (!node) {
+                    this.emit('storeBlock:complete', { isSuccess: false, height });
                     throw new Error('No valid node found.');
                 }
-                return Promise.resolve();
-            })
-                .then(() => {
-                return node.getBlock(height);
-            })
-                .then((block) => {
+                const block = yield node.getBlock(height);
                 const source = node.endpoint;
                 const userAgent = node.userAgent;
-                return this.storage.setBlock(height, block, { source, userAgent });
-            })
-                .then(() => {
-                this.logger.debug('setBlock succeeded. height:', height);
+                yield this.storage.setBlock(height, block, { source, userAgent });
+                this.logger.debug('storeBlock succeeded. height:', height);
                 this.emit('storeBlock:complete', { isSuccess: true, height });
-                return resolve();
-            })
-                .catch((err) => {
-                if (err.Message === 'SKIP_STORE_BLOCK') {
-                    this.logger.debug('setBlock skipped. height:', height);
-                    this.emit('storeBlock:complete', { isSkipped: true, height });
-                }
-                else {
-                    this.logger.debug('setBlock failed. height:', height, 'Message:', err.message);
-                    this.emit('storeBlock:complete', { isSuccess: false, height });
-                    return reject(err);
-                }
-            });
+            }
+            catch (err) {
+                this.logger.debug('storeBlock failed. height:', height, 'Message:', err.message);
+                this.emit('storeBlock:complete', { isSuccess: false, height });
+                throw err;
+            }
         });
     }
     pruneBlock(attrs) {
-        this.logger.debug('pruneBlock triggered. attrs:', attrs);
-        const height = attrs.height;
-        const redundancySize = attrs.redundancySize;
-        return new Promise((resolve, reject) => {
-            this.storage.pruneBlock(height, redundancySize)
-                .then(() => resolve())
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('pruneBlock triggered. attrs:', attrs);
+            const height = attrs.height;
+            const redundancySize = attrs.redundancySize;
+            yield this.storage.pruneBlock(height, redundancySize);
         });
     }
 }

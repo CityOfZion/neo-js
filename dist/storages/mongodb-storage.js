@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const node_log_it_1 = require("node-log-it");
@@ -39,137 +47,133 @@ class MongodbStorage extends events_1.EventEmitter {
         return this._isReady;
     }
     getBlockCount() {
-        this.logger.debug('getBlockCount triggered.');
-        return this.blockDao.getHighestHeight();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockCount triggered.');
+            return yield this.blockDao.getHighestHeight();
+        });
     }
     setBlockCount(height) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     countBlockRedundancy(height) {
-        this.logger.debug('countBlockRedundancy triggered. height:', height);
-        return this.blockDao.countByHeight(height);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('countBlockRedundancy triggered. height:', height);
+            return yield this.blockDao.countByHeight(height);
+        });
     }
     getBlock(height) {
-        this.logger.debug('getBlock triggered. height:', height);
-        return new Promise((resolve, reject) => {
-            this.blockDao
-                .getByHeight(height)
-                .then((doc) => {
-                if (!doc) {
-                    return reject(new Error('No document found.'));
-                }
-                if (!doc.payload) {
-                    return reject(new Error('Invalid document result.'));
-                }
-                return resolve(doc.payload);
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlock triggered. height:', height);
+            const doc = this.blockDao.getByHeight(height);
+            if (!doc) {
+                throw new Error('No document found.');
+            }
+            if (!doc.payload) {
+                throw new Error('Invalid document result.');
+            }
+            return doc.payload;
         });
     }
     getBlocks(height) {
-        this.logger.debug('getBlocks triggered. height:', height);
-        return new Promise((resolve, reject) => {
-            this.blockDao
-                .listByHeight(height)
-                .then((docs) => {
-                if (docs.length === 0) {
-                    return resolve([]);
-                }
-                const result = lodash_1.map(docs, (item) => item.payload);
-                return resolve(result);
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlocks triggered. height:', height);
+            const docs = yield this.blockDao.listByHeight(height);
+            if (docs.length === 0) {
+                return [];
+            }
+            const blocks = lodash_1.map(docs, (doc) => doc.payload);
+            return blocks;
         });
     }
     getTransaction(transactionId) {
-        this.logger.debug('getTransaction triggered.');
-        return new Promise((resolve, reject) => {
-            this.blockDao
-                .getByTransactionId(transactionId)
-                .then((doc) => {
-                if (!doc) {
-                    return reject(new Error('No result found.'));
-                }
-                const transaction = lodash_1.find(doc.payload.tx, (t) => t.txid === transactionId);
-                return resolve(transaction);
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getTransaction triggered.');
+            const doc = yield this.blockDao.getByTransactionId(transactionId);
+            if (!doc) {
+                throw new Error('No result found.');
+            }
+            const transaction = lodash_1.find(doc.payload.tx, (t) => t.txid === transactionId);
+            return transaction;
         });
     }
     setBlock(height, block, options = {}) {
-        this.logger.debug('setBlock triggered.');
-        const data = {
-            height,
-            source: options.source,
-            userAgent: options.userAgent,
-            createdBy: this.options.userAgent,
-            payload: block,
-        };
-        return new Promise((resolve, reject) => {
-            this.blockDao
-                .save(data)
-                .then(() => resolve())
-                .catch((err) => {
-                this.logger.warn('blockDao.save() execution failed.');
-                return reject(err);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('setBlock triggered.');
+            const data = {
+                height,
+                source: options.source,
+                userAgent: options.userAgent,
+                createdBy: this.options.userAgent,
+                payload: block,
+            };
+            yield this.blockDao.save(data);
         });
     }
     pruneBlock(height, redundancySize) {
-        this.logger.debug('pruneBlock triggered. height: ', height, 'redundancySize:', redundancySize);
-        return new Promise((resolve, reject) => {
-            this.blockDao
-                .listByHeight(height)
-                .then((docs) => {
-                this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length);
-                if (docs.length > redundancySize) {
-                    const takeCount = docs.length - redundancySize;
-                    const toPrune = lodash_1.takeRight(docs, takeCount);
-                    toPrune.forEach((doc) => {
-                        this.logger.debug('Removing document id:', doc._id);
-                        this.blockDao
-                            .removeById(doc._id)
-                            .then(() => {
-                            this.logger.debug('blockModel.remove() execution succeed.');
-                        })
-                            .catch((err) => {
-                            this.logger.debug('blockModel.remove() execution failed. error:', err.message);
-                        });
-                    });
-                }
-                resolve();
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('pruneBlock triggered. height: ', height, 'redundancySize:', redundancySize);
+            const docs = yield this.blockDao.listByHeight(height);
+            this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length);
+            if (docs.length > redundancySize) {
+                const takeCount = docs.length - redundancySize;
+                const toPrune = lodash_1.takeRight(docs, takeCount);
+                toPrune.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
+                    this.logger.debug('Removing document id:', doc._id);
+                    try {
+                        yield this.blockDao.removeById(doc._id);
+                        this.logger.debug('blockModel.remove() execution succeed.');
+                    }
+                    catch (err) {
+                        this.logger.debug('blockModel.remove() execution failed. error:', err.message);
+                    }
+                }));
+            }
         });
     }
     analyzeBlocks(startHeight, endHeight) {
-        this.logger.debug('analyzeBlockHeight triggered.');
-        return this.blockDao.analyze(startHeight, endHeight);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('analyzeBlockHeight triggered.');
+            return yield this.blockDao.analyze(startHeight, endHeight);
+        });
     }
     getBlockMetaCount() {
-        this.logger.debug('getBlockMetaCount triggered.');
-        return this.blockMetaDao.count();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockMetaCount triggered.');
+            return yield this.blockMetaDao.count();
+        });
     }
     getHighestBlockMetaHeight() {
-        this.logger.debug('getHighestBlockMetaHeight triggered.');
-        return this.blockMetaDao.getHighestHeight();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getHighestBlockMetaHeight triggered.');
+            return yield this.blockMetaDao.getHighestHeight();
+        });
     }
     setBlockMeta(blockMeta) {
-        this.logger.debug('setBlockMeta triggered.');
-        const data = Object.assign({ createdBy: this.options.userAgent }, blockMeta);
-        return this.blockMetaDao.save(data);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('setBlockMeta triggered.');
+            const data = Object.assign({ createdBy: this.options.userAgent }, blockMeta);
+            return yield this.blockMetaDao.save(data);
+        });
     }
     analyzeBlockMetas(startHeight, endHeight) {
-        this.logger.debug('analyzeBlockMetas triggered.');
-        return this.blockMetaDao.analyze(startHeight, endHeight);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('analyzeBlockMetas triggered.');
+            return yield this.blockMetaDao.analyze(startHeight, endHeight);
+        });
     }
     removeBlockMetaByHeight(height) {
-        this.logger.debug('removeBlockMetaByHeight triggered. height: ', height);
-        return this.blockMetaDao.removeByHeight(height);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('removeBlockMetaByHeight triggered. height: ', height);
+            return yield this.blockMetaDao.removeByHeight(height);
+        });
     }
     disconnect() {
-        this.logger.debug('disconnect triggered.');
-        return mongoose.disconnect();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('disconnect triggered.');
+            return yield mongoose.disconnect();
+        });
     }
     readyHandler(payload) {
         this.logger.debug('readyHandler triggered.');
@@ -200,35 +204,36 @@ class MongodbStorage extends events_1.EventEmitter {
         this.emit('ready');
     }
     reviewIndexes() {
-        this.logger.debug('Proceed to review indexes...');
-        this.emit('reviewIndexes:init');
-        return new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => this.reviewIndexForBlockHeight())
-                .then(() => this.reviewIndexForTransactionId())
-                .then(() => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('Proceed to review indexes...');
+            this.emit('reviewIndexes:init');
+            try {
+                yield this.reviewIndexForBlockHeight();
+                yield this.reviewIndexForTransactionId();
                 this.logger.debug('Review indexes succeed.');
                 this.emit('reviewIndexes:complete', { isSuccess: true });
-                return resolve();
-            })
-                .catch((err) => {
+            }
+            catch (err) {
                 this.logger.debug('reviewIndexes failed. Message:', err.message);
                 this.emit('reviewIndexes:complete', { isSuccess: false });
-                return resolve();
-            });
+            }
         });
     }
     reviewIndexForBlockHeight() {
-        this.logger.debug('reviewIndexForBlockHeight triggered.');
-        const key = 'height_1_createdAt_-1';
-        const keyObj = { height: 1, createdAt: -1 };
-        return this.blockDao.reviewIndex(key, keyObj);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewIndexForBlockHeight triggered.');
+            const key = 'height_1_createdAt_-1';
+            const keyObj = { height: 1, createdAt: -1 };
+            return yield this.blockDao.reviewIndex(key, keyObj);
+        });
     }
     reviewIndexForTransactionId() {
-        this.logger.debug('reviewIndexForTransactionId triggered.');
-        const key = 'payload.tx.txid_1';
-        const keyObj = { 'payload.tx.txid': 1 };
-        return this.blockDao.reviewIndex(key, keyObj);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewIndexForTransactionId triggered.');
+            const key = 'payload.tx.txid_1';
+            const keyObj = { 'payload.tx.txid': 1 };
+            return yield this.blockDao.reviewIndex(key, keyObj);
+        });
     }
 }
 exports.MongodbStorage = MongodbStorage;

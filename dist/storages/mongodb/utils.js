@@ -1,49 +1,35 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 class MongodbUtils {
     static reviewIndex(model, key, keyObj) {
-        return new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => MongodbUtils.hasIndex(model, key))
-                .then((hasRequiredIndex) => {
-                if (hasRequiredIndex) {
-                    throw new Error('SKIP_INDEX');
-                }
-                return Promise.resolve();
-            })
-                .then(() => MongodbUtils.createIndex(model, keyObj))
-                .then(() => {
-                return resolve();
-            })
-                .catch((err) => {
-                if (err.message === 'SKIP_INDEX') {
-                    return resolve();
-                }
-                else {
-                    return reject(err);
-                }
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            const hasRequiredIndex = yield MongodbUtils.hasIndex(model, key);
+            if (hasRequiredIndex) {
+                return;
+            }
+            yield MongodbUtils.createIndex(model, keyObj);
         });
     }
     static hasIndex(model, key) {
-        return new Promise((resolve, reject) => {
-            model.collection
-                .getIndexes()
-                .then((res) => {
-                const keys = Object.keys(res);
-                const result = lodash_1.includes(keys, key);
-                return resolve(result);
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            const indexes = yield model.collection.getIndexes();
+            const keys = Object.keys(indexes);
+            const canFindIndex = lodash_1.includes(keys, key);
+            return canFindIndex;
         });
     }
     static createIndex(model, keyObj) {
-        return new Promise((resolve, reject) => {
-            model.collection
-                .createIndex(keyObj)
-                .then((res) => resolve())
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            yield model.collection.createIndex(keyObj);
         });
     }
 }

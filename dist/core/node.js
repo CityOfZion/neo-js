@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -35,23 +43,31 @@ class Node extends events_1.EventEmitter {
         this.logger.debug('constructor completes.');
     }
     getBlock(height, isVerbose = true) {
-        this.logger.debug('getBlock triggered.');
-        neo_validator_1.NeoValidator.validateHeight(height);
-        const verboseKey = isVerbose ? 1 : 0;
-        return this.query(constants_1.default.rpc.getblock, [height, verboseKey]);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlock triggered.');
+            neo_validator_1.NeoValidator.validateHeight(height);
+            const verboseKey = isVerbose ? 1 : 0;
+            return yield this.query(constants_1.default.rpc.getblock, [height, verboseKey]);
+        });
     }
     getBlockCount() {
-        this.logger.debug('getBlockCount triggered.');
-        return this.query(constants_1.default.rpc.getblockcount);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockCount triggered.');
+            return yield this.query(constants_1.default.rpc.getblockcount);
+        });
     }
     getVersion() {
-        this.logger.debug('getVersion triggered.');
-        return this.query(constants_1.default.rpc.getversion);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getVersion triggered.');
+            return yield this.query(constants_1.default.rpc.getversion);
+        });
     }
     getTransaction(transactionId, isVerbose = true) {
-        this.logger.debug('transactionId triggered.');
-        const verboseKey = isVerbose ? 1 : 0;
-        return this.query(constants_1.default.rpc.getrawtransaction, [transactionId, verboseKey]);
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('transactionId triggered.');
+            const verboseKey = isVerbose ? 1 : 0;
+            return yield this.query(constants_1.default.rpc.getrawtransaction, [transactionId, verboseKey]);
+        });
     }
     getNodeMeta() {
         return {
@@ -162,24 +178,24 @@ class Node extends events_1.EventEmitter {
         this.requestLogs = lodash_1.remove(this.requestLogs, (logObj) => logObj.timestamp > cutOffTimestamp);
     }
     query(method, params = [], id = DEFAULT_ID) {
-        this.logger.debug('query triggered. method:', method);
-        this.emit('query:init', { method, params, id });
-        const requestConfig = this.getRequestConfig();
-        const t0 = Date.now();
-        return new Promise((resolve, reject) => {
-            rpc_delegate_1.RpcDelegate.query(this.endpoint, method, params, id, requestConfig)
-                .then((res) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('query triggered. method:', method);
+            this.emit('query:init', { method, params, id });
+            const requestConfig = this.getRequestConfig();
+            const t0 = Date.now();
+            try {
+                const res = yield rpc_delegate_1.RpcDelegate.query(this.endpoint, method, params, id, requestConfig);
                 const latency = Date.now() - t0;
                 const result = res.result;
                 const blockHeight = method === constants_1.default.rpc.getblockcount ? result : undefined;
                 const userAgent = method === constants_1.default.rpc.getversion ? result.useragent : undefined;
                 this.emit('query:complete', { isSuccess: true, method, latency, blockHeight, userAgent });
-                return resolve(result);
-            })
-                .catch((err) => {
+                return result;
+            }
+            catch (err) {
                 this.emit('query:complete', { isSuccess: false, method, error: err });
-                return reject(err);
-            });
+                throw err;
+            }
         });
     }
     increasePendingRequest() {
