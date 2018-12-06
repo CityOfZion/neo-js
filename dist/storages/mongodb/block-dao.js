@@ -15,63 +15,41 @@ class BlockDao {
         this.model = this.getModel(mongoose, collectionName);
     }
     countByHeight(height) {
-        return new Promise((resolve, reject) => {
-            this.model.count({ height }).exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(res);
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model.countDocuments({ height }).exec();
         });
     }
     getHighestHeight() {
-        return new Promise((resolve, reject) => {
-            this.model
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model
                 .findOne({}, 'height')
                 .sort({ height: -1 })
-                .exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                if (!res) {
-                    return resolve(0);
-                }
-                return resolve(res.height);
-            });
+                .exec();
         });
     }
     getByHeight(height) {
-        return new Promise((resolve, reject) => {
-            this.model
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model
                 .findOne({ height })
                 .sort({ createdAt: -1 })
-                .exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(res);
-            });
+                .exec();
         });
     }
     listByHeight(height) {
-        return new Promise((resolve, reject) => {
-            this.model
+        return __awaiter(this, void 0, void 0, function* () {
+            const result = yield this.model
                 .find({ height })
                 .sort({ createdAt: -1 })
-                .exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                if (!res) {
-                    return resolve([]);
-                }
-                return resolve(res);
-            });
+                .exec();
+            if (!result) {
+                return [];
+            }
+            return result;
         });
     }
     getByTransactionId(transactionId) {
-        return new Promise((resolve, reject) => {
-            this.model
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model
                 .findOne({
                 'payload.tx': {
                     $elemMatch: {
@@ -79,36 +57,21 @@ class BlockDao {
                     },
                 },
             })
-                .exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(res);
-            });
+                .exec();
         });
     }
     save(data) {
-        return new Promise((resolve, reject) => {
-            this.model(data).save((err) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve();
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.model(data).save();
         });
     }
     removeById(id) {
-        return new Promise((resolve, reject) => {
-            this.model.remove({ _id: id }).exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve();
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            yield this.model.remove({ _id: id }).exec();
         });
     }
     analyze(startHeight, endHeight) {
-        return new Promise((resolve, reject) => {
+        return __awaiter(this, void 0, void 0, function* () {
             const aggregatorOptions = [
                 {
                     $group: {
@@ -125,15 +88,10 @@ class BlockDao {
                     },
                 },
             ];
-            this.model
+            return yield this.model
                 .aggregate(aggregatorOptions)
                 .allowDiskUse(true)
-                .exec((err, res) => {
-                if (err) {
-                    return reject(err);
-                }
-                return resolve(res);
-            });
+                .exec();
         });
     }
     reviewIndex(key, keyObj) {

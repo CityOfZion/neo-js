@@ -188,7 +188,7 @@ class MongodbStorage extends events_1.EventEmitter {
             this.logger.debug('initConnection triggered.');
             mongodb_validator_1.MongodbValidator.validateConnectionString(this.options.connectionString);
             mongoose
-                .connect(this.options.connectionString, { useMongoClient: true })
+                .connect(this.options.connectionString, { useCreateIndex: true, useNewUrlParser: true })
                 .then(() => {
                 this.logger.info('MongoDB connected.');
                 this.setReady();
