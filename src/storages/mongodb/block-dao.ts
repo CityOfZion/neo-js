@@ -9,112 +9,61 @@ export class BlockDao {
     this.model = this.getModel(mongoose, collectionName)
   }
 
-  countByHeight(height: number): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.model.countDocuments({ height }).exec((err: any, res: number) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve(res)
-      })
-    })
+  async countByHeight(height: number): Promise<number> {
+    return await this.model.countDocuments({ height }).exec()
   }
 
-  getHighestHeight(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.model
-        .findOne({}, 'height')
-        .sort({ height: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          if (!res) {
-            return resolve(0)
-          }
-          return resolve(res.height)
-        })
-    })
+  async getHighestHeight(): Promise<number> {
+    return await this.model
+      .findOne({}, 'height')
+      .sort({ height: -1 })
+      .exec()
   }
 
-  getByHeight(height: number): Promise<any> {
+  async getByHeight(height: number): Promise<any> {
     /**
      * NOTE:
      * It is assumed that there may be multiple matches and will pick 'latest created' one as truth.
      */
-    return new Promise((resolve, reject) => {
-      this.model
-        .findOne({ height })
-        .sort({ createdAt: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
+    return await this.model
+      .findOne({ height })
+      .sort({ createdAt: -1 })
+      .exec()
   }
 
-  listByHeight(height: number): Promise<object[]> {
-    return new Promise((resolve, reject) => {
-      this.model
-        .find({ height })
-        .sort({ createdAt: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          if (!res) {
-            return resolve([])
-          }
-          // TODO: Verify if res is array
-          return resolve(res)
-        })
-    })
+  async listByHeight(height: number): Promise<object[]> {
+    const result = await this.model
+      .find({ height })
+      .sort({ createdAt: -1 })
+      .exec()
+    if (!result) {
+      return []
+    }
+    // TODO: Verify if res is array
+    return result
   }
 
-  getByTransactionId(transactionId: string): Promise<object | undefined> {
-    return new Promise((resolve, reject) => {
-      this.model
-        .findOne({
-          'payload.tx': {
-            $elemMatch: {
-              txid: transactionId,
-            },
+  async getByTransactionId(transactionId: string): Promise<object | undefined> {
+    return await this.model
+      .findOne({
+        'payload.tx': {
+          $elemMatch: {
+            txid: transactionId,
           },
-        })
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
-  }
-
-  save(data: object): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.model(data).save((err: any) => {
-        if (err) {
-          reject(err)
-        }
-        resolve()
+        },
       })
-    })
+      .exec()
   }
 
-  removeById(id: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.model.remove({ _id: id }).exec((err: any, res: any) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
-    })
+  async save(data: object): Promise<void> {
+    await this.model(data).save()
   }
 
-  analyze(startHeight: number, endHeight: number): Promise<object[]> {
+  async removeById(id: string): Promise<void> {
+    await this.model.remove({ _id: id }).exec()
+  }
+
+  async analyze(startHeight: number, endHeight: number): Promise<object[]> {
     /**
      * Example result:
      * [
@@ -123,35 +72,27 @@ export class BlockDao {
      *   ...
      * ]
      */
-    return new Promise((resolve, reject) => {
-      const aggregatorOptions = [
-        {
-          $group: {
-            _id: '$height',
-            count: { $sum: 1 },
+    const aggregatorOptions = [
+      {
+        $group: {
+          _id: '$height',
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $match: {
+          _id: {
+            // This '_id' is now referring to $height as designated in $group
+            $gte: startHeight,
+            $lte: endHeight,
           },
         },
-        {
-          $match: {
-            _id: {
-              // This '_id' is now referring to $height as designated in $group
-              $gte: startHeight,
-              $lte: endHeight,
-            },
-          },
-        },
-      ]
-
-      this.model
-        .aggregate(aggregatorOptions)
-        .allowDiskUse(true)
-        .exec((err: Error, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
+      },
+    ]
+    return await this.model
+      .aggregate(aggregatorOptions)
+      .allowDiskUse(true)
+      .exec()
   }
 
   async reviewIndex(key: string, keyObj: object): Promise<void> {

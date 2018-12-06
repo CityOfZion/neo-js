@@ -8,69 +8,36 @@ export class BlockMetaDao {
     this.model = this.getModel(mongoose, collectionName)
   }
 
-  count(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.model.countDocuments({}).exec((err: any, res: any) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve(res)
-      })
-    })
+  async count(): Promise<number> {
+    return await this.model.countDocuments({}).exec()
   }
 
-  getHighest(): Promise<object | undefined> {
-    return new Promise((resolve, reject) => {
-      this.model
-        .findOne()
-        .sort({ height: -1 })
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
+  async getHighest(): Promise<object | undefined> {
+    return await this.model
+      .findOne()
+      .sort({ height: -1 })
+      .exec()
   }
 
-  getHighestHeight(): Promise<number> {
-    return new Promise((resolve, reject) => {
-      this.getHighest()
-        .then((res: any) => {
-          if (res) {
-            return resolve(res.height)
-          }
-          return resolve(0)
-        })
-        .catch((err) => {
-          return resolve(0)
-        })
-    })
+  async getHighestHeight(): Promise<number> {
+    // TODO: evaluate placement of business logic in DAO
+    try {
+      const doc: any = await this.getHighest()
+      return doc.height
+    } catch (err) {
+      return 0
+    }
   }
 
-  save(data: object): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.model(data).save((err: any) => {
-        if (err) {
-          reject(err)
-        }
-        resolve()
-      })
-    })
+  async save(data: object): Promise<void> {
+    return await this.model(data).save()
   }
 
-  removeByHeight(height: number): Promise<void> {
-    return new Promise((resolve, reject) => {
-      this.model.remove({ height }).exec((err: any, res: any) => {
-        if (err) {
-          return reject(err)
-        }
-        return resolve()
-      })
-    })
+  async removeByHeight(height: number): Promise<void> {
+    return await this.model.remove({ height }).exec()
   }
 
-  analyze(startHeight: number, endHeight: number): Promise<object[]> {
+  async analyze(startHeight: number, endHeight: number): Promise<object[]> {
     /**
      * Example Result:
      * [
@@ -79,24 +46,17 @@ export class BlockMetaDao {
      *  ...
      * ]
      */
-    return new Promise((resolve, reject) => {
-      this.model
-        .find(
-          {
-            height: {
-              $gte: startHeight,
-              $lte: endHeight,
-            },
+    return await this.model
+      .find(
+        {
+          height: {
+            $gte: startHeight,
+            $lte: endHeight,
           },
-          'height apiLevel'
-        )
-        .exec((err: any, res: any) => {
-          if (err) {
-            return reject(err)
-          }
-          return resolve(res)
-        })
-    })
+        },
+        'height apiLevel'
+      )
+      .exec()
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {
