@@ -41,76 +41,73 @@ export class MemoryStorage extends EventEmitter {
     return this._isReady
   }
 
-  getBlockCount(): Promise<number> {
+  async getBlockCount(): Promise<number> {
     if (this._blockHeight) {
-      return Promise.resolve(this._blockHeight)
+      return this._blockHeight
     } else {
-      return Promise.reject(new Error('blockHeight unavailable'))
+      throw new Error('blockHeight unavailable')
     }
   }
 
-  setBlockCount(height: number): Promise<void> {
+  async setBlockCount(height: number): Promise<void> {
     this._blockHeight = height
-    return Promise.resolve()
   }
 
-  countBlockRedundancy(height: number): Promise<number> {
+  async countBlockRedundancy(height: number): Promise<number> {
     throw new Error('Not implemented.')
   }
 
-  getBlock(height: number): Promise<object> {
+  async getBlock(height: number): Promise<object> {
     const blockItem = find(this.blockCollection, { height })
     if (blockItem) {
-      return Promise.resolve(blockItem.block)
+      return blockItem.block
     } else {
-      return Promise.reject(new Error('Block not found.'))
+      throw new Error('Block not found.')
     }
   }
 
-  getTransaction(transactionId: string): Promise<object> {
+  async getTransaction(transactionId: string): Promise<object> {
     throw new Error('Not implemented.')
   }
 
-  setBlock(height: number, block: object, options: object = {}): Promise<void> {
+  async setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.blockCollection.push({ height, block })
-    return Promise.resolve()
   }
 
-  pruneBlock(height: number, redundancySize: number): Promise<void> {
+  async pruneBlock(height: number, redundancySize: number): Promise<void> {
     throw new Error('Not implemented.')
   }
 
-  analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
+  async analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
     throw new Error('Not implemented.')
   }
 
-  getBlockMetaCount(): Promise<number> {
+  async getBlockMetaCount(): Promise<number> {
     throw new Error('Not implemented.')
   }
 
-  getHighestBlockMetaHeight(): Promise<number> {
+  async getHighestBlockMetaHeight(): Promise<number> {
     throw new Error('Not implemented.')
   }
 
-  getHighestBlockMeta(): Promise<object | undefined> {
+  async getHighestBlockMeta(): Promise<object | undefined> {
     throw new Error('Not implemented.')
   }
 
-  setBlockMeta(blockMeta: object): Promise<void> {
+  async setBlockMeta(blockMeta: object): Promise<void> {
     throw new Error('Not implemented.')
   }
 
-  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+  async analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     throw new Error('Not implemented.')
   }
 
-  removeBlockMetaByHeight(height: number): Promise<void> {
+  async removeBlockMetaByHeight(height: number): Promise<void> {
     throw new Error('Not implemented.')
   }
 
-  disconnect(): Promise<void> {
+  async disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
-    return Promise.resolve()
   }
 
   private setReady() {

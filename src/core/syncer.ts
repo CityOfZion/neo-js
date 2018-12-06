@@ -219,27 +219,23 @@ export class Syncer extends EventEmitter {
     return this.storeQueue.length() >= this.options.maxStoreQueueLength!
   }
 
-  private setBlockWritePointer(): Promise<void> {
+  private async setBlockWritePointer(): Promise<void> {
     this.logger.debug('setBlockWritePointer triggered.')
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlockCount()
-        .then((height: number) => {
-          this.logger.debug('getBlockCount success. height:', height)
-          if (this.options.minHeight && height < this.options.minHeight) {
-            this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
-            this.blockWritePointer = this.options.minHeight
-          } else {
-            this.blockWritePointer = height
-          }
-          resolve()
-        })
-        .catch((err: any) => {
-          this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
-          this.logger.info('Assumed that there are no blocks.')
-          this.blockWritePointer = this.options.minHeight!
-          resolve()
-        })
-    })
+
+    try {
+      const height = await this.storage!.getBlockCount()
+      this.logger.debug('getBlockCount success. height:', height)
+      if (this.options.minHeight && height < this.options.minHeight) {
+        this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
+        this.blockWritePointer = this.options.minHeight
+      } else {
+        this.blockWritePointer = height
+      }
+    } catch (err) {
+      this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+      this.logger.info('Assumed that there are no blocks.')
+      this.blockWritePointer = this.options.minHeight!
+    }
   }
 
   private initBlockVerification() {
@@ -385,71 +381,50 @@ export class Syncer extends EventEmitter {
     )
   }
 
-  private storeBlock(attrs: object): Promise<any> {
+  private async storeBlock(attrs: object): Promise<any> {
     this.logger.debug('storeBlock triggered. attrs:', attrs)
+
     const height: number = (attrs as any).height
     const node = this.mesh.getOptimalNode(height)
+    this.emit('storeBlock:init', { height })
 
-    return new Promise((resolve, reject) => {
-      this.emit('storeBlock:init', { height })
-      Promise.resolve()
-        .then(() => {
-          if (this.options.checkRedundancyBeforeStoreBlock) {
-            return this.storage!.countBlockRedundancy(height)
-          }
-          return Promise.resolve(undefined)
-        })
-        .then((redundantCount: number | undefined) => {
-          if (!redundantCount) {
-            return Promise.resolve()
-          } else if (redundantCount < this.options.blockRedundancy!) {
-            return Promise.resolve()
-          } else {
-            // Determined that there's no need to fetch and store this block height
-            throw new Error('SKIP_STORE_BLOCK')
-          }
-        })
-        .then(() => {
-          if (!node) {
-            throw new Error('No valid node found.')
-          }
-          return Promise.resolve()
-        })
-        .then(() => {
-          return node!.getBlock(height)
-        })
-        .then((block: any) => {
-          const source = node!.endpoint
-          const userAgent = node!.userAgent
-          return this.storage!.setBlock(height, block, { source, userAgent })
-        })
-        .then(() => {
-          this.logger.debug('setBlock succeeded. height:', height)
-          this.emit('storeBlock:complete', { isSuccess: true, height })
-          return resolve()
-        })
-        .catch((err: any) => {
-          if (err.Message === 'SKIP_STORE_BLOCK') {
-            this.logger.debug('setBlock skipped. height:', height)
-            this.emit('storeBlock:complete', { isSkipped: true, height })
-          } else {
-            this.logger.debug('setBlock failed. height:', height, 'Message:', err.message)
-            this.emit('storeBlock:complete', { isSuccess: false, height })
-            return reject(err)
-          }
-        })
-    })
+    try {
+      // Validate redundancy level
+      if (this.options.checkRedundancyBeforeStoreBlock) {
+        const redundantCount = await this.storage!.countBlockRedundancy(height)
+        if (redundantCount >= this.options.blockRedundancy!) {
+          this.logger.debug('setBlock skipped. height:', height)
+          this.emit('storeBlock:complete', { isSkipped: true, height })
+          return
+        }
+      }
+
+      // Validate dependencies
+      if (!node) {
+        this.emit('storeBlock:complete', { isSuccess: false, height })
+        throw new Error('No valid node found.')
+      }
+
+      // Fetch and store block
+      const block = await node!.getBlock(height)
+      const source = node!.endpoint
+      const userAgent = node!.userAgent
+      await this.storage!.setBlock(height, block, { source, userAgent })
+      this.logger.debug('storeBlock succeeded. height:', height)
+      this.emit('storeBlock:complete', { isSuccess: true, height })
+
+    } catch (err) {
+      this.logger.debug('storeBlock failed. height:', height, 'Message:', err.message)
+      this.emit('storeBlock:complete', { isSuccess: false, height })
+      throw err
+    }
   }
 
-  private pruneBlock(attrs: object): Promise<any> {
+  private async pruneBlock(attrs: object): Promise<void> {
     this.logger.debug('pruneBlock triggered. attrs:', attrs)
+
     const height: number = (attrs as any).height
     const redundancySize: number = (attrs as any).redundancySize
-
-    return new Promise((resolve, reject) => {
-      this.storage!.pruneBlock(height, redundancySize)
-        .then(() => resolve())
-        .catch((err: any) => reject(err))
-    })
+    await this.storage!.pruneBlock(height, redundancySize)
   }
 }

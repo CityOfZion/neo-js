@@ -67,75 +67,58 @@ export class MongodbStorage extends EventEmitter {
     return this._isReady
   }
 
-  getBlockCount(): Promise<number> {
+  async getBlockCount(): Promise<number> {
     // TODO: Propose more accurate renaming
     this.logger.debug('getBlockCount triggered.')
-    return this.blockDao.getHighestHeight()
+    return await this.blockDao.getHighestHeight()
   }
 
-  setBlockCount(height: number): Promise<void> {
+  async setBlockCount(height: number): Promise<void> {
     throw new Error('Not implemented.')
   }
 
-  countBlockRedundancy(height: number): Promise<number> {
+  async countBlockRedundancy(height: number): Promise<number> {
     this.logger.debug('countBlockRedundancy triggered. height:', height)
-    return this.blockDao.countByHeight(height)
+    return await this.blockDao.countByHeight(height)
   }
 
-  getBlock(height: number): Promise<object> {
+  async getBlock(height: number): Promise<object> {
     this.logger.debug('getBlock triggered. height:', height)
 
-    return new Promise((resolve, reject) => {
-      this.blockDao
-        .getByHeight(height)
-        .then((doc: any) => {
-          if (!doc) {
-            return reject(new Error('No document found.'))
-          }
-          if (!doc.payload) {
-            return reject(new Error('Invalid document result.'))
-          }
-          return resolve(doc.payload)
-        })
-        .catch((err: any) => reject(err))
-    })
+    const doc: any = this.blockDao.getByHeight(height)
+    if (!doc) {
+      throw new Error('No document found.')
+    }
+    if (!doc.payload) {
+      throw new Error('Invalid document result.')
+    }
+    return doc.payload
   }
 
-  getBlocks(height: number): Promise<object[]> {
+  async getBlocks(height: number): Promise<object[]> {
     this.logger.debug('getBlocks triggered. height:', height)
 
-    return new Promise((resolve, reject) => {
-      this.blockDao
-        .listByHeight(height)
-        .then((docs: object[]) => {
-          if (docs.length === 0) {
-            return resolve([])
-          }
-          const result = map(docs, (item: any) => item.payload)
-          return resolve(result)
-        })
-        .catch((err: any) => reject(err))
-    })
+    const docs = await this.blockDao.listByHeight(height)
+    if (docs.length === 0) {
+      return []
+    }
+    const blocks = map(docs, (doc: any) => doc.payload)
+    return blocks
   }
 
-  getTransaction(transactionId: string): Promise<object> {
+  async getTransaction(transactionId: string): Promise<object> {
     this.logger.debug('getTransaction triggered.')
 
-    return new Promise((resolve, reject) => {
-      this.blockDao
-        .getByTransactionId(transactionId)
-        .then((doc: any) => {
-          if (!doc) {
-            return reject(new Error('No result found.'))
-          }
-          const transaction = find(doc.payload.tx, (t: any) => t.txid === transactionId)
-          return resolve(transaction)
-        })
-        .catch((err: any) => reject(err))
-    })
+    const doc: any = await this.blockDao.getByTransactionId(transactionId)
+    if (!doc) {
+      // TODO: undesirable business logic, should return undefined instead.
+      throw new Error('No result found.')
+    }
+    const transaction = find(doc.payload.tx, (t: any) => t.txid === transactionId)
+    return transaction
   }
 
-  setBlock(height: number, block: object, options: object = {}): Promise<void> {
+  async setBlock(height: number, block: object, options: object = {}): Promise<void> {
     this.logger.debug('setBlock triggered.')
 
     const data = {
@@ -145,84 +128,70 @@ export class MongodbStorage extends EventEmitter {
       createdBy: this.options.userAgent, // neo-js's user agent
       payload: block,
     }
-    return new Promise((resolve, reject) => {
-      this.blockDao
-        .save(data)
-        .then(() => resolve())
-        .catch((err: any) => {
-          this.logger.warn('blockDao.save() execution failed.')
-          return reject(err)
-        })
-    })
+    await this.blockDao.save(data)
   }
 
-  pruneBlock(height: number, redundancySize: number): Promise<void> {
+  async pruneBlock(height: number, redundancySize: number): Promise<void> {
     this.logger.debug('pruneBlock triggered. height: ', height, 'redundancySize:', redundancySize)
 
-    return new Promise((resolve, reject) => {
-      this.blockDao
-        .listByHeight(height)
-        .then((docs: object[]) => {
-          this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length)
-          if (docs.length > redundancySize) {
-            const takeCount = docs.length - redundancySize
-            const toPrune = takeRight(docs, takeCount)
-            toPrune.forEach((doc: any) => {
-              this.logger.debug('Removing document id:', doc._id)
-              this.blockDao
-                .removeById(doc._id)
-                .then(() => {
-                  this.logger.debug('blockModel.remove() execution succeed.')
-                })
-                .catch((err: any) => {
-                  this.logger.debug('blockModel.remove() execution failed. error:', err.message)
-                })
-            })
-          }
-          resolve()
-        })
-        .catch((err: any) => reject(err))
-    })
+    const docs = await this.blockDao.listByHeight(height)
+    this.logger.debug('blockDao.listByHeight() succeed. docs.length:', docs.length)
+
+    if (docs.length > redundancySize) {
+      const takeCount = docs.length - redundancySize
+      const toPrune = takeRight(docs, takeCount)
+      // TODO: allow all removal tasks to run in parallel via Promise.all() 
+      toPrune.forEach(async (doc: any) => {
+        this.logger.debug('Removing document id:', doc._id)
+        try {
+          await this.blockDao.removeById(doc._id)
+          this.logger.debug('blockModel.remove() execution succeed.')
+        } catch (err) {
+          this.logger.debug('blockModel.remove() execution failed. error:', err.message)
+          // Suppress error and continue
+        }
+      })
+    }
   }
 
-  analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
+  async analyzeBlocks(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockHeight triggered.')
-    return this.blockDao.analyze(startHeight, endHeight)
+    return await this.blockDao.analyze(startHeight, endHeight)
   }
 
-  getBlockMetaCount(): Promise<number> {
+  async getBlockMetaCount(): Promise<number> {
     this.logger.debug('getBlockMetaCount triggered.')
-    return this.blockMetaDao.count()
+    return await this.blockMetaDao.count()
   }
 
-  getHighestBlockMetaHeight(): Promise<number> {
+  async getHighestBlockMetaHeight(): Promise<number> {
     this.logger.debug('getHighestBlockMetaHeight triggered.')
-    return this.blockMetaDao.getHighestHeight()
+    return await this.blockMetaDao.getHighestHeight()
   }
 
-  setBlockMeta(blockMeta: object): Promise<void> {
+  async setBlockMeta(blockMeta: object): Promise<void> {
     this.logger.debug('setBlockMeta triggered.')
 
     const data = {
       createdBy: this.options.userAgent, // neo-js's user agent
       ...blockMeta,
     }
-    return this.blockMetaDao.save(data)
+    return await this.blockMetaDao.save(data)
   }
 
-  analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
+  async analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockMetas triggered.')
-    return this.blockMetaDao.analyze(startHeight, endHeight)
+    return await this.blockMetaDao.analyze(startHeight, endHeight)
   }
 
-  removeBlockMetaByHeight(height: number): Promise<void> {
+  async removeBlockMetaByHeight(height: number): Promise<void> {
     this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
-    return this.blockMetaDao.removeByHeight(height)
+    return await this.blockMetaDao.removeByHeight(height)
   }
 
-  disconnect(): Promise<void> {
+  async disconnect(): Promise<void> {
     this.logger.debug('disconnect triggered.')
-    return mongoose.disconnect()
+    return await mongoose.disconnect()
   }
 
   private readyHandler(payload: any) {
@@ -262,40 +231,34 @@ export class MongodbStorage extends EventEmitter {
     this.emit('ready')
   }
 
-  private reviewIndexes(): Promise<void> {
+  private async reviewIndexes(): Promise<void> {
     this.logger.debug('Proceed to review indexes...')
     this.emit('reviewIndexes:init')
 
-    return new Promise((resolve, reject) => {
-      Promise.resolve()
-        .then(() => this.reviewIndexForBlockHeight())
-        .then(() => this.reviewIndexForTransactionId())
-        .then(() => {
-          this.logger.debug('Review indexes succeed.')
-          this.emit('reviewIndexes:complete', { isSuccess: true })
-          return resolve()
-        })
-        .catch((err: any) => {
-          this.logger.debug('reviewIndexes failed. Message:', err.message)
-          this.emit('reviewIndexes:complete', { isSuccess: false })
-          return resolve()
-        })
-    })
+    try {
+      await this.reviewIndexForBlockHeight()
+      await this.reviewIndexForTransactionId()
+      this.logger.debug('Review indexes succeed.')
+      this.emit('reviewIndexes:complete', { isSuccess: true })  
+    } catch (err) {
+      this.logger.debug('reviewIndexes failed. Message:', err.message)
+      this.emit('reviewIndexes:complete', { isSuccess: false })
+    }
   }
 
-  private reviewIndexForBlockHeight(): Promise<void> {
+  private async reviewIndexForBlockHeight(): Promise<void> {
     this.logger.debug('reviewIndexForBlockHeight triggered.')
 
     const key = 'height_1_createdAt_-1'
     const keyObj = { height: 1, createdAt: -1 }
-    return this.blockDao.reviewIndex(key, keyObj)
+    return await this.blockDao.reviewIndex(key, keyObj)
   }
 
-  private reviewIndexForTransactionId(): Promise<void> {
+  private async reviewIndexForTransactionId(): Promise<void> {
     this.logger.debug('reviewIndexForTransactionId triggered.')
 
     const key = 'payload.tx.txid_1'
     const keyObj = { 'payload.tx.txid': 1 }
-    return this.blockDao.reviewIndex(key, keyObj)
+    return await this.blockDao.reviewIndex(key, keyObj)
   }
 }

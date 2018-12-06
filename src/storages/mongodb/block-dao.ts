@@ -154,8 +154,8 @@ export class BlockDao {
     })
   }
 
-  reviewIndex(key: string, keyObj: object): Promise<void> {
-    return MongodbUtils.reviewIndex(this.model, key, keyObj)
+  async reviewIndex(key: string, keyObj: object): Promise<void> {
+    return await MongodbUtils.reviewIndex(this.model, key, keyObj)
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {

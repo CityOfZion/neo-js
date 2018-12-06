@@ -72,29 +72,29 @@ export class Node extends EventEmitter {
     this.logger.debug('constructor completes.')
   }
 
-  getBlock(height: number, isVerbose: boolean = true): Promise<object> {
+  async getBlock(height: number, isVerbose: boolean = true): Promise<object> {
     this.logger.debug('getBlock triggered.')
 
     NeoValidator.validateHeight(height)
 
     const verboseKey: number = isVerbose ? 1 : 0
-    return this.query(C.rpc.getblock, [height, verboseKey])
+    return await this.query(C.rpc.getblock, [height, verboseKey])
   }
 
-  getBlockCount(): Promise<object> {
+  async getBlockCount(): Promise<object> {
     this.logger.debug('getBlockCount triggered.')
-    return this.query(C.rpc.getblockcount)
+    return await this.query(C.rpc.getblockcount)
   }
 
-  getVersion(): Promise<object> {
+  async getVersion(): Promise<object> {
     this.logger.debug('getVersion triggered.')
-    return this.query(C.rpc.getversion)
+    return await this.query(C.rpc.getversion)
   }
 
-  getTransaction(transactionId: string, isVerbose: boolean = true): Promise<object> {
+  async getTransaction(transactionId: string, isVerbose: boolean = true): Promise<object> {
     this.logger.debug('transactionId triggered.')
     const verboseKey: number = isVerbose ? 1 : 0
-    return this.query(C.rpc.getrawtransaction, [transactionId, verboseKey])
+    return await this.query(C.rpc.getrawtransaction, [transactionId, verboseKey])
   }
 
   getNodeMeta(): NodeMeta {
@@ -232,26 +232,23 @@ export class Node extends EventEmitter {
     this.requestLogs = remove(this.requestLogs, (logObj: any) => logObj.timestamp > cutOffTimestamp)
   }
 
-  private query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
+  private async query(method: string, params: any[] = [], id: number = DEFAULT_ID): Promise<object> {
     this.logger.debug('query triggered. method:', method)
     this.emit('query:init', { method, params, id })
     const requestConfig = this.getRequestConfig()
     const t0 = Date.now()
-    return new Promise((resolve, reject) => {
-      RpcDelegate.query(this.endpoint, method, params, id, requestConfig)
-        .then((res: any) => {
-          const latency = Date.now() - t0
-          const result = res.result
-          const blockHeight = method === C.rpc.getblockcount ? result : undefined
-          const userAgent = method === C.rpc.getversion ? result.useragent : undefined
-          this.emit('query:complete', { isSuccess: true, method, latency, blockHeight, userAgent })
-          return resolve(result)
-        })
-        .catch((err: any) => {
-          this.emit('query:complete', { isSuccess: false, method, error: err })
-          return reject(err)
-        })
-    })
+    try {
+      const res: any = await RpcDelegate.query(this.endpoint, method, params, id, requestConfig)
+      const latency = Date.now() - t0
+      const result = res.result
+      const blockHeight = method === C.rpc.getblockcount ? result : undefined
+      const userAgent = method === C.rpc.getversion ? result.useragent : undefined
+      this.emit('query:complete', { isSuccess: true, method, latency, blockHeight, userAgent })
+      return result
+    } catch (err) {
+      this.emit('query:complete', { isSuccess: false, method, error: err })
+      throw err
+    }
   }
 
   private increasePendingRequest() {
