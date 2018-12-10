@@ -21,10 +21,11 @@ class BlockDao {
     }
     getHighestHeight() {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.model
+            const doc = yield this.model
                 .findOne({}, 'height')
                 .sort({ height: -1 })
                 .exec();
+            return doc.height;
         });
     }
     getByHeight(height) {
