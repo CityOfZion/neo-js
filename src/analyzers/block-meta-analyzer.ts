@@ -102,6 +102,10 @@ export class BlockMetaAnalyzer extends EventEmitter {
     clearInterval(this.blockMetaVerificationIntervalId!)
   }
 
+  close() {
+    this.stop()
+  }
+
   private validateOptionalParameters() {
     // TODO
   }

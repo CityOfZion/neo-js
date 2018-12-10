@@ -77,19 +77,19 @@ export class Neo extends EventEmitter {
   close() {
     this.logger.debug('close triggered.')
     if (this.syncer) {
-      this.syncer.stop()
+      this.syncer.close()
     }
     if (this.mesh) {
       this.mesh.close()
     }
     if (this.storage) {
-      this.storage.disconnect()
+      this.storage.close()
     }
     if (this.api) {
       this.api.close()
     }
     if (this.blockMetaAnalyzer) {
-      this.blockMetaAnalyzer.stop()
+      this.blockMetaAnalyzer.close()
     }
   }
 

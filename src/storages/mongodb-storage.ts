@@ -189,8 +189,8 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.removeByHeight(height)
   }
 
-  async disconnect(): Promise<void> {
-    this.logger.debug('disconnect triggered.')
+  async close(): Promise<void> {
+    this.logger.debug('close triggered.')
     return await mongoose.disconnect()
   }
 

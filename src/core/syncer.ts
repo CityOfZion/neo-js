@@ -131,6 +131,10 @@ export class Syncer extends EventEmitter {
     clearInterval(this.blockVerificationIntervalId!)
   }
 
+  close() {
+    this.stop()
+  }
+
   private storeBlockCompleteHandler(payload: any) {
     if (payload.isSuccess === false) {
       this.logger.debug('storeBlockCompleteHandler !isSuccess triggered.')

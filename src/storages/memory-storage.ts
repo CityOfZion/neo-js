@@ -106,8 +106,8 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
-  async disconnect(): Promise<void> {
-    this.logger.debug('disconnect triggered.')
+  async close(): Promise<void> {
+    this.logger.debug('close triggered.')
   }
 
   private setReady() {
