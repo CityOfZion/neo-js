@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>&quot;validators/rpc-validator&quot; | @cityofzion/neo-js</title>
+	<title>&quot;storages/mongodb/schemas&quot; | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,10 +56,10 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="_validators_rpc_validator_.html">&quot;validators/rpc-validator&quot;</a>
+					<a href="_storages_mongodb_schemas_.html">&quot;storages/mongodb/schemas&quot;</a>
 				</li>
 			</ul>
-			<h1>External module &quot;validators/rpc-validator&quot;</h1>
+			<h1>External module &quot;storages/mongodb/schemas&quot;</h1>
 		</div>
 	</div>
 </header>
@@ -71,12 +71,36 @@
 				<section class="tsd-panel tsd-index-panel">
 					<div class="tsd-index-content">
 						<section class="tsd-index-section ">
-							<h3>Classes</h3>
+							<h3>Variables</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_validators_rpc_validator_.rpcvalidator.html" class="tsd-kind-icon">Rpc<wbr>Validator</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_storages_mongodb_schemas_.html#blockmetaschema" class="tsd-kind-icon">block<wbr>Meta<wbr>Schema</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_storages_mongodb_schemas_.html#blockschema" class="tsd-kind-icon">block<wbr>Schema</a></li>
 							</ul>
 						</section>
 					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Variables</h2>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="blockmetaschema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> block<wbr>Meta<wbr>Schema</h3>
+					<div class="tsd-signature tsd-kind-icon">block<wbr>Meta<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> =&nbsp;new Schema({height: { type: &#x27;Number&#x27;, unique: true, required: true, dropDups: true },time: Number,size: Number,generationTime: Number,transactionCount: Number,createdBy: String,apiLevel: Number,},{ timestamps: true })</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/storages/mongodb/schemas.ts#L31">storages/mongodb/schemas.ts:31</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="blockschema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> block<wbr>Schema</h3>
+					<div class="tsd-signature tsd-kind-icon">block<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> =&nbsp;new Schema({height: Number,createdBy: String,source: String,userAgent: String,payload: {hash: String,size: Number,version: Number,previousblockhash: String,merkleroot: String,time: Number,index: { type: &#x27;Number&#x27;, required: true },nonce: String,nextconsensus: String,script: {invocation: String,verification: String,},tx: [],confirmations: Number,nextblockhash: String,},},{ timestamps: true })</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/storages/mongodb/schemas.ts#L3">storages/mongodb/schemas.ts:3</a></li>
+						</ul>
+					</aside>
 				</section>
 			</section>
 		</div>
@@ -128,7 +152,7 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_storages_mongodb_block_meta_dao_.html">"storages/mongodb/block-<wbr>meta-<wbr>dao"</a>
 					</li>
-					<li class=" tsd-kind-external-module">
+					<li class="current tsd-kind-external-module">
 						<a href="_storages_mongodb_schemas_.html">"storages/mongodb/schemas"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -143,15 +167,18 @@
 					<li class=" tsd-kind-external-module">
 						<a href="_validators_neo_validator_.html">"validators/neo-<wbr>validator"</a>
 					</li>
-					<li class="current tsd-kind-external-module">
+					<li class=" tsd-kind-external-module">
 						<a href="_validators_rpc_validator_.html">"validators/rpc-<wbr>validator"</a>
 					</li>
 				</ul>
 			</nav>
 			<nav class="tsd-navigation secondary menu-sticky">
 				<ul class="before-current">
-					<li class=" tsd-kind-class tsd-parent-kind-external-module">
-						<a href="../classes/_validators_rpc_validator_.rpcvalidator.html" class="tsd-kind-icon">Rpc<wbr>Validator</a>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_storages_mongodb_schemas_.html#blockmetaschema" class="tsd-kind-icon">block<wbr>Meta<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_storages_mongodb_schemas_.html#blockschema" class="tsd-kind-icon">block<wbr>Schema</a>
 					</li>
 				</ul>
 			</nav>
