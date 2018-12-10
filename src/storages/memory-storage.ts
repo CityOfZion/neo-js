@@ -41,7 +41,14 @@ export class MemoryStorage extends EventEmitter {
     return this._isReady
   }
 
+  /**
+   * @deprecated
+   */
   async getBlockCount(): Promise<number> {
+    throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.')
+  }
+
+  async getHighestBlockHeight(): Promise<number> {
     if (this._blockHeight) {
       return this._blockHeight
     } else {

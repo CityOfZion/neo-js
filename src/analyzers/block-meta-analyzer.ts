@@ -141,7 +141,7 @@ export class BlockMetaAnalyzer extends EventEmitter {
         }, this.options.enqueueBlockIntervalMs!)
       })
       .catch((err: any) => {
-        this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+        this.logger.warn('setBlockWritePointer() failed. Error:', err.message)
       })
   }
 

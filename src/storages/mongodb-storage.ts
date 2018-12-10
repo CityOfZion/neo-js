@@ -67,8 +67,14 @@ export class MongodbStorage extends EventEmitter {
     return this._isReady
   }
 
+  /**
+   * @deprecated
+   */
   async getBlockCount(): Promise<number> {
-    // TODO: Propose more accurate renaming
+    throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.')
+  }
+
+  async getHighestBlockHeight(): Promise<number> {
     this.logger.debug('getBlockCount triggered.')
     return await this.blockDao.getHighestHeight()
   }

@@ -186,7 +186,7 @@ export class Syncer extends EventEmitter {
         }
       })
       .catch((err: any) => {
-        this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+        this.logger.warn('setBlockWritePointer() failed. Error:', err.message)
       })
   }
 
@@ -227,8 +227,8 @@ export class Syncer extends EventEmitter {
     this.logger.debug('setBlockWritePointer triggered.')
 
     try {
-      const height = await this.storage!.getBlockCount()
-      this.logger.debug('getBlockCount success. height:', height)
+      const height = await this.storage!.getHighestBlockHeight()
+      this.logger.debug('getHighestBlockHeight() success. height:', height)
       if (this.options.minHeight && height < this.options.minHeight) {
         this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
         this.blockWritePointer = this.options.minHeight
@@ -236,7 +236,7 @@ export class Syncer extends EventEmitter {
         this.blockWritePointer = height
       }
     } catch (err) {
-      this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+      this.logger.warn('storage.getHighestBlockHeight() failed. Error:', err.message)
       this.logger.info('Assumed that there are no blocks.')
       this.blockWritePointer = this.options.minHeight!
     }

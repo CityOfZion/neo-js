@@ -98,11 +98,11 @@ const options = {
 // Create a neo instance
 const neo = new Neo(options)
 
-// Get block count
+// Get block height
 neo.storage.on('ready', () => {
-  neo.storage.getBlockCount()
+  neo.storage.getHighestBlockHeight()
     .then((res) => {
-      console.log('Block count:', res)
+      console.log('Block height:', res)
     })
 })
 ```
