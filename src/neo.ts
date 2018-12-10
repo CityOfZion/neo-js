@@ -17,7 +17,7 @@ const version = require('../package.json').version // tslint:disable-line
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
   network: C.network.testnet,
-  enableSyncer: false,
+  enableSyncer: true,
   enableBlockMetaAnalyzer: false,
   loggerOptions: {},
 }
