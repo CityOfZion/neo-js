@@ -35,7 +35,7 @@
     "version:patch": "npm version patch"
   },
   "dependencies": {
-    "@cityofzion/neon-js": "3.10.0",
+    "@cityofzion/neon-js": "^4.3.0",
     "async": "^2.6.1",
     "events": "^3.0.0",
     "lodash": "^4.17.10",
