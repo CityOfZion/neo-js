@@ -150,10 +150,10 @@ export class MongodbStorage extends EventEmitter {
       toPrune.forEach(async (doc: any) => {
         this.logger.debug('Removing document id:', doc._id)
         try {
-          await this.blockDao.removeById(doc._id)
-          this.logger.debug('blockModel.remove() execution succeed.')
+          await this.blockDao.deleteManyById(doc._id)
+          this.logger.debug('blockDao.deleteManyById() execution succeed.')
         } catch (err) {
-          this.logger.debug('blockModel.remove() execution failed. error:', err.message)
+          this.logger.debug('blockDao.deleteManyById() execution failed. error:', err.message)
           // Suppress error and continue
         }
       })
