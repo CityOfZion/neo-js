@@ -14,10 +14,11 @@ export class BlockDao {
   }
 
   async getHighestHeight(): Promise<number> {
-    return await this.model
+    const doc = await this.model
       .findOne({}, 'height')
       .sort({ height: -1 })
       .exec()
+    return doc.height
   }
 
   async getByHeight(height: number): Promise<any> {
