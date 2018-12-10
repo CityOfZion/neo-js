@@ -17,6 +17,7 @@ const version = require('../package.json').version // tslint:disable-line
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
   network: C.network.testnet,
+  enableSyncer: false,
   enableBlockMetaAnalyzer: false,
   loggerOptions: {},
 }
@@ -25,6 +26,7 @@ export interface NeoOptions {
   network?: string
   storageType?: string
   endpoints?: object[]
+  enableSyncer?: boolean
   enableBlockMetaAnalyzer?: boolean
   nodeOptions?: NodeOptions
   meshOptions?: MeshOptions
@@ -39,8 +41,8 @@ export class Neo extends EventEmitter {
   mesh: Mesh
   storage?: MemoryStorage | MongodbStorage
   api: Api
-  syncer: Syncer
-  blockMetaAnalyzer: BlockMetaAnalyzer | undefined
+  syncer?: Syncer
+  blockMetaAnalyzer?: BlockMetaAnalyzer
 
   private options: NeoOptions
   private logger: Logger
@@ -121,9 +123,13 @@ export class Neo extends EventEmitter {
     return new Api(this.mesh, this.storage, this.options.apiOptions)
   }
 
-  private getSyncer(): Syncer {
+  private getSyncer(): Syncer | undefined {
     this.logger.debug('getSyncer triggered.')
-    return new Syncer(this.mesh, this.storage, this.options.syncerOptions)
+    if (this.options.enableSyncer) {
+      return new Syncer(this.mesh, this.storage, this.options.syncerOptions)
+    } else {
+      return undefined
+    }
   }
 
   private getBlockMetaAnalyzer(): BlockMetaAnalyzer | undefined {
