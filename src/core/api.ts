@@ -55,31 +55,30 @@ export class Api extends EventEmitter {
     this.logger.debug('constructor completes.')
   }
 
-  getBlockCount(): Promise<number> {
+  async getBlockCount(): Promise<number> {
     this.logger.debug('getBlockCount triggered.')
     if (!this.storage) {
       this.logger.debug('No storage delegate detected.')
       return this.getBlockCountFromMesh()
     }
 
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlockCount()
-        .then((blockHeight: number) => resolve(blockHeight))
-        .catch((err: any) => {
-          // Failed to fetch from storage, try mesh instead
-          this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...')
-          this.getBlockCountFromMesh()
-            .then((res: number) => {
-              this.logger.debug('Successfully fetch result from mesh.')
-              this.emit('storage:insert', { method: C.rpc.getblockcount, result: res })
-              resolve(res)
-            })
-            .catch((err2: any) => reject(err2))
-        })
-    })
+    let blockHeight: number | undefined
+    try {
+      blockHeight = await this.storage!.getBlockCount()
+      return blockHeight
+    } catch (err) {
+      // Suppress error and continue
+    }
+
+    // Failed to fetch from storage, try mesh instead
+    this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...')
+    blockHeight = await this.getBlockCountFromMesh()
+    this.logger.debug('Successfully fetch result from mesh.')
+    this.emit('storage:insert', { method: C.rpc.getblockcount, result: blockHeight })
+    return blockHeight
   }
 
-  getBlock(height: number): Promise<object> {
+  async getBlock(height: number): Promise<object> {
     this.logger.debug('getBlock triggered. height:', height)
 
     NeoValidator.validateHeight(height)
@@ -89,26 +88,26 @@ export class Api extends EventEmitter {
       return this.getBlockFromMesh(height)
     }
 
-    return new Promise((resolve, reject) => {
-      this.storage!.getBlock(height)
-        .then((block: object) => resolve(block))
-        .catch((err: any) => {
-          // Failed to fetch from storage, try mesh instead
-          this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
-          this.logger.debug('Attempt to fetch from mesh instead...')
-          this.getBlockAndNodeMetaFromMesh(height)
-            .then((res: any) => {
-              this.logger.debug('Successfully fetch result from mesh.')
-              const { block, nodeMeta } = res
-              this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block }, nodeMeta })
-              return resolve(block)
-            })
-            .catch((err2: any) => reject(err2))
-        })
-    })
+    let block: object | undefined
+    try {
+      block = await this.storage!.getBlock(height)
+      return block
+    } catch (err) {
+      // Suppress error and continue
+      this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
+    }
+
+    // Failed to fetch from storage, try mesh instead
+    this.logger.debug('Attempt to fetch from mesh instead...')
+    const blockResponse: any = await this.getBlockAndNodeMetaFromMesh(height)
+    this.logger.debug('Successfully fetch result from mesh.')
+    block = blockResponse.block
+    const nodeMeta = blockResponse.nodeMeta
+    this.emit('storage:insert', { method: C.rpc.getblock, result: { height, block }, nodeMeta })
+    return block!
   }
 
-  getTransaction(transactionId: string): Promise<object> {
+  async getTransaction(transactionId: string): Promise<object> {
     this.logger.debug('getBlock triggered. transactionId:', transactionId)
 
     NeoValidator.validateTransactionId(transactionId)
@@ -118,16 +117,19 @@ export class Api extends EventEmitter {
       return this.getTransactionFromMesh(transactionId)
     }
 
-    return new Promise((resolve, reject) => {
-      this.storage!.getTransaction(transactionId)
-        .then((block: object) => resolve(block))
-        .catch((err: any) => {
-          // Failed to fetch from storage, try mesh instead
-          this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
-          this.logger.debug('Attempt to fetch from mesh instead...')
-          return this.getTransactionFromMesh(transactionId)
-        })
-    })
+    let transaction: object | undefined
+    try {
+      transaction = await this.storage!.getTransaction(transactionId)
+      return transaction
+    } catch (err) {
+      // Suppress error and continue
+      this.logger.debug('Cannot find result from storage delegate. Error:', err.message)
+    }
+
+    // Failed to fetch from storage, try mesh instead
+    this.logger.debug('Attempt to fetch from mesh instead...')
+    transaction = await this.getTransactionFromMesh(transactionId)
+    return transaction
   }
 
   close() {
@@ -188,57 +190,49 @@ export class Api extends EventEmitter {
     }
   }
 
-  private getBlockCountFromMesh(): Promise<number> {
+  private async getBlockCountFromMesh(): Promise<number> {
     this.logger.debug('getBlockCountFromMesh triggered.')
+
     const highestNode = this.mesh.getHighestNode()
     if (highestNode && highestNode.blockHeight) {
-      return Promise.resolve(highestNode.blockHeight)
+      return highestNode.blockHeight
     } else {
       // TODO
-      return Promise.reject(new Error('Edge case not implemented.'))
+      throw new Error('Edge case not implemented.')
     }
   }
 
-  private getBlockFromMesh(height: number): Promise<object> {
+  private async getBlockFromMesh(height: number): Promise<object> {
     this.logger.debug('getBlockFromMesh triggered.')
-    return new Promise((resolve, reject) => {
-      this.getBlockAndNodeMetaFromMesh(height)
-        .then((res: any) => {
-          const { block } = res
-          return resolve(block)
-        })
-        .catch((err: any) => reject(err))
-    })
+
+    const blockResponse: any = await this.getBlockAndNodeMetaFromMesh(height)
+    return blockResponse.block
   }
 
-  private getBlockAndNodeMetaFromMesh(height: number): Promise<object> {
+  private async getBlockAndNodeMetaFromMesh(height: number): Promise<object> {
     this.logger.debug('getBlockAndNodeMetaFromMesh triggered.')
+
     const highestNode = this.mesh.getHighestNode()
     if (highestNode && highestNode.blockHeight) {
       const nodeMeta = highestNode.getNodeMeta()
-      return new Promise((resolve, reject) => {
-        highestNode
-          .getBlock(height)
-          .then((block: object) => {
-            return resolve({ block, nodeMeta })
-          })
-          .catch((err: any) => reject(err))
-      })
+      const block = await highestNode.getBlock(height)
+      return { block, nodeMeta }
     } else {
       // TODO
-      return Promise.reject(new Error('Edge case not implemented.'))
+      throw new Error('Edge case not implemented.')
     }
   }
 
-  private getTransactionFromMesh(transactionId: string): Promise<object> {
+  private async getTransactionFromMesh(transactionId: string): Promise<object> {
     this.logger.debug('getTransactionFromMesh triggered.')
 
     const highestNode = this.mesh.getHighestNode()
     if (highestNode && highestNode.blockHeight) {
-      return highestNode.getTransaction(transactionId)
+      const transaction = await highestNode.getTransaction(transactionId)
+      return transaction
     } else {
       // TODO
-      return Promise.reject(new Error('Edge case not implemented.'))
+      throw new Error('Edge case not implemented.')
     }
   }
 }

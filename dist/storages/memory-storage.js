@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const node_log_it_1 = require("node-log-it");
@@ -22,63 +30,90 @@ class MemoryStorage extends events_1.EventEmitter {
         return this._isReady;
     }
     getBlockCount() {
-        if (this._blockHeight) {
-            return Promise.resolve(this._blockHeight);
-        }
-        else {
-            return Promise.reject(new Error('blockHeight unavailable'));
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            if (this._blockHeight) {
+                return this._blockHeight;
+            }
+            else {
+                throw new Error('blockHeight unavailable');
+            }
+        });
     }
     setBlockCount(height) {
-        this._blockHeight = height;
-        return Promise.resolve();
+        return __awaiter(this, void 0, void 0, function* () {
+            this._blockHeight = height;
+        });
     }
     countBlockRedundancy(height) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     getBlock(height) {
-        const blockItem = lodash_1.find(this.blockCollection, { height });
-        if (blockItem) {
-            return Promise.resolve(blockItem.block);
-        }
-        else {
-            return Promise.reject(new Error('Block not found.'));
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            const blockItem = lodash_1.find(this.blockCollection, { height });
+            if (blockItem) {
+                return blockItem.block;
+            }
+            else {
+                throw new Error('Block not found.');
+            }
+        });
     }
     getTransaction(transactionId) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     setBlock(height, block, options = {}) {
-        this.blockCollection.push({ height, block });
-        return Promise.resolve();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.blockCollection.push({ height, block });
+        });
     }
     pruneBlock(height, redundancySize) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     analyzeBlocks(startHeight, endHeight) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     getBlockMetaCount() {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     getHighestBlockMetaHeight() {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     getHighestBlockMeta() {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     setBlockMeta(blockMeta) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     analyzeBlockMetas(startHeight, endHeight) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     removeBlockMetaByHeight(height) {
-        throw new Error('Not implemented.');
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
     }
     disconnect() {
-        this.logger.debug('disconnect triggered.');
-        return Promise.resolve();
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('disconnect triggered.');
+        });
     }
     setReady() {
         this._isReady = true;

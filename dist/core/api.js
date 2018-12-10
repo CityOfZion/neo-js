@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -27,65 +35,70 @@ class Api extends events_1.EventEmitter {
         this.logger.debug('constructor completes.');
     }
     getBlockCount() {
-        this.logger.debug('getBlockCount triggered.');
-        if (!this.storage) {
-            this.logger.debug('No storage delegate detected.');
-            return this.getBlockCountFromMesh();
-        }
-        return new Promise((resolve, reject) => {
-            this.storage.getBlockCount()
-                .then((blockHeight) => resolve(blockHeight))
-                .catch((err) => {
-                this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...');
-                this.getBlockCountFromMesh()
-                    .then((res) => {
-                    this.logger.debug('Successfully fetch result from mesh.');
-                    this.emit('storage:insert', { method: constants_1.default.rpc.getblockcount, result: res });
-                    resolve(res);
-                })
-                    .catch((err2) => reject(err2));
-            });
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockCount triggered.');
+            if (!this.storage) {
+                this.logger.debug('No storage delegate detected.');
+                return this.getBlockCountFromMesh();
+            }
+            let blockHeight;
+            try {
+                blockHeight = yield this.storage.getBlockCount();
+                return blockHeight;
+            }
+            catch (err) {
+            }
+            this.logger.debug('Cannot find result from storage delegate, attempt to fetch from mesh instead...');
+            blockHeight = yield this.getBlockCountFromMesh();
+            this.logger.debug('Successfully fetch result from mesh.');
+            this.emit('storage:insert', { method: constants_1.default.rpc.getblockcount, result: blockHeight });
+            return blockHeight;
         });
     }
     getBlock(height) {
-        this.logger.debug('getBlock triggered. height:', height);
-        neo_validator_1.NeoValidator.validateHeight(height);
-        if (!this.storage) {
-            this.logger.debug('No storage delegate detected.');
-            return this.getBlockFromMesh(height);
-        }
-        return new Promise((resolve, reject) => {
-            this.storage.getBlock(height)
-                .then((block) => resolve(block))
-                .catch((err) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlock triggered. height:', height);
+            neo_validator_1.NeoValidator.validateHeight(height);
+            if (!this.storage) {
+                this.logger.debug('No storage delegate detected.');
+                return this.getBlockFromMesh(height);
+            }
+            let block;
+            try {
+                block = yield this.storage.getBlock(height);
+                return block;
+            }
+            catch (err) {
                 this.logger.debug('Cannot find result from storage delegate. Error:', err.message);
-                this.logger.debug('Attempt to fetch from mesh instead...');
-                this.getBlockAndNodeMetaFromMesh(height)
-                    .then((res) => {
-                    this.logger.debug('Successfully fetch result from mesh.');
-                    const { block, nodeMeta } = res;
-                    this.emit('storage:insert', { method: constants_1.default.rpc.getblock, result: { height, block }, nodeMeta });
-                    return resolve(block);
-                })
-                    .catch((err2) => reject(err2));
-            });
+            }
+            this.logger.debug('Attempt to fetch from mesh instead...');
+            const blockResponse = yield this.getBlockAndNodeMetaFromMesh(height);
+            this.logger.debug('Successfully fetch result from mesh.');
+            block = blockResponse.block;
+            const nodeMeta = blockResponse.nodeMeta;
+            this.emit('storage:insert', { method: constants_1.default.rpc.getblock, result: { height, block }, nodeMeta });
+            return block;
         });
     }
     getTransaction(transactionId) {
-        this.logger.debug('getBlock triggered. transactionId:', transactionId);
-        neo_validator_1.NeoValidator.validateTransactionId(transactionId);
-        if (!this.storage) {
-            this.logger.debug('No storage delegate detected.');
-            return this.getTransactionFromMesh(transactionId);
-        }
-        return new Promise((resolve, reject) => {
-            this.storage.getTransaction(transactionId)
-                .then((block) => resolve(block))
-                .catch((err) => {
-                this.logger.debug('Cannot find result from storage delegate. Error:', err.message);
-                this.logger.debug('Attempt to fetch from mesh instead...');
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlock triggered. transactionId:', transactionId);
+            neo_validator_1.NeoValidator.validateTransactionId(transactionId);
+            if (!this.storage) {
+                this.logger.debug('No storage delegate detected.');
                 return this.getTransactionFromMesh(transactionId);
-            });
+            }
+            let transaction;
+            try {
+                transaction = yield this.storage.getTransaction(transactionId);
+                return transaction;
+            }
+            catch (err) {
+                this.logger.debug('Cannot find result from storage delegate. Error:', err.message);
+            }
+            this.logger.debug('Attempt to fetch from mesh instead...');
+            transaction = yield this.getTransactionFromMesh(transactionId);
+            return transaction;
         });
     }
     close() {
@@ -134,53 +147,50 @@ class Api extends events_1.EventEmitter {
         }
     }
     getBlockCountFromMesh() {
-        this.logger.debug('getBlockCountFromMesh triggered.');
-        const highestNode = this.mesh.getHighestNode();
-        if (highestNode && highestNode.blockHeight) {
-            return Promise.resolve(highestNode.blockHeight);
-        }
-        else {
-            return Promise.reject(new Error('Edge case not implemented.'));
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockCountFromMesh triggered.');
+            const highestNode = this.mesh.getHighestNode();
+            if (highestNode && highestNode.blockHeight) {
+                return highestNode.blockHeight;
+            }
+            else {
+                throw new Error('Edge case not implemented.');
+            }
+        });
     }
     getBlockFromMesh(height) {
-        this.logger.debug('getBlockFromMesh triggered.');
-        return new Promise((resolve, reject) => {
-            this.getBlockAndNodeMetaFromMesh(height)
-                .then((res) => {
-                const { block } = res;
-                return resolve(block);
-            })
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockFromMesh triggered.');
+            const blockResponse = yield this.getBlockAndNodeMetaFromMesh(height);
+            return blockResponse.block;
         });
     }
     getBlockAndNodeMetaFromMesh(height) {
-        this.logger.debug('getBlockAndNodeMetaFromMesh triggered.');
-        const highestNode = this.mesh.getHighestNode();
-        if (highestNode && highestNode.blockHeight) {
-            const nodeMeta = highestNode.getNodeMeta();
-            return new Promise((resolve, reject) => {
-                highestNode
-                    .getBlock(height)
-                    .then((block) => {
-                    return resolve({ block, nodeMeta });
-                })
-                    .catch((err) => reject(err));
-            });
-        }
-        else {
-            return Promise.reject(new Error('Edge case not implemented.'));
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getBlockAndNodeMetaFromMesh triggered.');
+            const highestNode = this.mesh.getHighestNode();
+            if (highestNode && highestNode.blockHeight) {
+                const nodeMeta = highestNode.getNodeMeta();
+                const block = yield highestNode.getBlock(height);
+                return { block, nodeMeta };
+            }
+            else {
+                throw new Error('Edge case not implemented.');
+            }
+        });
     }
     getTransactionFromMesh(transactionId) {
-        this.logger.debug('getTransactionFromMesh triggered.');
-        const highestNode = this.mesh.getHighestNode();
-        if (highestNode && highestNode.blockHeight) {
-            return highestNode.getTransaction(transactionId);
-        }
-        else {
-            return Promise.reject(new Error('Edge case not implemented.'));
-        }
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('getTransactionFromMesh triggered.');
+            const highestNode = this.mesh.getHighestNode();
+            if (highestNode && highestNode.blockHeight) {
+                const transaction = yield highestNode.getTransaction(transactionId);
+                return transaction;
+            }
+            else {
+                throw new Error('Edge case not implemented.');
+            }
+        });
     }
 }
 exports.Api = Api;

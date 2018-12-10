@@ -1,4 +1,12 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 const events_1 = require("events");
 const async_1 = require("async");
@@ -98,10 +106,10 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
         });
     }
     setBlockWritePointer() {
-        this.logger.debug('setBlockWritePointer triggered.');
-        return new Promise((resolve, reject) => {
-            this.storage.getHighestBlockMetaHeight()
-                .then((height) => {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('setBlockWritePointer triggered.');
+            try {
+                const height = yield this.storage.getHighestBlockMetaHeight();
                 this.logger.debug('getBlockMetaCount success. height:', height);
                 if (this.options.minHeight && height < this.options.minHeight) {
                     this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`);
@@ -110,14 +118,12 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
                 else {
                     this.blockWritePointer = height;
                 }
-                resolve();
-            })
-                .catch((err) => {
+            }
+            catch (err) {
                 this.logger.warn('storage.getBlockMetaCount() failed. Error:', err.message);
                 this.logger.info('Assumed that there are no blocks.');
                 this.blockWritePointer = this.options.minHeight;
-                resolve();
-            });
+            }
         });
     }
     initBlockMetaVerification() {
@@ -210,40 +216,27 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
         }, priority);
     }
     analyzeBlock(attrs) {
-        this.logger.debug('analyzeBlock triggered. attrs:', attrs);
-        const height = attrs.height;
-        let previousBlockTimestamp;
-        return new Promise((resolve, reject) => {
-            Promise.resolve()
-                .then(() => {
-                if (height === 1) {
-                    return Promise.resolve();
-                }
-                else {
-                    return this.storage.getBlock(height - 1);
-                }
-            })
-                .then((previousBlock) => {
-                if (previousBlock) {
-                    previousBlockTimestamp = previousBlock.time;
-                }
-                return Promise.resolve();
-            })
-                .then(() => this.storage.getBlock(height))
-                .then((block) => {
-                const blockMeta = {
-                    height,
-                    time: block.time,
-                    size: block.size,
-                    generationTime: block_helper_1.BlockHelper.getGenerationTime(block, previousBlockTimestamp),
-                    transactionCount: block_helper_1.BlockHelper.getTransactionCount(block),
-                    apiLevel: this.apiLevel,
-                };
-                return Promise.resolve(blockMeta);
-            })
-                .then((blockMeta) => this.storage.setBlockMeta(blockMeta))
-                .then(() => resolve())
-                .catch((err) => reject(err));
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('analyzeBlock triggered. attrs:', attrs);
+            const height = attrs.height;
+            let previousBlockTimestamp;
+            let previousBlock;
+            if (height > 1) {
+                previousBlock = yield this.storage.getBlock(height - 1);
+            }
+            if (previousBlock) {
+                previousBlockTimestamp = previousBlock.time;
+            }
+            const block = yield this.storage.getBlock(height);
+            const blockMeta = {
+                height,
+                time: block.time,
+                size: block.size,
+                generationTime: block_helper_1.BlockHelper.getGenerationTime(block, previousBlockTimestamp),
+                transactionCount: block_helper_1.BlockHelper.getTransactionCount(block),
+                apiLevel: this.apiLevel,
+            };
+            yield this.storage.setBlockMeta(blockMeta);
         });
     }
 }
