@@ -11,12 +11,12 @@ const DEFAULT_OPTIONS: BlockAnalyzerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   startOnInit: true,
-  analyzeQueueConcurrency: 5,
-  enqueueBlockIntervalMs: 5 * 1000,
+  blockQueueConcurrency: 5,
+  enqueueEvaluateBlockIntervalMs: 5 * 1000,
   verifyBlockMetasIntervalMs: 30 * 1000,
   maxQueueLength: 30 * 1000,
-  standardEnqueueBlockPriority: 5,
-  missingEnqueueBlockPriority: 3,
+  standardEvaluateBlockPriority: 5,
+  missingEvaluateBlockPriority: 3,
   loggerOptions: {},
 }
 
@@ -24,24 +24,24 @@ export interface BlockAnalyzerOptions {
   minHeight?: number
   maxHeight?: number
   startOnInit?: boolean
-  analyzeQueueConcurrency?: number
-  enqueueBlockIntervalMs?: number
+  blockQueueConcurrency?: number
+  enqueueEvaluateBlockIntervalMs?: number
   verifyBlockMetasIntervalMs?: number
   maxQueueLength?: number
-  standardEnqueueBlockPriority?: number
-  missingEnqueueBlockPriority?: number
+  standardEvaluateBlockPriority?: number
+  missingEvaluateBlockPriority?: number
   loggerOptions?: LoggerOptions
 }
 
 export class BlockAnalyzer extends EventEmitter {
-  private apiLevel = 1 // A flag to determine version of the metadata (akin to Android API level)
+  private blockMetaApiLevel = 1 // A flag to determine version of the metadata (akin to Android API level)
   private _isRunning = false
-  private queue: AsyncPriorityQueue<object>
+  private blockQueue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private storage?: MemoryStorage | MongodbStorage
   private options: BlockAnalyzerOptions
   private logger: Logger
-  private enqueueAnalyzeBlockIntervalId?: NodeJS.Timer
+  private enqueueEvaluateBlockIntervalId?: NodeJS.Timer
   private blockMetaVerificationIntervalId?: NodeJS.Timer
   private isVerifyingBlockMetas = false
 
@@ -57,7 +57,7 @@ export class BlockAnalyzer extends EventEmitter {
 
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
-    this.queue = this.getPriorityQueue(this.options.analyzeQueueConcurrency!)
+    this.blockQueue = this.getPriorityQueue(this.options.blockQueueConcurrency!)
     if (this.options.startOnInit) {
       this.start()
     }
@@ -84,7 +84,7 @@ export class BlockAnalyzer extends EventEmitter {
     this._isRunning = true
     this.emit('start')
 
-    this.initAnalyzeBlock()
+    this.initEvaluateBlock()
     this.initBlockMetaVerification()
   }
 
@@ -98,7 +98,7 @@ export class BlockAnalyzer extends EventEmitter {
     this._isRunning = false
     this.emit('stop')
 
-    clearInterval(this.enqueueAnalyzeBlockIntervalId!)
+    clearInterval(this.enqueueEvaluateBlockIntervalId!)
     clearInterval(this.blockMetaVerificationIntervalId!)
   }
 
@@ -131,14 +131,14 @@ export class BlockAnalyzer extends EventEmitter {
     }, concurrency)
   }
 
-  private initAnalyzeBlock() {
-    this.logger.debug('initAnalyzeBlock triggered.')
+  private initEvaluateBlock() {
+    this.logger.debug('initEvaluateBlock triggered.')
     this.setBlockWritePointer()
       .then(() => {
-        // Enqueue blocks for analyzing
-        this.enqueueAnalyzeBlockIntervalId = setInterval(() => {
-          this.doEnqueueAnalyzeBlock()
-        }, this.options.enqueueBlockIntervalMs!)
+        // Enqueue blocks for evaluation
+        this.enqueueEvaluateBlockIntervalId = setInterval(() => {
+          this.doEnqueueEvaluateBlock()
+        }, this.options.enqueueEvaluateBlockIntervalMs!)
       })
       .catch((err: any) => {
         this.logger.warn('setBlockWritePointer() failed. Error:', err.message)
@@ -177,7 +177,7 @@ export class BlockAnalyzer extends EventEmitter {
     this.emit('blockMetaVerification:init')
 
     // Queue sizes
-    this.logger.info('queue.length:', this.queue.length())
+    this.logger.info('queue.length:', this.blockQueue.length())
 
     // Check if this process is currently executing
     if (this.isVerifyingBlockMetas) {
@@ -210,12 +210,12 @@ export class BlockAnalyzer extends EventEmitter {
       this.logger.info('Blocks missing count:', missingBlocks.length)
       this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
       missingBlocks.forEach((height: number) => {
-        this.enqueueAnalyzeBlock(height, this.options.missingEnqueueBlockPriority!)
+        this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority!)
       })
 
       // Truncate legacy block meta right away
       const legacyBlockObjs = filter(res, (item: any) => {
-        return item.apiLevel < this.apiLevel
+        return item.apiLevel < this.blockMetaApiLevel
       })
       const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
       this.logger.info('Legacy block count:', legacyBlockObjs.length)
@@ -238,8 +238,8 @@ export class BlockAnalyzer extends EventEmitter {
     })
   }
 
-  private doEnqueueAnalyzeBlock() {
-    this.logger.debug('doEnqueueAnalyzeBlock triggered.')
+  private doEnqueueEvaluateBlock() {
+    this.logger.debug('doEnqueueEvaluateBlock triggered.')
 
     if (this.isReachedMaxHeight()) {
       this.logger.info(`BlockWritePointer is greater or equal to designated maxHeight [${this.options.maxHeight}]. There will be no enqueue block beyond this point.`)
@@ -248,7 +248,7 @@ export class BlockAnalyzer extends EventEmitter {
 
     while (!this.isReachedMaxHeight() && !this.isReachedMaxQueueLength()) {
       this.increaseBlockWritePointer()
-      this.enqueueAnalyzeBlock(this.blockWritePointer!, this.options.standardEnqueueBlockPriority!)
+      this.enqueueEvaluateBlock(this.blockWritePointer!, this.options.standardEvaluateBlockPriority!)
     }
   }
 
@@ -257,7 +257,7 @@ export class BlockAnalyzer extends EventEmitter {
   }
 
   private isReachedMaxQueueLength(): boolean {
-    return this.queue.length() >= this.options.maxQueueLength!
+    return this.blockQueue.length() >= this.options.maxQueueLength!
   }
 
   private increaseBlockWritePointer() {
@@ -268,8 +268,8 @@ export class BlockAnalyzer extends EventEmitter {
   /**
    * @param priority Lower value, the higher its priority to be executed.
    */
-  private enqueueAnalyzeBlock(height: number, priority: number) {
-    this.logger.debug('enqueueAnalyzeBlock triggered. height:', height, 'priority:', priority)
+  private enqueueEvaluateBlock(height: number, priority: number) {
+    this.logger.debug('enqueueEvaluateBlock triggered. height:', height, 'priority:', priority)
 
     // if the block height is above the current height, increment the write pointer.
     if (height > this.blockWritePointer) {
@@ -277,26 +277,24 @@ export class BlockAnalyzer extends EventEmitter {
       this.blockWritePointer = height
     }
 
-    this.queue.push(
+    this.blockQueue.push(
       {
-        method: this.analyzeBlock.bind(this),
+        method: this.evaluateBlock.bind(this),
         attrs: {
           height,
         },
         meta: {
-          methodName: 'analyzeBlock',
+          methodName: 'evaluateBlock',
         },
       },
       priority
     )
   }
 
-  private async analyzeBlock(attrs: object): Promise<any> {
-    this.logger.debug('analyzeBlock triggered. attrs:', attrs)
+  private async evaluateBlock(attrs: object): Promise<any> {
+    this.logger.debug('evaluateBlock triggered. attrs:', attrs)
 
     const height: number = (attrs as any).height
-    let previousBlockTimestamp: number | undefined
-
     let previousBlock: object | undefined
     if (height > 1) {
       previousBlock = await this.storage!.getBlock(height - 1)
@@ -309,7 +307,7 @@ export class BlockAnalyzer extends EventEmitter {
       size: block.size,
       generationTime: BlockHelper.getGenerationTime(block, previousBlock),
       transactionCount: BlockHelper.getTransactionCount(block),
-      apiLevel: this.apiLevel,
+      apiLevel: this.blockMetaApiLevel,
     }
 
     await this.storage!.setBlockMeta(blockMeta)
