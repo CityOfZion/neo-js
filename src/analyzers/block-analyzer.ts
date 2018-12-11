@@ -71,16 +71,16 @@ export class BlockAnalyzer extends EventEmitter {
 
   start() {
     if (this._isRunning) {
-      this.logger.info('BlockMetaAnalyzer has already started.')
+      this.logger.info('BlockAnalyzer has already started.')
       return
     }
 
     if (!this.storage) {
-      this.logger.info('Unable to start BlockMetaAnalyzer when no storage are defined.')
+      this.logger.info('Unable to start BlockAnalyzer when no storage are defined.')
       return
     }
 
-    this.logger.info('Start BlockMetaAnalyzer.')
+    this.logger.info('Start BlockAnalyzer.')
     this._isRunning = true
     this.emit('start')
 
@@ -90,11 +90,11 @@ export class BlockAnalyzer extends EventEmitter {
 
   stop() {
     if (!this._isRunning) {
-      this.logger.info('BlockMetaAnalyzer is not running at the moment.')
+      this.logger.info('BlockAnalyzer is not running at the moment.')
       return
     }
 
-    this.logger.info('Stop BlockMetaAnalyzer.')
+    this.logger.info('Stop BlockAnalyzer.')
     this._isRunning = false
     this.emit('stop')
 
@@ -227,7 +227,7 @@ export class BlockAnalyzer extends EventEmitter {
       // Check if fully sync'ed
       if (this.isReachedMaxHeight()) {
         if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-          this.logger.info('BlockMetaAnalyzer is up to date.')
+          this.logger.info('BlockAnalyzer is up to date.')
           this.emit('upToDate')
         }
       }
