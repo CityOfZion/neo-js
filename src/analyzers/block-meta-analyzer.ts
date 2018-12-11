@@ -302,16 +302,12 @@ export class BlockMetaAnalyzer extends EventEmitter {
       previousBlock = await this.storage!.getBlock(height - 1)
     }
 
-    if (previousBlock) {
-      previousBlockTimestamp = (previousBlock as any).time
-    }
-
     const block: any = await this.storage!.getBlock(height)
     const blockMeta = {
       height,
       time: block.time,
       size: block.size,
-      generationTime: BlockHelper.getGenerationTime(block, previousBlockTimestamp),
+      generationTime: BlockHelper.getGenerationTime(block, previousBlock),
       transactionCount: BlockHelper.getTransactionCount(block),
       apiLevel: this.apiLevel,
     }

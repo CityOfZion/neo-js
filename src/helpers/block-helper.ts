@@ -1,8 +1,12 @@
 import { isArray } from 'lodash'
 
 export class BlockHelper {
-  static getGenerationTime(block: any, previousBlockTimestamp: number | undefined): number {
-    return previousBlockTimestamp ? block.time - previousBlockTimestamp : 0
+  static getGenerationTime(block: object, previousBlock: object | undefined): number {
+    if (previousBlock && (previousBlock as any).time) {
+      return (block as any).time - (previousBlock as any).time
+    } else {
+      return 0
+    }
   }
 
   static getTransactionCount(block: any): number {
