@@ -5,6 +5,7 @@ import { Mongoose } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
 import { BlockDao } from './mongodb/block-dao'
 import { BlockMetaDao } from './mongodb/block-meta-dao'
+import { TransactionMetaDao } from './mongodb/transaction-meta-dao'
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -17,6 +18,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
   collectionNames: {
     blocks: 'blocks',
     blockMetas: 'block_metas',
+    transactionMetas: 'transaction_metas',
   },
   loggerOptions: {},
 }
@@ -29,6 +31,7 @@ export interface MongodbStorageOptions {
   collectionNames?: {
     blocks?: string
     blockMetas?: string
+    transactionMetas?: string
   }
   loggerOptions?: LoggerOptions
 }
@@ -37,6 +40,7 @@ export class MongodbStorage extends EventEmitter {
   private _isReady = false
   private blockDao: BlockDao
   private blockMetaDao: BlockMetaDao
+  private transactionMetaDao: TransactionMetaDao
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -51,6 +55,7 @@ export class MongodbStorage extends EventEmitter {
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockDao = new BlockDao(mongoose, this.options.collectionNames!.blocks!)
     this.blockMetaDao = new BlockMetaDao(mongoose, this.options.collectionNames!.blockMetas!)
+    this.transactionMetaDao = new TransactionMetaDao(mongoose, this.options.collectionNames!.transactionMetas!)
     this.initConnection()
 
     // Event handlers
@@ -179,6 +184,16 @@ export class MongodbStorage extends EventEmitter {
       ...blockMeta,
     }
     return await this.blockMetaDao.save(data)
+  }
+
+  async setTransactionMeta(transactionMeta: object): Promise<void> {
+    this.logger.debug('setTransactionMeta triggered.')
+
+    const data = {
+      createdBy: this.options.userAgent, // neo-js's user agent
+      ...transactionMeta,
+    }
+    return await this.transactionMetaDao.save(data)
   }
 
   async analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {

@@ -11,12 +11,17 @@ const DEFAULT_OPTIONS: BlockAnalyzerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   startOnInit: true,
+  toEvaluateTransactions: true,
+  toEvaluateAssets: false,
   blockQueueConcurrency: 5,
+  transactionQueueConcurrency: 10,
   enqueueEvaluateBlockIntervalMs: 5 * 1000,
   verifyBlockMetasIntervalMs: 30 * 1000,
-  maxQueueLength: 30 * 1000,
+  maxBlockQueueLength: 30 * 1000,
+  maxTransactionQueueLength: 100 * 1000,
   standardEvaluateBlockPriority: 5,
   missingEvaluateBlockPriority: 3,
+  standardEvaluateTransactionPriority: 5,
   loggerOptions: {},
 }
 
@@ -24,19 +29,29 @@ export interface BlockAnalyzerOptions {
   minHeight?: number
   maxHeight?: number
   startOnInit?: boolean
+  toEvaluateTransactions?: boolean
+  toEvaluateAssets?: boolean
   blockQueueConcurrency?: number
+  transactionQueueConcurrency?: number
   enqueueEvaluateBlockIntervalMs?: number
   verifyBlockMetasIntervalMs?: number
-  maxQueueLength?: number
+  maxBlockQueueLength?: number
+  maxTransactionQueueLength?: number
   standardEvaluateBlockPriority?: number
   missingEvaluateBlockPriority?: number
+  standardEvaluateTransactionPriority?: number
   loggerOptions?: LoggerOptions
 }
 
 export class BlockAnalyzer extends EventEmitter {
-  private blockMetaApiLevel = 1 // A flag to determine version of the metadata (akin to Android API level)
+  /**
+   * Flags for determine version of the metadata (akin to Android API level)
+   */
+  private BLOCK_META_API_LEVEL = 1
+  private TRANSACTION_META_API_LEVEL = 1
   private _isRunning = false
   private blockQueue: AsyncPriorityQueue<object>
+  private transactionQueue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private storage?: MemoryStorage | MongodbStorage
   private options: BlockAnalyzerOptions
@@ -58,6 +73,7 @@ export class BlockAnalyzer extends EventEmitter {
     // Bootstrapping
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockQueue = this.getPriorityQueue(this.options.blockQueueConcurrency!)
+    this.transactionQueue = this.getPriorityQueue(this.options.transactionQueueConcurrency!)
     if (this.options.startOnInit) {
       this.start()
     }
@@ -215,7 +231,7 @@ export class BlockAnalyzer extends EventEmitter {
 
       // Truncate legacy block meta right away
       const legacyBlockObjs = filter(res, (item: any) => {
-        return item.apiLevel < this.blockMetaApiLevel
+        return item.apiLevel < this.BLOCK_META_API_LEVEL
       })
       const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
       this.logger.info('Legacy block count:', legacyBlockObjs.length)
@@ -257,7 +273,7 @@ export class BlockAnalyzer extends EventEmitter {
   }
 
   private isReachedMaxQueueLength(): boolean {
-    return this.blockQueue.length() >= this.options.maxQueueLength!
+    return this.blockQueue.length() >= this.options.maxBlockQueueLength!
   }
 
   private increaseBlockWritePointer() {
@@ -307,9 +323,57 @@ export class BlockAnalyzer extends EventEmitter {
       size: block.size,
       generationTime: BlockHelper.getGenerationTime(block, previousBlock),
       transactionCount: BlockHelper.getTransactionCount(block),
-      apiLevel: this.blockMetaApiLevel,
+      apiLevel: this.BLOCK_META_API_LEVEL,
+    }
+
+    if (this.options.toEvaluateTransactions) {
+      this.enqueueEvaluateTransaction(block)
     }
 
     await this.storage!.setBlockMeta(blockMeta)
+  }
+
+  private enqueueEvaluateTransaction(block: any) {
+    this.logger.debug('enqueueEvaluateTransaction triggered.')
+
+    if (!block || !block.tx) {
+      this.logger.info('Invalid block object. Skipping...')
+      return
+    }
+
+    block.tx.forEach((transaction: any) => {
+      this.transactionQueue.push(
+        {
+          method: this.evaluateTransaction.bind(this),
+          attrs: {
+            height: block.index,
+            time: block.time,
+            transaction,
+          },
+          meta: {
+            methodName: 'evaluateTransaction',
+          },
+        },
+        this.options.standardEvaluateBlockPriority!
+      )
+    })
+  }
+
+  private async evaluateTransaction(attrs: object): Promise<any> {
+    this.logger.debug('evaluateTransaction triggered.')
+
+    const height: number = (attrs as any).height
+    const time: number = (attrs as any).time
+    const tx: any = (attrs as any).transaction
+
+    const transactionMeta = {
+      height,
+      time,
+      txid: tx.txid,
+      type: tx.type,
+      apiLevel: this.TRANSACTION_META_API_LEVEL,
+    }
+
+    await this.storage!.setTransactionMeta(transactionMeta)
   }
 }
