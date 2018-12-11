@@ -8,7 +8,7 @@ export declare class BlockDao {
     listByHeight(height: number): Promise<object[]>;
     getByTransactionId(transactionId: string): Promise<object | undefined>;
     save(data: object): Promise<void>;
-    removeById(id: string): Promise<void>;
+    deleteManyById(id: string): Promise<void>;
     analyze(startHeight: number, endHeight: number): Promise<object[]>;
     reviewIndex(key: string, keyObj: object): Promise<void>;
     private getModel;

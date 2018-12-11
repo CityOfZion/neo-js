@@ -30,6 +30,7 @@ export declare class BlockMetaAnalyzer extends EventEmitter {
     isRunning(): boolean;
     start(): void;
     stop(): void;
+    close(): void;
     private validateOptionalParameters;
     private getPriorityQueue;
     private initAnalyzeBlock;

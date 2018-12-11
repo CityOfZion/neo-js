@@ -12,6 +12,7 @@ export interface NeoOptions {
     network?: string;
     storageType?: string;
     endpoints?: object[];
+    enableSyncer?: boolean;
     enableBlockMetaAnalyzer?: boolean;
     nodeOptions?: NodeOptions;
     meshOptions?: MeshOptions;
@@ -25,8 +26,8 @@ export declare class Neo extends EventEmitter {
     mesh: Mesh;
     storage?: MemoryStorage | MongodbStorage;
     api: Api;
-    syncer: Syncer;
-    blockMetaAnalyzer: BlockMetaAnalyzer | undefined;
+    syncer?: Syncer;
+    blockMetaAnalyzer?: BlockMetaAnalyzer;
     private options;
     private logger;
     constructor(options?: NeoOptions);

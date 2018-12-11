@@ -66,9 +66,9 @@ class BlockDao {
             yield this.model(data).save();
         });
     }
-    removeById(id) {
+    deleteManyById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            yield this.model.remove({ _id: id }).exec();
+            yield this.model.deleteMany({ _id: id }).exec();
         });
     }
     analyze(startHeight, endHeight) {

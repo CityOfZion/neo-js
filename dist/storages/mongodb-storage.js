@@ -48,6 +48,11 @@ class MongodbStorage extends events_1.EventEmitter {
     }
     getBlockCount() {
         return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.');
+        });
+    }
+    getHighestBlockHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('getBlockCount triggered.');
             return yield this.blockDao.getHighestHeight();
         });
@@ -122,11 +127,11 @@ class MongodbStorage extends events_1.EventEmitter {
                 toPrune.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
                     this.logger.debug('Removing document id:', doc._id);
                     try {
-                        yield this.blockDao.removeById(doc._id);
-                        this.logger.debug('blockModel.remove() execution succeed.');
+                        yield this.blockDao.deleteManyById(doc._id);
+                        this.logger.debug('blockDao.deleteManyById() execution succeed.');
                     }
                     catch (err) {
-                        this.logger.debug('blockModel.remove() execution failed. error:', err.message);
+                        this.logger.debug('blockDao.deleteManyById() execution failed. error:', err.message);
                     }
                 }));
             }
@@ -169,9 +174,9 @@ class MongodbStorage extends events_1.EventEmitter {
             return yield this.blockMetaDao.removeByHeight(height);
         });
     }
-    disconnect() {
+    close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('disconnect triggered.');
+            this.logger.debug('close triggered.');
             return yield mongoose.disconnect();
         });
     }

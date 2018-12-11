@@ -20,6 +20,7 @@ const version = require('../package.json').version;
 const MODULE_NAME = 'Neo';
 const DEFAULT_OPTIONS = {
     network: constants_1.default.network.testnet,
+    enableSyncer: true,
     enableBlockMetaAnalyzer: false,
     loggerOptions: {},
 };
@@ -46,19 +47,19 @@ class Neo extends events_1.EventEmitter {
     close() {
         this.logger.debug('close triggered.');
         if (this.syncer) {
-            this.syncer.stop();
+            this.syncer.close();
         }
         if (this.mesh) {
             this.mesh.close();
         }
         if (this.storage) {
-            this.storage.disconnect();
+            this.storage.close();
         }
         if (this.api) {
             this.api.close();
         }
         if (this.blockMetaAnalyzer) {
-            this.blockMetaAnalyzer.stop();
+            this.blockMetaAnalyzer.close();
         }
     }
     validateOptionalParameters() {
@@ -90,7 +91,12 @@ class Neo extends events_1.EventEmitter {
     }
     getSyncer() {
         this.logger.debug('getSyncer triggered.');
-        return new syncer_1.Syncer(this.mesh, this.storage, this.options.syncerOptions);
+        if (this.options.enableSyncer) {
+            return new syncer_1.Syncer(this.mesh, this.storage, this.options.syncerOptions);
+        }
+        else {
+            return undefined;
+        }
     }
     getBlockMetaAnalyzer() {
         this.logger.debug('getBlockMetaAnalyzer triggered.');

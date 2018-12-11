@@ -44,7 +44,7 @@ class BlockMetaDao {
     }
     removeByHeight(height) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield this.model.remove({ height }).exec();
+            return yield this.model.deleteMany({ height }).exec();
         });
     }
     analyze(startHeight, endHeight) {

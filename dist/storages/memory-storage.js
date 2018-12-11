@@ -31,6 +31,11 @@ class MemoryStorage extends events_1.EventEmitter {
     }
     getBlockCount() {
         return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.');
+        });
+    }
+    getHighestBlockHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
             if (this._blockHeight) {
                 return this._blockHeight;
             }
@@ -110,9 +115,9 @@ class MemoryStorage extends events_1.EventEmitter {
             throw new Error('Not implemented.');
         });
     }
-    disconnect() {
+    close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('disconnect triggered.');
+            this.logger.debug('close triggered.');
         });
     }
     setReady() {

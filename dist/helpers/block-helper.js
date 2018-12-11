@@ -2,8 +2,13 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const lodash_1 = require("lodash");
 class BlockHelper {
-    static getGenerationTime(block, previousBlockTimestamp) {
-        return previousBlockTimestamp ? block.time - previousBlockTimestamp : 0;
+    static getGenerationTime(block, previousBlock) {
+        if (previousBlock && previousBlock.time) {
+            return block.time - previousBlock.time;
+        }
+        else {
+            return 0;
+        }
     }
     static getTransactionCount(block) {
         if (block && block.tx && lodash_1.isArray(block.tx)) {

@@ -83,6 +83,9 @@ class Syncer extends events_1.EventEmitter {
         clearInterval(this.enqueueStoreBlockIntervalId);
         clearInterval(this.blockVerificationIntervalId);
     }
+    close() {
+        this.stop();
+    }
     storeBlockCompleteHandler(payload) {
         if (payload.isSuccess === false) {
             this.logger.debug('storeBlockCompleteHandler !isSuccess triggered.');
@@ -129,7 +132,7 @@ class Syncer extends events_1.EventEmitter {
             }
         })
             .catch((err) => {
-            this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
+            this.logger.warn('setBlockWritePointer() failed. Error:', err.message);
         });
     }
     doEnqueueStoreBlock() {
@@ -162,8 +165,8 @@ class Syncer extends events_1.EventEmitter {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('setBlockWritePointer triggered.');
             try {
-                const height = yield this.storage.getBlockCount();
-                this.logger.debug('getBlockCount success. height:', height);
+                const height = yield this.storage.getHighestBlockHeight();
+                this.logger.debug('getHighestBlockHeight() success. height:', height);
                 if (this.options.minHeight && height < this.options.minHeight) {
                     this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`);
                     this.blockWritePointer = this.options.minHeight;
@@ -173,7 +176,7 @@ class Syncer extends events_1.EventEmitter {
                 }
             }
             catch (err) {
-                this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
+                this.logger.warn('storage.getHighestBlockHeight() failed. Error:', err.message);
                 this.logger.info('Assumed that there are no blocks.');
                 this.blockWritePointer = this.options.minHeight;
             }

@@ -72,6 +72,9 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
         clearInterval(this.enqueueAnalyzeBlockIntervalId);
         clearInterval(this.blockMetaVerificationIntervalId);
     }
+    close() {
+        this.stop();
+    }
     validateOptionalParameters() {
     }
     getPriorityQueue(concurrency) {
@@ -102,7 +105,7 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
             }, this.options.enqueueBlockIntervalMs);
         })
             .catch((err) => {
-            this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
+            this.logger.warn('setBlockWritePointer() failed. Error:', err.message);
         });
     }
     setBlockWritePointer() {
@@ -224,15 +227,12 @@ class BlockMetaAnalyzer extends events_1.EventEmitter {
             if (height > 1) {
                 previousBlock = yield this.storage.getBlock(height - 1);
             }
-            if (previousBlock) {
-                previousBlockTimestamp = previousBlock.time;
-            }
             const block = yield this.storage.getBlock(height);
             const blockMeta = {
                 height,
                 time: block.time,
                 size: block.size,
-                generationTime: block_helper_1.BlockHelper.getGenerationTime(block, previousBlockTimestamp),
+                generationTime: block_helper_1.BlockHelper.getGenerationTime(block, previousBlock),
                 transactionCount: block_helper_1.BlockHelper.getTransactionCount(block),
                 apiLevel: this.apiLevel,
             };

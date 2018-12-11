@@ -23,6 +23,7 @@ export declare class MongodbStorage extends EventEmitter {
     constructor(options?: MongodbStorageOptions);
     isReady(): boolean;
     getBlockCount(): Promise<number>;
+    getHighestBlockHeight(): Promise<number>;
     setBlockCount(height: number): Promise<void>;
     countBlockRedundancy(height: number): Promise<number>;
     getBlock(height: number): Promise<object>;
@@ -36,7 +37,7 @@ export declare class MongodbStorage extends EventEmitter {
     setBlockMeta(blockMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
-    disconnect(): Promise<void>;
+    close(): Promise<void>;
     private readyHandler;
     private validateOptionalParameters;
     private initConnection;
