@@ -16,7 +16,7 @@ const DEFAULT_OPTIONS: BlockAnalyzerOptions = {
   blockQueueConcurrency: 5,
   transactionQueueConcurrency: 10,
   enqueueEvaluateBlockIntervalMs: 5 * 1000,
-  verifyBlockMetasIntervalMs: 30 * 1000,
+  verifyBlocksIntervalMs: 30 * 1000,
   maxBlockQueueLength: 30 * 1000,
   maxTransactionQueueLength: 100 * 1000,
   standardEvaluateBlockPriority: 5,
@@ -34,7 +34,7 @@ export interface BlockAnalyzerOptions {
   blockQueueConcurrency?: number
   transactionQueueConcurrency?: number
   enqueueEvaluateBlockIntervalMs?: number
-  verifyBlockMetasIntervalMs?: number
+  verifyBlocksIntervalMs?: number
   maxBlockQueueLength?: number
   maxTransactionQueueLength?: number
   standardEvaluateBlockPriority?: number
@@ -57,8 +57,8 @@ export class BlockAnalyzer extends EventEmitter {
   private options: BlockAnalyzerOptions
   private logger: Logger
   private enqueueEvaluateBlockIntervalId?: NodeJS.Timer
-  private blockMetaVerificationIntervalId?: NodeJS.Timer
-  private isVerifyingBlockMetas = false
+  private blockVerificationIntervalId?: NodeJS.Timer
+  private isVerifyingBlocks = false
 
   constructor(storage?: MemoryStorage | MongodbStorage, options: BlockAnalyzerOptions = {}) {
     super()
@@ -101,7 +101,7 @@ export class BlockAnalyzer extends EventEmitter {
     this.emit('start')
 
     this.initEvaluateBlock()
-    this.initBlockMetaVerification()
+    this.initBlockVerification()
   }
 
   stop() {
@@ -115,7 +115,7 @@ export class BlockAnalyzer extends EventEmitter {
     this.emit('stop')
 
     clearInterval(this.enqueueEvaluateBlockIntervalId!)
-    clearInterval(this.blockMetaVerificationIntervalId!)
+    clearInterval(this.blockVerificationIntervalId!)
   }
 
   close() {
@@ -181,77 +181,75 @@ export class BlockAnalyzer extends EventEmitter {
     }
   }
 
-  private initBlockMetaVerification() {
-    this.logger.debug('initBlockMetaVerification triggered.')
-    this.blockMetaVerificationIntervalId = setInterval(() => {
-      this.doBlockMetaVerification()
-    }, this.options.verifyBlockMetasIntervalMs!)
+  private initBlockVerification() {
+    this.logger.debug('initBlockVerification triggered.')
+    this.blockVerificationIntervalId = setInterval(() => {
+      this.doBlockVerification()
+    }, this.options.verifyBlocksIntervalMs!)
   }
 
-  private doBlockMetaVerification() {
-    this.logger.debug('doBlockMetaVerification triggered.')
-    this.emit('blockMetaVerification:init')
+  private async doBlockVerification() {
+    this.logger.debug('doBlockVerification triggered.')
+    this.emit('blockVerification:init')
 
     // Queue sizes
-    this.logger.info('queue.length:', this.blockQueue.length())
+    this.logger.info('blockQueue.length:', this.blockQueue.length())
+    this.logger.info('transactionQueue.length:', this.transactionQueue.length())
 
     // Check if this process is currently executing
-    if (this.isVerifyingBlockMetas) {
+    if (this.isVerifyingBlocks) {
       this.logger.info('doBlockVerification() is already running. Skip this turn.')
-      this.emit('blockMetaVerification:complete', { isSkipped: true })
+      this.emit('blockVerification:complete', { isSkipped: true })
       return
     }
 
-    // Blocks analysis
-    this.isVerifyingBlockMetas = true
+    // Prepare
+    this.isVerifyingBlocks = true
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
+
+    // Review block metas
     this.logger.debug('Analyzing block metas in storage...')
-    // TODO: also fetch and evaluate docs' apiLevel
-    this.storage!.analyzeBlockMetas(startHeight, endHeight).then((res: any) => {
-      this.logger.debug('Analyzing block metas complete!')
-      // this.logger.warn('analyzeBlockMetas res:', res)
-      // this.logger.warn('this.apiLevel:', this.apiLevel)
+    const blockMetaReport = await this.storage!.analyzeBlockMetas(startHeight, endHeight)
+    this.logger.debug('Analyzing block metas complete!')
 
-      const all: number[] = []
-      for (let i = startHeight; i <= endHeight; i++) {
-        all.push(i)
-      }
+    const all: number[] = []
+    for (let i = startHeight; i <= endHeight; i++) {
+      all.push(i)
+    }
 
-      const availableBlocks: number[] = map(res, (item: any) => item.height)
-      this.logger.info('Blocks available count:', availableBlocks.length)
+    const availableBlocks: number[] = map(blockMetaReport, (item: any) => item.height)
+    this.logger.info('Blocks available count:', availableBlocks.length)
 
-      // Enqueue missing block heights
-      const missingBlocks = difference(all, availableBlocks)
-      this.logger.info('Blocks missing count:', missingBlocks.length)
-      this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length })
-      missingBlocks.forEach((height: number) => {
-        this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority!)
-      })
-
-      // Truncate legacy block meta right away
-      const legacyBlockObjs = filter(res, (item: any) => {
-        return item.apiLevel < this.BLOCK_META_API_LEVEL
-      })
-      const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
-      this.logger.info('Legacy block count:', legacyBlockObjs.length)
-      this.emit('blockMetaVerification:legacyBlocks', { count: legacyBlocks.length })
-      legacyBlocks.forEach((height: number) => {
-        this.storage!.removeBlockMetaByHeight(height)
-      })
-
-      // Check if fully sync'ed
-      if (this.isReachedMaxHeight()) {
-        if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-          this.logger.info('BlockAnalyzer is up to date.')
-          this.emit('upToDate')
-        }
-      }
-
-      // Conclude
-      this.isVerifyingBlockMetas = false
-      this.emit('blockMetaVerification:complete', { isSuccess: true })
+    // Enqueue missing block heights
+    const missingBlocks = difference(all, availableBlocks)
+    this.logger.info('Blocks missing count:', missingBlocks.length)
+    this.emit('blockVerification:missingBlocks', { count: missingBlocks.length })
+    missingBlocks.forEach((height: number) => {
+      this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority!)
     })
+
+    // Truncate legacy block meta right away
+    const legacyBlockObjs = filter(blockMetaReport, (item: any) => { return item.apiLevel < this.BLOCK_META_API_LEVEL })
+    const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
+    this.logger.info('Legacy block count:', legacyBlockObjs.length)
+    this.emit('blockVerification:legacyBlocks', { count: legacyBlocks.length })
+    legacyBlocks.forEach((height: number) => {
+      // TODO: use queue instead of unmanaged parallel tasks
+      this.storage!.removeBlockMetaByHeight(height)
+    })
+
+    // Check if fully sync'ed
+    if (this.isReachedMaxHeight()) {
+      if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
+        this.logger.info('BlockAnalyzer is up to date.')
+        this.emit('upToDate')
+      }
+    }
+
+    // Conclude
+    this.isVerifyingBlocks = false
+    this.emit('blockVerification:complete', { isSuccess: true })
   }
 
   private doEnqueueEvaluateBlock() {
