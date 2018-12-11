@@ -18,18 +18,18 @@ const DEFAULT_OPTIONS = {
     minHeight: 1,
     maxHeight: undefined,
     startOnInit: true,
-    analyzeQueueConcurrency: 5,
-    enqueueBlockIntervalMs: 5 * 1000,
+    blockQueueConcurrency: 5,
+    enqueueEvaluateBlockIntervalMs: 5 * 1000,
     verifyBlockMetasIntervalMs: 30 * 1000,
     maxQueueLength: 30 * 1000,
-    standardEnqueueBlockPriority: 5,
-    missingEnqueueBlockPriority: 3,
+    standardEvaluateBlockPriority: 5,
+    missingEvaluateBlockPriority: 3,
     loggerOptions: {},
 };
 class BlockAnalyzer extends events_1.EventEmitter {
     constructor(storage, options = {}) {
         super();
-        this.apiLevel = 1;
+        this.blockMetaApiLevel = 1;
         this._isRunning = false;
         this.blockWritePointer = 0;
         this.isVerifyingBlockMetas = false;
@@ -37,7 +37,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
         this.options = lodash_1.merge({}, DEFAULT_OPTIONS, options);
         this.validateOptionalParameters();
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
-        this.queue = this.getPriorityQueue(this.options.analyzeQueueConcurrency);
+        this.blockQueue = this.getPriorityQueue(this.options.blockQueueConcurrency);
         if (this.options.startOnInit) {
             this.start();
         }
@@ -48,28 +48,28 @@ class BlockAnalyzer extends events_1.EventEmitter {
     }
     start() {
         if (this._isRunning) {
-            this.logger.info('BlockMetaAnalyzer has already started.');
+            this.logger.info('BlockAnalyzer has already started.');
             return;
         }
         if (!this.storage) {
-            this.logger.info('Unable to start BlockMetaAnalyzer when no storage are defined.');
+            this.logger.info('Unable to start BlockAnalyzer when no storage are defined.');
             return;
         }
-        this.logger.info('Start BlockMetaAnalyzer.');
+        this.logger.info('Start BlockAnalyzer.');
         this._isRunning = true;
         this.emit('start');
-        this.initAnalyzeBlock();
+        this.initEvaluateBlock();
         this.initBlockMetaVerification();
     }
     stop() {
         if (!this._isRunning) {
-            this.logger.info('BlockMetaAnalyzer is not running at the moment.');
+            this.logger.info('BlockAnalyzer is not running at the moment.');
             return;
         }
-        this.logger.info('Stop BlockMetaAnalyzer.');
+        this.logger.info('Stop BlockAnalyzer.');
         this._isRunning = false;
         this.emit('stop');
-        clearInterval(this.enqueueAnalyzeBlockIntervalId);
+        clearInterval(this.enqueueEvaluateBlockIntervalId);
         clearInterval(this.blockMetaVerificationIntervalId);
     }
     close() {
@@ -96,13 +96,13 @@ class BlockAnalyzer extends events_1.EventEmitter {
             });
         }, concurrency);
     }
-    initAnalyzeBlock() {
-        this.logger.debug('initAnalyzeBlock triggered.');
+    initEvaluateBlock() {
+        this.logger.debug('initEvaluateBlock triggered.');
         this.setBlockWritePointer()
             .then(() => {
-            this.enqueueAnalyzeBlockIntervalId = setInterval(() => {
-                this.doEnqueueAnalyzeBlock();
-            }, this.options.enqueueBlockIntervalMs);
+            this.enqueueEvaluateBlockIntervalId = setInterval(() => {
+                this.doEnqueueEvaluateBlock();
+            }, this.options.enqueueEvaluateBlockIntervalMs);
         })
             .catch((err) => {
             this.logger.warn('setBlockWritePointer() failed. Error:', err.message);
@@ -138,7 +138,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
     doBlockMetaVerification() {
         this.logger.debug('doBlockMetaVerification triggered.');
         this.emit('blockMetaVerification:init');
-        this.logger.info('queue.length:', this.queue.length());
+        this.logger.info('queue.length:', this.blockQueue.length());
         if (this.isVerifyingBlockMetas) {
             this.logger.info('doBlockVerification() is already running. Skip this turn.');
             this.emit('blockMetaVerification:complete', { isSkipped: true });
@@ -160,10 +160,10 @@ class BlockAnalyzer extends events_1.EventEmitter {
             this.logger.info('Blocks missing count:', missingBlocks.length);
             this.emit('blockMetaVerification:missingBlocks', { count: missingBlocks.length });
             missingBlocks.forEach((height) => {
-                this.enqueueAnalyzeBlock(height, this.options.missingEnqueueBlockPriority);
+                this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority);
             });
             const legacyBlockObjs = lodash_1.filter(res, (item) => {
-                return item.apiLevel < this.apiLevel;
+                return item.apiLevel < this.blockMetaApiLevel;
             });
             const legacyBlocks = lodash_1.map(legacyBlockObjs, (item) => item.height);
             this.logger.info('Legacy block count:', legacyBlockObjs.length);
@@ -173,7 +173,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
             });
             if (this.isReachedMaxHeight()) {
                 if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-                    this.logger.info('BlockMetaAnalyzer is up to date.');
+                    this.logger.info('BlockAnalyzer is up to date.');
                     this.emit('upToDate');
                 }
             }
@@ -181,48 +181,47 @@ class BlockAnalyzer extends events_1.EventEmitter {
             this.emit('blockMetaVerification:complete', { isSuccess: true });
         });
     }
-    doEnqueueAnalyzeBlock() {
-        this.logger.debug('doEnqueueAnalyzeBlock triggered.');
+    doEnqueueEvaluateBlock() {
+        this.logger.debug('doEnqueueEvaluateBlock triggered.');
         if (this.isReachedMaxHeight()) {
             this.logger.info(`BlockWritePointer is greater or equal to designated maxHeight [${this.options.maxHeight}]. There will be no enqueue block beyond this point.`);
             return;
         }
         while (!this.isReachedMaxHeight() && !this.isReachedMaxQueueLength()) {
             this.increaseBlockWritePointer();
-            this.enqueueAnalyzeBlock(this.blockWritePointer, this.options.standardEnqueueBlockPriority);
+            this.enqueueEvaluateBlock(this.blockWritePointer, this.options.standardEvaluateBlockPriority);
         }
     }
     isReachedMaxHeight() {
         return !!(this.options.maxHeight && this.blockWritePointer >= this.options.maxHeight);
     }
     isReachedMaxQueueLength() {
-        return this.queue.length() >= this.options.maxQueueLength;
+        return this.blockQueue.length() >= this.options.maxQueueLength;
     }
     increaseBlockWritePointer() {
         this.logger.debug('increaseBlockWritePointer triggered.');
         this.blockWritePointer += 1;
     }
-    enqueueAnalyzeBlock(height, priority) {
-        this.logger.debug('enqueueAnalyzeBlock triggered. height:', height, 'priority:', priority);
+    enqueueEvaluateBlock(height, priority) {
+        this.logger.debug('enqueueEvaluateBlock triggered. height:', height, 'priority:', priority);
         if (height > this.blockWritePointer) {
             this.logger.debug('height > this.blockWritePointer, blockWritePointer is now:', height);
             this.blockWritePointer = height;
         }
-        this.queue.push({
-            method: this.analyzeBlock.bind(this),
+        this.blockQueue.push({
+            method: this.evaluateBlock.bind(this),
             attrs: {
                 height,
             },
             meta: {
-                methodName: 'analyzeBlock',
+                methodName: 'evaluateBlock',
             },
         }, priority);
     }
-    analyzeBlock(attrs) {
+    evaluateBlock(attrs) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('analyzeBlock triggered. attrs:', attrs);
+            this.logger.debug('evaluateBlock triggered. attrs:', attrs);
             const height = attrs.height;
-            let previousBlockTimestamp;
             let previousBlock;
             if (height > 1) {
                 previousBlock = yield this.storage.getBlock(height - 1);
@@ -234,11 +233,11 @@ class BlockAnalyzer extends events_1.EventEmitter {
                 size: block.size,
                 generationTime: block_helper_1.BlockHelper.getGenerationTime(block, previousBlock),
                 transactionCount: block_helper_1.BlockHelper.getTransactionCount(block),
-                apiLevel: this.apiLevel,
+                apiLevel: this.blockMetaApiLevel,
             };
             yield this.storage.setBlockMeta(blockMeta);
         });
     }
 }
 exports.BlockAnalyzer = BlockAnalyzer;
-//# sourceMappingURL=block-meta-analyzer.js.map
+//# sourceMappingURL=block-analyzer.js.map
