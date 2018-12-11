@@ -17,8 +17,6 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
   collectionNames: {
     blocks: 'blocks',
     blockMetas: 'block_metas',
-    transactions: 'transactions',
-    assets: 'assets',
   },
   loggerOptions: {},
 }
@@ -31,8 +29,6 @@ export interface MongodbStorageOptions {
   collectionNames?: {
     blocks?: string
     blockMetas?: string
-    transactions?: string
-    assets?: string
   }
   loggerOptions?: LoggerOptions
 }
