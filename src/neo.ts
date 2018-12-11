@@ -7,7 +7,7 @@ import { Api, ApiOptions } from './core/api'
 import { Syncer, SyncerOptions } from './core/syncer'
 import { MemoryStorage, MemoryStorageOptions } from './storages/memory-storage'
 import { MongodbStorage, MongodbStorageOptions } from './storages/mongodb-storage'
-import { BlockMetaAnalyzer, BlockMetaAnalyzerOptions } from './analyzers/block-meta-analyzer'
+import { BlockAnalyzer, BlockAnalyzerOptions } from './analyzers/block-analyzer'
 import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
@@ -18,7 +18,7 @@ const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
   network: C.network.testnet,
   enableSyncer: true,
-  enableBlockMetaAnalyzer: false,
+  enableBlockAnalyzer: false,
   loggerOptions: {},
 }
 
@@ -27,13 +27,13 @@ export interface NeoOptions {
   storageType?: string
   endpoints?: object[]
   enableSyncer?: boolean
-  enableBlockMetaAnalyzer?: boolean
+  enableBlockAnalyzer?: boolean
   nodeOptions?: NodeOptions
   meshOptions?: MeshOptions
   storageOptions?: MemoryStorageOptions | MongodbStorageOptions
   apiOptions?: ApiOptions
   syncerOptions?: SyncerOptions
-  blockMetaAnalyzerOptions?: BlockMetaAnalyzerOptions
+  blockAnalyzerOptions?: BlockAnalyzerOptions
   loggerOptions?: LoggerOptions
 }
 
@@ -42,7 +42,7 @@ export class Neo extends EventEmitter {
   storage?: MemoryStorage | MongodbStorage
   api: Api
   syncer?: Syncer
-  blockMetaAnalyzer?: BlockMetaAnalyzer
+  blockAnalyzer?: BlockAnalyzer
 
   private options: NeoOptions
   private logger: Logger
@@ -61,7 +61,7 @@ export class Neo extends EventEmitter {
     this.storage = this.getStorage()
     this.api = this.getApi()
     this.syncer = this.getSyncer()
-    this.blockMetaAnalyzer = this.getBlockMetaAnalyzer()
+    this.blockAnalyzer = this.getBlockAnalyzer()
 
     this.logger.debug('constructor completes.')
   }
@@ -88,8 +88,8 @@ export class Neo extends EventEmitter {
     if (this.api) {
       this.api.close()
     }
-    if (this.blockMetaAnalyzer) {
-      this.blockMetaAnalyzer.close()
+    if (this.blockAnalyzer) {
+      this.blockAnalyzer.close()
     }
   }
 
@@ -132,10 +132,10 @@ export class Neo extends EventEmitter {
     }
   }
 
-  private getBlockMetaAnalyzer(): BlockMetaAnalyzer | undefined {
-    this.logger.debug('getBlockMetaAnalyzer triggered.')
-    if (this.options.enableBlockMetaAnalyzer) {
-      return new BlockMetaAnalyzer(this.storage, this.options.blockMetaAnalyzerOptions)
+  private getBlockAnalyzer(): BlockAnalyzer | undefined {
+    this.logger.debug('getBlockAnalyzer triggered.')
+    if (this.options.enableBlockAnalyzer) {
+      return new BlockAnalyzer(this.storage, this.options.blockAnalyzerOptions)
     } else {
       return undefined
     }

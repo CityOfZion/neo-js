@@ -6,8 +6,8 @@ import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import { BlockHelper } from '../helpers/block-helper'
 
-const MODULE_NAME = 'BlockMetaAnalyzer'
-const DEFAULT_OPTIONS: BlockMetaAnalyzerOptions = {
+const MODULE_NAME = 'BlockAnalyzer'
+const DEFAULT_OPTIONS: BlockAnalyzerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   startOnInit: true,
@@ -20,7 +20,7 @@ const DEFAULT_OPTIONS: BlockMetaAnalyzerOptions = {
   loggerOptions: {},
 }
 
-export interface BlockMetaAnalyzerOptions {
+export interface BlockAnalyzerOptions {
   minHeight?: number
   maxHeight?: number
   startOnInit?: boolean
@@ -33,19 +33,19 @@ export interface BlockMetaAnalyzerOptions {
   loggerOptions?: LoggerOptions
 }
 
-export class BlockMetaAnalyzer extends EventEmitter {
+export class BlockAnalyzer extends EventEmitter {
   private apiLevel = 1 // A flag to determine version of the metadata (akin to Android API level)
   private _isRunning = false
   private queue: AsyncPriorityQueue<object>
   private blockWritePointer: number = 0
   private storage?: MemoryStorage | MongodbStorage
-  private options: BlockMetaAnalyzerOptions
+  private options: BlockAnalyzerOptions
   private logger: Logger
   private enqueueAnalyzeBlockIntervalId?: NodeJS.Timer
   private blockMetaVerificationIntervalId?: NodeJS.Timer
   private isVerifyingBlockMetas = false
 
-  constructor(storage?: MemoryStorage | MongodbStorage, options: BlockMetaAnalyzerOptions = {}) {
+  constructor(storage?: MemoryStorage | MongodbStorage, options: BlockAnalyzerOptions = {}) {
     super()
 
     // Associate required properties
