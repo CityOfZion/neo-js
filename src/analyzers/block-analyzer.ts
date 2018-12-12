@@ -210,8 +210,16 @@ export class BlockAnalyzer extends EventEmitter {
 
     // Review block metas
     this.logger.debug('Analyzing block metas in storage...')
-    const blockMetaReport = await this.storage!.analyzeBlockMetas(startHeight, endHeight)
-    this.logger.debug('Analyzing block metas complete!')
+    let blockMetaReport: any
+    try {
+      blockMetaReport = await this.storage!.analyzeBlockMetas(startHeight, endHeight)
+      this.logger.debug('Analyzing block metas complete!')
+    } catch (err) {
+      this.logger.info('Analyzing block metas error, but to continue... Message:', err.message)
+      this.emit('blockVerification:complete', { isSuccess: false })
+      this.isVerifyingBlocks = false
+      return
+    }
 
     const all: number[] = []
     for (let i = startHeight; i <= endHeight; i++) {
