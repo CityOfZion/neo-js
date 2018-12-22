@@ -25,6 +25,7 @@ export declare class MemoryStorage extends EventEmitter {
     getHighestBlockMetaHeight(): Promise<number>;
     getHighestBlockMeta(): Promise<object | undefined>;
     setBlockMeta(blockMeta: object): Promise<void>;
+    setTransactionMeta(transactionMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
     close(): Promise<void>;

@@ -9,8 +9,7 @@ export interface MongodbStorageOptions {
     collectionNames?: {
         blocks?: string;
         blockMetas?: string;
-        transactions?: string;
-        assets?: string;
+        transactionMetas?: string;
     };
     loggerOptions?: LoggerOptions;
 }
@@ -18,6 +17,7 @@ export declare class MongodbStorage extends EventEmitter {
     private _isReady;
     private blockDao;
     private blockMetaDao;
+    private transactionMetaDao;
     private options;
     private logger;
     constructor(options?: MongodbStorageOptions);
@@ -35,6 +35,7 @@ export declare class MongodbStorage extends EventEmitter {
     getBlockMetaCount(): Promise<number>;
     getHighestBlockMetaHeight(): Promise<number>;
     setBlockMeta(blockMeta: object): Promise<void>;
+    setTransactionMeta(transactionMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
     close(): Promise<void>;

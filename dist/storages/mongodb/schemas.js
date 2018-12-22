@@ -34,4 +34,12 @@ exports.blockMetaSchema = new mongoose_1.Schema({
     createdBy: String,
     apiLevel: Number,
 }, { timestamps: true });
+exports.transactionMetaSchema = new mongoose_1.Schema({
+    height: Number,
+    time: Number,
+    txid: { type: 'String', unique: true, required: true, dropDups: true },
+    type: String,
+    createdBy: String,
+    apiLevel: Number,
+}, { timestamps: true });
 //# sourceMappingURL=schemas.js.map
