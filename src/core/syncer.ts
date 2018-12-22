@@ -131,6 +131,10 @@ export class Syncer extends EventEmitter {
     clearInterval(this.blockVerificationIntervalId!)
   }
 
+  close() {
+    this.stop()
+  }
+
   private storeBlockCompleteHandler(payload: any) {
     if (payload.isSuccess === false) {
       this.logger.debug('storeBlockCompleteHandler !isSuccess triggered.')
@@ -182,7 +186,7 @@ export class Syncer extends EventEmitter {
         }
       })
       .catch((err: any) => {
-        this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+        this.logger.warn('setBlockWritePointer() failed. Error:', err.message)
       })
   }
 
@@ -223,8 +227,8 @@ export class Syncer extends EventEmitter {
     this.logger.debug('setBlockWritePointer triggered.')
 
     try {
-      const height = await this.storage!.getBlockCount()
-      this.logger.debug('getBlockCount success. height:', height)
+      const height = await this.storage!.getHighestBlockHeight()
+      this.logger.debug('getHighestBlockHeight() success. height:', height)
       if (this.options.minHeight && height < this.options.minHeight) {
         this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`)
         this.blockWritePointer = this.options.minHeight
@@ -232,7 +236,7 @@ export class Syncer extends EventEmitter {
         this.blockWritePointer = height
       }
     } catch (err) {
-      this.logger.warn('storage.getBlockCount() failed. Error:', err.message)
+      this.logger.warn('storage.getHighestBlockHeight() failed. Error:', err.message)
       this.logger.info('Assumed that there are no blocks.')
       this.blockWritePointer = this.options.minHeight!
     }
@@ -245,7 +249,7 @@ export class Syncer extends EventEmitter {
     }, this.options.verifyBlocksIntervalMs!)
   }
 
-  private doBlockVerification() {
+  private async doBlockVerification() {
     this.logger.debug('doBlockVerification triggered.')
     this.emit('blockVerification:init')
 
@@ -264,68 +268,70 @@ export class Syncer extends EventEmitter {
     this.isVerifyingBlocks = true
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
+
     this.logger.debug('Analyzing blocks in storage...')
-    this.storage!.analyzeBlocks(startHeight, endHeight)
-      .then((res: object[]) => {
-        this.logger.debug('Analyzing blocks complete!')
+    let blockReport: any
+    try {
+      blockReport = await this.storage!.analyzeBlocks(startHeight, endHeight)
+      this.logger.debug('Analyzing blocks complete!')
+    } catch (err) {
+      this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message)
+      this.emit('blockVerification:complete', { isSuccess: false })
+      this.isVerifyingBlocks = false
+      return
+    }
 
-        const all: number[] = []
-        for (let i = startHeight; i <= endHeight; i++) {
-          all.push(i)
-        }
+    const all: number[] = []
+    for (let i = startHeight; i <= endHeight; i++) {
+      all.push(i)
+    }
 
-        const availableBlocks: number[] = map(res, (item: any) => item._id)
-        this.logger.info('Blocks available count:', availableBlocks.length)
+    const availableBlocks: number[] = map(blockReport, (item: any) => item._id)
+    this.logger.info('Blocks available count:', availableBlocks.length)
 
-        // Enqueue missing block heights
-        const missingBlocks = difference(all, availableBlocks)
-        this.logger.info('Blocks missing count:', missingBlocks.length)
-        this.emit('blockVerification:missingBlocks', { count: missingBlocks.length })
-        if (this.options.toSyncForMissingBlocks) {
-          missingBlocks.forEach((height: number) => {
-            this.enqueueStoreBlock(height, this.options.missingEnqueueStoreBlockPriority!)
-          })
-        }
-
-        // Request pruning of excessive blocks
-        const excessiveBlocks = map(filter(res, (item: any) => item.count > this.options.blockRedundancy!), (item: any) => item._id)
-        this.logger.info('Blocks excessive redundancy count:', excessiveBlocks.length)
-        this.emit('blockVerification:excessiveBlocks', { count: excessiveBlocks.length })
-        if (this.options.toPruneRedundantBlocks) {
-          const takenBlocks = take(excessiveBlocks, this.options.maxPruneChunkSize!)
-          takenBlocks.forEach((height: number) => {
-            this.enqueuePruneBlock(height, this.options.blockRedundancy!, this.options.enqueuePruneBlockPriority!)
-          })
-        }
-
-        // Enqueue for redundancy blocks
-        if (this.options.blockRedundancy! > 1) {
-          const insufficientBlocks = map(filter(res, (item: any) => item.count < this.options.blockRedundancy!), (item: any) => item._id)
-          this.logger.info('Blocks insufficient redundancy count:', insufficientBlocks.length)
-          // TODO
-          throw new Error('Not Implemented.')
-        }
-
-        // Check if fully sync'ed
-        const node = this.mesh.getHighestNode()
-        if (node) {
-          if (this.isReachedMaxHeight() || this.isReachedHighestBlock(node)) {
-            if (missingBlocks.length === 0) {
-              this.logger.info('Storage is fully synced and up to date.')
-              this.emit('upToDate')
-            }
-          }
-        }
-
-        // Conclude
-        this.isVerifyingBlocks = false
-        this.emit('blockVerification:complete', { isSuccess: true })
+    // Enqueue missing block heights
+    const missingBlocks = difference(all, availableBlocks)
+    this.logger.info('Blocks missing count:', missingBlocks.length)
+    this.emit('blockVerification:missingBlocks', { count: missingBlocks.length })
+    if (this.options.toSyncForMissingBlocks) {
+      missingBlocks.forEach((height: number) => {
+        this.enqueueStoreBlock(height, this.options.missingEnqueueStoreBlockPriority!)
       })
-      .catch((err: any) => {
-        this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message)
-        this.emit('blockVerification:complete', { isSuccess: false })
-        this.isVerifyingBlocks = false
+    }
+
+    // Request pruning of excessive blocks
+    const excessiveBlocks = map(filter(blockReport, (item: any) => item.count > this.options.blockRedundancy!), (item: any) => item._id)
+    this.logger.info('Blocks excessive redundancy count:', excessiveBlocks.length)
+    this.emit('blockVerification:excessiveBlocks', { count: excessiveBlocks.length })
+    if (this.options.toPruneRedundantBlocks) {
+      const takenBlocks = take(excessiveBlocks, this.options.maxPruneChunkSize!)
+      takenBlocks.forEach((height: number) => {
+        this.enqueuePruneBlock(height, this.options.blockRedundancy!, this.options.enqueuePruneBlockPriority!)
       })
+    }
+
+    // Enqueue for redundancy blocks
+    if (this.options.blockRedundancy! > 1) {
+      const insufficientBlocks = map(filter(blockReport, (item: any) => item.count < this.options.blockRedundancy!), (item: any) => item._id)
+      this.logger.info('Blocks insufficient redundancy count:', insufficientBlocks.length)
+      // TODO
+      throw new Error('Not Implemented.')
+    }
+
+    // Check if fully sync'ed
+    const node = this.mesh.getHighestNode()
+    if (node) {
+      if (this.isReachedMaxHeight() || this.isReachedHighestBlock(node)) {
+        if (missingBlocks.length === 0) {
+          this.logger.info('Storage is fully synced and up to date.')
+          this.emit('upToDate')
+        }
+      }
+    }
+
+    // Conclude
+    this.isVerifyingBlocks = false
+    this.emit('blockVerification:complete', { isSuccess: true })
   }
 
   private increaseBlockWritePointer() {

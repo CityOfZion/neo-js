@@ -83,6 +83,9 @@ class Syncer extends events_1.EventEmitter {
         clearInterval(this.enqueueStoreBlockIntervalId);
         clearInterval(this.blockVerificationIntervalId);
     }
+    close() {
+        this.stop();
+    }
     storeBlockCompleteHandler(payload) {
         if (payload.isSuccess === false) {
             this.logger.debug('storeBlockCompleteHandler !isSuccess triggered.');
@@ -129,7 +132,7 @@ class Syncer extends events_1.EventEmitter {
             }
         })
             .catch((err) => {
-            this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
+            this.logger.warn('setBlockWritePointer() failed. Error:', err.message);
         });
     }
     doEnqueueStoreBlock() {
@@ -162,8 +165,8 @@ class Syncer extends events_1.EventEmitter {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('setBlockWritePointer triggered.');
             try {
-                const height = yield this.storage.getBlockCount();
-                this.logger.debug('getBlockCount success. height:', height);
+                const height = yield this.storage.getHighestBlockHeight();
+                this.logger.debug('getHighestBlockHeight() success. height:', height);
                 if (this.options.minHeight && height < this.options.minHeight) {
                     this.logger.info(`storage height is smaller than designated minHeight. BlockWritePointer will be set to minHeight [${this.options.minHeight}] instead.`);
                     this.blockWritePointer = this.options.minHeight;
@@ -173,7 +176,7 @@ class Syncer extends events_1.EventEmitter {
                 }
             }
             catch (err) {
-                this.logger.warn('storage.getBlockCount() failed. Error:', err.message);
+                this.logger.warn('storage.getHighestBlockHeight() failed. Error:', err.message);
                 this.logger.info('Assumed that there are no blocks.');
                 this.blockWritePointer = this.options.minHeight;
             }
@@ -186,27 +189,36 @@ class Syncer extends events_1.EventEmitter {
         }, this.options.verifyBlocksIntervalMs);
     }
     doBlockVerification() {
-        this.logger.debug('doBlockVerification triggered.');
-        this.emit('blockVerification:init');
-        this.logger.info('storeQueue.length:', this.storeQueue.length());
-        this.logger.info('pruneQueue.length:', this.pruneQueue.length());
-        if (this.isVerifyingBlocks) {
-            this.logger.info('doBlockVerification() is already running. Skip this turn.');
-            this.emit('blockVerification:complete', { isSkipped: true });
-            return;
-        }
-        this.isVerifyingBlocks = true;
-        const startHeight = this.options.minHeight;
-        const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
-        this.logger.debug('Analyzing blocks in storage...');
-        this.storage.analyzeBlocks(startHeight, endHeight)
-            .then((res) => {
-            this.logger.debug('Analyzing blocks complete!');
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('doBlockVerification triggered.');
+            this.emit('blockVerification:init');
+            this.logger.info('storeQueue.length:', this.storeQueue.length());
+            this.logger.info('pruneQueue.length:', this.pruneQueue.length());
+            if (this.isVerifyingBlocks) {
+                this.logger.info('doBlockVerification() is already running. Skip this turn.');
+                this.emit('blockVerification:complete', { isSkipped: true });
+                return;
+            }
+            this.isVerifyingBlocks = true;
+            const startHeight = this.options.minHeight;
+            const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
+            this.logger.debug('Analyzing blocks in storage...');
+            let blockReport;
+            try {
+                blockReport = yield this.storage.analyzeBlocks(startHeight, endHeight);
+                this.logger.debug('Analyzing blocks complete!');
+            }
+            catch (err) {
+                this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message);
+                this.emit('blockVerification:complete', { isSuccess: false });
+                this.isVerifyingBlocks = false;
+                return;
+            }
             const all = [];
             for (let i = startHeight; i <= endHeight; i++) {
                 all.push(i);
             }
-            const availableBlocks = lodash_1.map(res, (item) => item._id);
+            const availableBlocks = lodash_1.map(blockReport, (item) => item._id);
             this.logger.info('Blocks available count:', availableBlocks.length);
             const missingBlocks = lodash_1.difference(all, availableBlocks);
             this.logger.info('Blocks missing count:', missingBlocks.length);
@@ -216,7 +228,7 @@ class Syncer extends events_1.EventEmitter {
                     this.enqueueStoreBlock(height, this.options.missingEnqueueStoreBlockPriority);
                 });
             }
-            const excessiveBlocks = lodash_1.map(lodash_1.filter(res, (item) => item.count > this.options.blockRedundancy), (item) => item._id);
+            const excessiveBlocks = lodash_1.map(lodash_1.filter(blockReport, (item) => item.count > this.options.blockRedundancy), (item) => item._id);
             this.logger.info('Blocks excessive redundancy count:', excessiveBlocks.length);
             this.emit('blockVerification:excessiveBlocks', { count: excessiveBlocks.length });
             if (this.options.toPruneRedundantBlocks) {
@@ -226,7 +238,7 @@ class Syncer extends events_1.EventEmitter {
                 });
             }
             if (this.options.blockRedundancy > 1) {
-                const insufficientBlocks = lodash_1.map(lodash_1.filter(res, (item) => item.count < this.options.blockRedundancy), (item) => item._id);
+                const insufficientBlocks = lodash_1.map(lodash_1.filter(blockReport, (item) => item.count < this.options.blockRedundancy), (item) => item._id);
                 this.logger.info('Blocks insufficient redundancy count:', insufficientBlocks.length);
                 throw new Error('Not Implemented.');
             }
@@ -241,11 +253,6 @@ class Syncer extends events_1.EventEmitter {
             }
             this.isVerifyingBlocks = false;
             this.emit('blockVerification:complete', { isSuccess: true });
-        })
-            .catch((err) => {
-            this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message);
-            this.emit('blockVerification:complete', { isSuccess: false });
-            this.isVerifyingBlocks = false;
         });
     }
     increaseBlockWritePointer() {

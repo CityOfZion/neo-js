@@ -42,6 +42,7 @@ export declare class Syncer extends EventEmitter {
     isRunning(): boolean;
     start(): void;
     stop(): void;
+    close(): void;
     private storeBlockCompleteHandler;
     private validateOptionalParameters;
     private getPriorityQueue;

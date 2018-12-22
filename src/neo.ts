@@ -7,7 +7,7 @@ import { Api, ApiOptions } from './core/api'
 import { Syncer, SyncerOptions } from './core/syncer'
 import { MemoryStorage, MemoryStorageOptions } from './storages/memory-storage'
 import { MongodbStorage, MongodbStorageOptions } from './storages/mongodb-storage'
-import { BlockMetaAnalyzer, BlockMetaAnalyzerOptions } from './analyzers/block-meta-analyzer'
+import { BlockAnalyzer, BlockAnalyzerOptions } from './analyzers/block-analyzer'
 import { EndpointValidator } from './validators/endpoint-validator'
 import profiles from './common/profiles'
 import C from './common/constants'
@@ -17,7 +17,8 @@ const version = require('../package.json').version // tslint:disable-line
 const MODULE_NAME = 'Neo'
 const DEFAULT_OPTIONS: NeoOptions = {
   network: C.network.testnet,
-  enableBlockMetaAnalyzer: false,
+  enableSyncer: true,
+  enableBlockAnalyzer: false,
   loggerOptions: {},
 }
 
@@ -25,13 +26,14 @@ export interface NeoOptions {
   network?: string
   storageType?: string
   endpoints?: object[]
-  enableBlockMetaAnalyzer?: boolean
+  enableSyncer?: boolean
+  enableBlockAnalyzer?: boolean
   nodeOptions?: NodeOptions
   meshOptions?: MeshOptions
   storageOptions?: MemoryStorageOptions | MongodbStorageOptions
   apiOptions?: ApiOptions
   syncerOptions?: SyncerOptions
-  blockMetaAnalyzerOptions?: BlockMetaAnalyzerOptions
+  blockAnalyzerOptions?: BlockAnalyzerOptions
   loggerOptions?: LoggerOptions
 }
 
@@ -39,8 +41,8 @@ export class Neo extends EventEmitter {
   mesh: Mesh
   storage?: MemoryStorage | MongodbStorage
   api: Api
-  syncer: Syncer
-  blockMetaAnalyzer: BlockMetaAnalyzer | undefined
+  syncer?: Syncer
+  blockAnalyzer?: BlockAnalyzer
 
   private options: NeoOptions
   private logger: Logger
@@ -59,7 +61,7 @@ export class Neo extends EventEmitter {
     this.storage = this.getStorage()
     this.api = this.getApi()
     this.syncer = this.getSyncer()
-    this.blockMetaAnalyzer = this.getBlockMetaAnalyzer()
+    this.blockAnalyzer = this.getBlockAnalyzer()
 
     this.logger.debug('constructor completes.')
   }
@@ -75,19 +77,19 @@ export class Neo extends EventEmitter {
   close() {
     this.logger.debug('close triggered.')
     if (this.syncer) {
-      this.syncer.stop()
+      this.syncer.close()
     }
     if (this.mesh) {
       this.mesh.close()
     }
     if (this.storage) {
-      this.storage.disconnect()
+      this.storage.close()
     }
     if (this.api) {
       this.api.close()
     }
-    if (this.blockMetaAnalyzer) {
-      this.blockMetaAnalyzer.stop()
+    if (this.blockAnalyzer) {
+      this.blockAnalyzer.close()
     }
   }
 
@@ -121,15 +123,19 @@ export class Neo extends EventEmitter {
     return new Api(this.mesh, this.storage, this.options.apiOptions)
   }
 
-  private getSyncer(): Syncer {
+  private getSyncer(): Syncer | undefined {
     this.logger.debug('getSyncer triggered.')
-    return new Syncer(this.mesh, this.storage, this.options.syncerOptions)
+    if (this.options.enableSyncer) {
+      return new Syncer(this.mesh, this.storage, this.options.syncerOptions)
+    } else {
+      return undefined
+    }
   }
 
-  private getBlockMetaAnalyzer(): BlockMetaAnalyzer | undefined {
-    this.logger.debug('getBlockMetaAnalyzer triggered.')
-    if (this.options.enableBlockMetaAnalyzer) {
-      return new BlockMetaAnalyzer(this.storage, this.options.blockMetaAnalyzerOptions)
+  private getBlockAnalyzer(): BlockAnalyzer | undefined {
+    this.logger.debug('getBlockAnalyzer triggered.')
+    if (this.options.enableBlockAnalyzer) {
+      return new BlockAnalyzer(this.storage, this.options.blockAnalyzerOptions)
     } else {
       return undefined
     }

@@ -60,8 +60,8 @@ export class BlockDao {
     await this.model(data).save()
   }
 
-  async removeById(id: string): Promise<void> {
-    await this.model.remove({ _id: id }).exec()
+  async deleteManyById(id: string): Promise<void> {
+    await this.model.deleteMany({ _id: id }).exec()
   }
 
   async analyze(startHeight: number, endHeight: number): Promise<object[]> {

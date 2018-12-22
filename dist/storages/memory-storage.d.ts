@@ -13,6 +13,7 @@ export declare class MemoryStorage extends EventEmitter {
     constructor(options?: MemoryStorageOptions);
     isReady(): boolean;
     getBlockCount(): Promise<number>;
+    getHighestBlockHeight(): Promise<number>;
     setBlockCount(height: number): Promise<void>;
     countBlockRedundancy(height: number): Promise<number>;
     getBlock(height: number): Promise<object>;
@@ -24,9 +25,10 @@ export declare class MemoryStorage extends EventEmitter {
     getHighestBlockMetaHeight(): Promise<number>;
     getHighestBlockMeta(): Promise<object | undefined>;
     setBlockMeta(blockMeta: object): Promise<void>;
+    setTransactionMeta(transactionMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
-    disconnect(): Promise<void>;
+    close(): Promise<void>;
     private setReady;
     private validateOptionalParameters;
 }

@@ -40,3 +40,15 @@ export const blockMetaSchema = new Schema(
   },
   { timestamps: true }
 )
+
+export const transactionMetaSchema = new Schema(
+  {
+    height: Number,
+    time: Number,
+    txid: { type: 'String', unique: true, required: true, dropDups: true },
+    type: String,
+    createdBy: String,
+    apiLevel: Number,
+  },
+  { timestamps: true }
+)

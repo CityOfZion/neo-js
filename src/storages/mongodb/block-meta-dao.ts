@@ -34,7 +34,7 @@ export class BlockMetaDao {
   }
 
   async removeByHeight(height: number): Promise<void> {
-    return await this.model.remove({ height }).exec()
+    return await this.model.deleteMany({ height }).exec()
   }
 
   async analyze(startHeight: number, endHeight: number): Promise<object[]> {

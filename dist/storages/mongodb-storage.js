@@ -15,6 +15,7 @@ const mongoose_1 = require("mongoose");
 const mongodb_validator_1 = require("../validators/mongodb-validator");
 const block_dao_1 = require("./mongodb/block-dao");
 const block_meta_dao_1 = require("./mongodb/block-meta-dao");
+const transaction_meta_dao_1 = require("./mongodb/transaction-meta-dao");
 const mongoose = new mongoose_1.Mongoose();
 mongoose.Promise = global.Promise;
 const MODULE_NAME = 'MongodbStorage';
@@ -25,8 +26,7 @@ const DEFAULT_OPTIONS = {
     collectionNames: {
         blocks: 'blocks',
         blockMetas: 'block_metas',
-        transactions: 'transactions',
-        assets: 'assets',
+        transactionMetas: 'transaction_metas',
     },
     loggerOptions: {},
 };
@@ -39,6 +39,7 @@ class MongodbStorage extends events_1.EventEmitter {
         this.logger = new node_log_it_1.Logger(MODULE_NAME, this.options.loggerOptions);
         this.blockDao = new block_dao_1.BlockDao(mongoose, this.options.collectionNames.blocks);
         this.blockMetaDao = new block_meta_dao_1.BlockMetaDao(mongoose, this.options.collectionNames.blockMetas);
+        this.transactionMetaDao = new transaction_meta_dao_1.TransactionMetaDao(mongoose, this.options.collectionNames.transactionMetas);
         this.initConnection();
         this.on('ready', this.readyHandler.bind(this));
         this.logger.debug('constructor completes.');
@@ -47,6 +48,11 @@ class MongodbStorage extends events_1.EventEmitter {
         return this._isReady;
     }
     getBlockCount() {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.');
+        });
+    }
+    getHighestBlockHeight() {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('getBlockCount triggered.');
             return yield this.blockDao.getHighestHeight();
@@ -122,11 +128,11 @@ class MongodbStorage extends events_1.EventEmitter {
                 toPrune.forEach((doc) => __awaiter(this, void 0, void 0, function* () {
                     this.logger.debug('Removing document id:', doc._id);
                     try {
-                        yield this.blockDao.removeById(doc._id);
-                        this.logger.debug('blockModel.remove() execution succeed.');
+                        yield this.blockDao.deleteManyById(doc._id);
+                        this.logger.debug('blockDao.deleteManyById() execution succeed.');
                     }
                     catch (err) {
-                        this.logger.debug('blockModel.remove() execution failed. error:', err.message);
+                        this.logger.debug('blockDao.deleteManyById() execution failed. error:', err.message);
                     }
                 }));
             }
@@ -157,6 +163,13 @@ class MongodbStorage extends events_1.EventEmitter {
             return yield this.blockMetaDao.save(data);
         });
     }
+    setTransactionMeta(transactionMeta) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('setTransactionMeta triggered.');
+            const data = Object.assign({ createdBy: this.options.userAgent }, transactionMeta);
+            return yield this.transactionMetaDao.save(data);
+        });
+    }
     analyzeBlockMetas(startHeight, endHeight) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('analyzeBlockMetas triggered.');
@@ -169,9 +182,9 @@ class MongodbStorage extends events_1.EventEmitter {
             return yield this.blockMetaDao.removeByHeight(height);
         });
     }
-    disconnect() {
+    close() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('disconnect triggered.');
+            this.logger.debug('close triggered.');
             return yield mongoose.disconnect();
         });
     }

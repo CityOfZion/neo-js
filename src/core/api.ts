@@ -64,7 +64,7 @@ export class Api extends EventEmitter {
 
     let blockHeight: number | undefined
     try {
-      blockHeight = await this.storage!.getBlockCount()
+      blockHeight = await this.storage!.getHighestBlockHeight()
       return blockHeight
     } catch (err) {
       // Suppress error and continue

@@ -41,7 +41,14 @@ export class MemoryStorage extends EventEmitter {
     return this._isReady
   }
 
+  /**
+   * @deprecated
+   */
   async getBlockCount(): Promise<number> {
+    throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.')
+  }
+
+  async getHighestBlockHeight(): Promise<number> {
     if (this._blockHeight) {
       return this._blockHeight
     } else {
@@ -98,6 +105,10 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
+  async setTransactionMeta(transactionMeta: object): Promise<void> {
+    throw new Error('Not implemented.')
+  }
+
   async analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     throw new Error('Not implemented.')
   }
@@ -106,8 +117,8 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
-  async disconnect(): Promise<void> {
-    this.logger.debug('disconnect triggered.')
+  async close(): Promise<void> {
+    this.logger.debug('close triggered.')
   }
 
   private setReady() {

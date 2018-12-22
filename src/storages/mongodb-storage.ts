@@ -5,6 +5,7 @@ import { Mongoose } from 'mongoose'
 import { MongodbValidator } from '../validators/mongodb-validator'
 import { BlockDao } from './mongodb/block-dao'
 import { BlockMetaDao } from './mongodb/block-meta-dao'
+import { TransactionMetaDao } from './mongodb/transaction-meta-dao'
 
 const mongoose = new Mongoose()
 mongoose.Promise = global.Promise // Explicitly supply promise library (http://mongoosejs.com/docs/promises.html)
@@ -17,8 +18,7 @@ const DEFAULT_OPTIONS: MongodbStorageOptions = {
   collectionNames: {
     blocks: 'blocks',
     blockMetas: 'block_metas',
-    transactions: 'transactions',
-    assets: 'assets',
+    transactionMetas: 'transaction_metas',
   },
   loggerOptions: {},
 }
@@ -31,8 +31,7 @@ export interface MongodbStorageOptions {
   collectionNames?: {
     blocks?: string
     blockMetas?: string
-    transactions?: string
-    assets?: string
+    transactionMetas?: string
   }
   loggerOptions?: LoggerOptions
 }
@@ -41,6 +40,7 @@ export class MongodbStorage extends EventEmitter {
   private _isReady = false
   private blockDao: BlockDao
   private blockMetaDao: BlockMetaDao
+  private transactionMetaDao: TransactionMetaDao
   private options: MongodbStorageOptions
   private logger: Logger
 
@@ -55,6 +55,7 @@ export class MongodbStorage extends EventEmitter {
     this.logger = new Logger(MODULE_NAME, this.options.loggerOptions)
     this.blockDao = new BlockDao(mongoose, this.options.collectionNames!.blocks!)
     this.blockMetaDao = new BlockMetaDao(mongoose, this.options.collectionNames!.blockMetas!)
+    this.transactionMetaDao = new TransactionMetaDao(mongoose, this.options.collectionNames!.transactionMetas!)
     this.initConnection()
 
     // Event handlers
@@ -67,8 +68,14 @@ export class MongodbStorage extends EventEmitter {
     return this._isReady
   }
 
+  /**
+   * @deprecated
+   */
   async getBlockCount(): Promise<number> {
-    // TODO: Propose more accurate renaming
+    throw new Error('getBlockCount() method is deprecated. Please use getHighestBlockHeight() instead.')
+  }
+
+  async getHighestBlockHeight(): Promise<number> {
     this.logger.debug('getBlockCount triggered.')
     return await this.blockDao.getHighestHeight()
   }
@@ -144,10 +151,10 @@ export class MongodbStorage extends EventEmitter {
       toPrune.forEach(async (doc: any) => {
         this.logger.debug('Removing document id:', doc._id)
         try {
-          await this.blockDao.removeById(doc._id)
-          this.logger.debug('blockModel.remove() execution succeed.')
+          await this.blockDao.deleteManyById(doc._id)
+          this.logger.debug('blockDao.deleteManyById() execution succeed.')
         } catch (err) {
-          this.logger.debug('blockModel.remove() execution failed. error:', err.message)
+          this.logger.debug('blockDao.deleteManyById() execution failed. error:', err.message)
           // Suppress error and continue
         }
       })
@@ -179,6 +186,16 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.save(data)
   }
 
+  async setTransactionMeta(transactionMeta: object): Promise<void> {
+    this.logger.debug('setTransactionMeta triggered.')
+
+    const data = {
+      createdBy: this.options.userAgent, // neo-js's user agent
+      ...transactionMeta,
+    }
+    return await this.transactionMetaDao.save(data)
+  }
+
   async analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]> {
     this.logger.debug('analyzeBlockMetas triggered.')
     return await this.blockMetaDao.analyze(startHeight, endHeight)
@@ -189,8 +206,8 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.removeByHeight(height)
   }
 
-  async disconnect(): Promise<void> {
-    this.logger.debug('disconnect triggered.')
+  async close(): Promise<void> {
+    this.logger.debug('close triggered.')
     return await mongoose.disconnect()
   }
 

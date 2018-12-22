@@ -43,7 +43,7 @@ class Api extends events_1.EventEmitter {
             }
             let blockHeight;
             try {
-                blockHeight = yield this.storage.getBlockCount();
+                blockHeight = yield this.storage.getHighestBlockHeight();
                 return blockHeight;
             }
             catch (err) {
