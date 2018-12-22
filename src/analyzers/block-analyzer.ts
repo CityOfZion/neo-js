@@ -238,7 +238,9 @@ export class BlockAnalyzer extends EventEmitter {
     })
 
     // Truncate legacy block meta right away
-    const legacyBlockObjs = filter(blockMetaReport, (item: any) => { return item.apiLevel < this.BLOCK_META_API_LEVEL })
+    const legacyBlockObjs = filter(blockMetaReport, (item: any) => {
+      return item.apiLevel < this.BLOCK_META_API_LEVEL
+    })
     const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
     this.logger.info('Legacy block count:', legacyBlockObjs.length)
     this.emit('blockVerification:legacyBlocks', { count: legacyBlocks.length })

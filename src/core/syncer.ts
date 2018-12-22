@@ -273,7 +273,7 @@ export class Syncer extends EventEmitter {
     let blockReport: any
     try {
       blockReport = await this.storage!.analyzeBlocks(startHeight, endHeight)
-      this.logger.debug('Analyzing blocks complete!')  
+      this.logger.debug('Analyzing blocks complete!')
     } catch (err) {
       this.logger.info('storage.analyzeBlocks error, but to continue... Message:', err.message)
       this.emit('blockVerification:complete', { isSuccess: false })
