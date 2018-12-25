@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, filter, difference } from 'lodash'
+import { merge, map, filter, difference, isArray } from 'lodash'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import { BlockHelper } from '../helpers/block-helper'
@@ -373,12 +373,18 @@ export class BlockAnalyzer extends EventEmitter {
     const height: number = (attrs as any).height
     const time: number = (attrs as any).time
     const tx: any = (attrs as any).transaction
-
+    const voutCount: number | undefined = isArray(tx.vout) ? tx.vout.length : undefined
+    const vinCount: number | undefined = isArray(tx.vin) ? tx.vin.length : undefined
     const transactionMeta = {
       height,
       time,
-      txid: tx.txid,
+      transactionId: tx.txid,
       type: tx.type,
+      size: tx.size,
+      networkFee: tx.net_fee,
+      systemFee: tx.sys_fee,
+      voutCount,
+      vinCount,
       apiLevel: this.TRANSACTION_META_API_LEVEL,
     }
 
