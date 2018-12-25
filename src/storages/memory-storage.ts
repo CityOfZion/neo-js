@@ -117,6 +117,15 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
+
+  async countLegacyTransactionMeta(targetApiVersion: number): Promise<number> {
+    throw new Error('Not implemented.')
+  }
+
+  async pruneLegacyTransactionMeta(targetApiVersion: number): Promise<void> {
+    throw new Error('Not implemented.')
+  }
+
   async close(): Promise<void> {
     this.logger.debug('close triggered.')
   }

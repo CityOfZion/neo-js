@@ -140,7 +140,7 @@ export class BlockAnalyzer extends EventEmitter {
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'attrs:', attrs, 'Message:', err.message)
+          this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })
@@ -249,9 +249,20 @@ export class BlockAnalyzer extends EventEmitter {
       this.storage!.removeBlockMetaByHeight(height)
     })
 
+    // Truncate legacy transaction meta right away
+    let hasLegacyTransactionMetas = false
+    if (this.options.toEvaluateTransactions) {
+      const legacyCount = await this.storage!.countLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL)
+      this.logger.info('Legacy TX count:', legacyCount)
+      if (legacyCount > 0) {
+        hasLegacyTransactionMetas = true
+        this.storage!.pruneLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL) // Allow parallelism
+      }
+    }
+
     // Check if fully sync'ed
     if (this.isReachedMaxHeight()) {
-      if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
+      if (missingBlocks.length === 0 && legacyBlocks.length === 0 && !hasLegacyTransactionMetas) {
         this.logger.info('BlockAnalyzer is up to date.')
         this.emit('upToDate')
       }

@@ -206,6 +206,14 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.removeByHeight(height)
   }
 
+  async countLegacyTransactionMeta(targetApiLevel: number): Promise<number> {
+    return await this.transactionMetaDao.countByBelowApiLevel(targetApiLevel)
+  }
+
+  async pruneLegacyTransactionMeta(targetApiLevel: number): Promise<void> {
+    return await this.transactionMetaDao.removeByBelowApiLevel(targetApiLevel)
+  }
+
   async close(): Promise<void> {
     this.logger.debug('close triggered.')
     return await mongoose.disconnect()

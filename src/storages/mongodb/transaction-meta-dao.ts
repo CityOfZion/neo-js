@@ -16,6 +16,18 @@ export class TransactionMetaDao {
     return await this.model(data).save()
   }
 
+  async countByBelowApiLevel(apiLevel: number): Promise<number> {
+    return await this.model.countDocuments({
+      apiLevel: { $lt: apiLevel },
+    }).exec()
+  }
+
+  async removeByBelowApiLevel(apiLevel: number): Promise<void> {
+    return await this.model.deleteMany({
+      apiLevel: { $lt: apiLevel },
+    }).exec()
+  }
+
   private getModel(mongoose: Mongoose, collectionName: string) {
     const schema = transactionMetaSchema
     return mongoose.models[collectionName] || mongoose.model(collectionName, schema)
