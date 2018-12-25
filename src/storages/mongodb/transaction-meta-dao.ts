@@ -1,5 +1,6 @@
 import { Mongoose } from 'mongoose'
 import { transactionMetaSchema } from './schemas'
+import { MongodbUtils } from './utils'
 
 export class TransactionMetaDao {
   private model: any
@@ -26,6 +27,10 @@ export class TransactionMetaDao {
     return await this.model.deleteMany({
       apiLevel: { $lt: apiLevel },
     }).exec()
+  }
+
+  async reviewIndex(key: string, keyObj: object): Promise<void> {
+    return await MongodbUtils.reviewIndex(this.model, key, keyObj)
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {

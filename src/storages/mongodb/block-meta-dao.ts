@@ -1,5 +1,6 @@
 import { Mongoose } from 'mongoose'
 import { blockMetaSchema } from './schemas'
+import { MongodbUtils } from './utils'
 
 export class BlockMetaDao {
   private model: any
@@ -57,6 +58,10 @@ export class BlockMetaDao {
         'height apiLevel'
       )
       .exec()
+  }
+
+  async reviewIndex(key: string, keyObj: object): Promise<void> {
+    return await MongodbUtils.reviewIndex(this.model, key, keyObj)
   }
 
   private getModel(mongoose: Mongoose, collectionName: string) {
