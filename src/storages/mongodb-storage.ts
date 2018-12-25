@@ -261,8 +261,8 @@ export class MongodbStorage extends EventEmitter {
     this.emit('reviewIndexes:init')
 
     try {
-      await this.reviewIndexForBlockHeight()
-      await this.reviewIndexForTransactionId()
+      await this.reviewBlockIndexForBlockHeight()
+      await this.reviewBlockIndexForTransactionId()
       this.logger.debug('Review indexes succeed.')
       this.emit('reviewIndexes:complete', { isSuccess: true })
     } catch (err) {
@@ -271,16 +271,16 @@ export class MongodbStorage extends EventEmitter {
     }
   }
 
-  private async reviewIndexForBlockHeight(): Promise<void> {
-    this.logger.debug('reviewIndexForBlockHeight triggered.')
+  private async reviewBlockIndexForBlockHeight(): Promise<void> {
+    this.logger.debug('reviewBlockIndexForBlockHeight triggered.')
 
     const key = 'height_1_createdAt_-1'
     const keyObj = { height: 1, createdAt: -1 }
     return await this.blockDao.reviewIndex(key, keyObj)
   }
 
-  private async reviewIndexForTransactionId(): Promise<void> {
-    this.logger.debug('reviewIndexForTransactionId triggered.')
+  private async reviewBlockIndexForTransactionId(): Promise<void> {
+    this.logger.debug('reviewBlockIndexForTransactionId triggered.')
 
     const key = 'payload.tx.txid_1'
     const keyObj = { 'payload.tx.txid': 1 }
