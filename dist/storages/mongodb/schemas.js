@@ -37,8 +37,13 @@ exports.blockMetaSchema = new mongoose_1.Schema({
 exports.transactionMetaSchema = new mongoose_1.Schema({
     height: Number,
     time: Number,
-    txid: { type: 'String', unique: true, required: true, dropDups: true },
+    transactionId: { type: 'String', unique: true, required: true, dropDups: true },
     type: String,
+    size: Number,
+    networkFee: Number,
+    systemFee: Number,
+    voutCount: Number,
+    vinCount: Number,
     createdBy: String,
     apiLevel: Number,
 }, { timestamps: true });

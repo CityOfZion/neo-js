@@ -8,5 +8,6 @@ export declare class BlockMetaDao {
     save(data: object): Promise<void>;
     removeByHeight(height: number): Promise<void>;
     analyze(startHeight: number, endHeight: number): Promise<object[]>;
+    reviewIndex(key: string, keyObj: object): Promise<void>;
     private getModel;
 }

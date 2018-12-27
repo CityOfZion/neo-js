@@ -17,7 +17,10 @@ export interface BlockAnalyzerOptions {
     maxTransactionQueueLength?: number;
     standardEvaluateBlockPriority?: number;
     missingEvaluateBlockPriority?: number;
+    legacyEvaluateBlockPriority?: number;
     standardEvaluateTransactionPriority?: number;
+    missingEvaluateTransactionPriority?: number;
+    legacyEvaluateTransactionPriority?: number;
     loggerOptions?: LoggerOptions;
 }
 export declare class BlockAnalyzer extends EventEmitter {
@@ -44,6 +47,8 @@ export declare class BlockAnalyzer extends EventEmitter {
     private setBlockWritePointer;
     private initBlockVerification;
     private doBlockVerification;
+    private verifyBlockMetas;
+    private verifyTransactionMetas;
     private doEnqueueEvaluateBlock;
     private isReachedMaxHeight;
     private isReachedMaxQueueLength;
@@ -51,5 +56,7 @@ export declare class BlockAnalyzer extends EventEmitter {
     private enqueueEvaluateBlock;
     private evaluateBlock;
     private enqueueEvaluateTransaction;
+    private enqueueEvaluateTransactionWithHeight;
     private evaluateTransaction;
+    private getNumberArray;
 }

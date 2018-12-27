@@ -37,13 +37,21 @@ export declare class MongodbStorage extends EventEmitter {
     setBlockMeta(blockMeta: object): Promise<void>;
     setTransactionMeta(transactionMeta: object): Promise<void>;
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
+    analyzeTransactionMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
+    pruneLegacyTransactionMeta(targetApiLevel: number): Promise<void>;
     close(): Promise<void>;
     private readyHandler;
     private validateOptionalParameters;
     private initConnection;
     private setReady;
     private reviewIndexes;
-    private reviewIndexForBlockHeight;
-    private reviewIndexForTransactionId;
+    private reviewBlockIndexForHeight;
+    private reviewBlockIndexForTransactionId;
+    private reviewBlockMetaIndexForHeight;
+    private reviewBlockMetaIndexForTime;
+    private reviewTransactionMetaIndexForHeight;
+    private reviewTransactionMetaIndexForTime;
+    private reviewTransactionMetaIndexForTransactionId;
+    private reviewTransactionMetaIndexForType;
 }

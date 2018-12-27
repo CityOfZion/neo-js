@@ -115,7 +115,17 @@ class MemoryStorage extends events_1.EventEmitter {
             throw new Error('Not implemented.');
         });
     }
+    analyzeTransactionMetas(startHeight, endHeight) {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
+    }
     removeBlockMetaByHeight(height) {
+        return __awaiter(this, void 0, void 0, function* () {
+            throw new Error('Not implemented.');
+        });
+    }
+    pruneLegacyTransactionMeta(targetApiVersion) {
         return __awaiter(this, void 0, void 0, function* () {
             throw new Error('Not implemented.');
         });
