@@ -113,6 +113,10 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
+  async analyzeTransactionMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    throw new Error('Not implemented.')
+  }
+
   async removeBlockMetaByHeight(height: number): Promise<void> {
     throw new Error('Not implemented.')
   }

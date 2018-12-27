@@ -201,6 +201,11 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.analyze(startHeight, endHeight)
   }
 
+  async analyzeTransactionMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    this.logger.debug('analyzeTransactionMetas triggered.')
+    return await this.transactionMetaDao.analyze(startHeight, endHeight)
+  }
+
   async removeBlockMetaByHeight(height: number): Promise<void> {
     this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
     return await this.blockMetaDao.removeByHeight(height)
