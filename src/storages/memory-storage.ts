@@ -117,7 +117,6 @@ export class MemoryStorage extends EventEmitter {
     throw new Error('Not implemented.')
   }
 
-
   async countLegacyTransactionMeta(targetApiVersion: number): Promise<number> {
     throw new Error('Not implemented.')
   }

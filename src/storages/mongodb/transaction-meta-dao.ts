@@ -18,15 +18,19 @@ export class TransactionMetaDao {
   }
 
   async countByBelowApiLevel(apiLevel: number): Promise<number> {
-    return await this.model.countDocuments({
-      apiLevel: { $lt: apiLevel },
-    }).exec()
+    return await this.model
+      .countDocuments({
+        apiLevel: { $lt: apiLevel },
+      })
+      .exec()
   }
 
   async removeByBelowApiLevel(apiLevel: number): Promise<void> {
-    return await this.model.deleteMany({
-      apiLevel: { $lt: apiLevel },
-    }).exec()
+    return await this.model
+      .deleteMany({
+        apiLevel: { $lt: apiLevel },
+      })
+      .exec()
   }
 
   async reviewIndex(key: string, keyObj: object): Promise<void> {
