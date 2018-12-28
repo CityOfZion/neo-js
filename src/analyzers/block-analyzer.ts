@@ -254,7 +254,7 @@ export class BlockAnalyzer extends EventEmitter {
     // Enqueue missing block heights
     const missingBlocks = difference(all, availableBlocks)
     this.logger.info('Block metas missing count:', missingBlocks.length)
-    this.emit('blockVerification:missingBlockMetas', { count: missingBlocks.length })
+    this.emit('blockVerification:blockMetas:missing', { count: missingBlocks.length })
     missingBlocks.forEach((height: number) => {
       this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority!)
     })
@@ -265,7 +265,7 @@ export class BlockAnalyzer extends EventEmitter {
     })
     const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
     this.logger.info('Legacy block metas count:', legacyBlockObjs.length)
-    this.emit('blockVerification:legacyBlockMetas', { count: legacyBlocks.length })
+    this.emit('blockVerification:blockMetas:legacy', { count: legacyBlocks.length })
     legacyBlocks.forEach((height: number) => {
       // TODO: use queue instead of unmanaged parallel tasks for removing block metas
       this.storage!.removeBlockMetaByHeight(height)
