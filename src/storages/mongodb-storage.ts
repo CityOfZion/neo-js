@@ -201,9 +201,22 @@ export class MongodbStorage extends EventEmitter {
     return await this.blockMetaDao.analyze(startHeight, endHeight)
   }
 
+  async analyzeTransactionMetas(startHeight: number, endHeight: number): Promise<object[]> {
+    this.logger.debug('analyzeTransactionMetas triggered.')
+    return await this.transactionMetaDao.analyze(startHeight, endHeight)
+  }
+
   async removeBlockMetaByHeight(height: number): Promise<void> {
     this.logger.debug('removeBlockMetaByHeight triggered. height: ', height)
     return await this.blockMetaDao.removeByHeight(height)
+  }
+
+  async countLegacyTransactionMeta(targetApiLevel: number): Promise<number> {
+    return await this.transactionMetaDao.countByBelowApiLevel(targetApiLevel)
+  }
+
+  async pruneLegacyTransactionMeta(targetApiLevel: number): Promise<void> {
+    return await this.transactionMetaDao.removeByBelowApiLevel(targetApiLevel)
   }
 
   async close(): Promise<void> {
@@ -253,8 +266,14 @@ export class MongodbStorage extends EventEmitter {
     this.emit('reviewIndexes:init')
 
     try {
-      await this.reviewIndexForBlockHeight()
-      await this.reviewIndexForTransactionId()
+      await this.reviewBlockIndexForHeight()
+      await this.reviewBlockIndexForTransactionId()
+      await this.reviewBlockMetaIndexForHeight()
+      await this.reviewBlockMetaIndexForTime()
+      await this.reviewTransactionMetaIndexForHeight()
+      await this.reviewTransactionMetaIndexForTime()
+      await this.reviewTransactionMetaIndexForTransactionId()
+      await this.reviewTransactionMetaIndexForType()
       this.logger.debug('Review indexes succeed.')
       this.emit('reviewIndexes:complete', { isSuccess: true })
     } catch (err) {
@@ -263,19 +282,59 @@ export class MongodbStorage extends EventEmitter {
     }
   }
 
-  private async reviewIndexForBlockHeight(): Promise<void> {
-    this.logger.debug('reviewIndexForBlockHeight triggered.')
-
+  private async reviewBlockIndexForHeight(): Promise<void> {
+    this.logger.debug('reviewBlockIndexForHeight triggered.')
     const key = 'height_1_createdAt_-1'
     const keyObj = { height: 1, createdAt: -1 }
     return await this.blockDao.reviewIndex(key, keyObj)
   }
 
-  private async reviewIndexForTransactionId(): Promise<void> {
-    this.logger.debug('reviewIndexForTransactionId triggered.')
-
+  private async reviewBlockIndexForTransactionId(): Promise<void> {
+    this.logger.debug('reviewBlockIndexForTransactionId triggered.')
     const key = 'payload.tx.txid_1'
     const keyObj = { 'payload.tx.txid': 1 }
     return await this.blockDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewBlockMetaIndexForHeight(): Promise<void> {
+    this.logger.debug('reviewBlockMetaIndexForHeight triggered.')
+    const key = 'height_1'
+    const keyObj = { height: 1 }
+    return await this.blockMetaDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewBlockMetaIndexForTime(): Promise<void> {
+    this.logger.debug('reviewBlockMetaIndexForTime triggered.')
+    const key = 'time_1'
+    const keyObj = { time: 1 }
+    return await this.blockMetaDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewTransactionMetaIndexForHeight(): Promise<void> {
+    this.logger.debug('reviewTransactionMetaIndexForHeight triggered.')
+    const key = 'height_1'
+    const keyObj = { height: 1 }
+    return await this.transactionMetaDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewTransactionMetaIndexForTime(): Promise<void> {
+    this.logger.debug('reviewTransactionMetaIndexForTime triggered.')
+    const key = 'time_1'
+    const keyObj = { time: 1 }
+    return await this.transactionMetaDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewTransactionMetaIndexForTransactionId(): Promise<void> {
+    this.logger.debug('reviewTransactionMetaIndexForTransactionId triggered.')
+    const key = 'transactionId_1'
+    const keyObj = { transactionId: 1 }
+    return await this.transactionMetaDao.reviewIndex(key, keyObj)
+  }
+
+  private async reviewTransactionMetaIndexForType(): Promise<void> {
+    this.logger.debug('reviewTransactionMetaIndexForType triggered.')
+    const key = 'type_1'
+    const keyObj = { type: 1 }
+    return await this.transactionMetaDao.reviewIndex(key, keyObj)
   }
 }

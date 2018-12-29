@@ -176,10 +176,26 @@ class MongodbStorage extends events_1.EventEmitter {
             return yield this.blockMetaDao.analyze(startHeight, endHeight);
         });
     }
+    analyzeTransactionMetas(startHeight, endHeight) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('analyzeTransactionMetas triggered.');
+            return yield this.transactionMetaDao.analyze(startHeight, endHeight);
+        });
+    }
     removeBlockMetaByHeight(height) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('removeBlockMetaByHeight triggered. height: ', height);
             return yield this.blockMetaDao.removeByHeight(height);
+        });
+    }
+    countLegacyTransactionMeta(targetApiLevel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.transactionMetaDao.countByBelowApiLevel(targetApiLevel);
+        });
+    }
+    pruneLegacyTransactionMeta(targetApiLevel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.transactionMetaDao.removeByBelowApiLevel(targetApiLevel);
         });
     }
     close() {
@@ -221,8 +237,14 @@ class MongodbStorage extends events_1.EventEmitter {
             this.logger.debug('Proceed to review indexes...');
             this.emit('reviewIndexes:init');
             try {
-                yield this.reviewIndexForBlockHeight();
-                yield this.reviewIndexForTransactionId();
+                yield this.reviewBlockIndexForHeight();
+                yield this.reviewBlockIndexForTransactionId();
+                yield this.reviewBlockMetaIndexForHeight();
+                yield this.reviewBlockMetaIndexForTime();
+                yield this.reviewTransactionMetaIndexForHeight();
+                yield this.reviewTransactionMetaIndexForTime();
+                yield this.reviewTransactionMetaIndexForTransactionId();
+                yield this.reviewTransactionMetaIndexForType();
                 this.logger.debug('Review indexes succeed.');
                 this.emit('reviewIndexes:complete', { isSuccess: true });
             }
@@ -232,20 +254,68 @@ class MongodbStorage extends events_1.EventEmitter {
             }
         });
     }
-    reviewIndexForBlockHeight() {
+    reviewBlockIndexForHeight() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('reviewIndexForBlockHeight triggered.');
+            this.logger.debug('reviewBlockIndexForHeight triggered.');
             const key = 'height_1_createdAt_-1';
             const keyObj = { height: 1, createdAt: -1 };
             return yield this.blockDao.reviewIndex(key, keyObj);
         });
     }
-    reviewIndexForTransactionId() {
+    reviewBlockIndexForTransactionId() {
         return __awaiter(this, void 0, void 0, function* () {
-            this.logger.debug('reviewIndexForTransactionId triggered.');
+            this.logger.debug('reviewBlockIndexForTransactionId triggered.');
             const key = 'payload.tx.txid_1';
             const keyObj = { 'payload.tx.txid': 1 };
             return yield this.blockDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewBlockMetaIndexForHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewBlockMetaIndexForHeight triggered.');
+            const key = 'height_1';
+            const keyObj = { height: 1 };
+            return yield this.blockMetaDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewBlockMetaIndexForTime() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewBlockMetaIndexForTime triggered.');
+            const key = 'time_1';
+            const keyObj = { time: 1 };
+            return yield this.blockMetaDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewTransactionMetaIndexForHeight() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewTransactionMetaIndexForHeight triggered.');
+            const key = 'height_1';
+            const keyObj = { height: 1 };
+            return yield this.transactionMetaDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewTransactionMetaIndexForTime() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewTransactionMetaIndexForTime triggered.');
+            const key = 'time_1';
+            const keyObj = { time: 1 };
+            return yield this.transactionMetaDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewTransactionMetaIndexForTransactionId() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewTransactionMetaIndexForTransactionId triggered.');
+            const key = 'transactionId_1';
+            const keyObj = { transactionId: 1 };
+            return yield this.transactionMetaDao.reviewIndex(key, keyObj);
+        });
+    }
+    reviewTransactionMetaIndexForType() {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('reviewTransactionMetaIndexForType triggered.');
+            const key = 'type_1';
+            const keyObj = { type: 1 };
+            return yield this.transactionMetaDao.reviewIndex(key, keyObj);
         });
     }
 }

@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const schemas_1 = require("./schemas");
+const utils_1 = require("./utils");
 class BlockMetaDao {
     constructor(mongoose, collectionName) {
         this.model = this.getModel(mongoose, collectionName);
@@ -57,6 +58,11 @@ class BlockMetaDao {
                 },
             }, 'height apiLevel')
                 .exec();
+        });
+    }
+    reviewIndex(key, keyObj) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield utils_1.MongodbUtils.reviewIndex(this.model, key, keyObj);
         });
     }
     getModel(mongoose, collectionName) {

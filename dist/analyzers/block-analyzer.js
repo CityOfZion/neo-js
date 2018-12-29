@@ -28,7 +28,10 @@ const DEFAULT_OPTIONS = {
     maxTransactionQueueLength: 100 * 1000,
     standardEvaluateBlockPriority: 5,
     missingEvaluateBlockPriority: 3,
+    legacyEvaluateBlockPriority: 3,
     standardEvaluateTransactionPriority: 5,
+    missingEvaluateTransactionPriority: 5,
+    legacyEvaluateTransactionPriority: 5,
     loggerOptions: {},
 };
 class BlockAnalyzer extends events_1.EventEmitter {
@@ -97,7 +100,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
                 this.emit('queue:worker:complete', { isSuccess: true, task });
             })
                 .catch((err) => {
-                this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'attrs:', attrs, 'Message:', err.message);
+                this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'Message:', err.message);
                 callback();
                 this.emit('queue:worker:complete', { isSuccess: false, task });
             });
@@ -156,27 +159,39 @@ class BlockAnalyzer extends events_1.EventEmitter {
             this.isVerifyingBlocks = true;
             const startHeight = this.options.minHeight;
             const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer;
-            this.logger.debug('Analyzing block metas in storage...');
-            let blockMetaReport;
+            let blockMetasFullySynced = false;
+            let transactionMetasFullySynced = false;
             try {
-                blockMetaReport = yield this.storage.analyzeBlockMetas(startHeight, endHeight);
-                this.logger.debug('Analyzing block metas complete!');
+                blockMetasFullySynced = yield this.verifyBlockMetas(startHeight, endHeight);
+                transactionMetasFullySynced = yield this.verifyTransactionMetas(startHeight, endHeight);
             }
             catch (err) {
-                this.logger.info('Analyzing block metas error, but to continue... Message:', err.message);
-                this.emit('blockVerification:complete', { isSuccess: false });
+                this.logger.info('Block verification failed. Message:', err.message);
                 this.isVerifyingBlocks = false;
+                this.emit('blockVerification:complete', { isSuccess: false });
                 return;
             }
-            const all = [];
-            for (let i = startHeight; i <= endHeight; i++) {
-                all.push(i);
+            if (this.isReachedMaxHeight()) {
+                if (blockMetasFullySynced && transactionMetasFullySynced) {
+                    this.logger.info('BlockAnalyzer is up to date.');
+                    this.emit('upToDate');
+                }
             }
+            this.isVerifyingBlocks = false;
+            this.emit('blockVerification:complete', { isSuccess: true });
+        });
+    }
+    verifyBlockMetas(startHeight, endHeight) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('verifyBlockMetas triggered.');
+            const blockMetaReport = yield this.storage.analyzeBlockMetas(startHeight, endHeight);
+            this.logger.debug('Analyzing block metas complete!');
+            const all = this.getNumberArray(startHeight, endHeight);
             const availableBlocks = lodash_1.map(blockMetaReport, (item) => item.height);
-            this.logger.info('Blocks available count:', availableBlocks.length);
+            this.logger.info('Block metas available count:', availableBlocks.length);
             const missingBlocks = lodash_1.difference(all, availableBlocks);
-            this.logger.info('Blocks missing count:', missingBlocks.length);
-            this.emit('blockVerification:missingBlocks', { count: missingBlocks.length });
+            this.logger.info('Block metas missing count:', missingBlocks.length);
+            this.emit('blockVerification:blockMetas:missing', { count: missingBlocks.length });
             missingBlocks.forEach((height) => {
                 this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority);
             });
@@ -184,19 +199,26 @@ class BlockAnalyzer extends events_1.EventEmitter {
                 return item.apiLevel < this.BLOCK_META_API_LEVEL;
             });
             const legacyBlocks = lodash_1.map(legacyBlockObjs, (item) => item.height);
-            this.logger.info('Legacy block count:', legacyBlockObjs.length);
-            this.emit('blockVerification:legacyBlocks', { count: legacyBlocks.length });
+            this.logger.info('Legacy block metas count:', legacyBlockObjs.length);
+            this.emit('blockVerification:blockMetas:legacy', { count: legacyBlocks.length });
             legacyBlocks.forEach((height) => {
                 this.storage.removeBlockMetaByHeight(height);
+                this.enqueueEvaluateBlock(height, this.options.legacyEvaluateBlockPriority);
             });
-            if (this.isReachedMaxHeight()) {
-                if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-                    this.logger.info('BlockAnalyzer is up to date.');
-                    this.emit('upToDate');
-                }
+            const fullySynced = missingBlocks.length === 0 && legacyBlocks.length === 0;
+            return fullySynced;
+        });
+    }
+    verifyTransactionMetas(startHeight, endHeight) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('verifyTransactionMetas triggered.');
+            const legacyCount = yield this.storage.countLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL);
+            this.emit('blockVerification:transactionMetas:legacy', { metaCount: legacyCount });
+            if (legacyCount === 0) {
+                return true;
             }
-            this.isVerifyingBlocks = false;
-            this.emit('blockVerification:complete', { isSuccess: true });
+            yield this.storage.pruneLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL);
+            return false;
         });
     }
     doEnqueueEvaluateBlock() {
@@ -254,12 +276,12 @@ class BlockAnalyzer extends events_1.EventEmitter {
                 apiLevel: this.BLOCK_META_API_LEVEL,
             };
             if (this.options.toEvaluateTransactions) {
-                this.enqueueEvaluateTransaction(block);
+                this.enqueueEvaluateTransaction(block, this.options.standardEvaluateTransactionPriority);
             }
             yield this.storage.setBlockMeta(blockMeta);
         });
     }
-    enqueueEvaluateTransaction(block) {
+    enqueueEvaluateTransaction(block, priority) {
         this.logger.debug('enqueueEvaluateTransaction triggered.');
         if (!block || !block.tx) {
             this.logger.info('Invalid block object. Skipping...');
@@ -276,7 +298,14 @@ class BlockAnalyzer extends events_1.EventEmitter {
                 meta: {
                     methodName: 'evaluateTransaction',
                 },
-            }, this.options.standardEvaluateBlockPriority);
+            }, priority);
+        });
+    }
+    enqueueEvaluateTransactionWithHeight(height, priority) {
+        return __awaiter(this, void 0, void 0, function* () {
+            this.logger.debug('enqueueEvaluateTransactionWithHeight triggered.');
+            const block = yield this.storage.getBlock(height);
+            this.enqueueEvaluateTransaction(block, priority);
         });
     }
     evaluateTransaction(attrs) {
@@ -285,15 +314,29 @@ class BlockAnalyzer extends events_1.EventEmitter {
             const height = attrs.height;
             const time = attrs.time;
             const tx = attrs.transaction;
+            const voutCount = lodash_1.isArray(tx.vout) ? tx.vout.length : undefined;
+            const vinCount = lodash_1.isArray(tx.vin) ? tx.vin.length : undefined;
             const transactionMeta = {
                 height,
                 time,
-                txid: tx.txid,
+                transactionId: tx.txid,
                 type: tx.type,
+                size: tx.size,
+                networkFee: tx.net_fee,
+                systemFee: tx.sys_fee,
+                voutCount,
+                vinCount,
                 apiLevel: this.TRANSACTION_META_API_LEVEL,
             };
             yield this.storage.setTransactionMeta(transactionMeta);
         });
+    }
+    getNumberArray(start, end) {
+        const all = [];
+        for (let i = start; i <= end; i++) {
+            all.push(i);
+        }
+        return all;
     }
 }
 exports.BlockAnalyzer = BlockAnalyzer;

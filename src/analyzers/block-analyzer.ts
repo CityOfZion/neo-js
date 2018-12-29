@@ -1,7 +1,7 @@
 import { EventEmitter } from 'events'
 import { priorityQueue, AsyncPriorityQueue } from 'async'
 import { Logger, LoggerOptions } from 'node-log-it'
-import { merge, map, filter, difference } from 'lodash'
+import { merge, map, filter, difference, isArray, uniq } from 'lodash'
 import { MemoryStorage } from '../storages/memory-storage'
 import { MongodbStorage } from '../storages/mongodb-storage'
 import { BlockHelper } from '../helpers/block-helper'
@@ -21,7 +21,10 @@ const DEFAULT_OPTIONS: BlockAnalyzerOptions = {
   maxTransactionQueueLength: 100 * 1000,
   standardEvaluateBlockPriority: 5,
   missingEvaluateBlockPriority: 3,
+  legacyEvaluateBlockPriority: 3,
   standardEvaluateTransactionPriority: 5,
+  missingEvaluateTransactionPriority: 5,
+  legacyEvaluateTransactionPriority: 5,
   loggerOptions: {},
 }
 
@@ -39,7 +42,10 @@ export interface BlockAnalyzerOptions {
   maxTransactionQueueLength?: number
   standardEvaluateBlockPriority?: number
   missingEvaluateBlockPriority?: number
+  legacyEvaluateBlockPriority?: number
   standardEvaluateTransactionPriority?: number
+  missingEvaluateTransactionPriority?: number
+  legacyEvaluateTransactionPriority?: number
   loggerOptions?: LoggerOptions
 }
 
@@ -140,7 +146,7 @@ export class BlockAnalyzer extends EventEmitter {
           this.emit('queue:worker:complete', { isSuccess: true, task })
         })
         .catch((err: any) => {
-          this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'attrs:', attrs, 'Message:', err.message)
+          this.logger.info('Worker queued method failed, but to continue... meta:', meta, 'Message:', err.message)
           callback()
           this.emit('queue:worker:complete', { isSuccess: false, task })
         })
@@ -208,31 +214,47 @@ export class BlockAnalyzer extends EventEmitter {
     const startHeight = this.options.minHeight!
     const endHeight = this.options.maxHeight && this.blockWritePointer > this.options.maxHeight ? this.options.maxHeight : this.blockWritePointer
 
-    // Review block metas
-    this.logger.debug('Analyzing block metas in storage...')
-    let blockMetaReport: any
+    // Act
+    let blockMetasFullySynced = false
+    let transactionMetasFullySynced = false
     try {
-      blockMetaReport = await this.storage!.analyzeBlockMetas(startHeight, endHeight)
-      this.logger.debug('Analyzing block metas complete!')
+      blockMetasFullySynced = await this.verifyBlockMetas(startHeight, endHeight)
+      transactionMetasFullySynced = await this.verifyTransactionMetas(startHeight, endHeight)
     } catch (err) {
-      this.logger.info('Analyzing block metas error, but to continue... Message:', err.message)
-      this.emit('blockVerification:complete', { isSuccess: false })
+      this.logger.info('Block verification failed. Message:', err.message)
       this.isVerifyingBlocks = false
+      this.emit('blockVerification:complete', { isSuccess: false })
       return
     }
 
-    const all: number[] = []
-    for (let i = startHeight; i <= endHeight; i++) {
-      all.push(i)
+    // Check if fully sync'ed
+    if (this.isReachedMaxHeight()) {
+      if (blockMetasFullySynced && transactionMetasFullySynced) {
+        this.logger.info('BlockAnalyzer is up to date.')
+        this.emit('upToDate')
+      }
     }
 
+    // Conclude
+    this.isVerifyingBlocks = false
+    this.emit('blockVerification:complete', { isSuccess: true })
+  }
+
+  private async verifyBlockMetas(startHeight: number, endHeight: number): Promise<boolean> {
+    this.logger.debug('verifyBlockMetas triggered.')
+
+    const blockMetaReport = await this.storage!.analyzeBlockMetas(startHeight, endHeight)
+    this.logger.debug('Analyzing block metas complete!')
+
+    const all = this.getNumberArray(startHeight, endHeight)
+
     const availableBlocks: number[] = map(blockMetaReport, (item: any) => item.height)
-    this.logger.info('Blocks available count:', availableBlocks.length)
+    this.logger.info('Block metas available count:', availableBlocks.length)
 
     // Enqueue missing block heights
     const missingBlocks = difference(all, availableBlocks)
-    this.logger.info('Blocks missing count:', missingBlocks.length)
-    this.emit('blockVerification:missingBlocks', { count: missingBlocks.length })
+    this.logger.info('Block metas missing count:', missingBlocks.length)
+    this.emit('blockVerification:blockMetas:missing', { count: missingBlocks.length })
     missingBlocks.forEach((height: number) => {
       this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority!)
     })
@@ -242,24 +264,30 @@ export class BlockAnalyzer extends EventEmitter {
       return item.apiLevel < this.BLOCK_META_API_LEVEL
     })
     const legacyBlocks = map(legacyBlockObjs, (item: any) => item.height)
-    this.logger.info('Legacy block count:', legacyBlockObjs.length)
-    this.emit('blockVerification:legacyBlocks', { count: legacyBlocks.length })
+    this.logger.info('Legacy block metas count:', legacyBlockObjs.length)
+    this.emit('blockVerification:blockMetas:legacy', { count: legacyBlocks.length })
     legacyBlocks.forEach((height: number) => {
-      // TODO: use queue instead of unmanaged parallel tasks
+      // TODO: use queue instead of unmanaged parallel tasks for removing block metas
       this.storage!.removeBlockMetaByHeight(height)
+      this.enqueueEvaluateBlock(height, this.options.legacyEvaluateBlockPriority!)
     })
 
-    // Check if fully sync'ed
-    if (this.isReachedMaxHeight()) {
-      if (missingBlocks.length === 0 && legacyBlocks.length === 0) {
-        this.logger.info('BlockAnalyzer is up to date.')
-        this.emit('upToDate')
-      }
+    const fullySynced = missingBlocks.length === 0 && legacyBlocks.length === 0
+    return fullySynced
+  }
+
+  private async verifyTransactionMetas(startHeight: number, endHeight: number): Promise<boolean> {
+    this.logger.debug('verifyTransactionMetas triggered.')
+    // TODO; add capability for detecting missing transaction metas
+
+    const legacyCount = await this.storage!.countLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL)
+    this.emit('blockVerification:transactionMetas:legacy', { metaCount: legacyCount })
+    if (legacyCount === 0) {
+      return true
     }
 
-    // Conclude
-    this.isVerifyingBlocks = false
-    this.emit('blockVerification:complete', { isSuccess: true })
+    await this.storage!.pruneLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL)
+    return false
   }
 
   private doEnqueueEvaluateBlock() {
@@ -335,13 +363,13 @@ export class BlockAnalyzer extends EventEmitter {
     }
 
     if (this.options.toEvaluateTransactions) {
-      this.enqueueEvaluateTransaction(block)
+      this.enqueueEvaluateTransaction(block, this.options.standardEvaluateTransactionPriority!)
     }
 
     await this.storage!.setBlockMeta(blockMeta)
   }
 
-  private enqueueEvaluateTransaction(block: any) {
+  private enqueueEvaluateTransaction(block: any, priority: number) {
     this.logger.debug('enqueueEvaluateTransaction triggered.')
 
     if (!block || !block.tx) {
@@ -362,9 +390,16 @@ export class BlockAnalyzer extends EventEmitter {
             methodName: 'evaluateTransaction',
           },
         },
-        this.options.standardEvaluateBlockPriority!
+        priority
       )
     })
+  }
+
+  private async enqueueEvaluateTransactionWithHeight(height: number, priority: number) {
+    this.logger.debug('enqueueEvaluateTransactionWithHeight triggered.')
+
+    const block: any = await this.storage!.getBlock(height)
+    this.enqueueEvaluateTransaction(block, priority)
   }
 
   private async evaluateTransaction(attrs: object): Promise<any> {
@@ -373,15 +408,29 @@ export class BlockAnalyzer extends EventEmitter {
     const height: number = (attrs as any).height
     const time: number = (attrs as any).time
     const tx: any = (attrs as any).transaction
-
+    const voutCount: number | undefined = isArray(tx.vout) ? tx.vout.length : undefined
+    const vinCount: number | undefined = isArray(tx.vin) ? tx.vin.length : undefined
     const transactionMeta = {
       height,
       time,
-      txid: tx.txid,
+      transactionId: tx.txid,
       type: tx.type,
+      size: tx.size,
+      networkFee: tx.net_fee,
+      systemFee: tx.sys_fee,
+      voutCount,
+      vinCount,
       apiLevel: this.TRANSACTION_META_API_LEVEL,
     }
 
     await this.storage!.setTransactionMeta(transactionMeta)
+  }
+
+  private getNumberArray(start: number, end: number): number[] {
+    const all: number[] = []
+    for (let i = start; i <= end; i++) {
+      all.push(i)
+    }
+    return all
   }
 }
