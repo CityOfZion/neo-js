@@ -24,6 +24,15 @@ class TransactionMetaDao {
             return yield this.model(data).save();
         });
     }
+    countByBelowApiLevel(apiLevel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.model
+                .countDocuments({
+                apiLevel: { $lt: apiLevel },
+            })
+                .exec();
+        });
+    }
     removeByBelowApiLevel(apiLevel) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.model

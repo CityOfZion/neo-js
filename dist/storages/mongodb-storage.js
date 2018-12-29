@@ -188,6 +188,11 @@ class MongodbStorage extends events_1.EventEmitter {
             return yield this.blockMetaDao.removeByHeight(height);
         });
     }
+    countLegacyTransactionMeta(targetApiLevel) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.transactionMetaDao.countByBelowApiLevel(targetApiLevel);
+        });
+    }
     pruneLegacyTransactionMeta(targetApiLevel) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.transactionMetaDao.removeByBelowApiLevel(targetApiLevel);

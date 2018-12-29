@@ -29,7 +29,8 @@ export declare class MemoryStorage extends EventEmitter {
     analyzeBlockMetas(startHeight: number, endHeight: number): Promise<object[]>;
     analyzeTransactionMetas(startHeight: number, endHeight: number): Promise<object[]>;
     removeBlockMetaByHeight(height: number): Promise<void>;
-    pruneLegacyTransactionMeta(targetApiVersion: number): Promise<void>;
+    countLegacyTransactionMeta(targetApiLevel: number): Promise<number>;
+    pruneLegacyTransactionMeta(targetApiLevel: number): Promise<void>;
     close(): Promise<void>;
     private setReady;
     private validateOptionalParameters;

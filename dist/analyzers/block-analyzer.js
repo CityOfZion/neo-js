@@ -191,7 +191,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
             this.logger.info('Block metas available count:', availableBlocks.length);
             const missingBlocks = lodash_1.difference(all, availableBlocks);
             this.logger.info('Block metas missing count:', missingBlocks.length);
-            this.emit('blockVerification:missingBlockMetas', { count: missingBlocks.length });
+            this.emit('blockVerification:blockMetas:missing', { count: missingBlocks.length });
             missingBlocks.forEach((height) => {
                 this.enqueueEvaluateBlock(height, this.options.missingEvaluateBlockPriority);
             });
@@ -200,7 +200,7 @@ class BlockAnalyzer extends events_1.EventEmitter {
             });
             const legacyBlocks = lodash_1.map(legacyBlockObjs, (item) => item.height);
             this.logger.info('Legacy block metas count:', legacyBlockObjs.length);
-            this.emit('blockVerification:legacyBlockMetas', { count: legacyBlocks.length });
+            this.emit('blockVerification:blockMetas:legacy', { count: legacyBlocks.length });
             legacyBlocks.forEach((height) => {
                 this.storage.removeBlockMetaByHeight(height);
                 this.enqueueEvaluateBlock(height, this.options.legacyEvaluateBlockPriority);
@@ -212,29 +212,13 @@ class BlockAnalyzer extends events_1.EventEmitter {
     verifyTransactionMetas(startHeight, endHeight) {
         return __awaiter(this, void 0, void 0, function* () {
             this.logger.debug('verifyTransactionMetas triggered.');
-            const transactionMetaReport = yield this.storage.analyzeTransactionMetas(startHeight, endHeight);
-            this.logger.debug('Analyzing block metas complete!');
-            const all = this.getNumberArray(startHeight, endHeight);
-            const availableBlocks = lodash_1.uniq(lodash_1.map(transactionMetaReport, (item) => item.height));
-            this.logger.info('Block available count (in TransactionMeta):', availableBlocks.length);
-            const missingBlocks = lodash_1.difference(all, availableBlocks);
-            this.logger.info('Blocks missing count (in TransactionMeta):', missingBlocks.length);
-            this.emit('blockVerification:transactionMetas:missing', { blockCount: missingBlocks.length });
-            missingBlocks.forEach((height) => {
-                this.enqueueEvaluateTransactionWithHeight(height, this.options.missingEvaluateTransactionPriority);
-            });
-            const legacyTransactionObjs = lodash_1.filter(transactionMetaReport, (item) => {
-                return item.apiLevel < this.TRANSACTION_META_API_LEVEL;
-            });
-            const legacyBlocks = lodash_1.uniq(lodash_1.map(legacyTransactionObjs, (item) => item.height));
-            this.logger.info('Legacy block count (in TransactionMeta):', legacyTransactionObjs.length);
-            this.emit('blockVerification:transactionMetas:legacy', { blockCount: legacyBlocks.length });
+            const legacyCount = yield this.storage.countLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL);
+            this.emit('blockVerification:transactionMetas:legacy', { metaCount: legacyCount });
+            if (legacyCount === 0) {
+                return true;
+            }
             yield this.storage.pruneLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL);
-            legacyBlocks.forEach((height) => {
-                this.enqueueEvaluateTransactionWithHeight(height, this.options.legacyEvaluateTransactionPriority);
-            });
-            const fullySynced = missingBlocks.length === 0 && legacyBlocks.length === 0;
-            return fullySynced;
+            return false;
         });
     }
     doEnqueueEvaluateBlock() {
