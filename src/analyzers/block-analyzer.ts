@@ -276,42 +276,18 @@ export class BlockAnalyzer extends EventEmitter {
     return fullySynced
   }
 
-  /**
-   * Assume all blocks have at least 1 transaction.
-   */
   private async verifyTransactionMetas(startHeight: number, endHeight: number): Promise<boolean> {
     this.logger.debug('verifyTransactionMetas triggered.')
+    // TODO; add capability for detecting missing transaction metas
 
-    const transactionMetaReport = await this.storage!.analyzeTransactionMetas(startHeight, endHeight)
-    this.logger.debug('Analyzing block metas complete!')
+    const legacyCount = await this.storage!.countLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL)
+    this.emit('blockVerification:transactionMetas:legacy', { metaCount: legacyCount })
+    if (legacyCount === 0) {
+      return true
+    }
 
-    const all = this.getNumberArray(startHeight, endHeight)
-
-    const availableBlocks: number[] = uniq(map(transactionMetaReport, (item: any) => item.height))
-    this.logger.info('Block available count (in TransactionMeta):', availableBlocks.length)
-
-    // Enqueue missing block heights
-    const missingBlocks = difference(all, availableBlocks)
-    this.logger.info('Blocks missing count (in TransactionMeta):', missingBlocks.length)
-    this.emit('blockVerification:transactionMetas:missing', { blockCount: missingBlocks.length })
-    missingBlocks.forEach((height: number) => {
-      this.enqueueEvaluateTransactionWithHeight(height, this.options.missingEvaluateTransactionPriority!)
-    })
-
-    // Truncate legacy block meta right away
-    const legacyTransactionObjs = filter(transactionMetaReport, (item: any) => {
-      return item.apiLevel < this.TRANSACTION_META_API_LEVEL
-    })
-    const legacyBlocks = uniq(map(legacyTransactionObjs, (item: any) => item.height))
-    this.logger.info('Legacy block count (in TransactionMeta):', legacyTransactionObjs.length)
-    this.emit('blockVerification:transactionMetas:legacy', { blockCount: legacyBlocks.length })
     await this.storage!.pruneLegacyTransactionMeta(this.TRANSACTION_META_API_LEVEL)
-    legacyBlocks.forEach((height: number) => {
-      this.enqueueEvaluateTransactionWithHeight(height, this.options.legacyEvaluateTransactionPriority!)
-    })
-
-    const fullySynced = missingBlocks.length === 0 && legacyBlocks.length === 0
-    return fullySynced
+    return false
   }
 
   private doEnqueueEvaluateBlock() {
