@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>BlockMetaAnalyzer | @cityofzion/neo-js</title>
+	<title>BlockAnalyzer | @cityofzion/neo-js</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="../assets/css/main.css">
@@ -56,13 +56,13 @@
 					<a href="../globals.html">Globals</a>
 				</li>
 				<li>
-					<a href="../modules/_analyzers_block_meta_analyzer_.html">&quot;analyzers/block-meta-analyzer&quot;</a>
+					<a href="../modules/_analyzers_block_analyzer_.html">&quot;analyzers/block-analyzer&quot;</a>
 				</li>
 				<li>
-					<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html">BlockMetaAnalyzer</a>
+					<a href="_analyzers_block_analyzer_.blockanalyzer.html">BlockAnalyzer</a>
 				</li>
 			</ul>
-			<h1>Class BlockMetaAnalyzer</h1>
+			<h1>Class BlockAnalyzer</h1>
 		</div>
 	</div>
 </header>
@@ -76,7 +76,7 @@
 						<span class="tsd-signature-type">EventEmitter</span>
 						<ul class="tsd-hierarchy">
 							<li>
-								<span class="target">BlockMetaAnalyzer</span>
+								<span class="target">BlockAnalyzer</span>
 							</li>
 						</ul>
 					</li>
@@ -89,59 +89,68 @@
 						<section class="tsd-index-section ">
 							<h3>Constructors</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#constructor" class="tsd-kind-icon">constructor</a></li>
+								<li class="tsd-kind-constructor tsd-parent-kind-class"><a href="_analyzers_block_analyzer_.blockanalyzer.html#constructor" class="tsd-kind-icon">constructor</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Properties</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#_isrunning" class="tsd-kind-icon">_is<wbr>Running</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#apilevel" class="tsd-kind-icon">api<wbr>Level</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#blockmetaverificationintervalid" class="tsd-kind-icon">block<wbr>Meta<wbr>Verification<wbr>Interval<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#blockwritepointer" class="tsd-kind-icon">block<wbr>Write<wbr>Pointer</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#enqueueanalyzeblockintervalid" class="tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block<wbr>Interval<wbr>Id</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isverifyingblockmetas" class="tsd-kind-icon">is<wbr>Verifying<wbr>Block<wbr>Metas</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#logger" class="tsd-kind-icon">logger</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#options" class="tsd-kind-icon">options</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#queue" class="tsd-kind-icon">queue</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#storage" class="tsd-kind-icon">storage</a></li>
-								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#block_meta_api_level" class="tsd-kind-icon">BLOCK_<wbr>META_<wbr>API_<wbr>LEVEL</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#transaction_meta_api_level" class="tsd-kind-icon">TRANSACTION_<wbr>META_<wbr>API_<wbr>LEVEL</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#_isrunning" class="tsd-kind-icon">_is<wbr>Running</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#blockqueue" class="tsd-kind-icon">block<wbr>Queue</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#blockverificationintervalid" class="tsd-kind-icon">block<wbr>Verification<wbr>Interval<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#blockwritepointer" class="tsd-kind-icon">block<wbr>Write<wbr>Pointer</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluateblockintervalid" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block<wbr>Interval<wbr>Id</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#isverifyingblocks" class="tsd-kind-icon">is<wbr>Verifying<wbr>Blocks</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#logger" class="tsd-kind-icon">logger</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#options" class="tsd-kind-icon">options</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#storage" class="tsd-kind-icon">storage</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#transactionqueue" class="tsd-kind-icon">transaction<wbr>Queue</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_analyzers_block_analyzer_.blockanalyzer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a></li>
 							</ul>
 						</section>
 						<section class="tsd-index-section ">
 							<h3>Methods</h3>
 							<ul class="tsd-index-list">
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#analyzeblock" class="tsd-kind-icon">analyze<wbr>Block</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#doblockmetaverification" class="tsd-kind-icon">do<wbr>Block<wbr>Meta<wbr>Verification</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#doenqueueanalyzeblock" class="tsd-kind-icon">do<wbr>Enqueue<wbr>Analyze<wbr>Block</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#emit" class="tsd-kind-icon">emit</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#enqueueanalyzeblock" class="tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#getpriorityqueue" class="tsd-kind-icon">get<wbr>Priority<wbr>Queue</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#increaseblockwritepointer" class="tsd-kind-icon">increase<wbr>Block<wbr>Write<wbr>Pointer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#initanalyzeblock" class="tsd-kind-icon">init<wbr>Analyze<wbr>Block</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#initblockmetaverification" class="tsd-kind-icon">init<wbr>Block<wbr>Meta<wbr>Verification</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listeners" class="tsd-kind-icon">listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#off" class="tsd-kind-icon">off</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#on" class="tsd-kind-icon">on</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#once" class="tsd-kind-icon">once</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#setblockwritepointer" class="tsd-kind-icon">set<wbr>Block<wbr>Write<wbr>Pointer</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#start" class="tsd-kind-icon">start</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#stop" class="tsd-kind-icon">stop</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#validateoptionalparameters" class="tsd-kind-icon">validate<wbr>Optional<wbr>Parameters</a></li>
-								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_analyzer_.blockanalyzer.html#close" class="tsd-kind-icon">close</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#doblockverification" class="tsd-kind-icon">do<wbr>Block<wbr>Verification</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#doenqueueevaluateblock" class="tsd-kind-icon">do<wbr>Enqueue<wbr>Evaluate<wbr>Block</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#emit" class="tsd-kind-icon">emit</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluateblock" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluatetransaction" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluatetransactionwithheight" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction<wbr>With<wbr>Height</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#evaluateblock" class="tsd-kind-icon">evaluate<wbr>Block</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#evaluatetransaction" class="tsd-kind-icon">evaluate<wbr>Transaction</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#getnumberarray" class="tsd-kind-icon">get<wbr>Number<wbr>Array</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#getpriorityqueue" class="tsd-kind-icon">get<wbr>Priority<wbr>Queue</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#increaseblockwritepointer" class="tsd-kind-icon">increase<wbr>Block<wbr>Write<wbr>Pointer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#initblockverification" class="tsd-kind-icon">init<wbr>Block<wbr>Verification</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#initevaluateblock" class="tsd-kind-icon">init<wbr>Evaluate<wbr>Block</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_analyzer_.blockanalyzer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#listeners" class="tsd-kind-icon">listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#off" class="tsd-kind-icon">off</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#on" class="tsd-kind-icon">on</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#once" class="tsd-kind-icon">once</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#setblockwritepointer" class="tsd-kind-icon">set<wbr>Block<wbr>Write<wbr>Pointer</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited"><a href="_analyzers_block_analyzer_.blockanalyzer.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_analyzer_.blockanalyzer.html#start" class="tsd-kind-icon">start</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_analyzers_block_analyzer_.blockanalyzer.html#stop" class="tsd-kind-icon">stop</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#validateoptionalparameters" class="tsd-kind-icon">validate<wbr>Optional<wbr>Parameters</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#verifyblockmetas" class="tsd-kind-icon">verify<wbr>Block<wbr>Metas</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><a href="_analyzers_block_analyzer_.blockanalyzer.html#verifytransactionmetas" class="tsd-kind-icon">verify<wbr>Transaction<wbr>Metas</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static"><a href="_analyzers_block_analyzer_.blockanalyzer.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a></li>
 							</ul>
 						</section>
 					</div>
@@ -153,13 +162,13 @@
 					<a name="constructor" class="tsd-anchor"></a>
 					<h3>constructor</h3>
 					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">new <wbr>Block<wbr>Meta<wbr>Analyzer<span class="tsd-signature-symbol">(</span>storage<span class="tsd-signature-symbol">?: </span><a href="_storages_memory_storage_.memorystorage.html" class="tsd-signature-type">MemoryStorage</a><span class="tsd-signature-symbol"> | </span><a href="_storages_mongodb_storage_.mongodbstorage.html" class="tsd-signature-type">MongodbStorage</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html" class="tsd-signature-type">BlockMetaAnalyzerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html" class="tsd-signature-type">BlockMetaAnalyzer</a></li>
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Block<wbr>Analyzer<span class="tsd-signature-symbol">(</span>storage<span class="tsd-signature-symbol">?: </span><a href="_storages_memory_storage_.memorystorage.html" class="tsd-signature-type">MemoryStorage</a><span class="tsd-signature-symbol"> | </span><a href="_storages_mongodb_storage_.mongodbstorage.html" class="tsd-signature-type">MongodbStorage</a>, options<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_analyzers_block_analyzer_.blockanalyzeroptions.html" class="tsd-signature-type">BlockAnalyzerOptions</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_analyzers_block_analyzer_.blockanalyzer.html" class="tsd-signature-type">BlockAnalyzer</a></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L46">analyzers/block-meta-analyzer.ts:46</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L67">analyzers/block-analyzer.ts:67</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -168,10 +177,10 @@
 									<h5><span class="tsd-flag ts-flagOptional">Optional</span> storage: <a href="_storages_memory_storage_.memorystorage.html" class="tsd-signature-type">MemoryStorage</a><span class="tsd-signature-symbol"> | </span><a href="_storages_mongodb_storage_.mongodbstorage.html" class="tsd-signature-type">MongodbStorage</a></h5>
 								</li>
 								<li>
-									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html" class="tsd-signature-type">BlockMetaAnalyzerOptions</a><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> options: <a href="../interfaces/_analyzers_block_analyzer_.blockanalyzeroptions.html" class="tsd-signature-type">BlockAnalyzerOptions</a><span class="tsd-signature-symbol"> =&nbsp;{}</span></h5>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html" class="tsd-signature-type">BlockMetaAnalyzer</a></h4>
+							<h4 class="tsd-returns-title">Returns <a href="_analyzers_block_analyzer_.blockanalyzer.html" class="tsd-signature-type">BlockAnalyzer</a></h4>
 						</li>
 					</ul>
 				</section>
@@ -179,32 +188,57 @@
 			<section class="tsd-panel-group tsd-member-group ">
 				<h2>Properties</h2>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="block_meta_api_level" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> BLOCK_<wbr>META_<wbr>API_<wbr>LEVEL</h3>
+					<div class="tsd-signature tsd-kind-icon">BLOCK_<wbr>META_<wbr>API_<wbr>LEVEL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L56">analyzers/block-analyzer.ts:56</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>Flags for determine version of the metadata (akin to Android API level)</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="transaction_meta_api_level" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> TRANSACTION_<wbr>META_<wbr>API_<wbr>LEVEL</h3>
+					<div class="tsd-signature tsd-kind-icon">TRANSACTION_<wbr>META_<wbr>API_<wbr>LEVEL<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L57">analyzers/block-analyzer.ts:57</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="_isrunning" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> _is<wbr>Running</h3>
 					<div class="tsd-signature tsd-kind-icon">_is<wbr>Running<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L38">analyzers/block-meta-analyzer.ts:38</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L58">analyzers/block-analyzer.ts:58</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="apilevel" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> api<wbr>Level</h3>
-					<div class="tsd-signature tsd-kind-icon">api<wbr>Level<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;1</span></div>
+					<a name="blockqueue" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> block<wbr>Queue</h3>
+					<div class="tsd-signature tsd-kind-icon">block<wbr>Queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L37">analyzers/block-meta-analyzer.ts:37</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L59">analyzers/block-analyzer.ts:59</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="blockmetaverificationintervalid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> block<wbr>Meta<wbr>Verification<wbr>Interval<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">block<wbr>Meta<wbr>Verification<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
+					<a name="blockverificationintervalid" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> block<wbr>Verification<wbr>Interval<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">block<wbr>Verification<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L45">analyzers/block-meta-analyzer.ts:45</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L66">analyzers/block-analyzer.ts:66</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -214,27 +248,27 @@
 					<div class="tsd-signature tsd-kind-icon">block<wbr>Write<wbr>Pointer<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol"> =&nbsp;0</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L40">analyzers/block-meta-analyzer.ts:40</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L61">analyzers/block-analyzer.ts:61</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="enqueueanalyzeblockintervalid" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> enqueue<wbr>Analyze<wbr>Block<wbr>Interval<wbr>Id</h3>
-					<div class="tsd-signature tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
+					<a name="enqueueevaluateblockintervalid" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> <span class="tsd-flag ts-flagOptional">Optional</span> enqueue<wbr>Evaluate<wbr>Block<wbr>Interval<wbr>Id</h3>
+					<div class="tsd-signature tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block<wbr>Interval<wbr>Id<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">NodeJS.Timer</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L44">analyzers/block-meta-analyzer.ts:44</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L65">analyzers/block-analyzer.ts:65</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="isverifyingblockmetas" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Verifying<wbr>Block<wbr>Metas</h3>
-					<div class="tsd-signature tsd-kind-icon">is<wbr>Verifying<wbr>Block<wbr>Metas<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
+					<a name="isverifyingblocks" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> is<wbr>Verifying<wbr>Blocks</h3>
+					<div class="tsd-signature tsd-kind-icon">is<wbr>Verifying<wbr>Blocks<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol"> =&nbsp;false</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L46">analyzers/block-meta-analyzer.ts:46</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L67">analyzers/block-analyzer.ts:67</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -244,27 +278,17 @@
 					<div class="tsd-signature tsd-kind-icon">logger<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Logger</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L43">analyzers/block-meta-analyzer.ts:43</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L64">analyzers/block-analyzer.ts:64</a></li>
 						</ul>
 					</aside>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
 					<a name="options" class="tsd-anchor"></a>
 					<h3><span class="tsd-flag ts-flagPrivate">Private</span> options</h3>
-					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html" class="tsd-signature-type">BlockMetaAnalyzerOptions</a></div>
+					<div class="tsd-signature tsd-kind-icon">options<span class="tsd-signature-symbol">:</span> <a href="../interfaces/_analyzers_block_analyzer_.blockanalyzeroptions.html" class="tsd-signature-type">BlockAnalyzerOptions</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L42">analyzers/block-meta-analyzer.ts:42</a></li>
-						</ul>
-					</aside>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
-					<a name="queue" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> queue</h3>
-					<div class="tsd-signature tsd-kind-icon">queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
-					<aside class="tsd-sources">
-						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L39">analyzers/block-meta-analyzer.ts:39</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L63">analyzers/block-analyzer.ts:63</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -274,7 +298,17 @@
 					<div class="tsd-signature tsd-kind-icon">storage<span class="tsd-signature-symbol">:</span> <a href="_storages_memory_storage_.memorystorage.html" class="tsd-signature-type">MemoryStorage</a><span class="tsd-signature-symbol"> | </span><a href="_storages_mongodb_storage_.mongodbstorage.html" class="tsd-signature-type">MongodbStorage</a></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L41">analyzers/block-meta-analyzer.ts:41</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L62">analyzers/block-analyzer.ts:62</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-private">
+					<a name="transactionqueue" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> transaction<wbr>Queue</h3>
+					<div class="tsd-signature tsd-kind-icon">transaction<wbr>Queue<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">AsyncPriorityQueue</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L60">analyzers/block-analyzer.ts:60</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -285,7 +319,7 @@
 					<aside class="tsd-sources">
 						<p>Inherited from EventEmitter.defaultMaxListeners</p>
 						<ul>
-							<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1088</li>
+							<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1089</li>
 						</ul>
 					</aside>
 				</section>
@@ -304,7 +338,7 @@
 								<p>Inherited from EventEmitter.addListener</p>
 								<p>Overrides EventEmitter.addListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1090</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1091</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -338,40 +372,17 @@
 						</li>
 					</ul>
 				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="analyzeblock" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> analyze<wbr>Block</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">analyze<wbr>Block<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="close" class="tsd-anchor"></a>
+					<h3>close</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">close<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L290">analyzers/block-meta-analyzer.ts:290</a></li>
-								</ul>
-							</aside>
-							<h4 class="tsd-parameters-title">Parameters</h4>
-							<ul class="tsd-parameters">
-								<li>
-									<h5>attrs: <span class="tsd-signature-type">object</span></h5>
-								</li>
-							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
-						</li>
-					</ul>
-				</section>
-				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="doblockmetaverification" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> do<wbr>Block<wbr>Meta<wbr>Verification</h3>
-					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">do<wbr>Block<wbr>Meta<wbr>Verification<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
-					</ul>
-					<ul class="tsd-descriptions">
-						<li class="tsd-description">
-							<aside class="tsd-sources">
-								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L171">analyzers/block-meta-analyzer.ts:171</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L127">analyzers/block-analyzer.ts:127</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -379,16 +390,33 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="doenqueueanalyzeblock" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> do<wbr>Enqueue<wbr>Analyze<wbr>Block</h3>
+					<a name="doblockverification" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> do<wbr>Block<wbr>Verification</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">do<wbr>Enqueue<wbr>Analyze<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">do<wbr>Block<wbr>Verification<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L237">analyzers/block-meta-analyzer.ts:237</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L197">analyzers/block-analyzer.ts:197</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="doenqueueevaluateblock" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> do<wbr>Enqueue<wbr>Evaluate<wbr>Block</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">do<wbr>Enqueue<wbr>Evaluate<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L293">analyzers/block-analyzer.ts:293</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -407,7 +435,7 @@
 								<p>Inherited from EventEmitter.emit</p>
 								<p>Overrides EventEmitter.emit</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1102</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1103</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -424,16 +452,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="enqueueanalyzeblock" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> enqueue<wbr>Analyze<wbr>Block</h3>
+					<a name="enqueueevaluateblock" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> enqueue<wbr>Evaluate<wbr>Block</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block<span class="tsd-signature-symbol">(</span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, priority<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block<span class="tsd-signature-symbol">(</span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, priority<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L267">analyzers/block-meta-analyzer.ts:267</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L323">analyzers/block-analyzer.ts:323</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -454,6 +482,104 @@
 						</li>
 					</ul>
 				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="enqueueevaluatetransaction" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> enqueue<wbr>Evaluate<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction<span class="tsd-signature-symbol">(</span>block<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span>, priority<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L372">analyzers/block-analyzer.ts:372</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>block: <span class="tsd-signature-type">any</span></h5>
+								</li>
+								<li>
+									<h5>priority: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="enqueueevaluatetransactionwithheight" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> enqueue<wbr>Evaluate<wbr>Transaction<wbr>With<wbr>Height</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction<wbr>With<wbr>Height<span class="tsd-signature-symbol">(</span>height<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, priority<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L398">analyzers/block-analyzer.ts:398</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>height: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>priority: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="evaluateblock" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> evaluate<wbr>Block</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">evaluate<wbr>Block<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L346">analyzers/block-analyzer.ts:346</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>attrs: <span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="evaluatetransaction" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> evaluate<wbr>Transaction</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">evaluate<wbr>Transaction<span class="tsd-signature-symbol">(</span>attrs<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">object</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L405">analyzers/block-analyzer.ts:405</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>attrs: <span class="tsd-signature-type">object</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
 					<a name="eventnames" class="tsd-anchor"></a>
 					<h3>event<wbr>Names</h3>
@@ -466,7 +592,7 @@
 								<p>Inherited from EventEmitter.eventNames</p>
 								<p>Overrides EventEmitter.eventNames</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1103</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1104</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">symbol</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -485,10 +611,36 @@
 								<p>Inherited from EventEmitter.getMaxListeners</p>
 								<p>Overrides EventEmitter.getMaxListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1099</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1100</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="getnumberarray" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> get<wbr>Number<wbr>Array</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Number<wbr>Array<span class="tsd-signature-symbol">(</span>start<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, end<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L429">analyzers/block-analyzer.ts:429</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>start: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>end: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">[]</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -502,7 +654,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L109">analyzers/block-meta-analyzer.ts:109</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L135">analyzers/block-analyzer.ts:135</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -525,7 +677,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L259">analyzers/block-meta-analyzer.ts:259</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L315">analyzers/block-analyzer.ts:315</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -533,16 +685,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="initanalyzeblock" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Analyze<wbr>Block</h3>
+					<a name="initblockverification" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Block<wbr>Verification</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">init<wbr>Analyze<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Block<wbr>Verification<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L130">analyzers/block-meta-analyzer.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L190">analyzers/block-analyzer.ts:190</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -550,16 +702,16 @@
 					</ul>
 				</section>
 				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
-					<a name="initblockmetaverification" class="tsd-anchor"></a>
-					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Block<wbr>Meta<wbr>Verification</h3>
+					<a name="initevaluateblock" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> init<wbr>Evaluate<wbr>Block</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
-						<li class="tsd-signature tsd-kind-icon">init<wbr>Block<wbr>Meta<wbr>Verification<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
+						<li class="tsd-signature tsd-kind-icon">init<wbr>Evaluate<wbr>Block<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">void</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L164">analyzers/block-meta-analyzer.ts:164</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L156">analyzers/block-analyzer.ts:156</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -576,7 +728,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L251">analyzers/block-meta-analyzer.ts:251</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L307">analyzers/block-analyzer.ts:307</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -593,7 +745,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L255">analyzers/block-meta-analyzer.ts:255</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L311">analyzers/block-analyzer.ts:311</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -610,7 +762,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L68">analyzers/block-meta-analyzer.ts:68</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L90">analyzers/block-analyzer.ts:90</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">boolean</span></h4>
@@ -629,7 +781,7 @@
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<p>Overrides EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1104</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1105</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -654,7 +806,7 @@
 								<p>Inherited from EventEmitter.listeners</p>
 								<p>Overrides EventEmitter.listeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1100</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1101</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -679,7 +831,7 @@
 								<p>Inherited from EventEmitter.off</p>
 								<p>Overrides EventEmitter.off</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1096</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1097</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -725,7 +877,7 @@
 								<p>Inherited from EventEmitter.on</p>
 								<p>Overrides EventEmitter.on</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1091</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1092</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -771,7 +923,7 @@
 								<p>Inherited from EventEmitter.once</p>
 								<p>Overrides EventEmitter.once</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1092</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1093</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -817,7 +969,7 @@
 								<p>Inherited from EventEmitter.prependListener</p>
 								<p>Overrides EventEmitter.prependListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1093</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1094</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -863,7 +1015,7 @@
 								<p>Inherited from EventEmitter.prependOnceListener</p>
 								<p>Overrides EventEmitter.prependOnceListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1094</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1095</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -909,7 +1061,7 @@
 								<p>Inherited from EventEmitter.rawListeners</p>
 								<p>Overrides EventEmitter.rawListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1101</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1102</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -934,7 +1086,7 @@
 								<p>Inherited from EventEmitter.removeAllListeners</p>
 								<p>Overrides EventEmitter.removeAllListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1097</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1098</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -959,7 +1111,7 @@
 								<p>Inherited from EventEmitter.removeListener</p>
 								<p>Overrides EventEmitter.removeListener</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1095</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1096</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1003,7 +1155,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L144">analyzers/block-meta-analyzer.ts:144</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L170">analyzers/block-analyzer.ts:170</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
@@ -1022,7 +1174,7 @@
 								<p>Inherited from EventEmitter.setMaxListeners</p>
 								<p>Overrides EventEmitter.setMaxListeners</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1098</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1099</li>
 								</ul>
 							</aside>
 							<h4 class="tsd-parameters-title">Parameters</h4>
@@ -1045,7 +1197,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L72">analyzers/block-meta-analyzer.ts:72</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L94">analyzers/block-analyzer.ts:94</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1062,7 +1214,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L91">analyzers/block-meta-analyzer.ts:91</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L113">analyzers/block-analyzer.ts:113</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
@@ -1079,10 +1231,62 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/analyzers/block-meta-analyzer.ts#L105">analyzers/block-meta-analyzer.ts:105</a></li>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L131">analyzers/block-analyzer.ts:131</a></li>
 								</ul>
 							</aside>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">void</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="verifyblockmetas" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> verify<wbr>Block<wbr>Metas</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">verify<wbr>Block<wbr>Metas<span class="tsd-signature-symbol">(</span>startHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, endHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L243">analyzers/block-analyzer.ts:243</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>startHeight: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>endHeight: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-private">
+					<a name="verifytransactionmetas" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagPrivate">Private</span> verify<wbr>Transaction<wbr>Metas</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-private">
+						<li class="tsd-signature tsd-kind-icon">verify<wbr>Transaction<wbr>Metas<span class="tsd-signature-symbol">(</span>startHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span>, endHeight<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/analyzers/block-analyzer.ts#L279">analyzers/block-analyzer.ts:279</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>startHeight: <span class="tsd-signature-type">number</span></h5>
+								</li>
+								<li>
+									<h5>endHeight: <span class="tsd-signature-type">number</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">boolean</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -1097,7 +1301,7 @@
 							<aside class="tsd-sources">
 								<p>Inherited from EventEmitter.listenerCount</p>
 								<ul>
-									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1087</li>
+									<li>Defined in /Users/travis/ProjectGit/CityOfZion/neo-js/node_modules/@types/node/index.d.ts:1088</li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -1129,7 +1333,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class="current tsd-kind-external-module">
-						<a href="../modules/_analyzers_block_meta_analyzer_.html">"analyzers/block-<wbr>meta-<wbr>analyzer"</a>
+						<a href="../modules/_analyzers_block_analyzer_.html">"analyzers/block-<wbr>analyzer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="../modules/_common_constants_.html">"common/constants"</a>
@@ -1174,6 +1378,9 @@
 						<a href="../modules/_storages_mongodb_schemas_.html">"storages/mongodb/schemas"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="../modules/_storages_mongodb_transaction_meta_dao_.html">"storages/mongodb/transaction-<wbr>meta-<wbr>dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="../modules/_storages_mongodb_utils_.html">"storages/mongodb/utils"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -1195,149 +1402,176 @@
 				</ul>
 				<ul class="current">
 					<li class="current tsd-kind-class tsd-parent-kind-external-module">
-						<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html" class="tsd-kind-icon">Block<wbr>Meta<wbr>Analyzer</a>
+						<a href="_analyzers_block_analyzer_.blockanalyzer.html" class="tsd-kind-icon">Block<wbr>Analyzer</a>
 						<ul>
 							<li class=" tsd-kind-constructor tsd-parent-kind-class">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#constructor" class="tsd-kind-icon">constructor</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#constructor" class="tsd-kind-icon">constructor</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#_isrunning" class="tsd-kind-icon">_is<wbr>Running</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#block_meta_api_level" class="tsd-kind-icon">BLOCK_<wbr>META_<wbr>API_<wbr>LEVEL</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#apilevel" class="tsd-kind-icon">api<wbr>Level</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#transaction_meta_api_level" class="tsd-kind-icon">TRANSACTION_<wbr>META_<wbr>API_<wbr>LEVEL</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#blockmetaverificationintervalid" class="tsd-kind-icon">block<wbr>Meta<wbr>Verification<wbr>Interval<wbr>Id</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#_isrunning" class="tsd-kind-icon">_is<wbr>Running</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#blockwritepointer" class="tsd-kind-icon">block<wbr>Write<wbr>Pointer</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#blockqueue" class="tsd-kind-icon">block<wbr>Queue</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#enqueueanalyzeblockintervalid" class="tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block<wbr>Interval<wbr>Id</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#blockverificationintervalid" class="tsd-kind-icon">block<wbr>Verification<wbr>Interval<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isverifyingblockmetas" class="tsd-kind-icon">is<wbr>Verifying<wbr>Block<wbr>Metas</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#blockwritepointer" class="tsd-kind-icon">block<wbr>Write<wbr>Pointer</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#logger" class="tsd-kind-icon">logger</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluateblockintervalid" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block<wbr>Interval<wbr>Id</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#options" class="tsd-kind-icon">options</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#isverifyingblocks" class="tsd-kind-icon">is<wbr>Verifying<wbr>Blocks</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#queue" class="tsd-kind-icon">queue</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#logger" class="tsd-kind-icon">logger</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#storage" class="tsd-kind-icon">storage</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#options" class="tsd-kind-icon">options</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#storage" class="tsd-kind-icon">storage</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#transactionqueue" class="tsd-kind-icon">transaction<wbr>Queue</a>
 							</li>
 							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#defaultmaxlisteners" class="tsd-kind-icon">default<wbr>Max<wbr>Listeners</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#analyzeblock" class="tsd-kind-icon">analyze<wbr>Block</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#doblockmetaverification" class="tsd-kind-icon">do<wbr>Block<wbr>Meta<wbr>Verification</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#doenqueueanalyzeblock" class="tsd-kind-icon">do<wbr>Enqueue<wbr>Analyze<wbr>Block</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#emit" class="tsd-kind-icon">emit</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#enqueueanalyzeblock" class="tsd-kind-icon">enqueue<wbr>Analyze<wbr>Block</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#getpriorityqueue" class="tsd-kind-icon">get<wbr>Priority<wbr>Queue</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#increaseblockwritepointer" class="tsd-kind-icon">increase<wbr>Block<wbr>Write<wbr>Pointer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#initanalyzeblock" class="tsd-kind-icon">init<wbr>Analyze<wbr>Block</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#initblockmetaverification" class="tsd-kind-icon">init<wbr>Block<wbr>Meta<wbr>Verification</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#addlistener" class="tsd-kind-icon">add<wbr>Listener</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listeners" class="tsd-kind-icon">listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#off" class="tsd-kind-icon">off</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#on" class="tsd-kind-icon">on</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#once" class="tsd-kind-icon">once</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#close" class="tsd-kind-icon">close</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#setblockwritepointer" class="tsd-kind-icon">set<wbr>Block<wbr>Write<wbr>Pointer</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#start" class="tsd-kind-icon">start</a>
-							</li>
-							<li class=" tsd-kind-method tsd-parent-kind-class">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#stop" class="tsd-kind-icon">stop</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#doblockverification" class="tsd-kind-icon">do<wbr>Block<wbr>Verification</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#validateoptionalparameters" class="tsd-kind-icon">validate<wbr>Optional<wbr>Parameters</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#doenqueueevaluateblock" class="tsd-kind-icon">do<wbr>Enqueue<wbr>Evaluate<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#emit" class="tsd-kind-icon">emit</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluateblock" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluatetransaction" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#enqueueevaluatetransactionwithheight" class="tsd-kind-icon">enqueue<wbr>Evaluate<wbr>Transaction<wbr>With<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#evaluateblock" class="tsd-kind-icon">evaluate<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#evaluatetransaction" class="tsd-kind-icon">evaluate<wbr>Transaction</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#eventnames" class="tsd-kind-icon">event<wbr>Names</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#getmaxlisteners" class="tsd-kind-icon">get<wbr>Max<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#getnumberarray" class="tsd-kind-icon">get<wbr>Number<wbr>Array</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#getpriorityqueue" class="tsd-kind-icon">get<wbr>Priority<wbr>Queue</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#increaseblockwritepointer" class="tsd-kind-icon">increase<wbr>Block<wbr>Write<wbr>Pointer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#initblockverification" class="tsd-kind-icon">init<wbr>Block<wbr>Verification</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#initevaluateblock" class="tsd-kind-icon">init<wbr>Evaluate<wbr>Block</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#isreachedmaxheight" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Height</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#isreachedmaxqueuelength" class="tsd-kind-icon">is<wbr>Reached<wbr>Max<wbr>Queue<wbr>Length</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#isrunning" class="tsd-kind-icon">is<wbr>Running</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#listenercount" class="tsd-kind-icon">listener<wbr>Count</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#listeners" class="tsd-kind-icon">listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#off" class="tsd-kind-icon">off</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#on" class="tsd-kind-icon">on</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#once" class="tsd-kind-icon">once</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#prependlistener" class="tsd-kind-icon">prepend<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#prependoncelistener" class="tsd-kind-icon">prepend<wbr>Once<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#rawlisteners" class="tsd-kind-icon">raw<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#removealllisteners" class="tsd-kind-icon">remove<wbr>All<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#removelistener" class="tsd-kind-icon">remove<wbr>Listener</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#setblockwritepointer" class="tsd-kind-icon">set<wbr>Block<wbr>Write<wbr>Pointer</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-inherited">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#setmaxlisteners" class="tsd-kind-icon">set<wbr>Max<wbr>Listeners</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#start" class="tsd-kind-icon">start</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#stop" class="tsd-kind-icon">stop</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#validateoptionalparameters" class="tsd-kind-icon">validate<wbr>Optional<wbr>Parameters</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#verifyblockmetas" class="tsd-kind-icon">verify<wbr>Block<wbr>Metas</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-private">
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#verifytransactionmetas" class="tsd-kind-icon">verify<wbr>Transaction<wbr>Metas</a>
 							</li>
 							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited tsd-is-static">
-								<a href="_analyzers_block_meta_analyzer_.blockmetaanalyzer.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a>
+								<a href="_analyzers_block_analyzer_.blockanalyzer.html#listenercount-1" class="tsd-kind-icon">listener<wbr>Count</a>
 							</li>
 						</ul>
 					</li>
 				</ul>
 				<ul class="after-current">
 					<li class=" tsd-kind-interface tsd-parent-kind-external-module">
-						<a href="../interfaces/_analyzers_block_meta_analyzer_.blockmetaanalyzeroptions.html" class="tsd-kind-icon">Block<wbr>Meta<wbr>Analyzer<wbr>Options</a>
+						<a href="../interfaces/_analyzers_block_analyzer_.blockanalyzeroptions.html" class="tsd-kind-icon">Block<wbr>Analyzer<wbr>Options</a>
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_analyzers_block_meta_analyzer_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
+						<a href="../modules/_analyzers_block_analyzer_.html#module_name" class="tsd-kind-icon">MODULE_<wbr>NAME</a>
 					</li>
 					<li class=" tsd-kind-object-literal tsd-parent-kind-external-module tsd-is-not-exported">
-						<a href="../modules/_analyzers_block_meta_analyzer_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
+						<a href="../modules/_analyzers_block_analyzer_.html#default_options" class="tsd-kind-icon">DEFAULT_<wbr>OPTIONS</a>
 					</li>
 				</ul>
 			</nav>

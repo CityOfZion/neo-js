@@ -134,11 +134,11 @@ mainnetNeo.mesh.on(<span class="hljs-string">'ready'</span>, () =&gt; {
 <span class="hljs-comment">// Create a neo instance</span>
 <span class="hljs-keyword">const</span> neo = <span class="hljs-keyword">new</span> Neo(options)
 
-<span class="hljs-comment">// Get block count</span>
+<span class="hljs-comment">// Get block height</span>
 neo.storage.on(<span class="hljs-string">'ready'</span>, () =&gt; {
-  neo.storage.getBlockCount()
+  neo.storage.getHighestBlockHeight()
     .then(<span class="hljs-function">(<span class="hljs-params">res</span>) =&gt;</span> {
-      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Block count:'</span>, res)
+      <span class="hljs-built_in">console</span>.log(<span class="hljs-string">'Block height:'</span>, res)
     })
 })</code></pre>
 				<h2 id="documentation">Documentation</h2>
@@ -177,7 +177,7 @@ neo.storage.on(<span class="hljs-string">'ready'</span>, () =&gt; {
 						<a href="globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="modules/_analyzers_block_meta_analyzer_.html">"analyzers/block-<wbr>meta-<wbr>analyzer"</a>
+						<a href="modules/_analyzers_block_analyzer_.html">"analyzers/block-<wbr>analyzer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_common_constants_.html">"common/constants"</a>
@@ -220,6 +220,9 @@ neo.storage.on(<span class="hljs-string">'ready'</span>, () =&gt; {
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_storages_mongodb_schemas_.html">"storages/mongodb/schemas"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_storages_mongodb_transaction_meta_dao_.html">"storages/mongodb/transaction-<wbr>meta-<wbr>dao"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="modules/_storages_mongodb_utils_.html">"storages/mongodb/utils"</a>

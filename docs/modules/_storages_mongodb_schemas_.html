@@ -75,6 +75,7 @@
 							<ul class="tsd-index-list">
 								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_storages_mongodb_schemas_.html#blockmetaschema" class="tsd-kind-icon">block<wbr>Meta<wbr>Schema</a></li>
 								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_storages_mongodb_schemas_.html#blockschema" class="tsd-kind-icon">block<wbr>Schema</a></li>
+								<li class="tsd-kind-variable tsd-parent-kind-external-module"><a href="_storages_mongodb_schemas_.html#transactionmetaschema" class="tsd-kind-icon">transaction<wbr>Meta<wbr>Schema</a></li>
 							</ul>
 						</section>
 					</div>
@@ -88,7 +89,7 @@
 					<div class="tsd-signature tsd-kind-icon">block<wbr>Meta<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> =&nbsp;new Schema({height: { type: &#x27;Number&#x27;, unique: true, required: true, dropDups: true },time: Number,size: Number,generationTime: Number,transactionCount: Number,createdBy: String,apiLevel: Number,},{ timestamps: true })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/storages/mongodb/schemas.ts#L31">storages/mongodb/schemas.ts:31</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/storages/mongodb/schemas.ts#L31">storages/mongodb/schemas.ts:31</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -98,7 +99,17 @@
 					<div class="tsd-signature tsd-kind-icon">block<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> =&nbsp;new Schema({height: Number,createdBy: String,source: String,userAgent: String,payload: {hash: String,size: Number,version: Number,previousblockhash: String,merkleroot: String,time: Number,index: { type: &#x27;Number&#x27;, required: true },nonce: String,nextconsensus: String,script: {invocation: String,verification: String,},tx: [],confirmations: Number,nextblockhash: String,},},{ timestamps: true })</span></div>
 					<aside class="tsd-sources">
 						<ul>
-							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/d79ebde/src/storages/mongodb/schemas.ts#L3">storages/mongodb/schemas.ts:3</a></li>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/storages/mongodb/schemas.ts#L3">storages/mongodb/schemas.ts:3</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-variable tsd-parent-kind-external-module">
+					<a name="transactionmetaschema" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagConst">Const</span> transaction<wbr>Meta<wbr>Schema</h3>
+					<div class="tsd-signature tsd-kind-icon">transaction<wbr>Meta<wbr>Schema<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">Schema</span><span class="tsd-signature-symbol"> =&nbsp;new Schema({height: Number,time: Number,transactionId: { type: &#x27;String&#x27;, unique: true, required: true, dropDups: true },type: String,size: Number,networkFee: Number,systemFee: Number,voutCount: Number,vinCount: Number,createdBy: String,apiLevel: Number,},{ timestamps: true })</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/CityOfZion/neo-js/blob/87cbcb8/src/storages/mongodb/schemas.ts#L44">storages/mongodb/schemas.ts:44</a></li>
 						</ul>
 					</aside>
 				</section>
@@ -111,7 +122,7 @@
 						<a href="../globals.html"><em>Globals</em></a>
 					</li>
 					<li class=" tsd-kind-external-module">
-						<a href="_analyzers_block_meta_analyzer_.html">"analyzers/block-<wbr>meta-<wbr>analyzer"</a>
+						<a href="_analyzers_block_analyzer_.html">"analyzers/block-<wbr>analyzer"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
 						<a href="_common_constants_.html">"common/constants"</a>
@@ -156,6 +167,9 @@
 						<a href="_storages_mongodb_schemas_.html">"storages/mongodb/schemas"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
+						<a href="_storages_mongodb_transaction_meta_dao_.html">"storages/mongodb/transaction-<wbr>meta-<wbr>dao"</a>
+					</li>
+					<li class=" tsd-kind-external-module">
 						<a href="_storages_mongodb_utils_.html">"storages/mongodb/utils"</a>
 					</li>
 					<li class=" tsd-kind-external-module">
@@ -179,6 +193,9 @@
 					</li>
 					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
 						<a href="_storages_mongodb_schemas_.html#blockschema" class="tsd-kind-icon">block<wbr>Schema</a>
+					</li>
+					<li class=" tsd-kind-variable tsd-parent-kind-external-module">
+						<a href="_storages_mongodb_schemas_.html#transactionmetaschema" class="tsd-kind-icon">transaction<wbr>Meta<wbr>Schema</a>
 					</li>
 				</ul>
 			</nav>
