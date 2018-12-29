@@ -1,55 +1,245 @@
 # Event Emitters
 
-Possible events emitters per class.
+Events emitters per class and possible payload properties.
 
 ### `neo`
 
-* N/A
+N/A
+
+&nbsp;
 
 ### `core/api`
 
-* `ready`
-* `storage:insert`
+#### `ready`
+
+```js
+null
+```
+
+#### `storage:insert`
+
+```js
+{
+  method: string
+  result: any
+}
+```
+
+&nbsp;
 
 ### `core/mesh`
 
-* `ready`
+#### `ready`
+
+```js
+null
+```
+
+&nbsp;
 
 ### `core/syncer`
 
-* `start`
-* `stop`
-* `query:worker:complete`
-* `blockVerification:init`
-* `blockVerification:complete`
-* `blockVerification:missingBlocks`
-* `blockVerification:excessiveBlocks`
-* `storeBlock:init`
-* `storeBlock:complete`
-* `upToDate`
+#### `start`
+
+```js
+null
+```
+
+#### `stop`
+
+```js
+null
+```
+
+#### `query:worker:complete`
+
+```js
+{
+  isSuccess: boolean
+}
+```
+
+#### `blockVerification:init`
+
+```js
+null
+```
+
+#### `blockVerification:complete`
+
+```js
+{
+  isSkipped: boolean
+}
+```
+
+#### `blockVerification:missingBlocks`
+
+```js
+{
+  count: number
+}
+```
+
+#### `blockVerification:excessiveBlocks`
+
+```js
+{
+  count: number
+}
+```
+
+#### `storeBlock:init`
+
+```js
+{
+  height: number
+}
+```
+
+#### `storeBlock:complete`
+
+```js
+{
+  isSuccess?: boolean
+  isSkipped?: boolean
+  height: number
+}
+```
+
+#### `upToDate`
+
+```js
+null
+```
+
+&nbsp;
 
 ### `core/node`
 
-* `query:init`
-* `query:complete`
+#### `query:init`
+
+```js
+{
+  method: string
+  params: object
+  id: string
+}
+```
+
+#### `query:complete`
+
+```js
+{
+  isSuccess: boolean
+  method: string
+  latency?: number
+  blockHeight?: number
+  userAgent?: string
+  error?: object
+}
+```
+
+&nbsp;
 
 ### `storages/memory-storage`
 
-* `ready`
+#### `ready`
+
+```js
+null
+```
+
+&nbsp;
 
 ### `storages/mongodb-storage`
 
-* `ready`
-* `reviewIndexes:init`
-* `reviewIndexes:complete`
+#### `ready`
+
+```js
+null
+```
+
+#### `reviewIndexes:init`
+
+```js
+null
+```
+
+#### `reviewIndexes:complete`
+
+```js
+{
+  isSuccess: boolean
+}
+```
+
+&nbsp;
 
 ### `analyzers/block-meta-analyzer`
 
-* `start`
-* `stop`
-* `query:worker:complete`
-* `blockMetaVerification:init`
-* `blockMetaVerification:complete`
-* `blockMetaVerification:missingBlocks`
-* `blockMetaVerification:excessiveBlocks`
-* `upToDate`
+#### `start`
+
+```js
+null
+```
+
+#### `stop`
+
+```js
+null
+```
+
+#### `query:worker:complete`
+
+```js
+{
+  isSuccess: boolean
+  task: object
+}
+```
+
+#### `blockMetaVerification:init`
+
+```js
+null
+```
+
+#### `blockMetaVerification:complete`
+
+```js
+{
+  isSuccess?: boolean
+  isSkipped?: boolean
+}
+```
+
+#### `blockMetaVerification:blockMetas:missing`
+
+```js
+{
+  count: number
+}
+```
+
+#### `blockMetaVerification:blockMetas:legacy`
+
+```js
+{
+  count: number
+}
+```
+
+#### `blockMetaVerification:transactionMetas:legacy`
+
+```js
+{
+  metaCount: number
+}
+```
+
+#### `upToDate`
+
+```js
+null
+```

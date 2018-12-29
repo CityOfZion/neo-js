@@ -9,7 +9,8 @@ const neoOptions = {
   network: 'testnet',
   storageType: undefined,
   endpoints: undefined,
-  enableBlockMetaAnalyzer: false,
+  enableSyncer: true,
+  enableBlockAnalyzer: false,
   nodeOptions: undefined,
   meshOptions: undefined,
   storageOptions: undefined,
@@ -78,7 +79,7 @@ const syncerOptions = {
 const nodeOptions = {
   toLogReliability: false,
   truncateRequestLogIntervalMs: 30 * 1000,
-  requestLogTtl: 5 * 60 * 1000,
+  requestLogTtl: 5 * 60 * 1000, // In milliseconds
   timeout: 30000,
   loggerOptions: {},
 }
@@ -102,8 +103,7 @@ const mongodbStorageOptions = {
   collectionNames: {
     blocks: 'blocks',
     blockMetas: 'block_metas',
-    transactions: 'transactions',
-    assets: 'assets',
+    transactionMetas: 'transaction_metas',
   },
   loggerOptions: {},
 }
@@ -116,12 +116,20 @@ const blockMetaAnalyzerOptions = {
   minHeight: 1,
   maxHeight: undefined,
   startOnInit: true,
-  analyzeQueueConcurrency: 5,
-  enqueueBlockIntervalMs: 5 * 1000,
-  verifyBlockMetasIntervalMs: 30 * 1000,
-  maxQueueLength: 30 * 1000,
-  standardEnqueueBlockPriority: 5,
-  missingEnqueueBlockPriority: 3,
+  toEvaluateTransactions: true,
+  toEvaluateAssets: false,
+  blockQueueConcurrency: 5,
+  transactionQueueConcurrency: 10,
+  enqueueEvaluateBlockIntervalMs: 5 * 1000,
+  verifyBlocksIntervalMs: 30 * 1000,
+  maxBlockQueueLength: 30 * 1000,
+  maxTransactionQueueLength: 100 * 1000,
+  standardEvaluateBlockPriority: 5,
+  missingEvaluateBlockPriority: 3,
+  legacyEvaluateBlockPriority: 3,
+  standardEvaluateTransactionPriority: 5,
+  missingEvaluateTransactionPriority: 5,
+  legacyEvaluateTransactionPriority: 5,
   loggerOptions: {},
 }
 ```
